@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <%- include('partials/head') %>
-  <title>Kaizen — Discipline Challenges</title>
+  <title>KAIZEN — Bounties</title>
 </head>
 <body class="app-page">
 
@@ -12,7 +12,7 @@
 
     <div class="page-header">
       <div>
-        <h1>Discipline <em>Challenges</em></h1>
+        <h1 class="bounties-header-text">Discipline Challenges</h1>
         <p class="page-sub">Powered by Zero Authority DAO — earn on-chain reputation</p>
       </div>
       <a href="/dashboard" class="btn-outline">← Dashboard</a>
@@ -25,32 +25,44 @@
     <% if (bounties.length === 0 && !error) { %>
       <div class="card">
         <div class="empty-state">
-          <div class="empty-icon">🏆</div>
           <p>No bounties available right now.</p>
           <p>Check back soon for new discipline challenges.</p>
         </div>
       </div>
     <% } else { %>
       <div class="bounties-grid">
-        <% bounties.forEach(bounty => { %>
+        <% bounties.forEach(function(bounty) { %>
           <div class="bounty-card">
             <div class="bounty-card-top">
               <span class="bounty-badge">ZA Challenge</span>
               <span class="bounty-reward">
-                <%= bounty.reward || bounty.amount || 'Reputation' %>
+                <%= bounty.totalPayment || bounty.reward || '' %>
+                <%= bounty.token ? bounty.token.symbol : '' %>
               </span>
             </div>
             <h3 class="bounty-title">
               <%= bounty.title || bounty.name || 'Discipline Challenge' %>
             </h3>
             <p class="bounty-desc">
-              <%= bounty.description ? bounty.description.substring(0, 120) + '...' : 'Complete this challenge to earn ZA reputation points.' %>
+              <%= bounty.details || bounty.description
+                ? (bounty.details || bounty.description).substring(0, 110) + '...'
+                : 'Complete this challenge to earn ZA reputation.' %>
             </p>
             <div class="bounty-footer">
-              <span class="bounty-status">
-                <%= bounty.status || 'Open' %>
-              </span>
-              <a href="/za/bounties/<%= bounty._id || bounty.id %>" class="btn-outline btn-sm">View Details</a>
+              <%
+                var isClosed = bounty.bountyCompleted ||
+                  bounty.status === 'Closed' ||
+                  bounty.status === 'Completed' ||
+                  bounty.isExpired ||
+                  bounty.daysRemaining === 0;
+              %>
+              <% if (isClosed) { %>
+                <span class="status-closed">Closed</span>
+              <% } else { %>
+                <span class="status-open">Open</span>
+              <% } %>
+              <a href="/za/bounties/<%= bounty.id || bounty._id %>"
+                class="btn-outline btn-sm">View Details</a>
             </div>
           </div>
         <% }); %>
@@ -60,6 +72,6 @@
   </main>
 
   <%- include('partials/footer') %>
-
+  <script src="/js/app.js"></script>
 </body>
 </html>
