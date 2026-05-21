@@ -9,7 +9,6 @@ const getDashboard = async (req, res) => {
       .sort({ createdAt: -1 })
       .limit(5);
 
-    // Calculate discipline score
     const allJournals = await Journal.find({ userId: req.session.user.id });
     let score = 0;
 
@@ -17,12 +16,10 @@ const getDashboard = async (req, res) => {
       const compliantSessions = allJournals.filter(j => j.ruleCompliance).length;
       score = Math.round((compliantSessions / allJournals.length) * 100);
 
-      // Update score in database
       await User.findByIdAndUpdate(req.session.user.id, {
         disciplineScore: score
       });
 
-      // Update session
       req.session.user.disciplineScore = score;
     }
 
@@ -76,16 +73,32 @@ const addJournal = async (req, res) => {
 // GET /dashboard/journal
 const getJournals = async (req, res) => {
   try {
-    const journals = await Journal.find({ userId: req.session.user.id })
-      .sort({ createdAt: -1 });
+    const journals = await Journal.find({ 
+      userId: req.session.user.id 
+    }).sort({ createdAt: -1 });
 
     const user = await User.findById(req.session.user.id);
 
-    res.render('journal', { user, journals });
+    if (!user) {
+      return res.redirect('/auth/login');
+    }
+
+    res.render('journal', { 
+      user, 
+      journals: journals || []
+    });
 
   } catch (error) {
-    console.error('Journals error:', error);
-    res.redirect('/dashboard');
+    console.error('Journals error:', error.message);
+    res.status(500).send(`
+      <html>
+        <body style="background:#080808;color:#F5F3EF;font-family:sans-serif;padding:40px;text-align:center;">
+          <h2 style="color:#C9A84C;">改 Kaizen</h2>
+          <p>Journal temporarily unavailable.</p>
+          <a href="/dashboard" style="color:#C9A84C;">← Back to Dashboard</a>
+        </body>
+      </html>
+    `);
   }
 };
 

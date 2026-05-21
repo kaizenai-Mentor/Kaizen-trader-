@@ -6,5 +6,8 @@ const { protect } = require('../middleware/auth');
 router.get('/', protect, dashboardController.getDashboard);
 router.post('/journal', protect, dashboardController.addJournal);
 router.get('/journal', protect, dashboardController.getJournals);
+router.get('/chart', protect, (req, res) => {
+  res.render('chart', { user: req.session.user });
+});
 
 module.exports = router;

@@ -50,7 +50,7 @@
               <span class="bounty-status">
                 <%= bounty.status || 'Open' %>
               </span>
-              <a href="#" class="btn-outline btn-sm">View Details</a>
+              <a href="/za/bounties/<%= bounty._id || bounty.id %>" class="btn-outline btn-sm">View Details</a>
             </div>
           </div>
         <% }); %>
