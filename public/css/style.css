@@ -1329,3 +1329,74 @@ select.form-input { cursor: pointer; }
 .modal-footer { padding: 16px 28px; border-top: 1px solid var(--border); display: flex; gap: 10px; justify-content: flex-end; }
 
 /* ── FOOTER ── */
+.footer {
+  border-top: 1px solid var(--border);
+  padding: 20px 32px;
+  margin-top: 60px;
+  position: relative;
+  z-index: 1;
+}
+
+.footer-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.footer-logo { font-family: var(--font-mono); font-size: 0.85rem; color: var(--gold); }
+.footer-copy, .footer-right { font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ash); }
+
+/* ── SECURITY PAGE ── */
+.security-section { margin-bottom: 28px; }
+.security-section h4 { font-size: 0.9rem; font-weight: 700; margin-bottom: 14px; color: var(--text-primary); }
+
+/* ── LANGUAGE SELECT ── */
+.lang-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.lang-option {
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: all 0.2s;
+  background: var(--bg-surface);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.lang-option:hover { border-color: var(--gold-border); background: var(--gold-pale); color: var(--gold); }
+.lang-option.active { border-color: var(--gold); background: var(--gold-pale); color: var(--gold); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 768px) {
+  .navbar { padding: 12px 20px; }
+  .welcome-main { padding: 40px 20px; }
+  .welcome-stats { gap: 24px; }
+  .app-main { padding: 24px 16px; }
+  .form-row { grid-template-columns: 1fr; }
+  .rep-grid { grid-template-columns: 1fr; }
+  .page-header { flex-direction: column; }
+  .auth-card { padding: 32px 24px; }
+  .footer { padding: 16px 20px; }
+  .footer-inner { flex-direction: column; text-align: center; }
+  .nav-popup { width: 100%; }
+  .stats-row { grid-template-columns: 1fr 1fr; }
+  .bounties-grid { grid-template-columns: 1fr; }
+  .journal-grid { grid-template-columns: 1fr; }
+  .otp-input { width: 48px; height: 52px; font-size: 1.2rem; }
+}
+
+@media (max-width: 480px) {
+  .welcome-title { font-size: 2.8rem; }
+  .welcome-ctas { flex-direction: column; align-items: stretch; }
+  .stats-row { grid-template-columns: 1fr; }
+  .auth-card { padding: 28px 20px; }
+  }
+
