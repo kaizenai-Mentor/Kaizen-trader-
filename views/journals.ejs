@@ -18,18 +18,22 @@
       <a href="/dashboard" class="btn-outline">← Dashboard</a>
     </div>
 
-    <% if (journals.length === 0) { %>
+    <% if (typeof journals !== 'undefined' && journals.length === 0) { %>
       <div class="card">
         <div class="empty-state">
           <div class="empty-icon">📓</div>
           <p>No journal entries yet.</p>
-          <a href="/dashboard" class="btn-primary">Log Your First Session</a>
+          <p>Log your first session from the dashboard.</p>
+          <a href="/dashboard" class="btn-primary" style="margin-top:20px;display:inline-block;">
+            Log First Session
+          </a>
         </div>
       </div>
-    <% } else { %>
+    <% } else if (typeof journals !== 'undefined') { %>
       <div class="journal-grid">
-        <% journals.forEach(journal => { %>
+        <% journals.forEach(function(journal) { %>
           <div class="journal-card">
+
             <div class="journal-card-top">
               <div>
                 <span class="journal-asset"><%= journal.asset %></span>
@@ -57,11 +61,26 @@
                 <span class="compliance-bad">✗ Violated</span>
               <% } %>
               <span class="journal-date">
-                <%= new Date(journal.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) %>
+                <%= new Date(journal.createdAt).toLocaleDateString('en-US', {
+                  year: 'numeric',
+                  month: 'short',
+                  day: 'numeric'
+                }) %>
               </span>
             </div>
+
           </div>
         <% }); %>
+      </div>
+    <% } else { %>
+      <div class="card">
+        <div class="empty-state">
+          <div class="empty-icon">⚠️</div>
+          <p>Could not load journal entries.</p>
+          <a href="/dashboard" class="btn-primary" style="margin-top:20px;display:inline-block;">
+            Back to Dashboard
+          </a>
+        </div>
       </div>
     <% } %>
 
