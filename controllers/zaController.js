@@ -4,11 +4,15 @@ const zaClient = require('../config/za');
 const getBounties = async (req, res) => {
   try {
     const response = await zaClient.get('/bounties');
-    const bounties = response.data;
+    const data = response.data;
+
+    const bounties = Array.isArray(data)
+      ? data
+      : data.data || data.bounties || [];
 
     res.render('bounties', {
       user: req.session.user,
-      bounties: bounties.data || bounties || [],
+      bounties,
       error: null
     });
 
@@ -28,11 +32,17 @@ const getBountyById = async (req, res) => {
     const response = await zaClient.get(`/bounties/${req.params.id}`);
     const bounty = response.data;
 
-    res.json(bounty);
+    res.render('bounty-detail', {
+      user: req.session.user,
+      bounty: bounty || {}
+    });
 
   } catch (error) {
     console.error('ZA Bounty detail error:', error.message);
-    res.json({ error: 'Bounty not found' });
+    res.render('bounty-detail', {
+      user: req.session.user,
+      bounty: {}
+    });
   }
 };
 
