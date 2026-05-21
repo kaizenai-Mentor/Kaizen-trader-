@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('partials/head') %>
+  <title>Kaizen — Bounty Detail</title>
+</head>
+<body class="app-page">
+
+  <%- include('partials/navbar') %>
+
+  <main class="app-main">
+
+    <div class="page-header">
+      <div>
+        <h1>Bounty <em>Detail</em></h1>
+        <p class="page-sub">Zero Authority DAO Challenge</p>
+      </div>
+      <a href="/za/bounties" class="btn-outline">← All Bounties</a>
+    </div>
+
+    <% if (bounty && bounty.id) { %>
+
+      <div class="main-grid">
+
+        <div class="card card-blue">
+          <div class="card-header">
+            <h2><%= bounty.name || bounty.title %></h2>
+            <span class="bounty-badge"><%= bounty.status || 'Open' %></span>
+          </div>
+
+          <div style="margin-bottom:20px;">
+            <span class="bounty-reward" style="font-size:1.5rem;">
+              <%= bounty.totalPayment || bounty.reward || '—' %>
+              <%= bounty.token ? bounty.token.symbol : 'STX' %>
+            </span>
+            <span style="color:var(--ash);font-size:0.85rem;margin-left:8px;">Total Prize</span>
+          </div>
+
+          <div style="background:var(--black-surface);padding:20px;margin-bottom:20px;border:1px solid var(--border);">
+            <p style="color:var(--ash-light);font-size:0.9rem;line-height:1.8;white-space:pre-wrap;"><%= bounty.details || bounty.description || 'No details available.' %></p>
+          </div>
+
+          <div style="display:flex;gap:16px;flex-wrap:wrap;">
+            <div>
+              <div class="form-label">Type</div>
+              <div style="color:var(--white);font-weight:600;"><%= bounty.type || '—' %></div>
+            </div>
+            <div>
+              <div class="form-label">Days Remaining</div>
+              <div style="color:var(--gold);font-weight:600;"><%= bounty.daysRemaining || '—' %> days</div>
+            </div>
+            <div>
+              <div class="form-label">Submissions</div>
+              <div style="color:var(--white);font-weight:600;"><%= bounty.submissionsCount || 0 %></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h2>Creator</h2>
+          </div>
+          <% if (bounty.creator) { %>
+            <div style="display:flex;gap:16px;align-items:center;margin-bottom:20px;">
+              <% if (bounty.creator.avatarUrl) { %>
+                <img src="<%= bounty.creator.avatarUrl %>"
+                  style="width:48px;height:48px;border-radius:50%;object-fit:cover;border:1px solid var(--border);">
+              <% } %>
+              <div>
+                <div style="font-weight:700;color:var(--white);">
+                  <%= bounty.creator.username %>
+                </div>
+                <div style="font-size:0.82rem;color:var(--ash);">
+                  <%= bounty.creator.twitter || '' %>
+                </div>
+              </div>
+            </div>
+            <% if (bounty.creator.bio) { %>
+              <p style="font-size:0.85rem;color:var(--ash-light);line-height:1.7;">
+                <%= bounty.creator.bio %>
+              </p>
+            <% } %>
+          <% } %>
+
+          <div style="margin-top:32px;">
+            <div class="card-header">
+              <h2>Kaizen Connection</h2>
+            </div>
+            <div style="background:var(--gold-pale);border:1px solid var(--gold-border);padding:16px;">
+              <p style="font-size:0.88rem;color:var(--ash-light);line-height:1.7;">
+                Complete this ZA bounty to earn on-chain reputation.
+                Your Kaizen Discipline Score proves you have the
+                consistency and focus to deliver quality work.
+              </p>
+              <div style="margin-top:16px;">
+                <span style="font-family:var(--font-mono);font-size:0.7rem;color:var(--gold);">
+                  YOUR DISCIPLINE SCORE
+                </span>
+                <div style="font-size:2rem;font-weight:700;color:var(--gold);">
+                  <%= user.disciplineScore || 0 %>/100
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <% if (bounty.submissions && bounty.submissions.length > 0) { %>
+        <div class="card" style="margin-top:2px;">
+          <div class="card-header">
+            <h2>Submissions (<%= bounty.submissionsCount %>)</h2>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:12px;">
+            <% bounty.submissions.forEach(function(sub) { %>
+              <div style="background:var(--black-surface);border:1px solid var(--border);padding:16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+                <div style="display:flex;gap:12px;align-items:center;">
+                  <% if (sub.submitter && sub.submitter.avatarUrl) { %>
+                    <img src="<%= sub.submitter.avatarUrl %>"
+                      style="width:36px;height:36px;border-radius:50%;object-fit:cover;">
+                  <% } %>
+                  <div>
+                    <div style="font-weight:600;font-size:0.9rem;">
+                      <%= sub.submitter ? sub.submitter.username : 'Anonymous' %>
+                    </div>
+                    <div style="font-size:0.78rem;color:var(--ash);">
+                      <%= sub.summary ? sub.summary.substring(0, 60) : '' %>
+                    </div>
+                  </div>
+                </div>
+                <a href="<%= sub.submissionUrl %>" target="_blank" class="btn-outline btn-sm">
+                  View →
+                </a>
+              </div>
+            <% }); %>
+          </div>
+        </div>
+      <% } %>
+
+    <% } else { %>
+      <div class="card">
+        <div class="empty-state">
+          <div class="empty-icon">⚠️</div>
+          <p>Bounty not found.</p>
+          <a href="/za/bounties" class="btn-primary" style="margin-top:20px;display:inline-block;">
+            Back to Bounties
+          </a>
+        </div>
+      </div>
+    <% } %>
+
+  </main>
+
+  <%- include('partials/footer') %>
+
+</body>
+</html>
