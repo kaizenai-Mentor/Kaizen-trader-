@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('partials/head') %>
+  <title>KAIZEN — Services</title>
+</head>
+<body class="app-page">
+  <%- include('partials/navbar') %>
+  <main class="app-main">
+    <div class="page-header">
+      <div>
+        <h1>Services</h1>
+        <p class="page-sub">What Kaizen offers traders</p>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:2px;">
+      <div class="card card-gold">
+        <div class="card-header"><h2>Discipline Tracking</h2></div>
+        <p style="font-size:0.88rem;color:var(--text-secondary);line-height:1.8;">
+          Track your rule compliance across every session. Your Discipline Score (0-100)
+          is calculated from real behavioral data — not P&L.
+        </p>
+      </div>
+      <div class="card">
+        <div class="card-header"><h2>Trading Journal</h2></div>
+        <p style="font-size:0.88rem;color:var(--text-secondary);line-height:1.8;">
+          Log every session with asset, timeframe, emotion, direction, outcome,
+          and compliance data. Build a complete picture of your trading behavior.
+        </p>
+      </div>
+      <div class="card card-blue">
+        <div class="card-header"><h2>ZA Bounties</h2></div>
+        <p style="font-size:0.88rem;color:var(--text-secondary);line-height:1.8;">
+          Access live Zero Authority DAO bounties directly inside Kaizen.
+          Complete discipline challenges to earn on-chain reputation and STX rewards.
+        </p>
+      </div>
+      <div class="card">
+        <div class="card-header"><h2>On-Chain Reputation</h2></div>
+        <p style="font-size:0.88rem;color:var(--text-secondary);line-height:1.8;">
+          Your trading discipline is verified on-chain through Zero Authority DAO.
+          Build a reputation that follows you across the Web3 ecosystem.
+        </p>
+      </div>
+      <div class="card">
+        <div class="card-header"><h2>Chart Analysis — Phase 2</h2></div>
+        <p style="font-size:0.88rem;color:var(--text-secondary);line-height:1.8;">
+          Full TradingView-style charting with drawing tools and real-time
+          Bybit market data. Coming in Phase 2.
+        </p>
+      </div>
+      <div class="card">
+        <div class="card-header"><h2>AI Mentor — Phase 2</h2></div>
+        <p style="font-size:0.88rem;color:var(--text-secondary);line-height:1.8;">
+          Kaizen AI watches your chart analysis, learns your trading style,
+          and enforces the rules you defined. Silent, firm, supportive.
+        </p>
+      </div>
+    </div>
+  </main>
+  <%- include('partials/footer') %>
+  <script src="/js/app.js"></script>
+</body>
+</html>
