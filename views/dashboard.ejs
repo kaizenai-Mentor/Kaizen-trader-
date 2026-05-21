@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <%- include('partials/head') %>
-  <title>Kaizen — Dashboard</title>
+  <title>KAIZEN — Dashboard</title>
 </head>
 <body class="app-page">
 
@@ -10,25 +10,22 @@
 
   <main class="app-main">
 
-    <!-- WELCOME ROW -->
     <div class="page-header">
       <div>
-        <h1>Welcome back, <em><%= user.username %></em></h1>
+        <h1>Welcome back, <%= user.username %></h1>
         <p class="page-sub">Here is your discipline overview</p>
       </div>
       <a href="/za/bounties" class="btn-outline">View Bounties</a>
     </div>
 
-    <!-- STATS ROW -->
     <div class="stats-row">
-
       <div class="stat-card">
         <div class="stat-card-label">Discipline Score</div>
         <div class="stat-card-val gold">
           <%= disciplineScore %><span>/100</span>
         </div>
         <div class="score-bar">
-          <div class="score-fill" style="width: <%= disciplineScore %>%"></div>
+          <div class="score-fill" style="width:<%= disciplineScore %>%"></div>
         </div>
       </div>
 
@@ -37,166 +34,78 @@
         <div class="stat-card-val gold">
           <%= user.streak %><span> days</span>
         </div>
-        <div class="stat-card-sub">🔥 Keep it going</div>
+        <div class="stat-card-sub">Keep it going</div>
       </div>
 
       <div class="stat-card">
         <div class="stat-card-label">Total Sessions</div>
-        <div class="stat-card-val blue">
+        <div class="stat-card-val">
           <%= totalSessions %>
         </div>
-        <div class="stat-card-sub">📊 Sessions logged</div>
+        <div class="stat-card-sub">Sessions logged</div>
       </div>
 
       <div class="stat-card">
         <div class="stat-card-label">ZA Reputation</div>
-        <div class="stat-card-val blue">
-          <a href="/za/reputation/<%= user.id %>" class="rep-link">View →</a>
+        <div class="stat-card-val">
+          <a href="/za/reputation/<%= user.id %>" class="rep-link">View</a>
         </div>
-        <div class="stat-card-sub">🏅 On-chain score</div>
+        <div class="stat-card-sub">On-chain score</div>
       </div>
-
     </div>
 
-    <!-- MAIN GRID -->
-    <div class="main-grid">
-
-      <!-- LOG NEW SESSION -->
-      <div class="card">
-        <div class="card-header">
-          <h2>Log Session</h2>
-          <span class="card-badge">New Entry</span>
-        </div>
-
-        <form action="/dashboard/journal" method="POST" class="journal-form">
-
-          <div class="form-row">
-            <div class="form-group">
-              <label class="form-label">Asset</label>
-              <input type="text" name="asset" class="form-input"
-                placeholder="BTC/USDT" value="BTC/USDT">
-            </div>
-            <div class="form-group">
-              <label class="form-label">Timeframe</label>
-              <select name="timeframe" class="form-input">
-                <option value="1m">1m</option>
-                <option value="5m">5m</option>
-                <option value="15m">15m</option>
-                <option value="1H" selected>1H</option>
-                <option value="4H">4H</option>
-                <option value="1D">1D</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="form-row">
-            <div class="form-group">
-              <label class="form-label">Direction</label>
-              <select name="direction" class="form-input">
-                <option value="Long">Long</option>
-                <option value="Short">Short</option>
-                <option value="No Trade">No Trade</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Outcome</label>
-              <select name="outcome" class="form-input">
-                <option value="Win">Win</option>
-                <option value="Loss">Loss</option>
-                <option value="Breakeven">Breakeven</option>
-                <option value="Pending">Pending</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="form-row">
-            <div class="form-group">
-              <label class="form-label">Emotion</label>
-              <select name="emotion" class="form-input">
-                <option value="Neutral">Neutral</option>
-                <option value="Confident">Confident</option>
-                <option value="Fear">Fear</option>
-                <option value="Greed">Greed</option>
-                <option value="Anxious">Anxious</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Session Score (0-100)</label>
-              <input type="number" name="sessionScore"
-                class="form-input" min="0" max="100" value="50">
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">Notes</label>
-            <textarea name="notes" class="form-input form-textarea"
-              placeholder="What did you observe? Did you follow your rules?"
-              required></textarea>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">Did you follow your rules?</label>
-            <select name="ruleCompliance" class="form-input">
-              <option value="true">Yes — Full Compliance</option>
-              <option value="false">No — Rules Violated</option>
-            </select>
-          </div>
-
-          <button type="submit" class="btn-primary btn-full">
-            Log Session →
-          </button>
-
-        </form>
+    <!-- RECENT SESSIONS -->
+    <div class="card">
+      <div class="card-header">
+        <h2>Recent Sessions</h2>
+        <a href="/dashboard/journal" class="card-link">View All</a>
       </div>
 
-      <!-- RECENT SESSIONS -->
-      <div class="card">
-        <div class="card-header">
-          <h2>Recent Sessions</h2>
-          <a href="/dashboard/journal" class="card-link">View All →</a>
+      <% if (journals.length === 0) { %>
+        <div class="empty-state">
+          <div class="empty-icon" style="font-size:2rem;">—</div>
+          <p>No sessions logged yet.</p>
+          <p>Go to the Journal section to log your first session.</p>
+          <a href="/dashboard/journal" class="btn-primary"
+            style="margin-top:20px;display:inline-block;">
+            Open Journal
+          </a>
         </div>
-
-        <% if (journals.length === 0) { %>
-          <div class="empty-state">
-            <div class="empty-icon">📓</div>
-            <p>No sessions logged yet.</p>
-            <p>Log your first session to start tracking your discipline.</p>
-          </div>
-        <% } else { %>
-          <div class="journal-list">
-            <% journals.forEach(journal => { %>
-              <div class="journal-item">
-                <div class="journal-item-top">
-                  <span class="journal-asset"><%= journal.asset %></span>
-                  <span class="journal-score <%= journal.ruleCompliance ? 'score-good' : 'score-bad' %>">
-                    <%= journal.sessionScore %>/100
-                  </span>
-                </div>
-                <div class="journal-item-mid">
-                  <span class="journal-tag"><%= journal.timeframe %></span>
-                  <span class="journal-tag"><%= journal.direction %></span>
-                  <span class="journal-tag <%= journal.outcome === 'Win' ? 'tag-win' : journal.outcome === 'Loss' ? 'tag-loss' : '' %>">
-                    <%= journal.outcome %>
-                  </span>
-                  <span class="journal-tag"><%= journal.emotion %></span>
-                </div>
-                <p class="journal-notes"><%= journal.notes.substring(0, 100) %><%= journal.notes.length > 100 ? '...' : '' %></p>
-                <div class="journal-compliance">
-                  <% if (journal.ruleCompliance) { %>
-                    <span class="compliance-good">✓ Rules Followed</span>
-                  <% } else { %>
-                    <span class="compliance-bad">✗ Rules Violated</span>
-                  <% } %>
-                  <span class="journal-date">
-                    <%= new Date(journal.createdAt).toLocaleDateString() %>
-                  </span>
-                </div>
+      <% } else { %>
+        <div class="journal-list">
+          <% journals.forEach(function(journal) { %>
+            <div class="journal-item">
+              <div class="journal-item-top">
+                <span class="journal-asset"><%= journal.asset %></span>
+                <span class="journal-score <%= journal.ruleCompliance ? 'score-good' : 'score-bad' %>">
+                  <%= journal.sessionScore %>/100
+                </span>
               </div>
-            <% }); %>
-          </div>
-        <% } %>
-
-      </div>
+              <div class="journal-item-mid">
+                <span class="journal-tag"><%= journal.timeframe %></span>
+                <span class="journal-tag"><%= journal.direction %></span>
+                <span class="journal-tag <%= journal.outcome === 'Win' ? 'tag-win' : journal.outcome === 'Loss' ? 'tag-loss' : '' %>">
+                  <%= journal.outcome %>
+                </span>
+                <span class="journal-tag"><%= journal.emotion %></span>
+              </div>
+              <p class="journal-notes">
+                <%= journal.notes.substring(0, 100) %><%= journal.notes.length > 100 ? '...' : '' %>
+              </p>
+              <div class="journal-compliance">
+                <% if (journal.ruleCompliance) { %>
+                  <span class="compliance-good">Rules Followed</span>
+                <% } else { %>
+                  <span class="compliance-bad">Rules Violated</span>
+                <% } %>
+                <span class="journal-date">
+                  <%= new Date(journal.createdAt).toLocaleDateString() %>
+                </span>
+              </div>
+            </div>
+          <% }); %>
+        </div>
+      <% } %>
     </div>
 
   </main>
