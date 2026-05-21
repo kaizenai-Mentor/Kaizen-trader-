@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('partials/head') %>
+  <title>Kaizen — Reputation</title>
+</head>
+<body class="app-page">
+
+  <%- include('partials/navbar') %>
+
+  <main class="app-main">
+
+    <div class="page-header">
+      <div>
+        <h1>Your <em>Reputation</em></h1>
+        <p class="page-sub">Kaizen Discipline Score + Zero Authority DAO on-chain reputation</p>
+      </div>
+      <a href="/dashboard" class="btn-outline">← Dashboard</a>
+    </div>
+
+    <% if (error) { %>
+      <div class="alert alert-error"><%= error %></div>
+    <% } %>
+
+    <div class="rep-grid">
+
+      <!-- KAIZEN SCORE -->
+      <div class="card card-gold">
+        <div class="card-header">
+          <h2>Kaizen Discipline Score</h2>
+          <span class="card-badge">In-App</span>
+        </div>
+        <div class="rep-score-big">
+          <%= user.disciplineScore || 0 %>
+          <span>/100</span>
+        </div>
+        <div class="score-bar">
+          <div class="score-fill"
+            style="width: <%= user.disciplineScore || 0 %>%">
+          </div>
+        </div>
+        <div class="rep-tier">
+          <% if (user.disciplineScore >= 80) { %>
+            <span class="tier-badge tier-elite">🥇 Elite Trader</span>
+          <% } else if (user.disciplineScore >= 60) { %>
+            <span class="tier-badge tier-consistent">🔵 Consistent</span>
+          <% } else if (user.disciplineScore >= 40) { %>
+            <span class="tier-badge tier-building">🟡 Building</span>
+          <% } else { %>
+            <span class="tier-badge tier-developing">🔴 Developing</span>
+          <% } %>
+        </div>
+        <p class="rep-desc">
+          Your discipline score is calculated from rule compliance,
+          session consistency, and emotional control across all your
+          logged trading sessions.
+        </p>
+      </div>
+
+      <!-- ZA REPUTATION -->
+      <div class="card card-blue">
+        <div class="card-header">
+          <h2>Zero Authority Reputation</h2>
+          <span class="card-badge">On-Chain</span>
+        </div>
+
+        <% if (reputation && Object.keys(reputation).length > 0) { %>
+          <div class="rep-score-big blue">
+            <%= reputation.score || reputation.points || '—' %>
+          </div>
+          <div class="rep-details">
+            <% if (reputation.badges && reputation.badges.length > 0) { %>
+              <h4>Badges Earned</h4>
+              <div class="badges-row">
+                <% reputation.badges.forEach(badge => { %>
+                  <span class="za-badge"><%= badge.name || badge %></span>
+                <% }); %>
+              </div>
+            <% } %>
+            <% if (reputation.rank) { %>
+              <div class="rep-stat">
+                <span class="rep-stat-label">Rank</span>
+                <span class="rep-stat-val"><%= reputation.rank %></span>
+              </div>
+            <% } %>
+          </div>
+        <% } else { %>
+          <div class="empty-state">
+            <div class="empty-icon">🏅</div>
+            <p>No ZA reputation data found.</p>
+            <p>Connect your Zero Authority DAO account to see your on-chain reputation here.</p>
+            <a href="https://zeroauthoritydao.com" target="_blank" class="btn-primary">
+              Visit Zero Authority →
+            </a>
+          </div>
+        <% } %>
+
+      </div>
+    </div>
+
+  </main>
+
+  <%- include('partials/footer') %>
+
+</body>
+</html>

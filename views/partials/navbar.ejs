@@ -1,0 +1,15 @@
+<nav class="navbar">
+  <a href="/" class="nav-logo">改 Kaizen</a>
+  <div class="nav-links">
+    <% if (user) { %>
+      <a href="/dashboard">Dashboard</a>
+      <a href="/dashboard/journal">Journal</a>
+      <a href="/za/bounties">Bounties</a>
+      <a href="/za/reputation/<%= user.id %>">Reputation</a>
+      <a href="/auth/logout" class="btn-logout">Logout</a>
+    <% } else { %>
+      <a href="/auth/login">Login</a>
+      <a href="/auth/register" class="btn-register">Get Started</a>
+    <% } %>
+  </div>
+</nav>

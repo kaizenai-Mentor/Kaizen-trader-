@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('partials/head') %>
+  <title>Kaizen — Discipline Challenges</title>
+</head>
+<body class="app-page">
+
+  <%- include('partials/navbar') %>
+
+  <main class="app-main">
+
+    <div class="page-header">
+      <div>
+        <h1>Discipline <em>Challenges</em></h1>
+        <p class="page-sub">Powered by Zero Authority DAO — earn on-chain reputation</p>
+      </div>
+      <a href="/dashboard" class="btn-outline">← Dashboard</a>
+    </div>
+
+    <% if (error) { %>
+      <div class="alert alert-error"><%= error %></div>
+    <% } %>
+
+    <% if (bounties.length === 0 && !error) { %>
+      <div class="card">
+        <div class="empty-state">
+          <div class="empty-icon">🏆</div>
+          <p>No bounties available right now.</p>
+          <p>Check back soon for new discipline challenges.</p>
+        </div>
+      </div>
+    <% } else { %>
+      <div class="bounties-grid">
+        <% bounties.forEach(bounty => { %>
+          <div class="bounty-card">
+            <div class="bounty-card-top">
+              <span class="bounty-badge">ZA Challenge</span>
+              <span class="bounty-reward">
+                <%= bounty.reward || bounty.amount || 'Reputation' %>
+              </span>
+            </div>
+            <h3 class="bounty-title">
+              <%= bounty.title || bounty.name || 'Discipline Challenge' %>
+            </h3>
+            <p class="bounty-desc">
+              <%= bounty.description ? bounty.description.substring(0, 120) + '...' : 'Complete this challenge to earn ZA reputation points.' %>
+            </p>
+            <div class="bounty-footer">
+              <span class="bounty-status">
+                <%= bounty.status || 'Open' %>
+              </span>
+              <a href="#" class="btn-outline btn-sm">View Details</a>
+            </div>
+          </div>
+        <% }); %>
+      </div>
+    <% } %>
+
+  </main>
+
+  <%- include('partials/footer') %>
+
+</body>
+</html>
