@@ -63,6 +63,19 @@ app.use('/auth', authRoutes);
 app.use('/dashboard', dashboardRoutes);
 app.use('/za', zaRoutes);
 
+// Info pages
+app.get('/about', (req, res) => {
+  res.render('about', { user: req.session.user || null });
+});
+
+app.get('/services', (req, res) => {
+  res.render('services', { user: req.session.user || null });
+});
+
+app.get('/support', (req, res) => {
+  res.render('support', { user: req.session.user || null });
+});
+
 // Home route
 app.get('/', (req, res) => {
   if (req.session.user) {
