@@ -1,16 +1,216 @@
+<!-- POPUP OVERLAY -->
+<div class="popup-overlay" id="popupOverlay" onclick="closePopup()"></div>
+
+<!-- SIDE POPUP MENU -->
+<div class="nav-popup" id="navPopup">
+  <div class="popup-header">
+    <span class="popup-logo">改 KAIZEN</span>
+    <button class="popup-close" onclick="closePopup()">×</button>
+  </div>
+
+  <% if (user) { %>
+    <!-- NAVIGATION SECTION -->
+    <div class="popup-section">
+      <div class="popup-section-label">Navigation</div>
+      <a href="/dashboard" class="popup-item">
+        <span class="popup-item-icon">▪</span> Dashboard
+      </a>
+      <a href="/dashboard/chart" class="popup-item">
+        <span class="popup-item-icon">▪</span> Chart
+      </a>
+      <a href="/dashboard/journal" class="popup-item">
+        <span class="popup-item-icon">▪</span> Journal
+      </a>
+      <a href="/za/bounties" class="popup-item">
+        <span class="popup-item-icon">▪</span> Bounties
+      </a>
+      <a href="/za/reputation/<%= user.id %>" class="popup-item">
+        <span class="popup-item-icon">▪</span> Reputation
+      </a>
+    </div>
+
+    <!-- SETTINGS SECTION -->
+    <div class="popup-section">
+      <div class="popup-section-label">Settings</div>
+      <button class="popup-item" onclick="openModal('themeModal')">
+        <span class="popup-item-icon">▪</span> Dark / Light Mode
+      </button>
+      <button class="popup-item" onclick="openModal('securityModal')">
+        <span class="popup-item-icon">▪</span> Security
+      </button>
+      <button class="popup-item" onclick="openModal('languageModal')">
+        <span class="popup-item-icon">▪</span> Language
+      </button>
+    </div>
+
+    <!-- INFO SECTION -->
+    <div class="popup-section">
+      <div class="popup-section-label">Info</div>
+      <a href="/support" class="popup-item">
+        <span class="popup-item-icon">▪</span> Support
+      </a>
+      <a href="/about" class="popup-item">
+        <span class="popup-item-icon">▪</span> About Kaizen
+      </a>
+      <a href="/services" class="popup-item">
+        <span class="popup-item-icon">▪</span> Services
+      </a>
+    </div>
+
+    <div class="popup-section">
+      <a href="/auth/logout" class="popup-item" style="color:var(--red);">
+        <span class="popup-item-icon">▪</span> Log Out
+      </a>
+    </div>
+
+    <!-- USER FOOTER -->
+    <div class="popup-footer">
+      <div class="popup-user">
+        <div class="popup-avatar">
+          <%= user.username.charAt(0).toUpperCase() %>
+        </div>
+        <div>
+          <div class="popup-username"><%= user.username %></div>
+          <div class="popup-user-email"><%= user.email %></div>
+        </div>
+      </div>
+      <div class="popup-socials">
+        <a href="https://x.com/KaizenTradeAI"
+          target="_blank" class="popup-social-link" title="X (Twitter)">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+
+  <% } else { %>
+    <!-- NOT LOGGED IN -->
+    <div class="popup-section">
+      <div class="popup-section-label">Get Started</div>
+    </div>
+    <div class="popup-auth-btns">
+      <a href="/auth/login" class="btn-primary btn-full">Log In</a>
+      <a href="/auth/register" class="btn-outline btn-full">Sign Up</a>
+    </div>
+
+    <div class="popup-section">
+      <div class="popup-section-label">Info</div>
+      <a href="/about" class="popup-item">
+        <span class="popup-item-icon">▪</span> About Kaizen
+      </a>
+      <a href="/services" class="popup-item">
+        <span class="popup-item-icon">▪</span> Services
+      </a>
+      <a href="/support" class="popup-item">
+        <span class="popup-item-icon">▪</span> Support
+      </a>
+    </div>
+
+    <div class="popup-footer">
+      <div class="popup-socials">
+        <a href="https://x.com/KaizenTradeAI"
+          target="_blank" class="popup-social-link" title="X (Twitter)">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+  <% } %>
+</div>
+
+<!-- MAIN NAVBAR -->
 <nav class="navbar">
-  <a href="/" class="nav-logo">改 Kaizen</a>
-  <div class="nav-links">
-    <% if (user) { %>
-      <a href="/dashboard">Dashboard</a>
-      <a href="/dashboard/journal">Journal</a>
-      <a href="/dashboard/chart">Chart</a>
-      <a href="/za/bounties">Bounties</a>
-      <a href="/za/reputation/<%= user.id %>">Reputation</a>
-      <a href="/auth/logout" class="btn-logout">Logout</a>
-    <% } else { %>
-      <a href="/auth/login">Login</a>
-      <a href="/auth/register" class="btn-register">Get Started</a>
-    <% } %>
+  <a href="/" class="nav-logo">改 KAIZEN</a>
+  <div class="nav-right">
+    <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
+      <span id="themeIcon">◐</span>
+    </button>
+    <button class="three-dot-btn" onclick="togglePopup()" title="Menu">
+      <span></span><span></span><span></span>
+    </button>
   </div>
 </nav>
+
+<!-- SECURITY MODAL -->
+<div class="modal-overlay" id="securityModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Security</h3>
+      <button class="modal-close" onclick="closeModal('securityModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="security-section">
+        <h4>Change Password</h4>
+        <form action="/auth/change-password" method="POST"
+          style="display:flex;flex-direction:column;gap:12px;">
+          <div class="form-group">
+            <label class="form-label">Current Password</label>
+            <input type="password" name="currentPassword"
+              class="form-input" placeholder="Enter current password">
+          </div>
+          <div class="form-group">
+            <label class="form-label">New Password</label>
+            <input type="password" name="newPassword"
+              class="form-input" placeholder="Enter new password">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Confirm New Password</label>
+            <input type="password" name="confirmPassword"
+              class="form-input" placeholder="Confirm new password">
+          </div>
+          <button type="submit" class="btn-primary">Update Password</button>
+        </form>
+      </div>
+      <div class="security-section" style="margin-top:24px;padding-top:24px;border-top:1px solid var(--border);">
+        <h4>Two-Factor Authentication</h4>
+        <p style="font-size:0.85rem;color:var(--ash);margin-bottom:14px;">
+          Add an extra layer of security to your account.
+        </p>
+        <button class="btn-outline btn-full">Enable 2FA — Coming Soon</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- LANGUAGE MODAL -->
+<div class="modal-overlay" id="languageModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Language</h3>
+      <button class="modal-close" onclick="closeModal('languageModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="lang-grid">
+        <div class="lang-option active" onclick="setLanguage('en', this)">
+          <span>EN</span> English
+        </div>
+        <div class="lang-option" onclick="setLanguage('fr', this)">
+          <span>FR</span> French
+        </div>
+        <div class="lang-option" onclick="setLanguage('es', this)">
+          <span>ES</span> Spanish
+        </div>
+        <div class="lang-option" onclick="setLanguage('pt', this)">
+          <span>PT</span> Portuguese
+        </div>
+        <div class="lang-option" onclick="setLanguage('de', this)">
+          <span>DE</span> German
+        </div>
+        <div class="lang-option" onclick="setLanguage('ar', this)">
+          <span>AR</span> Arabic
+        </div>
+        <div class="lang-option" onclick="setLanguage('zh', this)">
+          <span>ZH</span> Chinese
+        </div>
+        <div class="lang-option" onclick="setLanguage('ja', this)">
+          <span>JA</span> Japanese
+        </div>
+      </div>
+      <p style="font-size:0.75rem;color:var(--ash);margin-top:16px;">
+        Full translation coming in Phase 2. English is the current supported language.
+      </p>
+    </div>
+  </div>
+</div>
