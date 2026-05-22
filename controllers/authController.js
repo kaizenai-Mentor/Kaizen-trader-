@@ -240,10 +240,78 @@ const deleteAccount = async (req, res) => {
   }
 };
 
+// POST /auth/onboarding — handle questions one at a time
+const handleOnboarding = async (req, res) => {
+  try {
+    const { questionNum } = req.body;
+    const currentQ = parseInt(questionNum);
+
+    if (!req.session.onboarding) {
+      req.session.onboarding = {};
+    }
+
+    // Save current question answer
+    if (currentQ === 1) {
+      req.session.onboarding.riskPerTrade = req.body.riskPerTrade;
+      req.session.onboarding.dailyDrawdown = req.body.dailyDrawdown;
+    } else if (currentQ === 2) {
+      req.session.onboarding.tradingEdge = req.body.tradingEdge;
+    } else if (currentQ === 3) {
+      req.session.onboarding.entryRule = req.body.entryRule;
+      req.session.onboarding.stopLossRule = req.body.stopLossRule;
+      req.session.onboarding.takeProfitRule = req.body.takeProfitRule;
+    } else if (currentQ === 4) {
+      const triggers = req.body.emotionalTriggers;
+      req.session.onboarding.emotionalTriggers = Array.isArray(triggers)
+        ? triggers.join(', ')
+        : triggers || '';
+    } else if (currentQ === 5) {
+      const markets = req.body.markets;
+      req.session.onboarding.maxDailyTrades = req.body.maxDailyTrades;
+      req.session.onboarding.markets = Array.isArray(markets)
+        ? markets.join(', ')
+        : markets || '';
+      req.session.onboarding.maxPositionSize = req.body.maxPositionSize;
+
+      // All questions done — save to user
+      await User.findByIdAndUpdate(req.session.user.id, {
+        tradingStyle: {
+          riskPerTrade: req.session.onboarding.riskPerTrade,
+          dailyDrawdown: req.session.onboarding.dailyDrawdown,
+          tradingEdge: req.session.onboarding.tradingEdge,
+          entryRule: req.session.onboarding.entryRule,
+          stopLossRule: req.session.onboarding.stopLossRule,
+          takeProfitRule: req.session.onboarding.takeProfitRule,
+          emotionalTriggers: req.session.onboarding.emotionalTriggers,
+          maxDailyTrades: req.session.onboarding.maxDailyTrades,
+          markets: req.session.onboarding.markets,
+          maxPositionSize: req.session.onboarding.maxPositionSize
+        }
+      });
+
+      delete req.session.onboarding;
+      return res.redirect('/dashboard');
+    }
+
+    // Show next question
+    const nextQ = currentQ + 1;
+    return res.render('register', {
+      error: null,
+      step: 'questions',
+      questionNum: nextQ
+    });
+
+  } catch (error) {
+    console.error('Onboarding error:', error);
+    res.redirect('/dashboard');
+  }
+};
+
 module.exports = {
   getRegister,
   postRegister,
   verifyOTP,
+  handleOnboarding,
   getLogin,
   postLogin,
   logout,
