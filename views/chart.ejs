@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <%- include('partials/head') %>
-  <title>Kaizen — Chart</title>
+  <title>KAIZEN — Chart</title>
 </head>
 <body class="app-page">
 
@@ -12,32 +12,34 @@
 
     <div class="page-header">
       <div>
-        <h1>Live <em>Charts</em></h1>
+        <h1 style="color:var(--gold);">Live Charts</h1>
         <p class="page-sub">Real-time market analysis — Coming in Phase 2</p>
       </div>
       <a href="/dashboard" class="btn-outline">← Dashboard</a>
     </div>
 
     <div class="card" style="text-align:center;padding:80px 40px;">
-      <div style="font-size:4rem;margin-bottom:24px;">📈</div>
-      <h2 style="margin-bottom:16px;font-size:1.5rem;">
-        Chart Module — <em>Phase 2</em>
+      <div style="font-size:3rem;margin-bottom:24px;color:var(--gold);font-family:var(--font-mono);">
+        [CHART]
+      </div>
+      <h2 style="margin-bottom:16px;font-size:1.4rem;color:var(--gold);">
+        Chart Module — Phase 2
       </h2>
-      <p style="color:#A8A09A;max-width:500px;margin:0 auto 32px;">
-        Full TradingView-style charting with drawing tools, 
-        real-time Bybit data, and Kaizen AI pop-up analysis 
-        is coming in Phase 2. 
+      <p style="color:var(--text-secondary);max-width:500px;margin:0 auto 16px;font-size:0.9rem;line-height:1.8;">
+        Full TradingView-style charting with drawing tools,
+        real-time Bybit data, and Kaizen AI pop-up analysis
+        is coming in Phase 2.
       </p>
-      <p style="color:#A8A09A;max-width:500px;margin:0 auto 32px;">
-        For now, log your sessions manually through the 
-        Dashboard and let Kaizen track your discipline.
+      <p style="color:var(--text-secondary);max-width:500px;margin:0 auto 32px;font-size:0.9rem;line-height:1.8;">
+        For now, log your sessions manually through the
+        Journal section and let Kaizen track your discipline.
       </p>
-      <a href="/dashboard" class="btn-primary">Go to Dashboard →</a>
+      <a href="/dashboard/journal" class="btn-primary">Open Journal</a>
     </div>
 
   </main>
 
   <%- include('partials/footer') %>
-
+  <script src="/js/app.js"></script>
 </body>
 </html>
