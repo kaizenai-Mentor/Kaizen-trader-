@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <%- include('partials/head') %>
-  <title>Kaizen — Reputation</title>
+  <title>KAIZEN — Reputation</title>
 </head>
 <body class="app-page">
 
@@ -12,7 +12,7 @@
 
     <div class="page-header">
       <div>
-        <h1>Your <em>Reputation</em></h1>
+        <h1 style="color:var(--gold);">Your Reputation</h1>
         <p class="page-sub">Kaizen Discipline Score + Zero Authority DAO on-chain reputation</p>
       </div>
       <a href="/dashboard" class="btn-outline">← Dashboard</a>
@@ -36,25 +36,35 @@
         </div>
         <div class="score-bar">
           <div class="score-fill"
-            style="width: <%= user.disciplineScore || 0 %>%">
-          </div>
+            style="width:<%= user.disciplineScore || 0 %>%"></div>
         </div>
-        <div class="rep-tier">
-          <% if (user.disciplineScore >= 80) { %>
-            <span class="tier-badge tier-elite">🥇 Elite Trader</span>
-          <% } else if (user.disciplineScore >= 60) { %>
-            <span class="tier-badge tier-consistent">🔵 Consistent</span>
-          <% } else if (user.disciplineScore >= 40) { %>
-            <span class="tier-badge tier-building">🟡 Building</span>
+        <div class="rep-tier" style="margin-top:16px;">
+          <% if ((user.disciplineScore || 0) >= 80) { %>
+            <span class="tier-badge tier-elite">Elite Trader</span>
+          <% } else if ((user.disciplineScore || 0) >= 60) { %>
+            <span class="tier-badge tier-consistent">Consistent</span>
+          <% } else if ((user.disciplineScore || 0) >= 40) { %>
+            <span class="tier-badge tier-building">Building</span>
           <% } else { %>
-            <span class="tier-badge tier-developing">🔴 Developing</span>
+            <span class="tier-badge tier-developing">Developing</span>
           <% } %>
         </div>
         <p class="rep-desc">
           Your discipline score is calculated from rule compliance,
-          session consistency, and emotional control across all your
+          session consistency, and emotional control across all
           logged trading sessions.
         </p>
+
+        <!-- DELETE ACCOUNT -->
+        <div style="margin-top:28px;padding-top:20px;border-top:1px solid var(--border);">
+          <div style="font-family:var(--font-mono);font-size:0.62rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--red);margin-bottom:10px;">
+            Danger Zone
+          </div>
+          <button onclick="openModal('deleteModal')" class="btn-outline btn-full"
+            style="border-color:rgba(248,113,113,0.3);color:var(--red);font-size:0.82rem;">
+            Delete Account
+          </button>
+        </div>
       </div>
 
       <!-- ZA REPUTATION -->
@@ -72,7 +82,7 @@
             <% if (reputation.badges && reputation.badges.length > 0) { %>
               <h4>Badges Earned</h4>
               <div class="badges-row">
-                <% reputation.badges.forEach(badge => { %>
+                <% reputation.badges.forEach(function(badge) { %>
                   <span class="za-badge"><%= badge.name || badge %></span>
                 <% }); %>
               </div>
@@ -85,12 +95,15 @@
             <% } %>
           </div>
         <% } else { %>
-          <div class="empty-state">
-            <div class="empty-icon">🏅</div>
-            <p>No ZA reputation data found.</p>
-            <p>Connect your Zero Authority DAO account to see your on-chain reputation here.</p>
-            <a href="https://zeroauthoritydao.com" target="_blank" class="btn-primary">
-              Visit Zero Authority →
+          <div class="empty-state" style="padding:32px 0;">
+            <p style="margin-bottom:8px;">No ZA reputation data found.</p>
+            <p style="margin-bottom:24px;font-size:0.82rem;">
+              Connect your Zero Authority DAO account to display
+              your on-chain reputation here alongside your Kaizen score.
+            </p>
+            <a href="https://zeroauthoritydao.com"
+              target="_blank" class="btn-primary">
+              Visit Zero Authority
             </a>
           </div>
         <% } %>
@@ -100,7 +113,39 @@
 
   </main>
 
-  <%- include('partials/footer') %>
+  <!-- DELETE ACCOUNT MODAL -->
+  <div class="modal-overlay" id="deleteModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Delete Account</h3>
+        <button class="modal-close" onclick="closeModal('deleteModal')">×</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size:0.9rem;color:var(--text-secondary);line-height:1.7;margin-bottom:16px;">
+          This action is permanent and cannot be undone. All your journal entries,
+          discipline scores, and account data will be deleted immediately.
+        </p>
+        <div style="background:rgba(248,113,113,0.06);border:1px solid rgba(248,113,113,0.2);padding:14px;margin-bottom:20px;">
+          <p style="font-size:0.82rem;color:var(--red);">
+            Deleting your account will permanently remove all your data from our servers.
+          </p>
+        </div>
+        <form action="/auth/delete-account" method="POST">
+          <button type="submit" class="btn-primary btn-full"
+            style="background:var(--red);color:var(--white);">
+            Yes, Delete My Account Permanently
+          </button>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button onclick="closeModal('deleteModal')" class="btn-outline">
+          Cancel — Keep My Account
+        </button>
+      </div>
+    </div>
+  </div>
 
+  <%- include('partials/footer') %>
+  <script src="/js/app.js"></script>
 </body>
 </html>
