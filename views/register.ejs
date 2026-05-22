@@ -11,231 +11,274 @@
   <main class="auth-main">
 
     <% if (step === 'otp') { %>
-      <!-- OTP VERIFICATION STEP -->
-      <div class="auth-card">
-        <div class="auth-header">
-          <div class="auth-logo">改</div>
-          <h1>Check Your Email</h1>
-          <p>We sent a 3-digit code to <strong><%= email %></strong></p>
+    <!-- ── STEP 2: OTP ── -->
+    <div class="auth-card">
+      <div class="auth-header">
+        <div class="auth-logo">改</div>
+        <h1>Check Your Email</h1>
+        <p>We sent a 3-digit code to<br><strong><%= email %></strong></p>
+      </div>
+      <% if (error) { %>
+        <div class="alert alert-error"><%= error %></div>
+      <% } %>
+      <form action="/auth/verify-otp" method="POST" class="auth-form">
+        <div class="otp-group">
+          <input type="text" name="otp1" class="otp-input"
+            maxlength="1" inputmode="numeric" required autofocus>
+          <input type="text" name="otp2" class="otp-input"
+            maxlength="1" inputmode="numeric" required>
+          <input type="text" name="otp3" class="otp-input"
+            maxlength="1" inputmode="numeric" required>
         </div>
+        <button type="submit" class="btn-primary btn-full">Verify</button>
+      </form>
+      <div class="auth-footer">
+        Wrong email? <a href="/auth/register">Go back</a>
+      </div>
+    </div>
 
-        <% if (error) { %>
-          <div class="alert alert-error"><%= error %></div>
+    <% } else if (step === 'questions') { %>
+    <!-- ── STEP 3: ONBOARDING QUESTIONS ONE AT A TIME ── -->
+    <div class="auth-card" style="max-width:500px;">
+      <div class="auth-header">
+        <div class="auth-logo">改</div>
+        <h1>Build Your Profile</h1>
+        <p>Question <%= questionNum %> of 5</p>
+      </div>
+
+      <!-- PROGRESS -->
+      <div class="onboarding-progress" style="margin-bottom:28px;">
+        <div class="progress-dot <%= questionNum >= 1 ? 'active' : '' %>"></div>
+        <div class="progress-dot <%= questionNum >= 2 ? 'active' : '' %>"></div>
+        <div class="progress-dot <%= questionNum >= 3 ? 'active' : '' %>"></div>
+        <div class="progress-dot <%= questionNum >= 4 ? 'active' : '' %>"></div>
+        <div class="progress-dot <%= questionNum >= 5 ? 'active' : '' %>"></div>
+      </div>
+
+      <% if (error) { %>
+        <div class="alert alert-error"><%= error %></div>
+      <% } %>
+
+      <form action="/auth/onboarding" method="POST" class="auth-form">
+
+        <% if (questionNum === 1) { %>
+          <div class="form-group">
+            <label class="form-label" style="font-size:0.85rem;color:var(--text-primary);text-transform:none;letter-spacing:0;margin-bottom:12px;">
+              What is your maximum risk per trade and maximum daily drawdown limit?
+            </label>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Max Risk Per Trade (%)</label>
+                <input type="number" name="riskPerTrade" class="form-input"
+                  placeholder="e.g. 1" min="0.1" max="100" step="0.1" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Daily Drawdown Limit (%)</label>
+                <input type="number" name="dailyDrawdown" class="form-input"
+                  placeholder="e.g. 3" min="0.1" max="100" step="0.1" required>
+              </div>
+            </div>
+          </div>
+
+        <% } else if (questionNum === 2) { %>
+          <div class="form-group">
+            <label class="form-label" style="font-size:0.85rem;color:var(--text-primary);text-transform:none;letter-spacing:0;margin-bottom:12px;">
+              What specific market setups or triggers form your trading edge?
+            </label>
+            <div class="radio-group">
+              <label class="radio-option">
+                <input type="radio" name="tradingEdge" value="Breakout" required>
+                <span>Breakout — Trading price breaking key levels</span>
+              </label>
+              <label class="radio-option">
+                <input type="radio" name="tradingEdge" value="Mean Reversion">
+                <span>Mean Reversion — Price returning to average</span>
+              </label>
+              <label class="radio-option">
+                <input type="radio" name="tradingEdge" value="Trend Following">
+                <span>Trend Following — Trading with the trend</span>
+              </label>
+              <label class="radio-option">
+                <input type="radio" name="tradingEdge" value="Price Action">
+                <span>Price Action — Candle patterns and structure</span>
+              </label>
+              <label class="radio-option">
+                <input type="radio" name="tradingEdge" value="Supply and Demand">
+                <span>Supply and Demand — Key zone trading</span>
+              </label>
+              <label class="radio-option">
+                <input type="radio" name="tradingEdge" value="Smart Money Concepts">
+                <span>Smart Money Concepts — ICT / institutional flow</span>
+              </label>
+            </div>
+          </div>
+
+        <% } else if (questionNum === 3) { %>
+          <div class="form-group">
+            <label class="form-label" style="font-size:0.85rem;color:var(--text-primary);text-transform:none;letter-spacing:0;margin-bottom:12px;">
+              What are your strict rules for entering and exiting trades?
+            </label>
+            <div class="form-group">
+              <label class="form-label">Describe your entry trigger</label>
+              <input type="text" name="entryRule" class="form-input"
+                placeholder="e.g. Break and retest of key level with confirmation" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Where do you place your stop loss?</label>
+              <input type="text" name="stopLossRule" class="form-input"
+                placeholder="e.g. Below the last swing low" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">How do you take profit?</label>
+              <input type="text" name="takeProfitRule" class="form-input"
+                placeholder="e.g. At next key level, minimum 1:2 RR" required>
+            </div>
+          </div>
+
+        <% } else if (questionNum === 4) { %>
+          <div class="form-group">
+            <label class="form-label" style="font-size:0.85rem;color:var(--text-primary);text-transform:none;letter-spacing:0;margin-bottom:12px;">
+              What emotional triggers or market conditions usually cause you to break discipline?
+            </label>
+            <p style="font-size:0.78rem;color:var(--ash);margin-bottom:12px;">Select all that apply</p>
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <label class="radio-option">
+                <input type="checkbox" name="emotionalTriggers" value="FOMO">
+                <span>FOMO — Fear of missing out on moves</span>
+              </label>
+              <label class="radio-option">
+                <input type="checkbox" name="emotionalTriggers" value="Revenge Trading">
+                <span>Revenge Trading — Trading aggressively after a loss</span>
+              </label>
+              <label class="radio-option">
+                <input type="checkbox" name="emotionalTriggers" value="Overtrading">
+                <span>Overtrading — Taking too many trades</span>
+              </label>
+              <label class="radio-option">
+                <input type="checkbox" name="emotionalTriggers" value="Moving Stop Loss">
+                <span>Moving Stop Loss — Widening SL when losing</span>
+              </label>
+              <label class="radio-option">
+                <input type="checkbox" name="emotionalTriggers" value="Cutting Winners Early">
+                <span>Cutting Winners Early — Closing profit trades too soon</span>
+              </label>
+              <label class="radio-option">
+                <input type="checkbox" name="emotionalTriggers" value="No Plan Trading">
+                <span>No Plan — Entering trades without a clear setup</span>
+              </label>
+            </div>
+          </div>
+
+        <% } else if (questionNum === 5) { %>
+          <div class="form-group">
+            <label class="form-label" style="font-size:0.85rem;color:var(--text-primary);text-transform:none;letter-spacing:0;margin-bottom:12px;">
+              What are your specific asset, volume, and daily trade count constraints?
+            </label>
+            <div class="form-group">
+              <label class="form-label">Maximum trades per day</label>
+              <input type="number" name="maxDailyTrades" class="form-input"
+                placeholder="e.g. 3" min="1" max="100" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Markets you trade</label>
+              <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;">
+                <label class="radio-option" style="padding:7px 12px;">
+                  <input type="checkbox" name="markets" value="Forex">
+                  <span>Forex</span>
+                </label>
+                <label class="radio-option" style="padding:7px 12px;">
+                  <input type="checkbox" name="markets" value="Crypto">
+                  <span>Crypto</span>
+                </label>
+                <label class="radio-option" style="padding:7px 12px;">
+                  <input type="checkbox" name="markets" value="Stocks">
+                  <span>Stocks</span>
+                </label>
+                <label class="radio-option" style="padding:7px 12px;">
+                  <input type="checkbox" name="markets" value="Indices">
+                  <span>Indices</span>
+                </label>
+                <label class="radio-option" style="padding:7px 12px;">
+                  <input type="checkbox" name="markets" value="Synthetic">
+                  <span>Synthetic</span>
+                </label>
+                <label class="radio-option" style="padding:7px 12px;">
+                  <input type="checkbox" name="markets" value="Commodities">
+                  <span>Commodities</span>
+                </label>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Maximum position size (% of account)</label>
+              <input type="number" name="maxPositionSize" class="form-input"
+                placeholder="e.g. 5" min="0.1" max="100" step="0.1" required>
+            </div>
+          </div>
         <% } %>
 
-        <form action="/auth/verify-otp" method="POST" class="auth-form">
-          <div class="otp-group">
-            <input type="text" name="otp1" class="otp-input"
-              maxlength="1" pattern="[0-9]" inputmode="numeric" required autofocus>
-            <input type="text" name="otp2" class="otp-input"
-              maxlength="1" pattern="[0-9]" inputmode="numeric" required>
-            <input type="text" name="otp3" class="otp-input"
-              maxlength="1" pattern="[0-9]" inputmode="numeric" required>
-          </div>
-          <button type="submit" class="btn-primary btn-full">
-            Verify Code
-          </button>
-        </form>
-
-        <div class="auth-footer">
-          Wrong email?
-          <a href="/auth/register">Go back</a>
-        </div>
-      </div>
+        <input type="hidden" name="questionNum" value="<%= questionNum %>">
+        <button type="submit" class="btn-primary btn-full">
+          <%= questionNum < 5 ? 'Next →' : 'Complete Setup' %>
+        </button>
+      </form>
+    </div>
 
     <% } else { %>
-      <!-- REGISTRATION FORM -->
-      <div class="auth-card" style="max-width:520px;">
-        <div class="auth-header">
-          <div class="auth-logo">改</div>
-          <h1>Join KAIZEN</h1>
-          <p>Start your discipline journey today</p>
-        </div>
-
-        <% if (error) { %>
-          <div class="alert alert-error"><%= error %></div>
-        <% } %>
-
-        <!-- GOOGLE SIGNUP -->
-        <a href="/auth/google" class="btn-google">
-          <svg width="18" height="18" viewBox="0 0 24 24">
-            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-          </svg>
-          Continue with Google
-        </a>
-
-        <div class="auth-divider"><span>or sign up with email</span></div>
-
-        <form action="/auth/register" method="POST" class="auth-form">
-
-          <!-- ACCOUNT DETAILS -->
-          <div style="font-family:var(--font-mono);font-size:0.62rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);margin-bottom:8px;">
-            Account Details
-          </div>
-
-          <div class="form-row">
-            <div class="form-group">
-              <label class="form-label">Username</label>
-              <input type="text" name="username" class="form-input"
-                placeholder="e.g. denniskaizen" required>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Email</label>
-              <input type="email" name="email" class="form-input"
-                placeholder="you@example.com" required>
-            </div>
-          </div>
-
-          <div class="form-row">
-            <div class="form-group">
-              <label class="form-label">Password</label>
-              <input type="password" name="password" class="form-input"
-                placeholder="Min 6 characters" required>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Confirm Password</label>
-              <input type="password" name="confirmPassword" class="form-input"
-                placeholder="Repeat password" required>
-            </div>
-          </div>
-
-          <!-- ONBOARDING QUESTIONS -->
-          <div style="border-top:1px solid var(--border);padding-top:20px;margin-top:8px;">
-            <div style="font-family:var(--font-mono);font-size:0.62rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);margin-bottom:16px;">
-              Trading Profile — 5 Quick Questions
-            </div>
-
-            <!-- Q1 -->
-            <div class="form-group">
-              <label class="form-label">1. Are you a Day Trader or Swing Trader?</label>
-              <div class="radio-group">
-                <label class="radio-option">
-                  <input type="radio" name="traderType" value="Day Trader" required>
-                  <span>Day Trader — I open and close trades within the same day</span>
-                </label>
-                <label class="radio-option">
-                  <input type="radio" name="traderType" value="Swing Trader">
-                  <span>Swing Trader — I hold trades for days or weeks</span>
-                </label>
-                <label class="radio-option">
-                  <input type="radio" name="traderType" value="Scalper">
-                  <span>Scalper — I take very short-term trades (minutes)</span>
-                </label>
-                <label class="radio-option">
-                  <input type="radio" name="traderType" value="Position Trader">
-                  <span>Position Trader — I hold trades for weeks or months</span>
-                </label>
-              </div>
-            </div>
-
-            <!-- Q2 -->
-            <div class="form-group">
-              <label class="form-label">2. How long have you been trading?</label>
-              <div class="radio-group">
-                <label class="radio-option">
-                  <input type="radio" name="experience" value="Beginner (0-1 year)" required>
-                  <span>Beginner — Less than 1 year</span>
-                </label>
-                <label class="radio-option">
-                  <input type="radio" name="experience" value="Developing (1-3 years)">
-                  <span>Developing — 1 to 3 years</span>
-                </label>
-                <label class="radio-option">
-                  <input type="radio" name="experience" value="Experienced (3-5 years)">
-                  <span>Experienced — 3 to 5 years</span>
-                </label>
-                <label class="radio-option">
-                  <input type="radio" name="experience" value="Professional (5+ years)">
-                  <span>Professional — 5+ years</span>
-                </label>
-              </div>
-            </div>
-
-            <!-- Q3 -->
-            <div class="form-group">
-              <label class="form-label">3. Which markets do you trade?</label>
-              <div class="radio-group">
-                <label class="radio-option">
-                  <input type="radio" name="markets" value="Crypto" required>
-                  <span>Crypto — Bitcoin, Ethereum, Altcoins</span>
-                </label>
-                <label class="radio-option">
-                  <input type="radio" name="markets" value="Forex">
-                  <span>Forex — Currency pairs</span>
-                </label>
-                <label class="radio-option">
-                  <input type="radio" name="markets" value="Stocks">
-                  <span>Stocks — Equities and indices</span>
-                </label>
-                <label class="radio-option">
-                  <input type="radio" name="markets" value="Multiple Markets">
-                  <span>Multiple — I trade more than one market</span>
-                </label>
-              </div>
-            </div>
-
-            <!-- Q4 -->
-            <div class="form-group">
-              <label class="form-label">4. What is your preferred timeframe?</label>
-              <div class="radio-group">
-                <label class="radio-option">
-                  <input type="radio" name="timeframes" value="1m-5m" required>
-                  <span>1m / 5m — Very short term</span>
-                </label>
-                <label class="radio-option">
-                  <input type="radio" name="timeframes" value="15m-1H">
-                  <span>15m / 1H — Short to medium term</span>
-                </label>
-                <label class="radio-option">
-                  <input type="radio" name="timeframes" value="4H-1D">
-                  <span>4H / 1D — Medium to long term</span>
-                </label>
-                <label class="radio-option">
-                  <input type="radio" name="timeframes" value="1W+">
-                  <span>1W+ — Long term</span>
-                </label>
-              </div>
-            </div>
-
-            <!-- Q5 -->
-            <div class="form-group">
-              <label class="form-label">5. What is your typical risk per trade?</label>
-              <div class="radio-group">
-                <label class="radio-option">
-                  <input type="radio" name="riskPerTrade" value="Less than 1%" required>
-                  <span>Less than 1% per trade</span>
-                </label>
-                <label class="radio-option">
-                  <input type="radio" name="riskPerTrade" value="1-2%">
-                  <span>1% to 2% per trade</span>
-                </label>
-                <label class="radio-option">
-                  <input type="radio" name="riskPerTrade" value="2-5%">
-                  <span>2% to 5% per trade</span>
-                </label>
-                <label class="radio-option">
-                  <input type="radio" name="riskPerTrade" value="More than 5%">
-                  <span>More than 5% per trade</span>
-                </label>
-              </div>
-            </div>
-
-          </div>
-
-          <button type="submit" class="btn-primary btn-full" style="margin-top:8px;">
-            Create Account — Send Verification Code
-          </button>
-
-        </form>
-
-        <div class="auth-footer">
-          Already have an account?
-          <a href="/auth/login">Sign in</a>
-        </div>
+    <!-- ── STEP 1: ACCOUNT DETAILS ── -->
+    <div class="auth-card" style="max-width:480px;">
+      <div class="auth-header">
+        <div class="auth-logo">改</div>
+        <h1>Join KAIZEN</h1>
+        <p>Start your discipline journey today</p>
       </div>
+
+      <% if (error) { %>
+        <div class="alert alert-error"><%= error %></div>
+      <% } %>
+
+      <a href="/auth/google" class="btn-google">
+        <svg width="18" height="18" viewBox="0 0 24 24">
+          <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+          <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+          <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+          <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+        </svg>
+        Continue with Google
+      </a>
+
+      <div class="auth-divider"><span>or sign up with email</span></div>
+
+      <form action="/auth/register" method="POST" class="auth-form">
+        <div class="form-group">
+          <label class="form-label">Username</label>
+          <input type="text" name="username" class="form-input"
+            placeholder="e.g. denniskaizen" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input type="email" name="email" class="form-input"
+            placeholder="you@example.com" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input type="password" name="password" class="form-input"
+            placeholder="Minimum 6 characters" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Confirm Password</label>
+          <input type="password" name="confirmPassword" class="form-input"
+            placeholder="Repeat your password" required>
+        </div>
+        <button type="submit" class="btn-primary btn-full">
+          Create Account
+        </button>
+      </form>
+
+      <div class="auth-footer">
+        Already have an account?
+        <a href="/auth/login">Sign in</a>
+      </div>
+    </div>
     <% } %>
 
   </main>
