@@ -134,7 +134,11 @@ const verifyOTP = async (req, res) => {
       streak: user.streak
     };
 
-    res.redirect('/dashboard');
+    return res.render('register', {
+  error: null,
+  step: 'questions',
+  questionNum: 1
+});
 
   } catch (error) {
     console.error('OTP verify error:', error);
