@@ -38,11 +38,17 @@ const UserSchema = new mongoose.Schema({
     expiresAt: { type: Date, default: null }
   },
   tradingStyle: {
-    traderType: { type: String, default: '' },
-    experience: { type: String, default: '' },
-    markets: { type: String, default: 'Crypto' },
-    timeframes: { type: String, default: '1H' },
-    riskPerTrade: { type: String, default: '' }
+  riskPerTrade: { type: String, default: '' },
+  dailyDrawdown: { type: String, default: '' },
+  tradingEdge: { type: String, default: '' },
+  entryRule: { type: String, default: '' },
+  stopLossRule: { type: String, default: '' },
+  takeProfitRule: { type: String, default: '' },
+  emotionalTriggers: { type: String, default: '' },
+  maxDailyTrades: { type: String, default: '' },
+  markets: { type: String, default: '' },
+  maxPositionSize: { type: String, default: '' }
+},
   },
   rules: [{
     name: String,
