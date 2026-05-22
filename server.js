@@ -138,6 +138,42 @@ app.get('/support', (req, res) => {
   res.render('support', { user: req.session.user || null });
 });
 
+// Support form submission
+app.post('/support/send', async (req, res) => {
+  try {
+    const { name, email, issue, message } = req.body;
+    const nodemailer = require('nodemailer');
+
+    const transporter = nodemailer.createTransport({
+      host: 'smtp-relay.brevo.com',
+      port: 587,
+      auth: {
+        user: process.env.BREVO_SENDER_EMAIL,
+        pass: process.env.BREVO_API_KEY
+      }
+    });
+
+    await transporter.sendMail({
+      from: `"KAIZEN Support" <${process.env.BREVO_SENDER_EMAIL}>`,
+      to: process.env.BREVO_SENDER_EMAIL,
+      subject: `[KAIZEN Support] ${issue} — from ${name}`,
+      html: `
+        <h2>New Support Message</h2>
+        <p><strong>Name:</strong> ${name}</p>
+        <p><strong>Email:</strong> ${email}</p>
+        <p><strong>Issue:</strong> ${issue}</p>
+        <p><strong>Message:</strong></p>
+        <p>${message}</p>
+      `
+    });
+
+    res.redirect('/support?sent=true');
+  } catch (error) {
+    console.error('Support email error:', error);
+    res.redirect('/support?error=true');
+  }
+});
+
 // Home
 app.get('/', (req, res) => {
   if (req.session.user) return res.redirect('/dashboard');
