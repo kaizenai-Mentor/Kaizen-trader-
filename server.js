@@ -5,34 +5,30 @@ const mongoose = require('mongoose');
 const MongoStore = require('connect-mongo');
 const morgan = require('morgan');
 const helmet = require('helmet');
+const passport = require('passport');
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const path = require('path');
 const connectDB = require('./config/db');
+const User = require('./models/User');
+const { sendWelcomeEmail } = require('./config/email');
 
-// Connect to MongoDB
+// Connect DB
 connectDB();
 
 const app = express();
 
-// Security middleware
-app.use(helmet({
-  contentSecurityPolicy: false
-}));
-
-// Logging middleware
+// Security
+app.use(helmet({ contentSecurityPolicy: false }));
 app.use(morgan('dev'));
-
-// Body parsers
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-// Static files
 app.use(express.static(path.join(__dirname, 'public')));
 
 // View engine
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-// Session configuration
+// Session
 app.use(session({
   secret: process.env.SESSION_SECRET,
   resave: false,
@@ -48,11 +44,77 @@ app.use(session({
   }
 }));
 
-// Make user available in all views
+// Passport
+app.use(passport.initialize());
+app.use(passport.session());
+
+passport.use(new GoogleStrategy({
+  clientID: process.env.GOOGLE_CLIENT_ID || 'placeholder',
+  clientSecret: process.env.GOOGLE_CLIENT_SECRET || 'placeholder',
+  callbackURL: `${process.env.APP_URL || 'http://localhost:3000'}/auth/google/callback`
+}, async (accessToken, refreshToken, profile, done) => {
+  try {
+    let user = await User.findOne({ googleId: profile.id });
+
+    if (!user) {
+      user = await User.findOne({ email: profile.emails[0].value });
+      if (user) {
+        user.googleId = profile.id;
+        user.authMethod = 'google';
+        await user.save();
+      } else {
+        const username = profile.displayName.replace(/\s+/g, '').toLowerCase() +
+          Math.floor(Math.random() * 999);
+        user = await User.create({
+          username,
+          email: profile.emails[0].value,
+          googleId: profile.id,
+          authMethod: 'google',
+          isVerified: true
+        });
+        await sendWelcomeEmail(user.email, user.username);
+      }
+    }
+    return done(null, user);
+  } catch (err) {
+    return done(err, null);
+  }
+}));
+
+passport.serializeUser((user, done) => done(null, user.id));
+passport.deserializeUser(async (id, done) => {
+  try {
+    const user = await User.findById(id);
+    done(null, user);
+  } catch (err) {
+    done(err, null);
+  }
+});
+
+// Make user available in views
 app.use((req, res, next) => {
   res.locals.user = req.session.user || null;
   next();
 });
+
+// Google Auth Routes
+app.get('/auth/google',
+  passport.authenticate('google', { scope: ['profile', 'email'] })
+);
+
+app.get('/auth/google/callback',
+  passport.authenticate('google', { failureRedirect: '/auth/login' }),
+  async (req, res) => {
+    req.session.user = {
+      id: req.user._id,
+      username: req.user.username,
+      email: req.user.email,
+      disciplineScore: req.user.disciplineScore,
+      streak: req.user.streak
+    };
+    res.redirect('/dashboard');
+  }
+);
 
 // Routes
 const authRoutes = require('./routes/auth');
@@ -76,30 +138,27 @@ app.get('/support', (req, res) => {
   res.render('support', { user: req.session.user || null });
 });
 
-// Home route
+// Home
 app.get('/', (req, res) => {
-  if (req.session.user) {
-    return res.redirect('/dashboard');
-  }
-  res.render('welcome');
+  if (req.session.user) return res.redirect('/dashboard');
+  const deleted = req.query.deleted;
+  res.render('welcome', { deleted });
 });
 
-// 404 handler
+// 404
 app.use((req, res) => {
-  res.status(404).render('welcome');
+  res.status(404).render('welcome', { deleted: null });
 });
 
 // Error handler
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).send('Something went wrong. Please try again.');
+  res.status(500).send('Something went wrong.');
 });
 
-// Start server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`Kaizen server running on port ${PORT}`);
-  console.log(`Open http://localhost:${PORT} in your browser`);
+  console.log(`KAIZEN running on port ${PORT}`);
 });
 
 module.exports = app;
