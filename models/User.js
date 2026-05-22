@@ -17,14 +17,32 @@ const UserSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: true,
-    minlength: 6
+    minlength: 6,
+    default: null
+  },
+  googleId: {
+    type: String,
+    default: null
+  },
+  authMethod: {
+    type: String,
+    enum: ['password', 'google', 'email-link'],
+    default: 'password'
+  },
+  isVerified: {
+    type: Boolean,
+    default: false
+  },
+  otp: {
+    code: { type: String, default: null },
+    expiresAt: { type: Date, default: null }
   },
   tradingStyle: {
+    traderType: { type: String, default: '' },
+    experience: { type: String, default: '' },
     markets: { type: String, default: 'Crypto' },
     timeframes: { type: String, default: '1H' },
-    strategy: { type: String, default: 'Price Action' },
-    experience: { type: String, default: 'Beginner' }
+    riskPerTrade: { type: String, default: '' }
   },
   rules: [{
     name: String,
@@ -51,15 +69,14 @@ const UserSchema = new mongoose.Schema({
   }
 });
 
-// Hash password before saving
 UserSchema.pre('save', async function(next) {
-  if (!this.isModified('password')) return next();
+  if (!this.isModified('password') || !this.password) return next();
   this.password = await bcrypt.hash(this.password, 12);
   next();
 });
 
-// Compare password method
 UserSchema.methods.comparePassword = async function(candidatePassword) {
+  if (!this.password) return false;
   return await bcrypt.compare(candidatePassword, this.password);
 };
 
