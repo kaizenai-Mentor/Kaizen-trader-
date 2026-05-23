@@ -1400,3 +1400,83 @@ select.form-input { cursor: pointer; }
   .auth-card { padding: 28px 20px; }
   }
 
+/* ── JOURNAL NOTEPAD ── */
+.notepad-wrapper {
+  border: 1px solid var(--border);
+  transition: border-color 0.2s;
+}
+
+.notepad-wrapper:focus-within {
+  border-color: var(--gold);
+}
+
+.notepad-toolbar {
+  background: var(--bg-surface);
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.notepad-hint {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  color: var(--ash);
+}
+
+.notepad-textarea {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  background: var(--bg-card) !important;
+  resize: vertical;
+  border-radius: 0;
+}
+
+.notepad-textarea:focus {
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* JOURNAL ENTRY CARDS */
+.journal-entry-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  transition: border-color 0.2s;
+  overflow: hidden;
+}
+
+.journal-entry-card:hover {
+  border-color: var(--gold-border);
+}
+
+.journal-entry-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 20px;
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.journal-entry-body {
+  padding: 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.journal-entry-body p {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.85;
+  white-space: pre-wrap;
+}
+
+.journal-entry-footer {
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
