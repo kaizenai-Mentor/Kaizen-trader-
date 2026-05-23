@@ -142,6 +142,14 @@ app.use('/auth', authRoutes);
 app.use('/dashboard', dashboardRoutes);
 app.use('/za', zaRoutes);
 
+app.get('/', (req, res) => {
+  if (req.session.user) return res.redirect('/dashboard');
+  res.render('welcome', {
+    deleted: req.query.deleted || null,
+    timeout: req.query.timeout || null
+  });
+});
+
 // Info pages
 app.get('/about', (req, res) => {
   res.render('about', { user: req.session.user || null });
