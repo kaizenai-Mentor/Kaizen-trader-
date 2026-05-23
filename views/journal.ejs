@@ -34,87 +34,61 @@
               placeholder="e.g. BTC/USDT, EUR/USD, GOLD">
           </div>
           <div class="form-group">
-            <label class="form-label">Timeframe</label>
-            <select name="timeframe" class="form-input">
-              <option value="1m">1m</option>
-              <option value="5m">5m</option>
-              <option value="15m">15m</option>
-              <option value="1H" selected>1H</option>
-              <option value="4H">4H</option>
-              <option value="1D">1D</option>
-              <option value="1W">1W</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label class="form-label">Direction</label>
+            <label class="form-label">Session Type</label>
             <select name="direction" class="form-input">
-              <option value="Long">Long</option>
-              <option value="Short">Short</option>
-              <option value="No Trade">No Trade — Analysis Only</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Outcome</label>
-            <select name="outcome" class="form-input">
-              <option value="Win">Win</option>
-              <option value="Loss">Loss</option>
-              <option value="Breakeven">Breakeven</option>
-              <option value="Pending">Pending</option>
-              <option value="No Trade">No Trade</option>
+              <option value="Live Trade">Live Trade</option>
+              <option value="Backtesting">Backtesting</option>
+              <option value="Analysis Only">Analysis Only</option>
+              <option value="Paper Trade">Paper Trade</option>
             </select>
           </div>
         </div>
 
-        <!-- THE NOTE — Main freeform area -->
+        <!-- MAIN NOTEPAD -->
         <div class="form-group">
           <label class="form-label">Session Notes</label>
           <div class="notepad-wrapper">
             <div class="notepad-toolbar">
-              <span class="notepad-hint">Write everything — what you saw, what you did, what you felt, what you learned. Be honest.</span>
+              <span class="notepad-hint">
+                Write everything — what you saw, what you did,
+                what you felt, what you learned. Be completely honest.
+                Kaizen AI reads this to understand how you trade.
+              </span>
             </div>
             <textarea
               name="notes"
               class="form-input notepad-textarea"
-              placeholder="Example:
+              placeholder="Start writing about your session...
 
-Today I was watching EUR/USD on the 1H chart. I identified a clear supply zone at 1.0850 and waited for price to return to it. When price reached the zone I noticed a strong bearish engulfing candle forming.
-
-I entered short at 1.0848 with my stop loss at 1.0870 (22 pips risk) and target at 1.0790 (58 pips, about 2.6R).
-
-What I did well: I waited for confirmation before entering. I did not chase the move. My position size was exactly 1% of my account as per my rules.
-
-What I struggled with: I almost moved my stop loss when price came back up to 1.0855. I felt fear. I kept it in place and price reversed. This is something I need to keep working on.
-
-Lesson: Trusting the setup and not micromanaging the trade is the discipline I am building."
-              required
-              style="min-height:300px;line-height:1.9;font-size:0.92rem;padding:20px;font-family:inherit;"></textarea>
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="form-group">
-            <label class="form-label">How did you feel during this session?</label>
-            <input type="text" name="emotion" class="form-input"
-              placeholder="e.g. Calm and focused, Anxious after first loss, Overconfident">
-          </div>
-          <div class="form-group">
-            <label class="form-label">Session Score (0-100)</label>
-            <input type="number" name="sessionScore"
-              class="form-input" min="0" max="100" value="50"
-              placeholder="Rate your discipline this session">
+What market did you analyze? What did you see on the chart?
+Did you take a trade? Why or why not?
+What was your entry, stop loss, and target?
+How did you feel during the session?
+Did anything make you anxious, greedy, or uncertain?
+Did you follow your rules? If not, where did you break them?
+What is the one thing you will do differently next session?"
+              required></textarea>
           </div>
         </div>
 
         <div class="form-group">
           <label class="form-label">Did you follow ALL your trading rules this session?</label>
-          <select name="ruleCompliance" class="form-input">
-            <option value="true">Yes — I followed every rule I set for myself</option>
-            <option value="false">No — I broke at least one of my rules</option>
-          </select>
+          <div class="radio-group" style="flex-direction:row;gap:12px;">
+            <label class="radio-option" style="flex:1;justify-content:center;">
+              <input type="radio" name="ruleCompliance" value="true" required>
+              <span style="color:var(--green);font-weight:600;">Yes — Fully Compliant</span>
+            </label>
+            <label class="radio-option" style="flex:1;justify-content:center;">
+              <input type="radio" name="ruleCompliance" value="false">
+              <span style="color:var(--red);font-weight:600;">No — Rules Violated</span>
+            </label>
+          </div>
         </div>
+
+        <input type="hidden" name="timeframe" value="N/A">
+        <input type="hidden" name="outcome" value="Pending">
+        <input type="hidden" name="emotion" value="Logged">
+        <input type="hidden" name="sessionScore" value="50">
 
         <button type="submit" class="btn-primary btn-full">
           Save Session Entry
@@ -126,7 +100,9 @@ Lesson: Trusting the setup and not micromanaging the trade is the discipline I a
     <!-- PAST ENTRIES -->
     <div style="margin-top:32px;">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
-        <h2 style="font-size:1rem;font-weight:700;color:var(--text-primary);">Past Sessions</h2>
+        <h2 style="font-size:1rem;font-weight:700;color:var(--text-primary);">
+          Past Sessions
+        </h2>
         <span style="font-family:var(--font-mono);font-size:0.65rem;color:var(--ash);letter-spacing:0.1em;text-transform:uppercase;">
           <%= typeof journals !== 'undefined' ? journals.length : 0 %> entries
         </span>
@@ -135,10 +111,11 @@ Lesson: Trusting the setup and not micromanaging the trade is the discipline I a
       <% if (typeof journals !== 'undefined' && journals.length === 0) { %>
         <div class="card">
           <div class="empty-state">
-            <p style="font-weight:600;color:var(--text-primary);">No sessions yet.</p>
-            <p>Traders who journal consistently outperform those who don't. Start today.</p>
+            <p style="font-size:1rem;font-weight:600;color:var(--text-primary);margin-bottom:8px;">
+              No sessions logged yet.
+            </p>
             <p>
-              The traders who journal consistently outperform those who don't.
+              Traders who journal consistently outperform those who don't.
               Write your first entry above.
             </p>
           </div>
@@ -147,19 +124,17 @@ Lesson: Trusting the setup and not micromanaging the trade is the discipline I a
         <div style="display:flex;flex-direction:column;gap:2px;">
           <% journals.forEach(function(journal) { %>
             <div class="journal-entry-card">
-
               <div class="journal-entry-top">
                 <div style="display:flex;align-items:center;gap:12px;">
                   <span class="journal-asset"><%= journal.asset %></span>
-                  <span class="journal-tf"><%= journal.timeframe %></span>
-                  <span class="journal-tag <%= journal.outcome === 'Win' ? 'tag-win' : journal.outcome === 'Loss' ? 'tag-loss' : '' %>">
-                    <%= journal.outcome %>
-                  </span>
+                  <span class="journal-tag"><%= journal.direction %></span>
                 </div>
                 <div style="display:flex;align-items:center;gap:12px;">
-                  <span class="journal-score <%= journal.ruleCompliance ? 'score-good' : 'score-bad' %>">
-                    <%= journal.sessionScore %>/100
-                  </span>
+                  <% if (journal.ruleCompliance) { %>
+                    <span class="compliance-good">Rules Followed</span>
+                  <% } else { %>
+                    <span class="compliance-bad">Rules Violated</span>
+                  <% } %>
                   <span class="journal-date">
                     <%= new Date(journal.createdAt).toLocaleDateString('en-US', {
                       month: 'short', day: 'numeric', year: 'numeric'
@@ -167,24 +142,9 @@ Lesson: Trusting the setup and not micromanaging the trade is the discipline I a
                   </span>
                 </div>
               </div>
-
               <div class="journal-entry-body">
                 <p><%= journal.notes %></p>
               </div>
-
-              <div class="journal-entry-footer">
-                <% if (journal.emotion) { %>
-                  <span style="font-size:0.78rem;color:var(--ash);">
-                    Feeling: <em style="color:var(--text-secondary);font-style:normal;"><%= journal.emotion %></em>
-                  </span>
-                <% } %>
-                <% if (journal.ruleCompliance) { %>
-                  <span class="compliance-good">Rules Followed</span>
-                <% } else { %>
-                  <span class="compliance-bad">Rules Violated</span>
-                <% } %>
-              </div>
-
             </div>
           <% }); %>
         </div>
@@ -192,7 +152,8 @@ Lesson: Trusting the setup and not micromanaging the trade is the discipline I a
         <div class="card">
           <div class="empty-state">
             <p>Could not load journal entries.</p>
-            <a href="/dashboard" class="btn-outline" style="margin-top:16px;display:inline-block;">
+            <a href="/dashboard" class="btn-outline"
+              style="margin-top:16px;display:inline-block;">
               Back to Dashboard
             </a>
           </div>
