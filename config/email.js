@@ -3,9 +3,20 @@ const nodemailer = require('nodemailer');
 const transporter = nodemailer.createTransport({
   host: 'smtp-relay.brevo.com',
   port: 587,
+  secure: false,
   auth: {
     user: process.env.BREVO_SENDER_EMAIL,
     pass: process.env.BREVO_API_KEY
+  },
+  debug: true,
+  logger: true
+});
+
+transporter.verify(function(error, success) {
+  if (error) {
+    console.error('SMTP Connection Error:', error);
+  } else {
+    console.log('SMTP Server ready — emails will send');
   }
 });
 
