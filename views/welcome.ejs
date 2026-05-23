@@ -2,31 +2,35 @@
 <html lang="en">
 <head>
   <%- include('partials/head') %>
-  <title>Kaizen — Trade Better. Every Day.</title>
+  <title>KAIZEN — Trade Better. Every Day.</title>
 </head>
 <body class="welcome-page">
 
   <%- include('partials/navbar') %>
+
+  <% if (typeof deleted !== 'undefined' && deleted) { %>
+    <div class="alert alert-success" style="text-align:center;margin:0;">
+      Your account has been deleted. We hope to see you back.
+    </div>
+  <% } %>
 
   <main class="welcome-main">
     <div class="welcome-content">
 
       <div class="welcome-badge">
         <span class="badge-dot"></span>
-        AI-Powered Trading Discipline
+        Discipline-First Trading Platform
       </div>
 
       <h1 class="welcome-title">
-        Trade with<br><em>Discipline.</em>
+        Most traders know<br>their rules.<br>
+        <span style="color:var(--gold);">Few follow them.</span>
       </h1>
 
       <p class="welcome-sub">
-        Kaizen watches how you trade, learns your style,
-        and holds you accountable to the rules
-        <strong>you yourself created.</strong>
-         Most traders know their rules.
-         Few follow them. 
-        <strong>Kaizen fixes that.<strong>
+        Kaizen is not a signal app. It is a <strong>behavioral accountability system</strong>
+        built to help you execute your own strategy — consistently,
+        session after session, until discipline becomes instinct.
       </p>
 
       <div class="welcome-ctas">
@@ -35,17 +39,17 @@
       </div>
 
       <div class="welcome-stats">
-        <div class="stat">
+        <div>
           <div class="stat-val">改</div>
           <div class="stat-label">Philosophy</div>
         </div>
-        <div class="stat">
+        <div>
           <div class="stat-val">100</div>
           <div class="stat-label">Max Score</div>
         </div>
-        <div class="stat">
+        <div>
           <div class="stat-val">ZA</div>
-          <div class="stat-label">Reputation</div>
+          <div class="stat-label">On-Chain</div>
         </div>
       </div>
 
