@@ -44,6 +44,17 @@
           <label class="form-label">Password</label>
           <input type="password" name="password" class="form-input"
             placeholder="Your password" required>
+       <div class="form-group">
+          <label class="form-label">Password</label>
+       <div class="password-wrapper">
+         <input type="password" name="password" id="loginPassword" class="form-input password-input"
+           placeholder="Your password" required>
+        <button type="button" class="password-toggle"
+      onclick="togglePassword('loginPassword', this)">
+      Show
+    </button>
+  </div>
+</div>
         </div>
         <button type="submit" class="btn-primary btn-full">
           Sign In
