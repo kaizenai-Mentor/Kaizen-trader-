@@ -35,14 +35,31 @@ app.use(session({
   saveUninitialized: false,
   store: MongoStore.create({
     mongoUrl: process.env.MONGODB_URI,
-    ttl: 24 * 60 * 60
+    ttl: 2 * 60 * 60
   }),
   cookie: {
     secure: false,
     httpOnly: true,
-    maxAge: 24 * 60 * 60 * 1000
+    maxAge: 2 * 60 * 60 * 1000
   }
 }));
+
+// Auto logout after 2 hours inactivity
+app.use((req, res, next) => {
+  if (req.session.user) {
+    const now = Date.now();
+    const lastActivity = req.session.lastActivity || now;
+    const inactiveTime = now - lastActivity;
+    const maxInactive = 2 * 60 * 60 * 1000;
+
+    if (inactiveTime > maxInactive) {
+      req.session.destroy();
+      return res.redirect('/?timeout=true');
+    }
+    req.session.lastActivity = now;
+  }
+  next();
+});
 
 // Passport
 app.use(passport.initialize());
