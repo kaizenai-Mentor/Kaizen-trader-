@@ -118,3 +118,17 @@ document.querySelectorAll('.otp-input').forEach(function(input, i, inputs) {
     }
   });
 });
+
+// PASSWORD SHOW/HIDE
+function togglePassword(inputId, btn) {
+  const input = document.getElementById(inputId);
+  if (input.type === 'password') {
+    input.type = 'text';
+    btn.textContent = 'Hide';
+    btn.style.color = 'var(--gold)';
+  } else {
+    input.type = 'password';
+    btn.textContent = 'Show';
+    btn.style.color = '';
+  }
+}
