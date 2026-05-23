@@ -12,24 +12,26 @@
 
     <div class="page-header">
       <div>
-        <h1>Trading Journal</h1>
-        <p class="page-sub">Log and review your trading sessions</p>
+        <h1 style="color:var(--gold);">Trading Journal</h1>
+        <p class="page-sub">Write honestly. Kaizen learns from everything you record.</p>
       </div>
       <a href="/dashboard" class="btn-outline">← Dashboard</a>
     </div>
 
-    <!-- LOG NEW SESSION FORM -->
-    <div class="card" style="margin-bottom:2px;">
+    <!-- NEW SESSION NOTE -->
+    <div class="card card-gold" style="margin-bottom:2px;">
       <div class="card-header">
-        <h2>Log New Session</h2>
-        <span class="card-badge">New Entry</span>
+        <h2>New Session Entry</h2>
+        <span class="card-badge">Write Freely</span>
       </div>
+
       <form action="/dashboard/journal" method="POST" class="journal-form">
+
         <div class="form-row">
           <div class="form-group">
-            <label class="form-label">Asset</label>
+            <label class="form-label">Asset Traded</label>
             <input type="text" name="asset" class="form-input"
-              placeholder="BTC/USDT" value="BTC/USDT">
+              placeholder="e.g. BTC/USDT, EUR/USD, GOLD">
           </div>
           <div class="form-group">
             <label class="form-label">Timeframe</label>
@@ -40,16 +42,18 @@
               <option value="1H" selected>1H</option>
               <option value="4H">4H</option>
               <option value="1D">1D</option>
+              <option value="1W">1W</option>
             </select>
           </div>
         </div>
+
         <div class="form-row">
           <div class="form-group">
             <label class="form-label">Direction</label>
             <select name="direction" class="form-input">
               <option value="Long">Long</option>
               <option value="Short">Short</option>
-              <option value="No Trade">No Trade</option>
+              <option value="No Trade">No Trade — Analysis Only</option>
             </select>
           </div>
           <div class="form-group">
@@ -59,89 +63,129 @@
               <option value="Loss">Loss</option>
               <option value="Breakeven">Breakeven</option>
               <option value="Pending">Pending</option>
+              <option value="No Trade">No Trade</option>
             </select>
           </div>
         </div>
+
+        <!-- THE NOTE — Main freeform area -->
+        <div class="form-group">
+          <label class="form-label">Session Notes</label>
+          <div class="notepad-wrapper">
+            <div class="notepad-toolbar">
+              <span class="notepad-hint">Write everything — what you saw, what you did, what you felt, what you learned. Be honest.</span>
+            </div>
+            <textarea
+              name="notes"
+              class="form-input notepad-textarea"
+              placeholder="Example:
+
+Today I was watching EUR/USD on the 1H chart. I identified a clear supply zone at 1.0850 and waited for price to return to it. When price reached the zone I noticed a strong bearish engulfing candle forming.
+
+I entered short at 1.0848 with my stop loss at 1.0870 (22 pips risk) and target at 1.0790 (58 pips, about 2.6R).
+
+What I did well: I waited for confirmation before entering. I did not chase the move. My position size was exactly 1% of my account as per my rules.
+
+What I struggled with: I almost moved my stop loss when price came back up to 1.0855. I felt fear. I kept it in place and price reversed. This is something I need to keep working on.
+
+Lesson: Trusting the setup and not micromanaging the trade is the discipline I am building."
+              required
+              style="min-height:300px;line-height:1.9;font-size:0.92rem;padding:20px;font-family:inherit;"></textarea>
+          </div>
+        </div>
+
         <div class="form-row">
           <div class="form-group">
-            <label class="form-label">Emotion</label>
-            <select name="emotion" class="form-input">
-              <option value="Neutral">Neutral</option>
-              <option value="Confident">Confident</option>
-              <option value="Fear">Fear</option>
-              <option value="Greed">Greed</option>
-              <option value="Anxious">Anxious</option>
-            </select>
+            <label class="form-label">How did you feel during this session?</label>
+            <input type="text" name="emotion" class="form-input"
+              placeholder="e.g. Calm and focused, Anxious after first loss, Overconfident">
           </div>
           <div class="form-group">
             <label class="form-label">Session Score (0-100)</label>
             <input type="number" name="sessionScore"
-              class="form-input" min="0" max="100" value="50">
+              class="form-input" min="0" max="100" value="50"
+              placeholder="Rate your discipline this session">
           </div>
         </div>
+
         <div class="form-group">
-          <label class="form-label">Session Notes</label>
-          <textarea name="notes" class="form-input form-textarea"
-            placeholder="What did you observe? Did you follow your rules? What could you improve?"
-            required></textarea>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Did you follow your rules?</label>
+          <label class="form-label">Did you follow ALL your trading rules this session?</label>
           <select name="ruleCompliance" class="form-input">
-            <option value="true">Yes — Full Compliance</option>
-            <option value="false">No — Rules Violated</option>
+            <option value="true">Yes — I followed every rule I set for myself</option>
+            <option value="false">No — I broke at least one of my rules</option>
           </select>
         </div>
-        <button type="submit" class="btn-primary btn-full">Log Session</button>
+
+        <button type="submit" class="btn-primary btn-full">
+          Save Session Entry
+        </button>
+
       </form>
     </div>
 
     <!-- PAST ENTRIES -->
     <div style="margin-top:32px;">
-      <h2 style="font-size:1rem;font-weight:700;margin-bottom:16px;color:var(--text-primary);">
-        Past Sessions
-      </h2>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+        <h2 style="font-size:1rem;font-weight:700;color:var(--text-primary);">Past Sessions</h2>
+        <span style="font-family:var(--font-mono);font-size:0.65rem;color:var(--ash);letter-spacing:0.1em;text-transform:uppercase;">
+          <%= typeof journals !== 'undefined' ? journals.length : 0 %> entries
+        </span>
+      </div>
 
       <% if (typeof journals !== 'undefined' && journals.length === 0) { %>
         <div class="card">
           <div class="empty-state">
-            <p>No sessions yet.</p>
-            <p>Use the form above to log your first session.</p>
+            <p style="font-size:1rem;font-weight:600;color:var(--text-primary);margin-bottom:8px;">
+              No sessions logged yet.
+            </p>
+            <p>
+              The traders who journal consistently outperform those who don't.
+              Write your first entry above.
+            </p>
           </div>
         </div>
       <% } else if (typeof journals !== 'undefined') { %>
-        <div class="journal-grid">
+        <div style="display:flex;flex-direction:column;gap:2px;">
           <% journals.forEach(function(journal) { %>
-            <div class="journal-card">
-              <div class="journal-card-top">
-                <div>
+            <div class="journal-entry-card">
+
+              <div class="journal-entry-top">
+                <div style="display:flex;align-items:center;gap:12px;">
                   <span class="journal-asset"><%= journal.asset %></span>
                   <span class="journal-tf"><%= journal.timeframe %></span>
+                  <span class="journal-tag <%= journal.outcome === 'Win' ? 'tag-win' : journal.outcome === 'Loss' ? 'tag-loss' : '' %>">
+                    <%= journal.outcome %>
+                  </span>
                 </div>
-                <span class="journal-score-big <%= journal.ruleCompliance ? 'score-good' : 'score-bad' %>">
-                  <%= journal.sessionScore %>/100
-                </span>
+                <div style="display:flex;align-items:center;gap:12px;">
+                  <span class="journal-score <%= journal.ruleCompliance ? 'score-good' : 'score-bad' %>">
+                    <%= journal.sessionScore %>/100
+                  </span>
+                  <span class="journal-date">
+                    <%= new Date(journal.createdAt).toLocaleDateString('en-US', {
+                      month: 'short', day: 'numeric', year: 'numeric'
+                    }) %>
+                  </span>
+                </div>
               </div>
-              <div class="journal-tags">
-                <span class="journal-tag"><%= journal.direction %></span>
-                <span class="journal-tag <%= journal.outcome === 'Win' ? 'tag-win' : journal.outcome === 'Loss' ? 'tag-loss' : '' %>">
-                  <%= journal.outcome %>
-                </span>
-                <span class="journal-tag"><%= journal.emotion %></span>
+
+              <div class="journal-entry-body">
+                <p><%= journal.notes %></p>
               </div>
-              <p class="journal-notes"><%= journal.notes %></p>
-              <div class="journal-card-footer">
-                <% if (journal.ruleCompliance) { %>
-                  <span class="compliance-good">Compliant</span>
-                <% } else { %>
-                  <span class="compliance-bad">Violated</span>
+
+              <div class="journal-entry-footer">
+                <% if (journal.emotion) { %>
+                  <span style="font-size:0.78rem;color:var(--ash);">
+                    Feeling: <em style="color:var(--text-secondary);font-style:normal;"><%= journal.emotion %></em>
+                  </span>
                 <% } %>
-                <span class="journal-date">
-                  <%= new Date(journal.createdAt).toLocaleDateString('en-US', {
-                    year: 'numeric', month: 'short', day: 'numeric'
-                  }) %>
-                </span>
+                <% if (journal.ruleCompliance) { %>
+                  <span class="compliance-good">Rules Followed</span>
+                <% } else { %>
+                  <span class="compliance-bad">Rules Violated</span>
+                <% } %>
               </div>
+
             </div>
           <% }); %>
         </div>
@@ -149,8 +193,7 @@
         <div class="card">
           <div class="empty-state">
             <p>Could not load journal entries.</p>
-            <a href="/dashboard" class="btn-primary"
-              style="margin-top:16px;display:inline-block;">
+            <a href="/dashboard" class="btn-outline" style="margin-top:16px;display:inline-block;">
               Back to Dashboard
             </a>
           </div>
