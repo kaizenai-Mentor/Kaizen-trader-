@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('partials/head') %>
+  <title>KAIZEN — Privacy Policy</title>
+</head>
+<body class="app-page">
+  <%- include('partials/navbar') %>
+  <main class="app-main" style="max-width:800px;">
+    <div class="page-header">
+      <div>
+        <h1 style="color:var(--gold);">Privacy Policy</h1>
+        <p class="page-sub">Last updated: May 2025</p>
+      </div>
+    </div>
+    <div class="card" style="display:flex;flex-direction:column;gap:28px;">
+      <div>
+        <h3 style="font-size:1rem;font-weight:700;color:var(--gold);margin-bottom:10px;">1. Information We Collect</h3>
+        <p style="font-size:0.88rem;color:var(--text-secondary);line-height:1.85;">
+          We collect information you provide directly: your username, email address,
+          and password when you create an account. We also collect trading journal
+          entries, session data, discipline scores, and onboarding responses you
+          submit within the platform. We do not collect financial account information
+          or brokerage credentials in Phase 1.
+        </p>
+      </div>
+      <div style="border-top:1px solid var(--border);padding-top:24px;">
+        <h3 style="font-size:1rem;font-weight:700;color:var(--gold);margin-bottom:10px;">2. How We Use Your Information</h3>
+        <p style="font-size:0.88rem;color:var(--text-secondary);line-height:1.85;">
+          Your data is used exclusively to provide the KAIZEN service — calculating
+          your Discipline Score, powering Kaizen AI feedback, displaying your
+          journal history, and connecting you with Zero Authority DAO bounties.
+          We do not sell your personal data to third parties under any circumstances.
+        </p>
+      </div>
+      <div style="border-top:1px solid var(--border);padding-top:24px;">
+        <h3 style="font-size:1rem;font-weight:700;color:var(--gold);margin-bottom:10px;">3. Data Storage and Security</h3>
+        <p style="font-size:0.88rem;color:var(--text-secondary);line-height:1.85;">
+          Your data is stored securely on MongoDB Atlas cloud infrastructure with
+          encryption at rest and in transit. Passwords are hashed using bcrypt and
+          are never stored in plain text. Sessions expire automatically after
+          2 hours of inactivity.
+        </p>
+      </div>
+      <div style="border-top:1px solid var(--border);padding-top:24px;">
+        <h3 style="font-size:1rem;font-weight:700;color:var(--gold);margin-bottom:10px;">4. Zero Authority DAO Integration</h3>
+        <p style="font-size:0.88rem;color:var(--text-secondary);line-height:1.85;">
+          When you view bounties or reputation data, KAIZEN connects to the
+          Zero Authority DAO public API. Your KAIZEN user data is not shared
+          with Zero Authority DAO unless you explicitly connect your ZA account.
+        </p>
+      </div>
+      <div style="border-top:1px solid var(--border);padding-top:24px;">
+        <h3 style="font-size:1rem;font-weight:700;color:var(--gold);margin-bottom:10px;">5. Your Rights</h3>
+        <p style="font-size:0.88rem;color:var(--text-secondary);line-height:1.85;">
+          You have the right to access, correct, or delete your account and all
+          associated data at any time. Account deletion is available in the
+          Reputation section of your account. Upon deletion, all your data
+          including journal entries, discipline scores, and personal information
+          is permanently removed from our servers.
+        </p>
+      </div>
+      <div style="border-top:1px solid var(--border);padding-top:24px;">
+        <h3 style="font-size:1rem;font-weight:700;color:var(--gold);margin-bottom:10px;">6. Contact</h3>
+        <p style="font-size:0.88rem;color:var(--text-secondary);line-height:1.85;">
+          For privacy concerns contact us via the Support page or reach us
+          on X at <a href="https://x.com/kaizenaibot" target="_blank"
+          style="color:var(--gold);">@kaizenaibot</a>.
+        </p>
+      </div>
+    </div>
+  </main>
+  <%- include('partials/footer') %>
+  <script src="/js/app.js"></script>
+</body>
+</html>
