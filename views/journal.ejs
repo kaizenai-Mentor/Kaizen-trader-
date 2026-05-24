@@ -35,14 +35,17 @@
           </div>
           <div class="form-group">
             <label class="form-label">Session Type</label>
-            <select name="direction" class="form-input">
-              <option value="Live Trade">Live Trade</option>
-              <option value="Backtesting">Backtesting</option>
-              <option value="Analysis Only">Analysis Only</option>
-              <option value="Paper Trade">Paper Trade</option>
-            </select>
+            <div class="radio-group" style="flex-direction:row;gap:12px;">
+              <label class="radio-option" style="flex:1;justify-content:center;">
+                <input type="radio" name="direction" value="Live Trade" required>
+                <span style="color:var(--gold);font-weight:600;">Live Trade</span>
+              </label>
+              <label class="radio-option" style="flex:1;justify-content:center;">
+                <input type="radio" name="direction" value="Backtesting">
+                <span style="color:var(--ash-light);font-weight:600;">Backtesting</span>
+              </label>
+            </div>
           </div>
-        </div>
 
         <!-- MAIN NOTEPAD -->
         <div class="form-group">
