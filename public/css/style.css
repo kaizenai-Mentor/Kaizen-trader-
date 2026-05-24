@@ -528,7 +528,10 @@ img { max-width: 100%; }
   letter-spacing: -0.03em;
   color: var(--text-primary);
 }
-
+.welcome-title .gold-text {
+  color: var(--gold) !important;
+  -webkit-text-fill-color: var(--gold) !important;
+  } 
 [data-theme="light"] .welcome-title {
   color: #1A1A1A;
 } 
