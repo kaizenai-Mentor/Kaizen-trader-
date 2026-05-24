@@ -151,17 +151,12 @@ app.get('/', (req, res) => {
 });
 
 // Info pages
-app.get('/about', (req, res) => {
-  res.render('about', { user: req.session.user || null });
-});
-
-app.get('/services', (req, res) => {
-  res.render('services', { user: req.session.user || null });
-});
-
-app.get('/support', (req, res) => {
-  res.render('support', { user: req.session.user || null });
-});
+app.get('/about', (req, res) => res.render('about', { user: req.session.user || null }));
+app.get('/services', (req, res) => res.render('services', { user: req.session.user || null }));
+app.get('/support', (req, res) => res.render('support', { user: req.session.user || null }));
+app.get('/privacy', (req, res) => res.render('privacy', { user: req.session.user || null }));
+app.get('/terms', (req, res) => res.render('terms', { user: req.session.user || null }));
+app.get('/help', (req, res) => res.render('help', { user: req.session.user || null }));
 
 // Support form submission
 app.post('/support/send', async (req, res) => {
