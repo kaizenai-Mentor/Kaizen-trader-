@@ -201,6 +201,7 @@ img { max-width: 100%; }
   background: rgba(0, 0, 0, 0.6);
   z-index: 998;
   opacity: 0;
+  
   pointer-events: none;
   transition: opacity 0.3s;
   backdrop-filter: blur(2px);
@@ -1514,3 +1515,16 @@ select.form-input { cursor: pointer; }
   color: var(--gold);
   background: var(--gold-pale);
 }
+
+/* ── HELP CENTER ── */
+.help-q {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+}
+.help-a {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  line-height: 1.75;
+  }
