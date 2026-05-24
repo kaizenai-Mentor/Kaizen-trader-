@@ -202,34 +202,14 @@
       <button class="modal-close" onclick="closeModal('languageModal')">×</button>
     </div>
     <div class="modal-body">
-      <div class="lang-grid">
-        <div class="lang-option active" onclick="setLanguage('en', this)">
-          <span>EN</span> English
-        </div>
-        <div class="lang-option" onclick="setLanguage('fr', this)">
-          <span>FR</span> French
-        </div>
-        <div class="lang-option" onclick="setLanguage('es', this)">
-          <span>ES</span> Spanish
-        </div>
-        <div class="lang-option" onclick="setLanguage('pt', this)">
-          <span>PT</span> Portuguese
-        </div>
-        <div class="lang-option" onclick="setLanguage('de', this)">
-          <span>DE</span> German
-        </div>
-        <div class="lang-option" onclick="setLanguage('ar', this)">
-          <span>AR</span> Arabic
-        </div>
-        <div class="lang-option" onclick="setLanguage('zh', this)">
-          <span>ZH</span> Chinese
-        </div>
-        <div class="lang-option" onclick="setLanguage('ja', this)">
-          <span>JA</span> Japanese
-        </div>
-      </div>
-      <p style="font-size:0.75rem;color:var(--ash);margin-top:16px;">
-        Full translation coming in Phase 2. English is the current supported language.
+      <p style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:20px;line-height:1.7;">
+        KAIZEN supports 100+ languages powered by Google Translate.
+        Use the selector in the navigation bar to switch language instantly.
+        Every page including onboarding questions will be translated automatically.
+      </p>
+      <div id="gt_element_modal"></div>
+      <p style="font-size:0.72rem;color:var(--ash);margin-top:16px;font-family:var(--font-mono);letter-spacing:0.06em;">
+        Translation is applied globally across the entire platform.
       </p>
     </div>
   </div>
