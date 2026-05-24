@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('partials/head') %>
+  <title>KAIZEN — Help Center</title>
+</head>
+<body class="app-page">
+  <%- include('partials/navbar') %>
+  <main class="app-main">
+    <div class="page-header">
+      <div>
+        <h1 style="color:var(--gold);">Help Center</h1>
+        <p class="page-sub">Everything you need to know about KAIZEN</p>
+      </div>
+      <a href="/support" class="btn-primary">Contact Support</a>
+    </div>
+
+    <!-- SEARCH BAR -->
+    <div class="card" style="margin-bottom:2px;">
+      <input type="text" id="helpSearch" class="form-input"
+        placeholder="Search help articles..."
+        oninput="filterHelp(this.value)"
+        style="font-size:1rem;padding:16px 20px;">
+    </div>
+
+    <!-- HELP ARTICLES -->
+    <div id="helpGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:2px;margin-top:2px;">
+
+      <div class="help-card" data-tags="account register login password">
+        <div class="card card-gold">
+          <div class="card-header">
+            <h2>Getting Started</h2>
+            <span class="card-badge">Account</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:14px;">
+            <div class="help-item">
+              <div class="help-q">How do I create a KAIZEN account?</div>
+              <div class="help-a">Tap Sign Up on the welcome page. Enter your username, email, and password. You will receive a 3-digit verification code to your email. Enter the code to verify, then answer 5 onboarding questions to build your trading profile.</div>
+            </div>
+            <div class="help-item" style="border-top:1px solid var(--border);padding-top:14px;">
+              <div class="help-q">I did not receive my verification code.</div>
+              <div class="help-a">Check your spam folder first. If it is not there, wait 2 minutes and try registering again. Make sure the email address you entered is correct.</div>
+            </div>
+            <div class="help-item" style="border-top:1px solid var(--border);padding-top:14px;">
+              <div class="help-q">Can I sign in with Google?</div>
+              <div class="help-a">Yes. Tap Continue with Google on the login or register page to sign in instantly without a password.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="help-card" data-tags="journal session log entry note">
+        <div class="card">
+          <div class="card-header">
+            <h2>Trading Journal</h2>
+            <span class="card-badge">Journal</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:14px;">
+            <div class="help-item">
+              <div class="help-q">How do I log a trading session?</div>
+              <div class="help-a">Go to the Journal section from the navigation menu. Enter the asset you traded, select Live Trade or Backtesting, then write your session notes freely in the notepad. Be as honest and detailed as possible — Kaizen AI learns from this.</div>
+            </div>
+            <div class="help-item" style="border-top:1px solid var(--border);padding-top:14px;">
+              <div class="help-q">What should I write in the session notes?</div>
+              <div class="help-a">Write what you saw on the chart, what trade you took or why you did not trade, how you felt during the session, whether you followed your rules, and what you will do differently next time.</div>
+            </div>
+            <div class="help-item" style="border-top:1px solid var(--border);padding-top:14px;">
+              <div class="help-q">Can I edit a journal entry after saving?</div>
+              <div class="help-a">Editing past entries is coming in Phase 2. For now focus on writing thoroughly the first time.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="help-card" data-tags="discipline score points calculation">
+        <div class="card">
+          <div class="card-header">
+            <h2>Discipline Score</h2>
+            <span class="card-badge">Score</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:14px;">
+            <div class="help-item">
+              <div class="help-q">How is my Discipline Score calculated?</div>
+              <div class="help-a">Your score is based on rule compliance across all your logged sessions. Each session you mark as fully compliant raises your score. Violations lower it. The score is a rolling average weighted toward your most recent sessions.</div>
+            </div>
+            <div class="help-item" style="border-top:1px solid var(--border);padding-top:14px;">
+              <div class="help-q">What are the score tiers?</div>
+              <div class="help-a">0-39 is Developing. 40-59 is Building. 60-79 is Consistent. 80-100 is Elite. Each tier unlocks different Zero Authority DAO opportunities.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="help-card" data-tags="bounties zero authority dao challenges rewards">
+        <div class="card card-blue">
+          <div class="card-header">
+            <h2>Bounties & ZA DAO</h2>
+            <span class="card-badge">ZA</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:14px;">
+            <div class="help-item">
+              <div class="help-q">What are Discipline Challenges?</div>
+              <div class="help-a">These are live bounties from Zero Authority DAO displayed inside KAIZEN. Completing them earns you STX rewards and on-chain reputation points that verify your skills publicly.</div>
+            </div>
+            <div class="help-item" style="border-top:1px solid var(--border);padding-top:14px;">
+              <div class="help-q">How do I view my on-chain reputation?</div>
+              <div class="help-a">Go to the Reputation section from the menu. Your Kaizen Discipline Score appears alongside your Zero Authority DAO on-chain reputation. Connect your ZA account at zeroauthoritydao.com to see your full on-chain profile.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="help-card" data-tags="security password logout account delete">
+        <div class="card">
+          <div class="card-header">
+            <h2>Account & Security</h2>
+            <span class="card-badge">Security</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:14px;">
+            <div class="help-item">
+              <div class="help-q">How do I change my password?</div>
+              <div class="help-a">Open the menu by tapping the three dots in the top right. Tap Security. Enter your current password and your new password. Tap Update Password.</div>
+            </div>
+            <div class="help-item" style="border-top:1px solid var(--border);padding-top:14px;">
+              <div class="help-q">Why was I logged out automatically?</div>
+              <div class="help-a">KAIZEN logs you out automatically after 2 hours of inactivity to protect your account security.</div>
+            </div>
+            <div class="help-item" style="border-top:1px solid var(--border);padding-top:14px;">
+              <div class="help-q">How do I delete my account?</div>
+              <div class="help-a">Go to the Reputation section. Scroll down to the Danger Zone and tap Delete Account. This permanently removes all your data including journal entries and discipline scores.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="help-card" data-tags="chart trading view phase 2 coming soon">
+        <div class="card">
+          <div class="card-header">
+            <h2>Chart Module</h2>
+            <span class="card-badge">Phase 2</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:14px;">
+            <div class="help-item">
+              <div class="help-q">When is the chart launching?</div>
+              <div class="help-a">The full chart module with live market data for Forex, Crypto, Stocks, Indices, Synthetics, and Commodities is coming in Phase 2. Your journal entries and onboarding profile are already preparing Kaizen AI for when the chart launches.</div>
+            </div>
+            <div class="help-item" style="border-top:1px solid var(--border);padding-top:14px;">
+              <div class="help-q">Will my chart drawings be saved?</div>
+              <div class="help-a">Yes. Drawing persistence is a core feature of Phase 2. All your trend lines, zones, and analysis will save automatically and reload when you return to any asset.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Still have questions -->
+    <div class="card" style="margin-top:2px;text-align:center;padding:40px;">
+      <h2 style="margin-bottom:12px;">Still have a question?</h2>
+      <p style="color:var(--text-secondary);font-size:0.88rem;margin-bottom:24px;">
+        Our support team responds within 24 hours.
+      </p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+        <a href="/support" class="btn-primary">Contact Support</a>
+        <a href="https://x.com/kaizenaibot" target="_blank" class="btn-outline">Message on X</a>
+      </div>
+    </div>
+
+  </main>
+  <%- include('partials/footer') %>
+  <script src="/js/app.js"></script>
+  <script>
+    function filterHelp(query) {
+      const q = query.toLowerCase();
+      document.querySelectorAll('.help-card').forEach(function(card) {
+        const tags = card.getAttribute('data-tags') || '';
+        const text = card.textContent.toLowerCase();
+        card.style.display = (tags.includes(q) || text.includes(q) || q === '')
+          ? '' : 'none';
+      });
+    }
+  </script>
+</body>
+</html>
