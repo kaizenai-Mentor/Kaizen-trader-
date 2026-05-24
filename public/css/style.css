@@ -526,11 +526,12 @@ img { max-width: 100%; }
   line-height: 0.95;
   margin-bottom: 28px;
   letter-spacing: -0.03em;
-  background: linear-gradient(135deg, var(--white) 40%, var(--gold) 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: var(--text-primary);
 }
+
+[data-theme="light"] .welcome-title {
+  color: #1A1A1A;
+} 
 
 .welcome-sub {
   font-size: 1.05rem;
