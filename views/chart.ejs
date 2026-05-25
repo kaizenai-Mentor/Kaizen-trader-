@@ -4,521 +4,469 @@
   <%- include('partials/head') %>
   <title>KAIZEN — Chart</title>
   <style>
-    body { overflow: hidden; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
-    .chart-page {
-      display: flex;
-      flex-direction: column;
-      height: 100vh;
+    body {
       background: #080808;
       overflow: hidden;
-    }
-
-    /* CHART HEADER */
-    .chart-header {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 10px 16px;
-      background: #0F0F0F;
-      border-bottom: 1px solid rgba(255,255,255,0.06);
-      flex-shrink: 0;
-      flex-wrap: wrap;
-      position: relative;
-      z-index: 50;
-    }
-
-    /* ASSET SELECTOR */
-    .asset-selector {
-      position: relative;
-    }
-
-    .asset-btn {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      background: #161616;
-      border: 1px solid rgba(201,168,76,0.25);
-      color: #F5F3EF;
-      font-family: 'DM Mono', monospace;
-      font-size: 0.82rem;
-      font-weight: 500;
-      padding: 7px 14px;
-      cursor: pointer;
-      transition: border-color 0.2s;
-      letter-spacing: 0.05em;
-      white-space: nowrap;
-    }
-
-    .asset-btn:hover { border-color: rgba(201,168,76,0.5); }
-    .asset-btn::after { content: '▾'; color: #C9A84C; margin-left: 4px; }
-
-    .asset-dropdown {
-      position: absolute;
-      top: calc(100% + 4px);
-      left: 0;
-      width: 300px;
-      background: #111;
-      border: 1px solid rgba(201,168,76,0.2);
-      box-shadow: 0 8px 32px rgba(0,0,0,0.6);
-      z-index: 200;
-      display: none;
-      max-height: 420px;
-      overflow-y: auto;
-    }
-
-    .asset-dropdown.open { display: block; }
-
-    .asset-category {
-      padding: 8px 14px 4px;
-      font-family: 'DM Mono', monospace;
-      font-size: 0.6rem;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: #C9A84C;
-      border-bottom: 1px solid rgba(255,255,255,0.04);
-    }
-
-    .asset-item {
-      padding: 9px 14px;
-      font-family: 'DM Mono', monospace;
-      font-size: 0.78rem;
-      color: #A8A09A;
-      cursor: pointer;
-      transition: background 0.15s, color 0.15s;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .asset-item:hover {
-      background: rgba(201,168,76,0.06);
-      color: #F5F3EF;
-    }
-
-    .asset-item-source {
-      font-size: 0.6rem;
-      color: rgba(168,160,154,0.5);
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-    }
-
-    /* PRICE DISPLAY */
-    .price-display {
-      display: flex;
-      align-items: baseline;
-      gap: 10px;
-    }
-
-    .chart-label {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.78rem;
-      color: #A8A09A;
-      letter-spacing: 0.06em;
-    }
-
-    #chart-price {
-      font-family: 'DM Mono', monospace;
-      font-size: 1.1rem;
-      font-weight: 600;
-      color: #F5F3EF;
-      letter-spacing: 0.02em;
-    }
-
-    #chart-change {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.78rem;
-      font-weight: 500;
-    }
-
-    /* TIMEFRAMES */
-    .tf-group {
-      display: flex;
-      gap: 2px;
-      margin-left: 4px;
-    }
-
-    .tf-btn {
-      background: #161616;
-      border: 1px solid rgba(255,255,255,0.06);
-      color: #A8A09A;
-      font-family: 'DM Mono', monospace;
-      font-size: 0.7rem;
-      padding: 5px 10px;
-      cursor: pointer;
-      transition: all 0.15s;
-      letter-spacing: 0.05em;
-    }
-
-    .tf-btn:hover { color: #C9A84C; border-color: rgba(201,168,76,0.3); }
-    .tf-btn.active { background: rgba(201,168,76,0.12); color: #C9A84C; border-color: rgba(201,168,76,0.4); }
-
-    /* STATUS */
-    #chart-status {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.65rem;
-      letter-spacing: 0.1em;
-      margin-left: auto;
-    }
-
-    /* DRAWING MODE INDICATOR */
-    #drawing-mode {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.62rem;
-      letter-spacing: 0.08em;
-      color: #C9A84C;
-      padding: 3px 10px;
-      background: rgba(201,168,76,0.08);
-      border: 1px solid rgba(201,168,76,0.2);
-    }
-
-    /* CHART BODY */
-    .chart-body {
-      display: flex;
-      flex: 1;
-      overflow: hidden;
-      position: relative;
-    }
-
-    /* TOOLS SIDEBAR */
-    .chart-tools {
-      width: 44px;
-      background: #0A0A0A;
-      border-right: 1px solid rgba(255,255,255,0.06);
+      height: 100vh;
       display: flex;
       flex-direction: column;
+    }
+
+    /* TOP BAR */
+    .chart-topbar {
+      display: flex;
       align-items: center;
-      padding: 12px 0;
-      gap: 4px;
+      justify-content: space-between;
+      padding: 10px 20px;
+      background: #0A0A0A;
+      border-bottom: 1px solid rgba(201,168,76,0.15);
       flex-shrink: 0;
+      gap: 16px;
+      flex-wrap: wrap;
       z-index: 10;
     }
 
-    .tool-btn {
-      width: 34px;
-      height: 34px;
+    .topbar-left {
       display: flex;
       align-items: center;
-      justify-content: center;
-      background: none;
-      border: 1px solid transparent;
-      color: #A8A09A;
-      cursor: pointer;
-      font-size: 0.9rem;
-      transition: all 0.15s;
-      title: attr(title);
+      gap: 16px;
     }
 
-    .tool-btn:hover {
-      background: rgba(201,168,76,0.08);
-      border-color: rgba(201,168,76,0.25);
+    .back-link {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.8rem;
       color: #C9A84C;
-    }
-
-    .tool-btn.active {
-      background: rgba(201,168,76,0.15);
-      border-color: rgba(201,168,76,0.4);
-      color: #C9A84C;
-    }
-
-    .tool-divider {
-      width: 24px;
-      height: 1px;
-      background: rgba(255,255,255,0.06);
-      margin: 4px 0;
-    }
-
-    /* MAIN CHART CANVAS */
-    #chart-container {
-      flex: 1;
-      position: relative;
-      overflow: hidden;
-    }
-
-    /* CHART FOOTER */
-    .chart-footer {
+      text-decoration: none;
+      letter-spacing: 0.08em;
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      padding: 6px 16px;
-      background: #0A0A0A;
-      border-top: 1px solid rgba(255,255,255,0.06);
+      gap: 6px;
+      transition: opacity 0.2s;
       flex-shrink: 0;
     }
+    .back-link:hover { opacity: 0.7; }
 
-    .chart-footer-left {
-      display: flex;
-      gap: 12px;
-      align-items: center;
-    }
-
-    .chart-footer-btn {
-      background: none;
-      border: 1px solid rgba(255,255,255,0.08);
-      color: #A8A09A;
+    .chart-logo {
       font-family: 'DM Mono', monospace;
-      font-size: 0.62rem;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      padding: 4px 12px;
-      cursor: pointer;
-      transition: all 0.15s;
+      font-size: 0.85rem;
+      color: #C9A84C;
+      letter-spacing: 0.1em;
+      font-weight: 500;
     }
 
-    .chart-footer-btn:hover {
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .topbar-btn {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #A8A09A;
+      background: #161616;
+      border: 1px solid rgba(255,255,255,0.08);
+      padding: 6px 14px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .topbar-btn:hover { border-color: rgba(201,168,76,0.3); color: #C9A84C; }
+    .topbar-btn-gold {
+      background: rgba(201,168,76,0.1);
       border-color: rgba(201,168,76,0.3);
       color: #C9A84C;
     }
 
-    .chart-footer-right {
+    /* CHART FRAME */
+    .chart-frame {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .chart-frame iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+    }
+
+    /* KAIZEN OVERLAY — bottom strip */
+    .kaizen-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(to top, rgba(8,8,8,0.95), transparent);
+      padding: 12px 20px 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      pointer-events: none;
+    }
+
+    .overlay-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      pointer-events: all;
+    }
+
+    .overlay-btn {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      background: rgba(8,8,8,0.9);
+      border: 1px solid rgba(201,168,76,0.3);
+      color: #C9A84C;
+      padding: 6px 14px;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .overlay-btn:hover { background: rgba(201,168,76,0.1); }
+
+    .discipline-pill {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.08em;
+      background: rgba(8,8,8,0.9);
+      border: 1px solid rgba(201,168,76,0.2);
+      color: #A8A09A;
+      padding: 6px 14px;
+      pointer-events: all;
+    }
+
+    .discipline-pill span {
+      color: #C9A84C;
+      font-weight: 600;
+    }
+
+    .overlay-right {
       font-family: 'DM Mono', monospace;
       font-size: 0.6rem;
       letter-spacing: 0.1em;
-      color: rgba(201,168,76,0.3);
+      color: rgba(201,168,76,0.25);
       text-transform: uppercase;
     }
 
-    /* CLICK HINT */
-    .click-hint {
-      position: absolute;
-      bottom: 50px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: rgba(0,0,0,0.8);
-      border: 1px solid rgba(201,168,76,0.3);
-      color: #C9A84C;
-      font-family: 'DM Mono', monospace;
-      font-size: 0.7rem;
-      letter-spacing: 0.08em;
-      padding: 7px 16px;
-      pointer-events: none;
+    /* SESSION LOG MODAL */
+    .log-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.85);
+      z-index: 500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
       opacity: 0;
+      pointer-events: none;
       transition: opacity 0.3s;
-      white-space: nowrap;
-      z-index: 20;
+      backdrop-filter: blur(4px);
     }
 
-    .click-hint.visible { opacity: 1; }
+    .log-modal.open {
+      opacity: 1;
+      pointer-events: all;
+    }
 
-    /* MOBILE RESPONSIVE */
-    @media (max-width: 768px) {
-      .chart-header { padding: 8px 10px; gap: 8px; }
-      .tf-group { display: none; }
-      .chart-tools { width: 36px; }
-      .tool-btn { width: 28px; height: 28px; font-size: 0.8rem; }
-      #chart-price { font-size: 0.9rem; }
-      .asset-dropdown { width: 240px; }
+    .log-modal-card {
+      background: #111;
+      border: 1px solid rgba(201,168,76,0.25);
+      width: 100%;
+      max-width: 500px;
+      max-height: 85vh;
+      overflow-y: auto;
+      position: relative;
+    }
+
+    .log-modal-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #C9A84C, transparent);
+    }
+
+    .log-modal-header {
+      padding: 20px 24px 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .log-modal-header h3 {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.8rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #C9A84C;
+    }
+
+    .log-modal-close {
+      background: none;
+      border: none;
+      color: #A8A09A;
+      font-size: 1.4rem;
+      cursor: pointer;
+      line-height: 1;
+      padding: 0 4px;
+      transition: color 0.2s;
+    }
+    .log-modal-close:hover { color: #F5F3EF; }
+
+    .log-modal-body { padding: 20px 24px; }
+
+    .log-form {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .log-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #A8A09A;
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .log-input, .log-textarea, .log-select {
+      width: 100%;
+      background: #161616;
+      border: 1px solid rgba(255,255,255,0.08);
+      color: #F5F3EF;
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.88rem;
+      padding: 10px 14px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .log-input:focus,
+    .log-textarea:focus,
+    .log-select:focus { border-color: #C9A84C; }
+
+    .log-textarea { min-height: 120px; resize: vertical; line-height: 1.7; }
+
+    .log-compliance {
+      display: flex;
+      gap: 10px;
+    }
+
+    .compliance-opt {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: #161616;
+      cursor: pointer;
+      text-align: center;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #A8A09A;
+      transition: all 0.2s;
+      position: relative;
+    }
+
+    .compliance-opt input {
+      position: absolute;
+      opacity: 0;
+      width: 0; height: 0;
+    }
+
+    .compliance-opt:has(input:checked),
+    .compliance-opt.selected {
+      border-color: rgba(201,168,76,0.4);
+      background: rgba(201,168,76,0.08);
+      color: #C9A84C;
+    }
+
+    .compliance-opt-no:has(input:checked),
+    .compliance-opt-no.selected {
+      border-color: rgba(248,113,113,0.4);
+      background: rgba(248,113,113,0.06);
+      color: #F87171;
+    }
+
+    .log-submit {
+      background: #C9A84C;
+      color: #000;
+      border: none;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.75rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-weight: 700;
+      padding: 14px;
+      width: 100%;
+      cursor: pointer;
+      transition: background 0.2s;
+      margin-top: 4px;
+    }
+    .log-submit:hover { background: #E2C46A; }
+
+    /* MOBILE */
+    @media (max-width: 600px) {
+      .chart-topbar { padding: 8px 14px; }
+      .chart-logo { display: none; }
+      .kaizen-overlay { padding: 10px 14px 8px; }
     }
   </style>
 </head>
+
 <body>
 
-<!-- CHART LAYOUT — fullscreen, no regular navbar -->
-<div class="chart-page">
-
-  <!-- HEADER -->
-  <div class="chart-header">
-
-    <!-- Back + Logo -->
-    <a href="/dashboard" style="font-family:monospace;font-size:0.8rem;color:#C9A84C;letter-spacing:0.08em;text-decoration:none;flex-shrink:0;">
-      改 ←
-    </a>
-
-    <!-- Asset Selector -->
-    <div class="asset-selector">
-      <button class="asset-btn" onclick="toggleAssetDropdown()">
-        <span id="chart-label">BTC/USDT</span>
+  <!-- TOP BAR -->
+  <div class="chart-topbar">
+    <div class="topbar-left">
+      <a href="/dashboard" class="back-link">← 改</a>
+      <span class="chart-logo">KAIZEN Chart</span>
+    </div>
+    <div class="topbar-right">
+      <button class="topbar-btn topbar-btn-gold" onclick="openLogModal()">
+        + Log Session
       </button>
+      <a href="/dashboard/journal" class="topbar-btn">Journal</a>
+      <a href="/za/bounties" class="topbar-btn">Bounties</a>
+      <a href="/dashboard" class="topbar-btn">Dashboard</a>
+    </div>
+  </div>
 
-      <div class="asset-dropdown" id="asset-dropdown">
+  <!-- CHART FRAME -->
+  <div class="chart-frame">
 
-        <div class="asset-category">Crypto</div>
-        <% assets.crypto.forEach(a => { %>
-          <div class="asset-item"
-            onclick="selectAsset('<%= a.symbol %>', '<%= a.source %>', '<%= a.label %>')">
-            <%= a.label %>
-            <span class="asset-item-source">Bybit</span>
+    <!-- TradingView Full Widget -->
+    <iframe
+      id="tv-widget"
+      src="https://s.tradingview.com/widgetsnippets/embed/symbol-overview-full/?symbol=BINANCE%3ABTCUSDT&interval=60&theme=dark&style=1&locale=en&toolbar_bg=%23080808&enable_publishing=false&hide_top_toolbar=false&save_image=true&container_id=tv_chart"
+      allowfullscreen>
+    </iframe>
+
+    <!-- KAIZEN Overlay Strip -->
+    <div class="kaizen-overlay">
+      <div class="overlay-left">
+        <button class="overlay-btn" onclick="openLogModal()">
+          + Log This Session
+        </button>
+        <div class="discipline-pill">
+          Discipline Score: <span><%= user.disciplineScore || 0 %>/100</span>
+        </div>
+      </div>
+      <div class="overlay-right">改 KAIZEN · Trade Better. Every Day.</div>
+    </div>
+
+  </div>
+
+  <!-- SESSION LOG MODAL -->
+  <div class="log-modal" id="logModal">
+    <div class="log-modal-card">
+      <div class="log-modal-header">
+        <h3>Log This Session</h3>
+        <button class="log-modal-close" onclick="closeLogModal()">×</button>
+      </div>
+      <div class="log-modal-body">
+        <form action="/dashboard/journal" method="POST" class="log-form">
+
+          <div>
+            <label class="log-label">Asset Analyzed</label>
+            <input type="text" name="asset" class="log-input"
+              id="session-asset" placeholder="e.g. BTC/USDT, EUR/USD" required>
           </div>
-        <% }); %>
 
-        <div class="asset-category">Forex</div>
-        <% assets.forex.forEach(a => { %>
-          <div class="asset-item"
-            onclick="selectAsset('<%= a.symbol %>', '<%= a.source %>', '<%= a.label %>')">
-            <%= a.label %>
-            <span class="asset-item-source">Live</span>
+          <div>
+            <label class="log-label">Session Type</label>
+            <div class="log-compliance">
+              <label class="compliance-opt" id="opt-live">
+                <input type="radio" name="direction" value="Live Trade" required>
+                Live Trade
+              </label>
+              <label class="compliance-opt" id="opt-back">
+                <input type="radio" name="direction" value="Backtesting">
+                Backtesting
+              </label>
+            </div>
           </div>
-        <% }); %>
 
-        <div class="asset-category">Stocks</div>
-        <% assets.stocks.forEach(a => { %>
-          <div class="asset-item"
-            onclick="selectAsset('<%= a.symbol %>', '<%= a.source %>', '<%= a.label %>')">
-            <%= a.label %>
-            <span class="asset-item-source">Live</span>
+          <div>
+            <label class="log-label">Session Notes</label>
+            <textarea name="notes" class="log-textarea"
+              placeholder="What did you see? What did you do? What did you feel? Did you follow your rules? Write honestly — Kaizen AI reads this."
+              required></textarea>
           </div>
-        <% }); %>
 
-        <div class="asset-category">Indices</div>
-        <% assets.indices.forEach(a => { %>
-          <div class="asset-item"
-            onclick="selectAsset('<%= a.symbol %>', '<%= a.source %>', '<%= a.label %>')">
-            <%= a.label %>
-            <span class="asset-item-source">Live</span>
+          <div>
+            <label class="log-label">Did you follow ALL your rules?</label>
+            <div class="log-compliance">
+              <label class="compliance-opt" id="opt-yes">
+                <input type="radio" name="ruleCompliance" value="true" required>
+                Yes — Compliant
+              </label>
+              <label class="compliance-opt compliance-opt-no" id="opt-no">
+                <input type="radio" name="ruleCompliance" value="false">
+                No — Violated
+              </label>
+            </div>
           </div>
-        <% }); %>
 
-        <div class="asset-category">Synthetic</div>
-        <% assets.synthetic.forEach(a => { %>
-          <div class="asset-item"
-            onclick="selectAsset('<%= a.symbol %>', '<%= a.source %>', '<%= a.label %>')">
-            <%= a.label %>
-            <span class="asset-item-source">Simulated</span>
-          </div>
-        <% }); %>
+          <input type="hidden" name="timeframe" value="Chart Session">
+          <input type="hidden" name="outcome" value="Pending">
+          <input type="hidden" name="emotion" value="Logged from Chart">
+          <input type="hidden" name="sessionScore" value="50">
 
-        <div class="asset-category">Commodities</div>
-        <% assets.commodities.forEach(a => { %>
-          <div class="asset-item"
-            onclick="selectAsset('<%= a.symbol %>', '<%= a.source %>', '<%= a.label %>')">
-            <%= a.label %>
-            <span class="asset-item-source">Live</span>
-          </div>
-        <% }); %>
-
+          <button type="submit" class="log-submit">Save Session Entry</button>
+        </form>
       </div>
     </div>
-
-    <!-- Price -->
-    <div class="price-display">
-      <span id="chart-price">—</span>
-      <span id="chart-change">—</span>
-    </div>
-
-    <!-- Timeframes -->
-    <div class="tf-group">
-      <button class="tf-btn" data-tf="1">1m</button>
-      <button class="tf-btn" data-tf="5">5m</button>
-      <button class="tf-btn" data-tf="15">15m</button>
-      <button class="tf-btn" data-tf="30">30m</button>
-      <button class="tf-btn active" data-tf="60">1H</button>
-      <button class="tf-btn" data-tf="240">4H</button>
-      <button class="tf-btn" data-tf="D">1D</button>
-      <button class="tf-btn" data-tf="W">1W</button>
-    </div>
-
-    <!-- Drawing mode indicator -->
-    <div id="drawing-mode"></div>
-
-    <!-- Status -->
-    <span id="chart-status">Initializing...</span>
-
   </div>
 
-  <!-- CHART BODY -->
-  <div class="chart-body">
-
-    <!-- Drawing Tools -->
-    <div class="chart-tools">
-
-      <!-- Cursor -->
-      <button class="tool-btn active" data-tool="" title="Cursor"
-        onclick="KAIZEN_CHART.setDrawingMode(null);document.querySelectorAll('[data-tool]').forEach(b=>b.classList.remove('active'));this.classList.add('active')">
-        ✛
-      </button>
-
-      <div class="tool-divider"></div>
-
-      <!-- Horizontal Line -->
-      <button class="tool-btn" data-tool="hline" title="Horizontal Line">
-        —
-      </button>
-
-      <!-- Trend Line -->
-      <button class="tool-btn" data-tool="tline" title="Trend Line (click 2 points)">
-        ╱
-      </button>
-
-      <!-- Fibonacci -->
-      <button class="tool-btn" data-tool="fib" title="Fibonacci Retracement (click 2 points)">
-        φ
-      </button>
-
-      <div class="tool-divider"></div>
-
-      <!-- Clear -->
-      <button class="tool-btn" id="clear-drawings" title="Clear All Drawings"
-        style="color:#F87171;font-size:0.75rem;">
-        ✕
-      </button>
-
-      <div class="tool-divider"></div>
-
-      <!-- Fit -->
-      <button class="tool-btn" id="fit-chart" title="Fit to Screen">
-        ⊡
-      </button>
-
-    </div>
-
-    <!-- Chart Canvas -->
-    <div id="chart-container"></div>
-
-    <!-- Click hint overlay -->
-    <div class="click-hint" id="click-hint">Click on chart to place</div>
-
-  </div>
-
-  <!-- FOOTER -->
-  <div class="chart-footer">
-    <div class="chart-footer-left">
-      <a href="/dashboard/journal" class="chart-footer-btn">Log Session</a>
-      <a href="/dashboard" class="chart-footer-btn">Dashboard</a>
-      <a href="/za/bounties" class="chart-footer-btn">Bounties</a>
-    </div>
-    <div class="chart-footer-right">改 KAIZEN · Trade Better. Every Day.</div>
-  </div>
-
-</div>
-
-<!-- TradingView Lightweight Charts CDN -->
-<script src="https://unpkg.com/lightweight-charts@4.1.3/dist/lightweight-charts.standalone.production.js"></script>
-<!-- KAIZEN Chart Engine -->
-<script src="/js/chart.js"></script>
-<script src="/js/app.js"></script>
-
-<script>
-  // Close dropdown when clicking outside
-  document.addEventListener('click', function(e) {
-    const dd = document.getElementById('asset-dropdown');
-    const btn = document.querySelector('.asset-btn');
-    if (dd && !dd.contains(e.target) && e.target !== btn && !btn.contains(e.target)) {
-      dd.classList.remove('open');
+  <script src="/js/app.js"></script>
+  <script>
+    function openLogModal() {
+      document.getElementById('logModal').classList.add('open');
+      document.body.style.overflow = 'hidden';
     }
-  });
 
-  // Show click hint when drawing mode is active
-  const origSetMode = KAIZEN_CHART.setDrawingMode.bind(KAIZEN_CHART);
-  KAIZEN_CHART.setDrawingMode = function(mode) {
-    origSetMode(mode);
-    const hint = document.getElementById('click-hint');
-    if (hint) {
-      if (mode === 'hline') {
-        hint.textContent = 'Click anywhere on the chart to draw a horizontal level';
-        hint.classList.add('visible');
-      } else if (mode === 'tline') {
-        hint.textContent = 'Click 2 points to draw a trend line';
-        hint.classList.add('visible');
-      } else if (mode === 'fib') {
-        hint.textContent = 'Click 2 points to draw Fibonacci retracement';
-        hint.classList.add('visible');
-      } else {
-        hint.classList.remove('visible');
-      }
-      if (mode) setTimeout(() => hint.classList.remove('visible'), 4000);
+    function closeLogModal() {
+      document.getElementById('logModal').classList.remove('open');
+      document.body.style.overflow = '';
     }
-  };
-</script>
+
+    // Close on overlay click
+    document.getElementById('logModal').addEventListener('click', function(e) {
+      if (e.target === this) closeLogModal();
+    });
+
+    // Style radio options
+    document.querySelectorAll('.compliance-opt input').forEach(function(input) {
+      input.addEventListener('change', function() {
+        const name = this.getAttribute('name');
+        document.querySelectorAll(`.compliance-opt input[name="${name}"]`).forEach(function(i) {
+          i.closest('.compliance-opt').classList.remove('selected');
+        });
+        this.closest('.compliance-opt').classList.add('selected');
+      });
+    });
+  </script>
 
 </body>
 </html>
