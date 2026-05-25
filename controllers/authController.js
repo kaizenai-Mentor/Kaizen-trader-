@@ -13,7 +13,7 @@ const getRegister = (req, res) => {
   res.render('register', { error: null, step: 'form' });
 };
 
-// POST /auth/register — Step 1: collect details, send OTP
+// POST /auth/register — Step 1: collect details
 const postRegister = async (req, res) => {
   try {
     const { username, email, password, confirmPassword } = req.body;
@@ -62,64 +62,6 @@ const postRegister = async (req, res) => {
   }
 };
 
-    // Store pending registration in session
-    const otp = generateOTP();
-    req.session.pendingUser = {
-      username,
-      email,
-      password,
-      tradingStyle: { traderType, experience, markets, timeframes, riskPerTrade },
-      otp,
-      otpExpiresAt: Date.now() + 10 * 60 * 1000
-    };
-
-    // Send OTP
-    await sendOTPEmail(email, otp);
-
-    res.render('register', {
-      error: null,
-      step: 'otp',
-      email: email
-    });
-
-  } catch (error) {
-    console.error('Register error:', error);
-    res.render('register', {
-      error: 'Something went wrong. Please try again.',
-      step: 'form'
-    });
-  }
-};
-
-// POST /auth/verify-otp
-const verifyOTP = async (req, res) => {
-  try {
-    const { otp1, otp2, otp3 } = req.body;
-    const enteredOTP = `${otp1}${otp2}${otp3}`;
-    const pending = req.session.pendingUser;
-
-    if (!pending) {
-      return res.render('register', {
-        error: 'Session expired. Please register again.',
-        step: 'form'
-      });
-    }
-
-    if (Date.now() > pending.otpExpiresAt) {
-      return res.render('register', {
-        error: 'OTP expired. Please register again.',
-        step: 'form'
-      });
-    }
-
-    if (enteredOTP !== pending.otp) {
-      return res.render('register', {
-        error: 'Incorrect code. Please try again.',
-        step: 'otp',
-        email: pending.email
-      });
-    }
-
     // Create user
     const user = await User.create({
       username: pending.username,
@@ -132,9 +74,6 @@ const verifyOTP = async (req, res) => {
 
     // Clear pending
     delete req.session.pendingUser;
-
-    // Send welcome email
-    await sendWelcomeEmail(user.email, user.username);
 
     // Create session
     req.session.user = {
@@ -150,15 +89,6 @@ const verifyOTP = async (req, res) => {
   step: 'questions',
   questionNum: 1
 });
-
-  } catch (error) {
-    console.error('OTP verify error:', error);
-    res.render('register', {
-      error: 'Verification failed. Please try again.',
-      step: 'form'
-    });
-  }
-};
 
 // GET /auth/login
 const getLogin = (req, res) => {
