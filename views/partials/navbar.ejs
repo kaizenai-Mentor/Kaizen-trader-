@@ -35,9 +35,6 @@
       <button class="popup-item" onclick="openModal('themeModal')">
         <span class="popup-item-icon">▪</span> Dark / Light Mode
       </button>
-      <button class="popup-item" onclick="openModal('securityModal')">
-        <span class="popup-item-icon">▪</span> Security
-      </button>
       <button class="popup-item" onclick="openModal('languageModal')">
         <span class="popup-item-icon">▪</span> Language
       </button>
@@ -97,12 +94,9 @@
       <a href="/auth/login" class="btn-primary btn-full">Log In</a>
       <a href="/auth/register" class="btn-outline btn-full">Sign Up</a>
     </div>
-
     <div class="popup-section">
      <div class="popup-section-label">Settings</div>
-     <button class="popup-item" onclick="openModal('languageModal')">
-       <span class="popup-item-icon">▪</span> Language
-     </button>
+     
      <button class="popup-item" onclick="toggleTheme()">
        <span class="popup-item-icon">▪</span> Dark / Light Mode
      </button>
@@ -190,27 +184,6 @@
         </p>
         <button class="btn-outline btn-full">Enable 2FA — Coming Soon</button>
       </div>
-    </div>
-  </div>
-</div>
-
-<!-- LANGUAGE MODAL -->
-<div class="modal-overlay" id="languageModal">
-  <div class="modal">
-    <div class="modal-header">
-      <h3>Language</h3>
-      <button class="modal-close" onclick="closeModal('languageModal')">×</button>
-    </div>
-    <div class="modal-body">
-      <p style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:20px;line-height:1.7;">
-        KAIZEN supports 100+ languages powered by Google Translate.
-        Use the selector in the navigation bar to switch language instantly.
-        Every page including onboarding questions will be translated automatically.
-      </p>
-      <div id="gt_element_modal"></div>
-      <p style="font-size:0.72rem;color:var(--ash);margin-top:16px;font-family:var(--font-mono);letter-spacing:0.06em;">
-        Translation is applied globally across the entire platform.
-      </p>
     </div>
   </div>
 </div>
