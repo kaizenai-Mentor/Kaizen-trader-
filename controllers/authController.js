@@ -16,40 +16,51 @@ const getRegister = (req, res) => {
 // POST /auth/register — Step 1: collect details, send OTP
 const postRegister = async (req, res) => {
   try {
-    const { username, email, password, confirmPassword,
-      traderType, experience, markets, timeframes, riskPerTrade } = req.body;
+    const { username, email, password, confirmPassword } = req.body;
 
     if (!username || !email || !password || !confirmPassword) {
-      return res.render('register', {
-        error: 'All fields are required',
-        step: 'form'
-      });
+      return res.render('register', { error: 'All fields are required', step: 'form' });
     }
-
     if (password !== confirmPassword) {
-      return res.render('register', {
-        error: 'Passwords do not match',
-        step: 'form'
-      });
+      return res.render('register', { error: 'Passwords do not match', step: 'form' });
     }
-
     if (password.length < 6) {
-      return res.render('register', {
-        error: 'Password must be at least 6 characters',
-        step: 'form'
-      });
+      return res.render('register', { error: 'Password must be at least 6 characters', step: 'form' });
     }
 
-    const existingUser = await User.findOne({
-      $or: [{ email }, { username }]
+    const existingUser = await User.findOne({ $or: [{ email }, { username }] });
+    if (existingUser) {
+      return res.render('register', { error: 'Email or username already taken', step: 'form' });
+    }
+
+    const user = await User.create({
+      username,
+      email,
+      password,
+      isVerified: true,
+      authMethod: 'password'
     });
 
-    if (existingUser) {
-      return res.render('register', {
-        error: 'Email or username already taken',
-        step: 'form'
-      });
-    }
+    req.session.user = {
+      id: user._id,
+      username: user.username,
+      email: user.email,
+      disciplineScore: user.disciplineScore,
+      streak: user.streak
+    };
+
+    // Go straight to onboarding questions
+    return res.render('register', {
+      error: null,
+      step: 'questions',
+      questionNum: 1
+    });
+
+  } catch (error) {
+    console.error('Register error:', error);
+    res.render('register', { error: 'Something went wrong. Please try again.', step: 'form' });
+  }
+};
 
     // Store pending registration in session
     const otp = generateOTP();
