@@ -141,6 +141,8 @@ const zaRoutes = require('./routes/za');
 app.use('/auth', authRoutes);
 app.use('/dashboard', dashboardRoutes);
 app.use('/za', zaRoutes);
+const chartRoutes = require('./routes/chart');
+app.use('/chart', chartRoutes);
 
 app.get('/', (req, res) => {
   if (req.session.user) return res.redirect('/dashboard');
