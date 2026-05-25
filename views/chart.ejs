@@ -3,43 +3,522 @@
 <head>
   <%- include('partials/head') %>
   <title>KAIZEN — Chart</title>
+  <style>
+    body { overflow: hidden; }
+
+    .chart-page {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      background: #080808;
+      overflow: hidden;
+    }
+
+    /* CHART HEADER */
+    .chart-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 16px;
+      background: #0F0F0F;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      flex-shrink: 0;
+      flex-wrap: wrap;
+      position: relative;
+      z-index: 50;
+    }
+
+    /* ASSET SELECTOR */
+    .asset-selector {
+      position: relative;
+    }
+
+    .asset-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #161616;
+      border: 1px solid rgba(201,168,76,0.25);
+      color: #F5F3EF;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.82rem;
+      font-weight: 500;
+      padding: 7px 14px;
+      cursor: pointer;
+      transition: border-color 0.2s;
+      letter-spacing: 0.05em;
+      white-space: nowrap;
+    }
+
+    .asset-btn:hover { border-color: rgba(201,168,76,0.5); }
+    .asset-btn::after { content: '▾'; color: #C9A84C; margin-left: 4px; }
+
+    .asset-dropdown {
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      width: 300px;
+      background: #111;
+      border: 1px solid rgba(201,168,76,0.2);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+      z-index: 200;
+      display: none;
+      max-height: 420px;
+      overflow-y: auto;
+    }
+
+    .asset-dropdown.open { display: block; }
+
+    .asset-category {
+      padding: 8px 14px 4px;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #C9A84C;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+
+    .asset-item {
+      padding: 9px 14px;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.78rem;
+      color: #A8A09A;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .asset-item:hover {
+      background: rgba(201,168,76,0.06);
+      color: #F5F3EF;
+    }
+
+    .asset-item-source {
+      font-size: 0.6rem;
+      color: rgba(168,160,154,0.5);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    /* PRICE DISPLAY */
+    .price-display {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+    }
+
+    .chart-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.78rem;
+      color: #A8A09A;
+      letter-spacing: 0.06em;
+    }
+
+    #chart-price {
+      font-family: 'DM Mono', monospace;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #F5F3EF;
+      letter-spacing: 0.02em;
+    }
+
+    #chart-change {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.78rem;
+      font-weight: 500;
+    }
+
+    /* TIMEFRAMES */
+    .tf-group {
+      display: flex;
+      gap: 2px;
+      margin-left: 4px;
+    }
+
+    .tf-btn {
+      background: #161616;
+      border: 1px solid rgba(255,255,255,0.06);
+      color: #A8A09A;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      padding: 5px 10px;
+      cursor: pointer;
+      transition: all 0.15s;
+      letter-spacing: 0.05em;
+    }
+
+    .tf-btn:hover { color: #C9A84C; border-color: rgba(201,168,76,0.3); }
+    .tf-btn.active { background: rgba(201,168,76,0.12); color: #C9A84C; border-color: rgba(201,168,76,0.4); }
+
+    /* STATUS */
+    #chart-status {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      margin-left: auto;
+    }
+
+    /* DRAWING MODE INDICATOR */
+    #drawing-mode {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.08em;
+      color: #C9A84C;
+      padding: 3px 10px;
+      background: rgba(201,168,76,0.08);
+      border: 1px solid rgba(201,168,76,0.2);
+    }
+
+    /* CHART BODY */
+    .chart-body {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* TOOLS SIDEBAR */
+    .chart-tools {
+      width: 44px;
+      background: #0A0A0A;
+      border-right: 1px solid rgba(255,255,255,0.06);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 12px 0;
+      gap: 4px;
+      flex-shrink: 0;
+      z-index: 10;
+    }
+
+    .tool-btn {
+      width: 34px;
+      height: 34px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: none;
+      border: 1px solid transparent;
+      color: #A8A09A;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all 0.15s;
+      title: attr(title);
+    }
+
+    .tool-btn:hover {
+      background: rgba(201,168,76,0.08);
+      border-color: rgba(201,168,76,0.25);
+      color: #C9A84C;
+    }
+
+    .tool-btn.active {
+      background: rgba(201,168,76,0.15);
+      border-color: rgba(201,168,76,0.4);
+      color: #C9A84C;
+    }
+
+    .tool-divider {
+      width: 24px;
+      height: 1px;
+      background: rgba(255,255,255,0.06);
+      margin: 4px 0;
+    }
+
+    /* MAIN CHART CANVAS */
+    #chart-container {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* CHART FOOTER */
+    .chart-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 16px;
+      background: #0A0A0A;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      flex-shrink: 0;
+    }
+
+    .chart-footer-left {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .chart-footer-btn {
+      background: none;
+      border: 1px solid rgba(255,255,255,0.08);
+      color: #A8A09A;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .chart-footer-btn:hover {
+      border-color: rgba(201,168,76,0.3);
+      color: #C9A84C;
+    }
+
+    .chart-footer-right {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.1em;
+      color: rgba(201,168,76,0.3);
+      text-transform: uppercase;
+    }
+
+    /* CLICK HINT */
+    .click-hint {
+      position: absolute;
+      bottom: 50px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.8);
+      border: 1px solid rgba(201,168,76,0.3);
+      color: #C9A84C;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.08em;
+      padding: 7px 16px;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.3s;
+      white-space: nowrap;
+      z-index: 20;
+    }
+
+    .click-hint.visible { opacity: 1; }
+
+    /* MOBILE RESPONSIVE */
+    @media (max-width: 768px) {
+      .chart-header { padding: 8px 10px; gap: 8px; }
+      .tf-group { display: none; }
+      .chart-tools { width: 36px; }
+      .tool-btn { width: 28px; height: 28px; font-size: 0.8rem; }
+      #chart-price { font-size: 0.9rem; }
+      .asset-dropdown { width: 240px; }
+    }
+  </style>
 </head>
-<body class="app-page">
+<body>
 
-  <%- include('partials/navbar') %>
+<!-- CHART LAYOUT — fullscreen, no regular navbar -->
+<div class="chart-page">
 
-  <main class="app-main">
+  <!-- HEADER -->
+  <div class="chart-header">
 
-    <div class="page-header">
-      <div>
-        <h1 style="color:var(--gold);">Live Charts</h1>
-        <p class="page-sub">Real-time market analysis — Coming in Phase 2</p>
+    <!-- Back + Logo -->
+    <a href="/dashboard" style="font-family:monospace;font-size:0.8rem;color:#C9A84C;letter-spacing:0.08em;text-decoration:none;flex-shrink:0;">
+      改 ←
+    </a>
+
+    <!-- Asset Selector -->
+    <div class="asset-selector">
+      <button class="asset-btn" onclick="toggleAssetDropdown()">
+        <span id="chart-label">BTC/USDT</span>
+      </button>
+
+      <div class="asset-dropdown" id="asset-dropdown">
+
+        <div class="asset-category">Crypto</div>
+        <% assets.crypto.forEach(a => { %>
+          <div class="asset-item"
+            onclick="selectAsset('<%= a.symbol %>', '<%= a.source %>', '<%= a.label %>')">
+            <%= a.label %>
+            <span class="asset-item-source">Bybit</span>
+          </div>
+        <% }); %>
+
+        <div class="asset-category">Forex</div>
+        <% assets.forex.forEach(a => { %>
+          <div class="asset-item"
+            onclick="selectAsset('<%= a.symbol %>', '<%= a.source %>', '<%= a.label %>')">
+            <%= a.label %>
+            <span class="asset-item-source">Live</span>
+          </div>
+        <% }); %>
+
+        <div class="asset-category">Stocks</div>
+        <% assets.stocks.forEach(a => { %>
+          <div class="asset-item"
+            onclick="selectAsset('<%= a.symbol %>', '<%= a.source %>', '<%= a.label %>')">
+            <%= a.label %>
+            <span class="asset-item-source">Live</span>
+          </div>
+        <% }); %>
+
+        <div class="asset-category">Indices</div>
+        <% assets.indices.forEach(a => { %>
+          <div class="asset-item"
+            onclick="selectAsset('<%= a.symbol %>', '<%= a.source %>', '<%= a.label %>')">
+            <%= a.label %>
+            <span class="asset-item-source">Live</span>
+          </div>
+        <% }); %>
+
+        <div class="asset-category">Synthetic</div>
+        <% assets.synthetic.forEach(a => { %>
+          <div class="asset-item"
+            onclick="selectAsset('<%= a.symbol %>', '<%= a.source %>', '<%= a.label %>')">
+            <%= a.label %>
+            <span class="asset-item-source">Simulated</span>
+          </div>
+        <% }); %>
+
+        <div class="asset-category">Commodities</div>
+        <% assets.commodities.forEach(a => { %>
+          <div class="asset-item"
+            onclick="selectAsset('<%= a.symbol %>', '<%= a.source %>', '<%= a.label %>')">
+            <%= a.label %>
+            <span class="asset-item-source">Live</span>
+          </div>
+        <% }); %>
+
       </div>
-      <a href="/dashboard" class="btn-outline">← Dashboard</a>
     </div>
 
-    <div class="card" style="text-align:center;padding:80px 40px;">
-      <div style="font-size:3rem;margin-bottom:24px;color:var(--gold);font-family:var(--font-mono);">
-        [CHART]
-      </div>
-      <h2 style="margin-bottom:16px;font-size:1.4rem;color:var(--gold);">
-        Chart Module — Phase 2
-      </h2>
-      <p style="color:var(--text-secondary);max-width:500px;margin:0 auto 16px;font-size:0.9rem;line-height:1.8;">
-        Full TradingView-style charting with drawing tools,
-        real-time Bybit data, and Kaizen AI pop-up analysis
-        is coming in Phase 2.
-      </p>
-      <p style="color:var(--text-secondary);max-width:500px;margin:0 auto 32px;font-size:0.9rem;line-height:1.8;">
-        For now, log your sessions manually through the
-        Journal section and let Kaizen track your discipline.
-      </p>
-      <a href="/dashboard/journal" class="btn-primary">Open Journal</a>
+    <!-- Price -->
+    <div class="price-display">
+      <span id="chart-price">—</span>
+      <span id="chart-change">—</span>
     </div>
 
-  </main>
+    <!-- Timeframes -->
+    <div class="tf-group">
+      <button class="tf-btn" data-tf="1">1m</button>
+      <button class="tf-btn" data-tf="5">5m</button>
+      <button class="tf-btn" data-tf="15">15m</button>
+      <button class="tf-btn" data-tf="30">30m</button>
+      <button class="tf-btn active" data-tf="60">1H</button>
+      <button class="tf-btn" data-tf="240">4H</button>
+      <button class="tf-btn" data-tf="D">1D</button>
+      <button class="tf-btn" data-tf="W">1W</button>
+    </div>
 
-  <%- include('partials/footer') %>
-  <script src="/js/app.js"></script>
+    <!-- Drawing mode indicator -->
+    <div id="drawing-mode"></div>
+
+    <!-- Status -->
+    <span id="chart-status">Initializing...</span>
+
+  </div>
+
+  <!-- CHART BODY -->
+  <div class="chart-body">
+
+    <!-- Drawing Tools -->
+    <div class="chart-tools">
+
+      <!-- Cursor -->
+      <button class="tool-btn active" data-tool="" title="Cursor"
+        onclick="KAIZEN_CHART.setDrawingMode(null);document.querySelectorAll('[data-tool]').forEach(b=>b.classList.remove('active'));this.classList.add('active')">
+        ✛
+      </button>
+
+      <div class="tool-divider"></div>
+
+      <!-- Horizontal Line -->
+      <button class="tool-btn" data-tool="hline" title="Horizontal Line">
+        —
+      </button>
+
+      <!-- Trend Line -->
+      <button class="tool-btn" data-tool="tline" title="Trend Line (click 2 points)">
+        ╱
+      </button>
+
+      <!-- Fibonacci -->
+      <button class="tool-btn" data-tool="fib" title="Fibonacci Retracement (click 2 points)">
+        φ
+      </button>
+
+      <div class="tool-divider"></div>
+
+      <!-- Clear -->
+      <button class="tool-btn" id="clear-drawings" title="Clear All Drawings"
+        style="color:#F87171;font-size:0.75rem;">
+        ✕
+      </button>
+
+      <div class="tool-divider"></div>
+
+      <!-- Fit -->
+      <button class="tool-btn" id="fit-chart" title="Fit to Screen">
+        ⊡
+      </button>
+
+    </div>
+
+    <!-- Chart Canvas -->
+    <div id="chart-container"></div>
+
+    <!-- Click hint overlay -->
+    <div class="click-hint" id="click-hint">Click on chart to place</div>
+
+  </div>
+
+  <!-- FOOTER -->
+  <div class="chart-footer">
+    <div class="chart-footer-left">
+      <a href="/dashboard/journal" class="chart-footer-btn">Log Session</a>
+      <a href="/dashboard" class="chart-footer-btn">Dashboard</a>
+      <a href="/za/bounties" class="chart-footer-btn">Bounties</a>
+    </div>
+    <div class="chart-footer-right">改 KAIZEN · Trade Better. Every Day.</div>
+  </div>
+
+</div>
+
+<!-- TradingView Lightweight Charts CDN -->
+<script src="https://unpkg.com/lightweight-charts@4.1.3/dist/lightweight-charts.standalone.production.js"></script>
+<!-- KAIZEN Chart Engine -->
+<script src="/js/chart.js"></script>
+<script src="/js/app.js"></script>
+
+<script>
+  // Close dropdown when clicking outside
+  document.addEventListener('click', function(e) {
+    const dd = document.getElementById('asset-dropdown');
+    const btn = document.querySelector('.asset-btn');
+    if (dd && !dd.contains(e.target) && e.target !== btn && !btn.contains(e.target)) {
+      dd.classList.remove('open');
+    }
+  });
+
+  // Show click hint when drawing mode is active
+  const origSetMode = KAIZEN_CHART.setDrawingMode.bind(KAIZEN_CHART);
+  KAIZEN_CHART.setDrawingMode = function(mode) {
+    origSetMode(mode);
+    const hint = document.getElementById('click-hint');
+    if (hint) {
+      if (mode === 'hline') {
+        hint.textContent = 'Click anywhere on the chart to draw a horizontal level';
+        hint.classList.add('visible');
+      } else if (mode === 'tline') {
+        hint.textContent = 'Click 2 points to draw a trend line';
+        hint.classList.add('visible');
+      } else if (mode === 'fib') {
+        hint.textContent = 'Click 2 points to draw Fibonacci retracement';
+        hint.classList.add('visible');
+      } else {
+        hint.classList.remove('visible');
+      }
+      if (mode) setTimeout(() => hint.classList.remove('visible'), 4000);
+    }
+  };
+</script>
+
 </body>
 </html>
