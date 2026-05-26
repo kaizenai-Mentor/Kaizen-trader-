@@ -585,6 +585,7 @@ img { max-width: 100%; }
   align-items: center;
   justify-content: center;
   padding: 40px 24px;
+  width: 100%;
 }
 
 .auth-card {
@@ -592,9 +593,10 @@ img { max-width: 100%; }
   border: 1px solid var(--border);
   padding: 40px 36px;
   width: 100%;
-  max-width: 420px;
+  max-width: 440px;
   position: relative;
   box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  margin: 0 auto;
 }
 
 .auth-card::before {
@@ -602,8 +604,9 @@ img { max-width: 100%; }
   position: absolute;
   top: 0; left: 0; right: 0;
   height: 2px;
-  background: linear-gradient(90deg, transparent, var(--gold), transparent);
-    } 
+  background: linear-gradient(90deg,
+    transparent, var(--gold), transparent);
+} 
 
 .auth-header {
   text-align: center;
