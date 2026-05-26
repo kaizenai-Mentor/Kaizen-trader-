@@ -1,11 +1,4 @@
 const User = require('../models/User');
-const crypto = require('crypto');
-const { sendWelcomeEmail, sendOTPEmail } = require('../config/email');
-
-// Generate 3-digit OTP
-const generateOTP = () => {
-  return Math.floor(100 + Math.random() * 900).toString();
-};
 
 // GET /auth/register
 const getRegister = (req, res) => {
@@ -13,24 +6,41 @@ const getRegister = (req, res) => {
   res.render('register', { error: null, step: 'form' });
 };
 
-// POST /auth/register — Step 1: collect details
+// POST /auth/register
 const postRegister = async (req, res) => {
   try {
     const { username, email, password, confirmPassword } = req.body;
 
     if (!username || !email || !password || !confirmPassword) {
-      return res.render('register', { error: 'All fields are required', step: 'form' });
-    }
-    if (password !== confirmPassword) {
-      return res.render('register', { error: 'Passwords do not match', step: 'form' });
-    }
-    if (password.length < 6) {
-      return res.render('register', { error: 'Password must be at least 6 characters', step: 'form' });
+      return res.render('register', {
+        error: 'All fields are required',
+        step: 'form'
+      });
     }
 
-    const existingUser = await User.findOne({ $or: [{ email }, { username }] });
+    if (password !== confirmPassword) {
+      return res.render('register', {
+        error: 'Passwords do not match',
+        step: 'form'
+      });
+    }
+
+    if (password.length < 6) {
+      return res.render('register', {
+        error: 'Password must be at least 6 characters',
+        step: 'form'
+      });
+    }
+
+    const existingUser = await User.findOne({
+      $or: [{ email }, { username }]
+    });
+
     if (existingUser) {
-      return res.render('register', { error: 'Email or username already taken', step: 'form' });
+      return res.render('register', {
+        error: 'Email or username already taken',
+        step: 'form'
+      });
     }
 
     const user = await User.create({
@@ -49,7 +59,6 @@ const postRegister = async (req, res) => {
       streak: user.streak
     };
 
-    // Go straight to onboarding questions
     return res.render('register', {
       error: null,
       step: 'questions',
@@ -58,37 +67,81 @@ const postRegister = async (req, res) => {
 
   } catch (error) {
     console.error('Register error:', error);
-    res.render('register', { error: 'Something went wrong. Please try again.', step: 'form' });
+    res.render('register', {
+      error: 'Something went wrong. Please try again.',
+      step: 'form'
+    });
   }
 };
 
-    // Create user
-    const user = await User.create({
-      username: pending.username,
-      email: pending.email,
-      password: pending.password,
-      tradingStyle: pending.tradingStyle,
-      isVerified: true,
-      authMethod: 'password'
+// POST /auth/verify-otp — kept for route compatibility but skipped
+const verifyOTP = (req, res) => {
+  res.redirect('/auth/register');
+};
+
+// POST /auth/onboarding
+const handleOnboarding = async (req, res) => {
+  try {
+    const { questionNum } = req.body;
+    const currentQ = parseInt(questionNum);
+
+    if (!req.session.onboarding) {
+      req.session.onboarding = {};
+    }
+
+    if (currentQ === 1) {
+      req.session.onboarding.riskPerTrade = req.body.riskPerTrade;
+      req.session.onboarding.dailyDrawdown = req.body.dailyDrawdown;
+    } else if (currentQ === 2) {
+      req.session.onboarding.tradingEdge = req.body.tradingEdge;
+    } else if (currentQ === 3) {
+      req.session.onboarding.entryRule = req.body.entryRule;
+      req.session.onboarding.stopLossRule = req.body.stopLossRule;
+      req.session.onboarding.takeProfitRule = req.body.takeProfitRule;
+    } else if (currentQ === 4) {
+      const triggers = req.body.emotionalTriggers;
+      req.session.onboarding.emotionalTriggers = Array.isArray(triggers)
+        ? triggers.join(', ')
+        : triggers || '';
+    } else if (currentQ === 5) {
+      const markets = req.body.markets;
+      req.session.onboarding.maxDailyTrades = req.body.maxDailyTrades;
+      req.session.onboarding.markets = Array.isArray(markets)
+        ? markets.join(', ')
+        : markets || '';
+      req.session.onboarding.maxPositionSize = req.body.maxPositionSize;
+
+      await User.findByIdAndUpdate(req.session.user.id, {
+        tradingStyle: {
+          riskPerTrade: req.session.onboarding.riskPerTrade,
+          dailyDrawdown: req.session.onboarding.dailyDrawdown,
+          tradingEdge: req.session.onboarding.tradingEdge,
+          entryRule: req.session.onboarding.entryRule,
+          stopLossRule: req.session.onboarding.stopLossRule,
+          takeProfitRule: req.session.onboarding.takeProfitRule,
+          emotionalTriggers: req.session.onboarding.emotionalTriggers,
+          maxDailyTrades: req.session.onboarding.maxDailyTrades,
+          markets: req.session.onboarding.markets,
+          maxPositionSize: req.session.onboarding.maxPositionSize
+        }
+      });
+
+      delete req.session.onboarding;
+      return res.redirect('/dashboard');
+    }
+
+    const nextQ = currentQ + 1;
+    return res.render('register', {
+      error: null,
+      step: 'questions',
+      questionNum: nextQ
     });
 
-    // Clear pending
-    delete req.session.pendingUser;
-
-    // Create session
-    req.session.user = {
-      id: user._id,
-      username: user.username,
-      email: user.email,
-      disciplineScore: user.disciplineScore,
-      streak: user.streak
-    };
-
-    return res.render('register', {
-  error: null,
-  step: 'questions',
-  questionNum: 1
-});
+  } catch (error) {
+    console.error('Onboarding error:', error);
+    res.redirect('/dashboard');
+  }
+};
 
 // GET /auth/login
 const getLogin = (req, res) => {
@@ -170,10 +223,9 @@ const changePassword = async (req, res) => {
 const deleteAccount = async (req, res) => {
   try {
     const userId = req.session.user.id;
+    const Journal = require('../models/Journal');
 
     await User.findByIdAndDelete(userId);
-
-    const Journal = require('../models/Journal');
     await Journal.deleteMany({ userId });
 
     req.session.destroy();
@@ -181,73 +233,6 @@ const deleteAccount = async (req, res) => {
 
   } catch (error) {
     console.error('Delete account error:', error);
-    res.redirect('/dashboard');
-  }
-};
-
-// POST /auth/onboarding — handle questions one at a time
-const handleOnboarding = async (req, res) => {
-  try {
-    const { questionNum } = req.body;
-    const currentQ = parseInt(questionNum);
-
-    if (!req.session.onboarding) {
-      req.session.onboarding = {};
-    }
-
-    // Save current question answer
-    if (currentQ === 1) {
-      req.session.onboarding.riskPerTrade = req.body.riskPerTrade;
-      req.session.onboarding.dailyDrawdown = req.body.dailyDrawdown;
-    } else if (currentQ === 2) {
-      req.session.onboarding.tradingEdge = req.body.tradingEdge;
-    } else if (currentQ === 3) {
-      req.session.onboarding.entryRule = req.body.entryRule;
-      req.session.onboarding.stopLossRule = req.body.stopLossRule;
-      req.session.onboarding.takeProfitRule = req.body.takeProfitRule;
-    } else if (currentQ === 4) {
-      const triggers = req.body.emotionalTriggers;
-      req.session.onboarding.emotionalTriggers = Array.isArray(triggers)
-        ? triggers.join(', ')
-        : triggers || '';
-    } else if (currentQ === 5) {
-      const markets = req.body.markets;
-      req.session.onboarding.maxDailyTrades = req.body.maxDailyTrades;
-      req.session.onboarding.markets = Array.isArray(markets)
-        ? markets.join(', ')
-        : markets || '';
-      req.session.onboarding.maxPositionSize = req.body.maxPositionSize;
-
-      // All questions done — save to user
-      await User.findByIdAndUpdate(req.session.user.id, {
-        tradingStyle: {
-          riskPerTrade: req.session.onboarding.riskPerTrade,
-          dailyDrawdown: req.session.onboarding.dailyDrawdown,
-          tradingEdge: req.session.onboarding.tradingEdge,
-          entryRule: req.session.onboarding.entryRule,
-          stopLossRule: req.session.onboarding.stopLossRule,
-          takeProfitRule: req.session.onboarding.takeProfitRule,
-          emotionalTriggers: req.session.onboarding.emotionalTriggers,
-          maxDailyTrades: req.session.onboarding.maxDailyTrades,
-          markets: req.session.onboarding.markets,
-          maxPositionSize: req.session.onboarding.maxPositionSize
-        }
-      });
-
-      delete req.session.onboarding;
-      return res.redirect('/dashboard');
-    }
-
-    // Show next question
-    const nextQ = currentQ + 1;
-    return res.render('register', {
-      error: null,
-      step: 'questions',
-      questionNum: nextQ
-    });
-
-  } catch (error) {
-    console.error('Onboarding error:', error);
     res.redirect('/dashboard');
   }
 };
