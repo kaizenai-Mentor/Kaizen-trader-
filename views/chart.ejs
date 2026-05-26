@@ -12,18 +12,18 @@
       height: 100vh;
       display: flex;
       flex-direction: column;
+      font-family: 'Outfit', sans-serif;
     }
 
-    /* TOP BAR */
     .chart-topbar {
       display: flex;
       align-items: center;
       justify-content: space-between;
       padding: 10px 20px;
       background: #0A0A0A;
-      border-bottom: 1px solid rgba(201,168,76,0.15);
+      border-bottom: 1px solid rgba(201,168,76,0.18);
       flex-shrink: 0;
-      gap: 16px;
+      gap: 12px;
       flex-wrap: wrap;
       z-index: 10;
     }
@@ -31,12 +31,12 @@
     .topbar-left {
       display: flex;
       align-items: center;
-      gap: 16px;
+      gap: 14px;
     }
 
     .back-link {
       font-family: 'DM Mono', monospace;
-      font-size: 0.8rem;
+      font-size: 0.85rem;
       color: #C9A84C;
       text-decoration: none;
       letter-spacing: 0.08em;
@@ -44,52 +44,70 @@
       align-items: center;
       gap: 6px;
       transition: opacity 0.2s;
-      flex-shrink: 0;
     }
     .back-link:hover { opacity: 0.7; }
 
     .chart-logo {
       font-family: 'DM Mono', monospace;
-      font-size: 0.85rem;
-      color: #C9A84C;
+      font-size: 0.82rem;
+      color: rgba(201,168,76,0.6);
       letter-spacing: 0.1em;
-      font-weight: 500;
     }
 
     .topbar-right {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
       flex-wrap: wrap;
     }
 
     .topbar-btn {
       font-family: 'DM Mono', monospace;
-      font-size: 0.65rem;
+      font-size: 0.62rem;
       letter-spacing: 0.1em;
       text-transform: uppercase;
       color: #A8A09A;
       background: #161616;
-      border: 1px solid rgba(255,255,255,0.08);
-      padding: 6px 14px;
+      border: 1px solid rgba(255,255,255,0.07);
+      padding: 7px 14px;
       cursor: pointer;
       text-decoration: none;
       display: inline-block;
       transition: all 0.2s;
       white-space: nowrap;
     }
-    .topbar-btn:hover { border-color: rgba(201,168,76,0.3); color: #C9A84C; }
-    .topbar-btn-gold {
-      background: rgba(201,168,76,0.1);
-      border-color: rgba(201,168,76,0.3);
+    .topbar-btn:hover {
+      border-color: rgba(201,168,76,0.35);
       color: #C9A84C;
     }
+    .topbar-btn-gold {
+      background: rgba(201,168,76,0.1);
+      border-color: rgba(201,168,76,0.35);
+      color: #C9A84C;
+    }
+    .topbar-btn-gold:hover {
+      background: rgba(201,168,76,0.18);
+    }
 
-    /* CHART FRAME */
+    .discipline-badge {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.08em;
+      color: #A8A09A;
+      background: #111;
+      border: 1px solid rgba(201,168,76,0.15);
+      padding: 7px 14px;
+      white-space: nowrap;
+    }
+    .discipline-badge span {
+      color: #C9A84C;
+      font-weight: 600;
+    }
+
     .chart-frame {
       flex: 1;
-      position: relative;
       overflow: hidden;
+      position: relative;
     }
 
     .chart-frame iframe {
@@ -99,76 +117,11 @@
       display: block;
     }
 
-    /* KAIZEN OVERLAY — bottom strip */
-    .kaizen-overlay {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: linear-gradient(to top, rgba(8,8,8,0.95), transparent);
-      padding: 12px 20px 10px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 10px;
-      pointer-events: none;
-    }
-
-    .overlay-left {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      pointer-events: all;
-    }
-
-    .overlay-btn {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.62rem;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      background: rgba(8,8,8,0.9);
-      border: 1px solid rgba(201,168,76,0.3);
-      color: #C9A84C;
-      padding: 6px 14px;
-      cursor: pointer;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      transition: all 0.2s;
-    }
-    .overlay-btn:hover { background: rgba(201,168,76,0.1); }
-
-    .discipline-pill {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.62rem;
-      letter-spacing: 0.08em;
-      background: rgba(8,8,8,0.9);
-      border: 1px solid rgba(201,168,76,0.2);
-      color: #A8A09A;
-      padding: 6px 14px;
-      pointer-events: all;
-    }
-
-    .discipline-pill span {
-      color: #C9A84C;
-      font-weight: 600;
-    }
-
-    .overlay-right {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.6rem;
-      letter-spacing: 0.1em;
-      color: rgba(201,168,76,0.25);
-      text-transform: uppercase;
-    }
-
-    /* SESSION LOG MODAL */
+    /* LOG MODAL */
     .log-modal {
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,0.85);
+      background: rgba(0,0,0,0.88);
       z-index: 500;
       display: flex;
       align-items: center;
@@ -177,25 +130,23 @@
       opacity: 0;
       pointer-events: none;
       transition: opacity 0.3s;
-      backdrop-filter: blur(4px);
+      backdrop-filter: blur(6px);
     }
-
     .log-modal.open {
       opacity: 1;
       pointer-events: all;
     }
 
-    .log-modal-card {
+    .log-card {
       background: #111;
       border: 1px solid rgba(201,168,76,0.25);
       width: 100%;
-      max-width: 500px;
-      max-height: 85vh;
+      max-width: 480px;
+      max-height: 88vh;
       overflow-y: auto;
       position: relative;
     }
-
-    .log-modal-card::before {
+    .log-card::before {
       content: '';
       position: absolute;
       top: 0; left: 0; right: 0;
@@ -203,35 +154,32 @@
       background: linear-gradient(90deg, transparent, #C9A84C, transparent);
     }
 
-    .log-modal-header {
-      padding: 20px 24px 16px;
+    .log-header {
+      padding: 18px 22px 14px;
       border-bottom: 1px solid rgba(255,255,255,0.06);
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
-
-    .log-modal-header h3 {
+    .log-header h3 {
       font-family: 'DM Mono', monospace;
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       letter-spacing: 0.12em;
       text-transform: uppercase;
       color: #C9A84C;
     }
-
-    .log-modal-close {
+    .log-close {
       background: none;
       border: none;
       color: #A8A09A;
       font-size: 1.4rem;
       cursor: pointer;
       line-height: 1;
-      padding: 0 4px;
       transition: color 0.2s;
     }
-    .log-modal-close:hover { color: #F5F3EF; }
+    .log-close:hover { color: #F5F3EF; }
 
-    .log-modal-body { padding: 20px 24px; }
+    .log-body { padding: 20px 22px; }
 
     .log-form {
       display: flex;
@@ -241,18 +189,18 @@
 
     .log-label {
       font-family: 'DM Mono', monospace;
-      font-size: 0.62rem;
-      letter-spacing: 0.12em;
+      font-size: 0.6rem;
+      letter-spacing: 0.14em;
       text-transform: uppercase;
       color: #A8A09A;
       display: block;
-      margin-bottom: 5px;
+      margin-bottom: 6px;
     }
 
-    .log-input, .log-textarea, .log-select {
+    .log-input, .log-textarea {
       width: 100%;
       background: #161616;
-      border: 1px solid rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.07);
       color: #F5F3EF;
       font-family: 'Outfit', sans-serif;
       font-size: 0.88rem;
@@ -260,49 +208,37 @@
       outline: none;
       transition: border-color 0.2s;
     }
-
-    .log-input:focus,
-    .log-textarea:focus,
-    .log-select:focus { border-color: #C9A84C; }
-
-    .log-textarea { min-height: 120px; resize: vertical; line-height: 1.7; }
-
-    .log-compliance {
-      display: flex;
-      gap: 10px;
+    .log-input:focus, .log-textarea:focus { border-color: #C9A84C; }
+    .log-textarea {
+      min-height: 110px;
+      resize: vertical;
+      line-height: 1.7;
     }
 
-    .compliance-opt {
+    .log-row { display: flex; gap: 10px; }
+
+    .log-opt {
       flex: 1;
       padding: 10px;
-      border: 1px solid rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.07);
       background: #161616;
       cursor: pointer;
       text-align: center;
       font-family: 'DM Mono', monospace;
-      font-size: 0.65rem;
+      font-size: 0.62rem;
       letter-spacing: 0.08em;
       text-transform: uppercase;
       color: #A8A09A;
       transition: all 0.2s;
-      position: relative;
     }
-
-    .compliance-opt input {
-      position: absolute;
-      opacity: 0;
-      width: 0; height: 0;
-    }
-
-    .compliance-opt:has(input:checked),
-    .compliance-opt.selected {
-      border-color: rgba(201,168,76,0.4);
+    .log-opt:hover { border-color: rgba(201,168,76,0.3); color: #C9A84C; }
+    .log-opt input { display: none; }
+    .log-opt.selected-gold {
+      border-color: rgba(201,168,76,0.45);
       background: rgba(201,168,76,0.08);
       color: #C9A84C;
     }
-
-    .compliance-opt-no:has(input:checked),
-    .compliance-opt-no.selected {
+    .log-opt.selected-red {
       border-color: rgba(248,113,113,0.4);
       background: rgba(248,113,113,0.06);
       color: #F87171;
@@ -313,7 +249,7 @@
       color: #000;
       border: none;
       font-family: 'DM Mono', monospace;
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       letter-spacing: 0.12em;
       text-transform: uppercase;
       font-weight: 700;
@@ -325,15 +261,13 @@
     }
     .log-submit:hover { background: #E2C46A; }
 
-    /* MOBILE */
     @media (max-width: 600px) {
-      .chart-topbar { padding: 8px 14px; }
+      .chart-topbar { padding: 8px 12px; }
       .chart-logo { display: none; }
-      .kaizen-overlay { padding: 10px 14px 8px; }
+      .discipline-badge { display: none; }
     }
   </style>
 </head>
-
 <body>
 
   <!-- TOP BAR -->
@@ -343,7 +277,10 @@
       <span class="chart-logo">KAIZEN Chart</span>
     </div>
     <div class="topbar-right">
-      <button class="topbar-btn topbar-btn-gold" onclick="openLogModal()">
+      <div class="discipline-badge">
+        Score: <span><%= user.disciplineScore || 0 %>/100</span>
+      </div>
+      <button class="topbar-btn topbar-btn-gold" onclick="openLog()">
         + Log Session
       </button>
       <a href="/dashboard/journal" class="topbar-btn">Journal</a>
@@ -352,79 +289,63 @@
     </div>
   </div>
 
-  <!-- CHART FRAME -->
+  <!-- TRADINGVIEW CHART -->
   <div class="chart-frame">
-
-    <!-- TradingView Full Widget -->
     <iframe
-      id="tv-widget"
-      src="https://s.tradingview.com/widgetsnippets/embed/symbol-overview-full/?symbol=BINANCE%3ABTCUSDT&interval=60&theme=dark&style=1&locale=en&toolbar_bg=%23080808&enable_publishing=false&hide_top_toolbar=false&save_image=true&container_id=tv_chart"
-      allowfullscreen>
+      src="https://s.tradingview.com/widgetsnippets/embed/advanced-chart/?symbol=BINANCE%3ABTCUSDT&interval=60&theme=dark&style=1&locale=en&enable_publishing=false&allow_symbol_change=true&save_image=true&hide_volume=false&support_host=https%3A%2F%2Fwww.tradingview.com"
+      allowfullscreen
+      allow="autoplay; fullscreen">
     </iframe>
-
-    <!-- KAIZEN Overlay Strip -->
-    <div class="kaizen-overlay">
-      <div class="overlay-left">
-        <button class="overlay-btn" onclick="openLogModal()">
-          + Log This Session
-        </button>
-        <div class="discipline-pill">
-          Discipline Score: <span><%= user.disciplineScore || 0 %>/100</span>
-        </div>
-      </div>
-      <div class="overlay-right">改 KAIZEN · Trade Better. Every Day.</div>
-    </div>
-
   </div>
 
-  <!-- SESSION LOG MODAL -->
+  <!-- LOG SESSION MODAL -->
   <div class="log-modal" id="logModal">
-    <div class="log-modal-card">
-      <div class="log-modal-header">
+    <div class="log-card">
+      <div class="log-header">
         <h3>Log This Session</h3>
-        <button class="log-modal-close" onclick="closeLogModal()">×</button>
+        <button class="log-close" onclick="closeLog()">×</button>
       </div>
-      <div class="log-modal-body">
+      <div class="log-body">
         <form action="/dashboard/journal" method="POST" class="log-form">
 
           <div>
             <label class="log-label">Asset Analyzed</label>
             <input type="text" name="asset" class="log-input"
-              id="session-asset" placeholder="e.g. BTC/USDT, EUR/USD" required>
+              placeholder="e.g. BTC/USDT, EUR/USD, GOLD" required>
           </div>
 
           <div>
             <label class="log-label">Session Type</label>
-            <div class="log-compliance">
-              <label class="compliance-opt" id="opt-live">
+            <div class="log-row">
+              <div class="log-opt" id="opt-live" onclick="selectOpt(this,'direction','Live Trade','gold')">
                 <input type="radio" name="direction" value="Live Trade" required>
                 Live Trade
-              </label>
-              <label class="compliance-opt" id="opt-back">
+              </div>
+              <div class="log-opt" id="opt-back" onclick="selectOpt(this,'direction','Backtesting','gold')">
                 <input type="radio" name="direction" value="Backtesting">
                 Backtesting
-              </label>
+              </div>
             </div>
           </div>
 
           <div>
             <label class="log-label">Session Notes</label>
             <textarea name="notes" class="log-textarea"
-              placeholder="What did you see? What did you do? What did you feel? Did you follow your rules? Write honestly — Kaizen AI reads this."
+              placeholder="What did you see? What trade did you take and why? How did you feel? Did you follow your rules? Be completely honest — Kaizen AI learns from this."
               required></textarea>
           </div>
 
           <div>
             <label class="log-label">Did you follow ALL your rules?</label>
-            <div class="log-compliance">
-              <label class="compliance-opt" id="opt-yes">
+            <div class="log-row">
+              <div class="log-opt" id="opt-yes" onclick="selectOpt(this,'ruleCompliance','true','gold')">
                 <input type="radio" name="ruleCompliance" value="true" required>
                 Yes — Compliant
-              </label>
-              <label class="compliance-opt compliance-opt-no" id="opt-no">
+              </div>
+              <div class="log-opt" id="opt-no" onclick="selectOpt(this,'ruleCompliance','false','red')">
                 <input type="radio" name="ruleCompliance" value="false">
                 No — Violated
-              </label>
+              </div>
             </div>
           </div>
 
@@ -441,31 +362,32 @@
 
   <script src="/js/app.js"></script>
   <script>
-    function openLogModal() {
+    function openLog() {
       document.getElementById('logModal').classList.add('open');
-      document.body.style.overflow = 'hidden';
     }
 
-    function closeLogModal() {
+    function closeLog() {
       document.getElementById('logModal').classList.remove('open');
-      document.body.style.overflow = '';
     }
 
-    // Close on overlay click
     document.getElementById('logModal').addEventListener('click', function(e) {
-      if (e.target === this) closeLogModal();
+      if (e.target === this) closeLog();
     });
 
-    // Style radio options
-    document.querySelectorAll('.compliance-opt input').forEach(function(input) {
-      input.addEventListener('change', function() {
-        const name = this.getAttribute('name');
-        document.querySelectorAll(`.compliance-opt input[name="${name}"]`).forEach(function(i) {
-          i.closest('.compliance-opt').classList.remove('selected');
-        });
-        this.closest('.compliance-opt').classList.add('selected');
+    function selectOpt(el, name, value, color) {
+      // Unselect all in group
+      document.querySelectorAll('.log-opt').forEach(function(o) {
+        const input = o.querySelector('input');
+        if (input && input.name === name) {
+          o.classList.remove('selected-gold', 'selected-red');
+          input.checked = false;
+        }
       });
-    });
+      // Select this one
+      el.classList.add(color === 'gold' ? 'selected-gold' : 'selected-red');
+      const input = el.querySelector('input');
+      if (input) input.checked = true;
+    }
   </script>
 
 </body>
