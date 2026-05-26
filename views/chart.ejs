@@ -40,17 +40,13 @@
       color: #C9A84C;
       text-decoration: none;
       letter-spacing: 0.08em;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      transition: opacity 0.2s;
     }
     .back-link:hover { opacity: 0.7; }
 
     .chart-logo {
       font-family: 'DM Mono', monospace;
-      font-size: 0.82rem;
-      color: rgba(201,168,76,0.6);
+      font-size: 0.8rem;
+      color: rgba(201,168,76,0.55);
       letter-spacing: 0.1em;
     }
 
@@ -76,17 +72,12 @@
       transition: all 0.2s;
       white-space: nowrap;
     }
-    .topbar-btn:hover {
-      border-color: rgba(201,168,76,0.35);
-      color: #C9A84C;
-    }
+    .topbar-btn:hover { border-color: rgba(201,168,76,0.35); color: #C9A84C; }
+
     .topbar-btn-gold {
       background: rgba(201,168,76,0.1);
       border-color: rgba(201,168,76,0.35);
       color: #C9A84C;
-    }
-    .topbar-btn-gold:hover {
-      background: rgba(201,168,76,0.18);
     }
 
     .discipline-badge {
@@ -99,22 +90,18 @@
       padding: 7px 14px;
       white-space: nowrap;
     }
-    .discipline-badge span {
-      color: #C9A84C;
-      font-weight: 600;
-    }
+    .discipline-badge span { color: #C9A84C; font-weight: 600; }
 
+    /* CHART CONTAINER */
     .chart-frame {
       flex: 1;
-      overflow: hidden;
       position: relative;
+      overflow: hidden;
     }
 
-    .chart-frame iframe {
+    #tv-chart-container {
       width: 100%;
       height: 100%;
-      border: none;
-      display: block;
     }
 
     /* LOG MODAL */
@@ -132,10 +119,7 @@
       transition: opacity 0.3s;
       backdrop-filter: blur(6px);
     }
-    .log-modal.open {
-      opacity: 1;
-      pointer-events: all;
-    }
+    .log-modal.open { opacity: 1; pointer-events: all; }
 
     .log-card {
       background: #111;
@@ -180,12 +164,7 @@
     .log-close:hover { color: #F5F3EF; }
 
     .log-body { padding: 20px 22px; }
-
-    .log-form {
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
+    .log-form { display: flex; flex-direction: column; gap: 14px; }
 
     .log-label {
       font-family: 'DM Mono', monospace;
@@ -209,11 +188,7 @@
       transition: border-color 0.2s;
     }
     .log-input:focus, .log-textarea:focus { border-color: #C9A84C; }
-    .log-textarea {
-      min-height: 110px;
-      resize: vertical;
-      line-height: 1.7;
-    }
+    .log-textarea { min-height: 110px; resize: vertical; line-height: 1.7; }
 
     .log-row { display: flex; gap: 10px; }
 
@@ -233,16 +208,8 @@
     }
     .log-opt:hover { border-color: rgba(201,168,76,0.3); color: #C9A84C; }
     .log-opt input { display: none; }
-    .log-opt.selected-gold {
-      border-color: rgba(201,168,76,0.45);
-      background: rgba(201,168,76,0.08);
-      color: #C9A84C;
-    }
-    .log-opt.selected-red {
-      border-color: rgba(248,113,113,0.4);
-      background: rgba(248,113,113,0.06);
-      color: #F87171;
-    }
+    .log-opt.sel-gold { border-color: rgba(201,168,76,0.45); background: rgba(201,168,76,0.08); color: #C9A84C; }
+    .log-opt.sel-red { border-color: rgba(248,113,113,0.4); background: rgba(248,113,113,0.06); color: #F87171; }
 
     .log-submit {
       background: #C9A84C;
@@ -289,16 +256,12 @@
     </div>
   </div>
 
-  <!-- TRADINGVIEW CHART -->
+  <!-- CHART -->
   <div class="chart-frame">
-    <iframe
-      src="https://s.tradingview.com/widgetsnippets/embed/advanced-chart/?symbol=BINANCE%3ABTCUSDT&interval=60&theme=dark&style=1&locale=en&enable_publishing=false&allow_symbol_change=true&save_image=true&hide_volume=false&support_host=https%3A%2F%2Fwww.tradingview.com"
-      allowfullscreen
-      allow="autoplay; fullscreen">
-    </iframe>
+    <div id="tv-chart-container"></div>
   </div>
 
-  <!-- LOG SESSION MODAL -->
+  <!-- LOG MODAL -->
   <div class="log-modal" id="logModal">
     <div class="log-card">
       <div class="log-header">
@@ -307,61 +270,84 @@
       </div>
       <div class="log-body">
         <form action="/dashboard/journal" method="POST" class="log-form">
-
           <div>
             <label class="log-label">Asset Analyzed</label>
             <input type="text" name="asset" class="log-input"
               placeholder="e.g. BTC/USDT, EUR/USD, GOLD" required>
           </div>
-
           <div>
             <label class="log-label">Session Type</label>
             <div class="log-row">
-              <div class="log-opt" id="opt-live" onclick="selectOpt(this,'direction','Live Trade','gold')">
+              <div class="log-opt" onclick="pickOpt(this,'direction','Live Trade','gold')">
                 <input type="radio" name="direction" value="Live Trade" required>
                 Live Trade
               </div>
-              <div class="log-opt" id="opt-back" onclick="selectOpt(this,'direction','Backtesting','gold')">
+              <div class="log-opt" onclick="pickOpt(this,'direction','Backtesting','gold')">
                 <input type="radio" name="direction" value="Backtesting">
                 Backtesting
               </div>
             </div>
           </div>
-
           <div>
             <label class="log-label">Session Notes</label>
             <textarea name="notes" class="log-textarea"
-              placeholder="What did you see? What trade did you take and why? How did you feel? Did you follow your rules? Be completely honest — Kaizen AI learns from this."
+              placeholder="What did you see? What trade did you take and why? How did you feel? Did you follow your rules? Be completely honest."
               required></textarea>
           </div>
-
           <div>
             <label class="log-label">Did you follow ALL your rules?</label>
             <div class="log-row">
-              <div class="log-opt" id="opt-yes" onclick="selectOpt(this,'ruleCompliance','true','gold')">
+              <div class="log-opt" onclick="pickOpt(this,'ruleCompliance','true','gold')">
                 <input type="radio" name="ruleCompliance" value="true" required>
                 Yes — Compliant
               </div>
-              <div class="log-opt" id="opt-no" onclick="selectOpt(this,'ruleCompliance','false','red')">
+              <div class="log-opt" onclick="pickOpt(this,'ruleCompliance','false','red')">
                 <input type="radio" name="ruleCompliance" value="false">
                 No — Violated
               </div>
             </div>
           </div>
-
           <input type="hidden" name="timeframe" value="Chart Session">
           <input type="hidden" name="outcome" value="Pending">
           <input type="hidden" name="emotion" value="Logged from Chart">
           <input type="hidden" name="sessionScore" value="50">
-
           <button type="submit" class="log-submit">Save Session Entry</button>
         </form>
       </div>
     </div>
   </div>
 
-  <script src="/js/app.js"></script>
+  <!-- TradingView Widget Script -->
+  <script type="text/javascript"
+    src="https://s3.tradingview.com/tv.js">
+  </script>
+
   <script>
+    // Init TradingView Widget
+    new TradingView.widget({
+      container_id: 'tv-chart-container',
+      width: '100%',
+      height: '100%',
+      symbol: 'BINANCE:BTCUSDT',
+      interval: '60',
+      timezone: 'Etc/UTC',
+      theme: 'dark',
+      style: '1',
+      locale: 'en',
+      toolbar_bg: '#080808',
+      enable_publishing: false,
+      allow_symbol_change: true,
+      hide_top_toolbar: false,
+      hide_legend: false,
+      save_image: true,
+      studies: [],
+      show_popup_button: false,
+      popup_width: '1000',
+      popup_height: '650',
+      no_referral_id: true
+    });
+
+    // Modal functions
     function openLog() {
       document.getElementById('logModal').classList.add('open');
     }
@@ -374,21 +360,20 @@
       if (e.target === this) closeLog();
     });
 
-    function selectOpt(el, name, value, color) {
-      // Unselect all in group
+    function pickOpt(el, name, value, color) {
       document.querySelectorAll('.log-opt').forEach(function(o) {
-        const input = o.querySelector('input');
-        if (input && input.name === name) {
-          o.classList.remove('selected-gold', 'selected-red');
-          input.checked = false;
+        const inp = o.querySelector('input');
+        if (inp && inp.name === name) {
+          o.classList.remove('sel-gold', 'sel-red');
+          inp.checked = false;
         }
       });
-      // Select this one
-      el.classList.add(color === 'gold' ? 'selected-gold' : 'selected-red');
-      const input = el.querySelector('input');
-      if (input) input.checked = true;
+      el.classList.add(color === 'gold' ? 'sel-gold' : 'sel-red');
+      const inp = el.querySelector('input');
+      if (inp) inp.checked = true;
     }
   </script>
 
+  <script src="/js/app.js"></script>
 </body>
 </html>
