@@ -15,18 +15,17 @@
       font-family: 'Outfit', sans-serif;
     }
 
-    /* ── TOP BAR ── */
     .chart-topbar {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 16px;
-      height: 48px;
+      padding: 10px 20px;
       background: #0A0A0A;
       border-bottom: 1px solid rgba(201,168,76,0.18);
       flex-shrink: 0;
-      gap: 10px;
-      z-index: 20;
+      gap: 12px;
+      flex-wrap: wrap;
+      z-index: 10;
     }
 
     .topbar-left {
@@ -41,699 +40,76 @@
       color: #C9A84C;
       text-decoration: none;
       letter-spacing: 0.08em;
-      transition: opacity 0.2s;
     }
     .back-link:hover { opacity: 0.7; }
 
-    .chart-title {
+    .chart-logo {
       font-family: 'DM Mono', monospace;
-      font-size: 0.78rem;
-      color: #C9A84C;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      font-weight: 500;
+      font-size: 0.8rem;
+      color: rgba(201,168,76,0.55);
+      letter-spacing: 0.1em;
     }
-
-    .discipline-badge {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.6rem;
-      letter-spacing: 0.08em;
-      color: #A8A09A;
-      background: rgba(201,168,76,0.06);
-      border: 1px solid rgba(201,168,76,0.15);
-      padding: 5px 12px;
-      white-space: nowrap;
-    }
-    .discipline-badge span { color: #C9A84C; font-weight: 600; }
 
     .topbar-right {
       display: flex;
       align-items: center;
       gap: 8px;
+      flex-wrap: wrap;
     }
 
-    /* Icon buttons in topbar */
-    .icon-btn {
-      width: 32px;
-      height: 32px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: none;
-      border: 1px solid rgba(255,255,255,0.07);
-      color: #A8A09A;
-      cursor: pointer;
-      font-size: 0.9rem;
-      transition: all 0.2s;
-      text-decoration: none;
-      flex-shrink: 0;
-      position: relative;
-    }
-    .icon-btn:hover {
-      border-color: rgba(201,168,76,0.35);
-      color: #C9A84C;
-    }
-    .icon-btn.active {
-      background: rgba(201,168,76,0.1);
-      border-color: rgba(201,168,76,0.4);
-      color: #C9A84C;
-    }
-
-    .icon-btn-tooltip {
-      position: absolute;
-      bottom: -28px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: #1A1A1A;
-      border: 1px solid rgba(255,255,255,0.08);
-      color: #A8A09A;
-      font-family: 'DM Mono', monospace;
-      font-size: 0.58rem;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      padding: 3px 8px;
-      white-space: nowrap;
-      pointer-events: none;
-      opacity: 0;
-      transition: opacity 0.2s;
-      z-index: 100;
-    }
-    .icon-btn:hover .icon-btn-tooltip { opacity: 1; }
-
-    .log-btn {
-      background: rgba(201,168,76,0.1);
-      border: 1px solid rgba(201,168,76,0.35);
-      color: #C9A84C;
-      font-family: 'DM Mono', monospace;
-      font-size: 0.6rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      padding: 6px 14px;
-      cursor: pointer;
-      white-space: nowrap;
-      height: 32px;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      transition: all 0.2s;
-    }
-    .log-btn:hover { background: rgba(201,168,76,0.18); }
-
-    /* THREE DOT MENU (same as main site) */
-    .chart-three-dot {
-      display: flex;
-      flex-direction: column;
-      gap: 3px;
-      width: 32px;
-      height: 32px;
-      align-items: center;
-      justify-content: center;
-      background: none;
-      border: 1px solid rgba(255,255,255,0.07);
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .chart-three-dot span {
-      width: 4px;
-      height: 4px;
-      border-radius: 50%;
-      background: #A8A09A;
-      display: block;
-    }
-    .chart-three-dot:hover {
-      border-color: rgba(201,168,76,0.35);
-    }
-    .chart-three-dot:hover span { background: #C9A84C; }
-
-    /* THEME TOGGLE */
-    .theme-btn {
-      width: 32px;
-      height: 32px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: none;
-      border: 1px solid rgba(255,255,255,0.07);
-      color: #A8A09A;
-      cursor: pointer;
-      font-size: 0.85rem;
-      transition: all 0.2s;
-    }
-    .theme-btn:hover {
-      border-color: rgba(201,168,76,0.35);
-      color: #C9A84C;
-    }
-
-    /* ── CHART BODY ── */
-    .chart-body {
-      display: flex;
-      flex: 1;
-      overflow: hidden;
-      position: relative;
-      min-height: 0;
-    } 
-
-    /* ── WATCHLIST SIDEBAR ── */
-    .watchlist {
-      width: 200px;
-      background: #0A0A0A;
-      border-right: 1px solid rgba(255,255,255,0.06);
-      display: flex;
-      flex-direction: column;
-      flex-shrink: 0;
-      overflow: hidden;
-      transition: width 0.3s;
-   }
-
-    .watchlist.collapsed { width: 0; }
-
-    .watchlist-header {
-      padding: 10px 14px;
-      border-bottom: 1px solid rgba(255,255,255,0.06);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-shrink: 0;
-    }
-
-    .watchlist-title {
+    .topbar-btn {
       font-family: 'DM Mono', monospace;
       font-size: 0.62rem;
-      letter-spacing: 0.14em;
+      letter-spacing: 0.1em;
       text-transform: uppercase;
-      color: #C9A84C;
-    }
-
-    .watchlist-add {
-      background: none;
-      border: none;
-      color: #C9A84C;
-      font-size: 1.1rem;
-      cursor: pointer;
-      line-height: 1;
-      transition: opacity 0.2s;
-    }
-    .watchlist-add:hover { opacity: 0.7; }
-
-    .watchlist-search {
-      padding: 8px 10px;
-      border-bottom: 1px solid rgba(255,255,255,0.04);
-      flex-shrink: 0;
-    }
-
-    .watchlist-search input {
-      width: 100%;
+      color: #A8A09A;
       background: #161616;
-      border: 1px solid rgba(255,255,255,0.06);
-      color: #F5F3EF;
-      font-family: 'DM Mono', monospace;
-      font-size: 0.65rem;
-      padding: 5px 8px;
-      outline: none;
-      letter-spacing: 0.05em;
-    }
-    .watchlist-search input:focus { border-color: rgba(201,168,76,0.3); }
-    .watchlist-search input::placeholder { color: #3A3530; }
-
-    .watchlist-list {
-      flex: 1;
-      overflow-y: auto;
-    }
-
-    .watchlist-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 9px 14px;
+      border: 1px solid rgba(255,255,255,0.07);
+      padding: 7px 14px;
       cursor: pointer;
-      border-bottom: 1px solid rgba(255,255,255,0.03);
-      transition: background 0.15s;
-    }
-    .watchlist-item:hover { background: rgba(201,168,76,0.05); }
-    .watchlist-item.active { background: rgba(201,168,76,0.08); }
-
-    .wl-symbol {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.7rem;
-      font-weight: 600;
-      color: #F5F3EF;
-      letter-spacing: 0.04em;
-    }
-
-    .wl-right {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      gap: 2px;
-    }
-
-    .wl-price {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.65rem;
-      color: #A8A09A;
-    }
-
-    .wl-change {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.58rem;
-    }
-
-    .wl-remove {
-      opacity: 0;
-      background: none;
-      border: none;
-      color: #F87171;
-      font-size: 0.7rem;
-      cursor: pointer;
-      padding: 0 4px;
-      transition: opacity 0.15s;
-    }
-    .watchlist-item:hover .wl-remove { opacity: 1; }
-
-    .watchlist-categories {
-      padding: 6px 10px;
-      flex-shrink: 0;
-      border-bottom: 1px solid rgba(255,255,255,0.04);
-    }
-
-    .wl-cat-scroll {
-      display: flex;
-      gap: 4px;
-      overflow-x: auto;
-      padding-bottom: 2px;
-    }
-
-    .wl-cat {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.55rem;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      padding: 3px 8px;
-      border: 1px solid rgba(255,255,255,0.06);
-      color: #A8A09A;
-      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      transition: all 0.2s;
       white-space: nowrap;
-      background: none;
-      transition: all 0.15s;
     }
-    .wl-cat:hover, .wl-cat.active {
+    .topbar-btn:hover { border-color: rgba(201,168,76,0.35); color: #C9A84C; }
+
+    .topbar-btn-gold {
+      background: rgba(201,168,76,0.1);
       border-color: rgba(201,168,76,0.35);
       color: #C9A84C;
-      background: rgba(201,168,76,0.05);
     }
 
-    /* ── MAIN CHART ── */
-    .chart-main {
+    .discipline-badge {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.08em;
+      color: #A8A09A;
+      background: #111;
+      border: 1px solid rgba(201,168,76,0.15);
+      padding: 7px 14px;
+      white-space: nowrap;
+    }
+    .discipline-badge span { color: #C9A84C; font-weight: 600; }
+
+    /* CHART CONTAINER */
+    .chart-frame {
       flex: 1;
       position: relative;
       overflow: hidden;
-      min-height: 0;
-      min-width: 0;
     }
 
     #tv-chart-container {
       width: 100%;
       height: 100%;
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
     }
 
-    /* ── JOURNAL PANEL (slides up) ── */
-    .journal-panel {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: #0F0F0F;
-      border-top: 1px solid rgba(201,168,76,0.2);
-      height: 320px;
-      transform: translateY(100%);
-      transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
-      z-index: 30;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .journal-panel.open { transform: translateY(0); }
-
-    .panel-header {
-      padding: 10px 16px;
-      border-bottom: 1px solid rgba(255,255,255,0.06);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-shrink: 0;
-      background: #111;
-    }
-
-    .panel-title {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.68rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: #C9A84C;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .panel-close {
-      background: none;
-      border: none;
-      color: #A8A09A;
-      font-size: 1.2rem;
-      cursor: pointer;
-      line-height: 1;
-      transition: color 0.2s;
-    }
-    .panel-close:hover { color: #F5F3EF; }
-
-    .panel-body {
-      flex: 1;
-      padding: 14px 16px;
-      overflow-y: auto;
-    }
-
-    .quick-log-form {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      height: 100%;
-    }
-
-    .quick-row { display: flex; gap: 8px; }
-
-    .quick-input, .quick-textarea, .quick-select {
-      background: #161616;
-      border: 1px solid rgba(255,255,255,0.07);
-      color: #F5F3EF;
-      font-family: 'Outfit', sans-serif;
-      font-size: 0.82rem;
-      padding: 8px 12px;
-      outline: none;
-      transition: border-color 0.2s;
-      width: 100%;
-    }
-    .quick-input:focus,
-    .quick-textarea:focus,
-    .quick-select:focus { border-color: #C9A84C; }
-
-    .quick-label {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.58rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: #A8A09A;
-      display: block;
-      margin-bottom: 4px;
-    }
-
-    .quick-textarea { min-height: 70px; resize: none; flex: 1; }
-
-    .quick-compliance {
-      display: flex;
-      gap: 8px;
-    }
-
-    .quick-opt {
-      flex: 1;
-      padding: 7px;
-      border: 1px solid rgba(255,255,255,0.07);
-      background: #161616;
-      cursor: pointer;
-      text-align: center;
-      font-family: 'DM Mono', monospace;
-      font-size: 0.58rem;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: #A8A09A;
-      transition: all 0.15s;
-    }
-    .quick-opt input { display: none; }
-    .quick-opt.sel-g { border-color: rgba(201,168,76,0.4); background: rgba(201,168,76,0.07); color: #C9A84C; }
-    .quick-opt.sel-r { border-color: rgba(248,113,113,0.35); background: rgba(248,113,113,0.05); color: #F87171; }
-
-    .quick-submit {
-      background: #C9A84C;
-      color: #000;
-      border: none;
-      font-family: 'DM Mono', monospace;
-      font-size: 0.65rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      font-weight: 700;
-      padding: 10px;
-      width: 100%;
-      cursor: pointer;
-      transition: background 0.2s;
-      flex-shrink: 0;
-    }
-    .quick-submit:hover { background: #E2C46A; }
-
-    /* ── KAIZEN AI PANEL ── */
-    .ai-panel {
-      position: absolute;
-      top: 48px;
-      right: 0;
-      width: 280px;
-      height: calc(100% - 48px);
-      background: #0A0A0A;
-      border-left: 1px solid rgba(201,168,76,0.15);
-      transform: translateX(100%);
-      transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
-      z-index: 25;
-      display: flex;
-      flex-direction: column;
-    }
-    .ai-panel.open { transform: translateX(0); }
-
-    .ai-panel-header {
-      padding: 14px 16px;
-      border-bottom: 1px solid rgba(255,255,255,0.06);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: #111;
-      flex-shrink: 0;
-    }
-
-    .ai-panel-title {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.68rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: #C9A84C;
-    }
-
-    .ai-panel-close {
-      background: none;
-      border: none;
-      color: #A8A09A;
-      font-size: 1.2rem;
-      cursor: pointer;
-    }
-
-    .ai-messages {
-      flex: 1;
-      overflow-y: auto;
-      padding: 14px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .ai-msg {
-      font-size: 0.82rem;
-      color: #A8A09A;
-      line-height: 1.7;
-      background: #161616;
-      border: 1px solid rgba(255,255,255,0.05);
-      border-left: 2px solid #C9A84C;
-      padding: 10px 12px;
-    }
-
-    .ai-msg-label {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.55rem;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: #C9A84C;
-      margin-bottom: 5px;
-    }
-
-    .ai-input-area {
-      padding: 12px 14px;
-      border-top: 1px solid rgba(255,255,255,0.06);
-      display: flex;
-      gap: 8px;
-      flex-shrink: 0;
-    }
-
-    .ai-input {
-      flex: 1;
-      background: #161616;
-      border: 1px solid rgba(255,255,255,0.07);
-      color: #F5F3EF;
-      font-family: 'Outfit', sans-serif;
-      font-size: 0.8rem;
-      padding: 8px 10px;
-      outline: none;
-    }
-    .ai-input:focus { border-color: #C9A84C; }
-
-    .ai-send {
-      background: rgba(201,168,76,0.1);
-      border: 1px solid rgba(201,168,76,0.3);
-      color: #C9A84C;
-      font-family: 'DM Mono', monospace;
-      font-size: 0.65rem;
-      padding: 8px 12px;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .ai-send:hover { background: rgba(201,168,76,0.2); }
-
-    /* POPUP MENU (same as main site) */
-    .popup-overlay {
+    /* LOG MODAL */
+    .log-modal {
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,0.6);
-      z-index: 998;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.3s;
-      backdrop-filter: blur(2px);
-    }
-    .popup-overlay.open { opacity: 1; pointer-events: all; }
-
-    .nav-popup {
-      position: fixed;
-      top: 0; right: 0;
-      width: 300px;
-      height: 100vh;
-      background: #131313;
-      border-left: 1px solid rgba(255,255,255,0.07);
-      z-index: 999;
-      display: flex;
-      flex-direction: column;
-      transform: translateX(100%);
-      transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
-      box-shadow: -8px 0 40px rgba(0,0,0,0.5);
-      overflow-y: auto;
-    }
-    .nav-popup.open { transform: translateX(0); }
-
-    .popup-header {
-      padding: 18px 20px;
-      border-bottom: 1px solid rgba(255,255,255,0.06);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .popup-logo {
-      font-family: 'DM Mono', monospace;
-      font-size: 1rem;
-      color: #C9A84C;
-      font-weight: 500;
-      letter-spacing: 0.08em;
-    }
-    .popup-close {
-      background: none;
-      border: none;
-      color: #A8A09A;
-      font-size: 1.4rem;
-      cursor: pointer;
-    }
-
-    .popup-section { padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
-
-    .popup-section-label {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.58rem;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: #A8A09A;
-      padding: 6px 20px 3px;
-    }
-
-    .popup-item {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 11px 20px;
-      color: #F5F3EF;
-      font-size: 0.88rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: background 0.15s, color 0.15s;
-      text-decoration: none;
-      border: none;
-      background: none;
-      width: 100%;
-      text-align: left;
-    }
-    .popup-item:hover { background: rgba(201,168,76,0.06); color: #C9A84C; }
-
-    .popup-footer {
-      margin-top: auto;
-      padding: 14px 20px;
-      border-top: 1px solid rgba(255,255,255,0.06);
-    }
-
-    .popup-user {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 14px;
-    }
-
-    .popup-avatar {
-      width: 34px;
-      height: 34px;
-      border-radius: 50%;
-      background: rgba(201,168,76,0.1);
-      border: 1px solid rgba(201,168,76,0.25);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 700;
-      color: #C9A84C;
-      font-size: 0.88rem;
-      flex-shrink: 0;
-    }
-
-    .popup-username { font-weight: 600; font-size: 0.88rem; color: #F5F3EF; }
-    .popup-user-email { font-size: 0.72rem; color: #A8A09A; }
-
-    .popup-socials {
-      display: flex;
-      gap: 8px;
-      padding-top: 10px;
-      border-top: 1px solid rgba(255,255,255,0.05);
-    }
-
-    .popup-social-link {
-      width: 28px;
-      height: 28px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border: 1px solid rgba(255,255,255,0.08);
-      color: #A8A09A;
-      transition: all 0.2s;
-      text-decoration: none;
-    }
-    .popup-social-link:hover { border-color: #C9A84C; color: #C9A84C; }
-
-    /* SECURITY MODAL */
-    .modal-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.75);
-      z-index: 800;
+      background: rgba(0,0,0,0.88);
+      z-index: 500;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -741,18 +117,20 @@
       opacity: 0;
       pointer-events: none;
       transition: opacity 0.3s;
-      backdrop-filter: blur(4px);
+      backdrop-filter: blur(6px);
     }
-    .modal-overlay.open { opacity: 1; pointer-events: all; }
+    .log-modal.open { opacity: 1; pointer-events: all; }
 
-    .modal {
+    .log-card {
       background: #111;
-      border: 1px solid rgba(255,255,255,0.08);
+      border: 1px solid rgba(201,168,76,0.25);
       width: 100%;
-      max-width: 400px;
+      max-width: 480px;
+      max-height: 88vh;
+      overflow-y: auto;
       position: relative;
     }
-    .modal::before {
+    .log-card::before {
       content: '';
       position: absolute;
       top: 0; left: 0; right: 0;
@@ -760,651 +138,242 @@
       background: linear-gradient(90deg, transparent, #C9A84C, transparent);
     }
 
-    .modal-header {
-      padding: 18px 22px;
+    .log-header {
+      padding: 18px 22px 14px;
       border-bottom: 1px solid rgba(255,255,255,0.06);
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
-    .modal-header h3 { font-size: 0.95rem; font-weight: 700; color: #F5F3EF; }
-    .modal-close {
+    .log-header h3 {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.75rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #C9A84C;
+    }
+    .log-close {
       background: none;
       border: none;
       color: #A8A09A;
       font-size: 1.4rem;
       cursor: pointer;
+      line-height: 1;
+      transition: color 0.2s;
     }
-    .modal-body { padding: 22px; }
+    .log-close:hover { color: #F5F3EF; }
+
+    .log-body { padding: 20px 22px; }
+    .log-form { display: flex; flex-direction: column; gap: 14px; }
+
+    .log-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #A8A09A;
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .log-input, .log-textarea {
+      width: 100%;
+      background: #161616;
+      border: 1px solid rgba(255,255,255,0.07);
+      color: #F5F3EF;
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.88rem;
+      padding: 10px 14px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .log-input:focus, .log-textarea:focus { border-color: #C9A84C; }
+    .log-textarea { min-height: 110px; resize: vertical; line-height: 1.7; }
+
+    .log-row { display: flex; gap: 10px; }
+
+    .log-opt {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid rgba(255,255,255,0.07);
+      background: #161616;
+      cursor: pointer;
+      text-align: center;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #A8A09A;
+      transition: all 0.2s;
+    }
+    .log-opt:hover { border-color: rgba(201,168,76,0.3); color: #C9A84C; }
+    .log-opt input { display: none; }
+    .log-opt.sel-gold { border-color: rgba(201,168,76,0.45); background: rgba(201,168,76,0.08); color: #C9A84C; }
+    .log-opt.sel-red { border-color: rgba(248,113,113,0.4); background: rgba(248,113,113,0.06); color: #F87171; }
+
+    .log-submit {
+      background: #C9A84C;
+      color: #000;
+      border: none;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-weight: 700;
+      padding: 14px;
+      width: 100%;
+      cursor: pointer;
+      transition: background 0.2s;
+      margin-top: 4px;
+    }
+    .log-submit:hover { background: #E2C46A; }
 
     @media (max-width: 600px) {
-      .chart-title { display: none; }
+      .chart-topbar { padding: 8px 12px; }
+      .chart-logo { display: none; }
       .discipline-badge { display: none; }
-      .watchlist { display: none; }
-      .ai-panel { width: 100%; }
     }
   </style>
 </head>
 <body>
 
-<!-- POPUP OVERLAY -->
-<div class="popup-overlay" id="chartPopupOverlay"
-  onclick="closeChartPopup()"></div>
-
-<!-- CHART POPUP MENU -->
-<div class="nav-popup" id="chartNavPopup">
-  <div class="popup-header">
-    <span class="popup-logo">改 KAIZEN</span>
-    <button class="popup-close" onclick="closeChartPopup()">×</button>
-  </div>
-
-  <div class="popup-section">
-    <div class="popup-section-label">Navigation</div>
-    <a href="/dashboard" class="popup-item">▪ Dashboard</a>
-    <a href="/chart" class="popup-item" style="color:#C9A84C;">▪ Chart</a>
-    <a href="/dashboard/journal" class="popup-item">▪ Journal</a>
-    <a href="/za/bounties" class="popup-item">▪ Bounties</a>
-    <a href="/za/reputation/<%= user.id %>" class="popup-item">▪ Reputation</a>
-  </div>
-
-  <div class="popup-section">
-    <div class="popup-section-label">Chart Tools</div>
-    <button class="popup-item" onclick="toggleWatchlist();closeChartPopup()">
-      ▪ Toggle Watchlist
-    </button>
-    <button class="popup-item" onclick="openJournalPanel();closeChartPopup()">
-      ▪ Quick Journal
-    </button>
-    <button class="popup-item" onclick="toggleAI();closeChartPopup()">
-      ▪ Kaizen AI
-    </button>
-  </div>
-
-  <div class="popup-section">
-    <div class="popup-section-label">Settings</div>
-    <button class="popup-item" onclick="toggleTheme();closeChartPopup()">
-      ▪ Dark / Light Mode
-    </button>
-    <button class="popup-item" onclick="openModal('securityModal');closeChartPopup()">
-      ▪ Security
-    </button>
-  </div>
-
-  <div class="popup-section">
-    <div class="popup-section-label">Info</div>
-    <a href="/about" class="popup-item">▪ About Kaizen</a>
-    <a href="/help" class="popup-item">▪ Help Center</a>
-    <a href="/support" class="popup-item">▪ Support</a>
-  </div>
-
-  <div class="popup-section">
-    <a href="/auth/logout" class="popup-item" style="color:#F87171;">▪ Log Out</a>
-  </div>
-
-  <div class="popup-footer">
-    <div class="popup-user">
-      <div class="popup-avatar">
-        <%= user.username.charAt(0).toUpperCase() %>
+  <!-- TOP BAR -->
+  <div class="chart-topbar">
+    <div class="topbar-left">
+      <a href="/dashboard" class="back-link">← 改</a>
+      <span class="chart-logo">KAIZEN Chart</span>
+    </div>
+    <div class="topbar-right">
+      <div class="discipline-badge">
+        Score: <span><%= user.disciplineScore || 0 %>/100</span>
       </div>
-      <div>
-        <div class="popup-username"><%= user.username %></div>
-        <div class="popup-user-email"><%= user.email %></div>
-      </div>
-    </div>
-    <div class="popup-socials">
-      <a href="https://x.com/kaizenaibot" target="_blank"
-        class="popup-social-link">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
-        </svg>
-      </a>
-    </div>
-  </div>
-</div>
-
-<!-- SECURITY MODAL -->
-<div class="modal-overlay" id="securityModal">
-  <div class="modal">
-    <div class="modal-header">
-      <h3>Security</h3>
-      <button class="modal-close" onclick="closeModal('securityModal')">×</button>
-    </div>
-    <div class="modal-body">
-      <form action="/auth/change-password" method="POST"
-        style="display:flex;flex-direction:column;gap:12px;">
-        <div>
-          <label style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;color:#A8A09A;display:block;margin-bottom:5px;">Current Password</label>
-          <input type="password" name="currentPassword"
-            style="width:100%;background:#161616;border:1px solid rgba(255,255,255,0.08);color:#F5F3EF;padding:10px 14px;outline:none;font-family:'Outfit',sans-serif;font-size:0.88rem;">
-        </div>
-        <div>
-          <label style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;color:#A8A09A;display:block;margin-bottom:5px;">New Password</label>
-          <input type="password" name="newPassword"
-            style="width:100%;background:#161616;border:1px solid rgba(255,255,255,0.08);color:#F5F3EF;padding:10px 14px;outline:none;font-family:'Outfit',sans-serif;font-size:0.88rem;">
-        </div>
-        <div>
-          <label style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;color:#A8A09A;display:block;margin-bottom:5px;">Confirm New Password</label>
-          <input type="password" name="confirmPassword"
-            style="width:100%;background:#161616;border:1px solid rgba(255,255,255,0.08);color:#F5F3EF;padding:10px 14px;outline:none;font-family:'Outfit',sans-serif;font-size:0.88rem;">
-        </div>
-        <button type="submit"
-          style="background:#C9A84C;color:#000;border:none;font-family:'DM Mono',monospace;font-size:0.72rem;letter-spacing:0.1em;text-transform:uppercase;font-weight:700;padding:12px;cursor:pointer;">
-          Update Password
-        </button>
-      </form>
-    </div>
-  </div>
-</div>
-
-<!-- TOP BAR -->
-<div class="chart-topbar">
-  <div class="topbar-left">
-    <a href="/dashboard" class="back-link">← 改</a>
-    <span class="chart-title">KAIZEN · Chart</span>
-    <div class="discipline-badge">
-      Score: <span><%= user.disciplineScore || 0 %>/100</span>
-    </div>
-  </div>
-  <div class="topbar-right">
-    <!-- Watchlist toggle -->
-    <button class="icon-btn" onclick="toggleWatchlist()" title="Watchlist" id="wl-btn">
-      ☰
-      <span class="icon-btn-tooltip">Watchlist</span>
-    </button>
-    <!-- Journal toggle -->
-    <button class="icon-btn" onclick="openJournalPanel()" title="Quick Journal" id="journal-btn">
-      ✎
-      <span class="icon-btn-tooltip">Log Session</span>
-    </button>
-    <!-- Kaizen AI toggle -->
-    <button class="icon-btn" onclick="toggleAI()" title="Kaizen AI" id="ai-btn">
-      改
-      <span class="icon-btn-tooltip">Kaizen AI</span>
-    </button>
-    <!-- Log session button -->
-    <button class="log-btn" onclick="openJournalPanel()">
-      + Log Session
-    </button>
-    <!-- Theme toggle -->
-    <button class="theme-btn" onclick="toggleTheme()" title="Toggle theme">
-      <span id="chartThemeIcon">◑</span>
-    </button>
-    <!-- Three dots -->
-    <button class="chart-three-dot" onclick="toggleChartPopup()">
-      <span></span><span></span><span></span>
-    </button>
-  </div>
-</div>
-
-<!-- CHART BODY -->
-<div class="chart-body">
-
-  <!-- WATCHLIST -->
-  <div class="watchlist" id="watchlistPanel">
-    <div class="watchlist-header">
-      <span class="watchlist-title">Watchlist</span>
-      <button class="watchlist-add" onclick="showAddModal()" title="Add symbol">+</button>
-    </div>
-
-    <div class="watchlist-categories">
-      <div class="wl-cat-scroll">
-        <button class="wl-cat active" onclick="filterWL(this,'all')">All</button>
-        <button class="wl-cat" onclick="filterWL(this,'crypto')">Crypto</button>
-        <button class="wl-cat" onclick="filterWL(this,'forex')">Forex</button>
-        <button class="wl-cat" onclick="filterWL(this,'stocks')">Stocks</button>
-        <button class="wl-cat" onclick="filterWL(this,'indices')">Indices</button>
-        <button class="wl-cat" onclick="filterWL(this,'synthetic')">Synthetic</button>
-        <button class="wl-cat" onclick="filterWL(this,'commodities')">Commodities</button>
-      </div>
-    </div>
-
-    <div class="watchlist-search">
-      <input type="text" placeholder="Search..." id="wl-search"
-        oninput="searchWL(this.value)">
-    </div>
-
-    <div class="watchlist-list" id="wl-list">
-      <!-- Populated by JS -->
+      <button class="topbar-btn topbar-btn-gold" onclick="openLog()">
+        + Log Session
+      </button>
+      <a href="/dashboard/journal" class="topbar-btn">Journal</a>
+      <a href="/za/bounties" class="topbar-btn">Bounties</a>
+      <a href="/dashboard" class="topbar-btn">Dashboard</a>
     </div>
   </div>
 
-  <!-- MAIN CHART -->
-  <div class="chart-main">
+  <!-- CHART -->
+  <div class="chart-frame">
     <div id="tv-chart-container"></div>
+  </div>
 
-    <!-- JOURNAL QUICK PANEL -->
-    <div class="journal-panel" id="journalPanel">
-      <div class="panel-header">
-        <span class="panel-title">改 Quick Journal</span>
-        <button class="panel-close" onclick="closeJournalPanel()">×</button>
+  <!-- LOG MODAL -->
+  <div class="log-modal" id="logModal">
+    <div class="log-card">
+      <div class="log-header">
+        <h3>Log This Session</h3>
+        <button class="log-close" onclick="closeLog()">×</button>
       </div>
-      <div class="panel-body">
-        <form action="/dashboard/journal" method="POST" class="quick-log-form">
-          <div class="quick-row">
-            <div style="flex:1;">
-              <label class="quick-label">Asset</label>
-              <input type="text" name="asset" class="quick-input"
-                id="quick-asset" placeholder="BTC/USDT" required>
-            </div>
-            <div style="flex:1;">
-              <label class="quick-label">Session Type</label>
-              <select name="direction" class="quick-input quick-select">
-                <option value="Live Trade">Live Trade</option>
-                <option value="Backtesting">Backtesting</option>
-              </select>
+      <div class="log-body">
+        <form action="/dashboard/journal" method="POST" class="log-form">
+          <div>
+            <label class="log-label">Asset Analyzed</label>
+            <input type="text" name="asset" class="log-input"
+              placeholder="e.g. BTC/USDT, EUR/USD, GOLD" required>
+          </div>
+          <div>
+            <label class="log-label">Session Type</label>
+            <div class="log-row">
+              <div class="log-opt" onclick="pickOpt(this,'direction','Live Trade','gold')">
+                <input type="radio" name="direction" value="Live Trade" required>
+                Live Trade
+              </div>
+              <div class="log-opt" onclick="pickOpt(this,'direction','Backtesting','gold')">
+                <input type="radio" name="direction" value="Backtesting">
+                Backtesting
+              </div>
             </div>
           </div>
-
           <div>
-            <label class="quick-label">Session Notes</label>
-            <textarea name="notes" class="quick-input quick-textarea"
-              placeholder="What did you see and do? Were you disciplined? Write honestly."
+            <label class="log-label">Session Notes</label>
+            <textarea name="notes" class="log-textarea"
+              placeholder="What did you see? What trade did you take and why? How did you feel? Did you follow your rules? Be completely honest."
               required></textarea>
           </div>
-
           <div>
-            <label class="quick-label">Followed your rules?</label>
-            <div class="quick-compliance">
-              <div class="quick-opt" onclick="pickQ(this,'ruleCompliance','true','g')">
+            <label class="log-label">Did you follow ALL your rules?</label>
+            <div class="log-row">
+              <div class="log-opt" onclick="pickOpt(this,'ruleCompliance','true','gold')">
                 <input type="radio" name="ruleCompliance" value="true" required>
-                Yes
+                Yes — Compliant
               </div>
-              <div class="quick-opt" onclick="pickQ(this,'ruleCompliance','false','r')">
+              <div class="log-opt" onclick="pickOpt(this,'ruleCompliance','false','red')">
                 <input type="radio" name="ruleCompliance" value="false">
-                No
+                No — Violated
               </div>
             </div>
           </div>
-
           <input type="hidden" name="timeframe" value="Chart Session">
           <input type="hidden" name="outcome" value="Pending">
           <input type="hidden" name="emotion" value="Logged from Chart">
           <input type="hidden" name="sessionScore" value="50">
-
-          <button type="submit" class="quick-submit">Save Entry</button>
+          <button type="submit" class="log-submit">Save Session Entry</button>
         </form>
       </div>
     </div>
-
-    <!-- KAIZEN AI PANEL -->
-    <div class="ai-panel" id="aiPanel">
-      <div class="ai-panel-header">
-        <span class="ai-panel-title">改 Kaizen AI</span>
-        <button class="ai-panel-close" onclick="toggleAI()">×</button>
-      </div>
-      <div class="ai-messages" id="ai-messages">
-        <div class="ai-msg">
-          <div class="ai-msg-label">改 Kaizen</div>
-          I am watching. Log a session and I will analyze your discipline patterns. Ask me anything about your trading behavior.
-        </div>
-        <% if (user.tradingStyle && user.tradingStyle.riskPerTrade) { %>
-        <div class="ai-msg">
-          <div class="ai-msg-label">改 Kaizen · Your Rules</div>
-          Your max risk: <%= user.tradingStyle.riskPerTrade %>% per trade.
-          Daily drawdown limit: <%= user.tradingStyle.dailyDrawdown %>%.
-          Edge: <%= user.tradingStyle.tradingEdge %>.
-          I will alert you if you deviate.
-        </div>
-        <% } %>
-      </div>
-      <div class="ai-input-area">
-        <input type="text" class="ai-input" id="ai-input"
-          placeholder="Ask Kaizen AI..."
-          onkeydown="if(event.key==='Enter')sendAI()">
-        <button class="ai-send" onclick="sendAI()">Send</button>
-      </div>
-    </div>
-
   </div>
-</div>
 
-<!-- ADD TO WATCHLIST MODAL -->
-<div class="modal-overlay" id="addWLModal">
-  <div class="modal">
-    <div class="modal-header">
-      <h3>Add to Watchlist</h3>
-      <button class="modal-close" onclick="closeModal('addWLModal')">×</button>
-    </div>
-    <div class="modal-body">
-      <div style="display:flex;flex-direction:column;gap:12px;">
-        <div>
-          <label style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;color:#A8A09A;display:block;margin-bottom:6px;">Symbol</label>
-          <input type="text" id="wl-add-input"
-            placeholder="e.g. BTCUSDT, EURUSD, AAPL"
-            style="width:100%;background:#161616;border:1px solid rgba(255,255,255,0.08);color:#F5F3EF;padding:10px 14px;outline:none;font-family:'DM Mono',monospace;font-size:0.82rem;">
-        </div>
-        <div>
-          <label style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;color:#A8A09A;display:block;margin-bottom:6px;">Category</label>
-          <select id="wl-add-cat"
-            style="width:100%;background:#161616;border:1px solid rgba(255,255,255,0.08);color:#F5F3EF;padding:10px 14px;outline:none;font-family:'DM Mono',monospace;font-size:0.78rem;">
-            <option value="crypto">Crypto</option>
-            <option value="forex">Forex</option>
-            <option value="stocks">Stocks</option>
-            <option value="indices">Indices</option>
-            <option value="synthetic">Synthetic</option>
-            <option value="commodities">Commodities</option>
-          </select>
-        </div>
-        <button onclick="addToWatchlist()"
-          style="background:#C9A84C;color:#000;border:none;font-family:'DM Mono',monospace;font-size:0.72rem;letter-spacing:0.1em;text-transform:uppercase;font-weight:700;padding:12px;cursor:pointer;">
-          Add to Watchlist
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
+  <!-- TradingView Widget Script -->
+  <script type="text/javascript"
+    src="https://s3.tradingview.com/tv.js">
+  </script>
 
-<!-- TradingView Widget -->
-<script type="text/javascript"
-  src="https://s3.tradingview.com/tv.js"></script>
-
-<script src="/js/app.js"></script>
-<script>
-  // ── TRADINGVIEW CHART
-  let tvWidget = null;
-  let currentSymbol = 'BINANCE:BTCUSDT';
-
-  function initChart(symbol) {
-    if (tvWidget) {
-      try { tvWidget.remove(); } catch(e) {}
-    }
-    currentSymbol = symbol || 'BINANCE:BTCUSDT';
-    const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
-
-    tvWidget = new TradingView.widget({
+  <script>
+    // Init TradingView Widget
+    new TradingView.widget({
       container_id: 'tv-chart-container',
       width: '100%',
       height: '100%',
-      symbol: currentSymbol,
+      symbol: 'BINANCE:BTCUSDT',
       interval: '60',
       timezone: 'Etc/UTC',
-      theme: isDark ? 'dark' : 'light',
+      theme: 'dark',
       style: '1',
       locale: 'en',
-      toolbar_bg: isDark ? '#080808' : '#f5f5f5',
+      toolbar_bg: '#080808',
       enable_publishing: false,
       allow_symbol_change: true,
       hide_top_toolbar: false,
       hide_legend: false,
       save_image: true,
-      no_referral_id: true,
-      autosize: true
+      studies: [],
+      show_popup_button: false,
+      popup_width: '1000',
+      popup_height: '650',
+      no_referral_id: true
     });
-  }
 
-  initChart();
+    // Modal functions
+    function openLog() {
+      document.getElementById('logModal').classList.add('open');
+    }
 
-  // ── WATCHLIST DATA
-  const DEFAULT_WL = [
-    { symbol: 'BINANCE:BTCUSDT', label: 'BTC/USDT', cat: 'crypto' },
-    { symbol: 'BINANCE:ETHUSDT', label: 'ETH/USDT', cat: 'crypto' },
-    { symbol: 'BINANCE:SOLUSDT', label: 'SOL/USDT', cat: 'crypto' },
-    { symbol: 'BINANCE:XRPUSDT', label: 'XRP/USDT', cat: 'crypto' },
-    { symbol: 'FX:EURUSD', label: 'EUR/USD', cat: 'forex' },
-    { symbol: 'FX:GBPUSD', label: 'GBP/USD', cat: 'forex' },
-    { symbol: 'FX:USDJPY', label: 'USD/JPY', cat: 'forex' },
-    { symbol: 'FX:AUDUSD', label: 'AUD/USD', cat: 'forex' },
-    { symbol: 'NASDAQ:AAPL', label: 'Apple', cat: 'stocks' },
-    { symbol: 'NASDAQ:TSLA', label: 'Tesla', cat: 'stocks' },
-    { symbol: 'NASDAQ:NVDA', label: 'NVIDIA', cat: 'stocks' },
-    { symbol: 'SP:SPX', label: 'S&P 500', cat: 'indices' },
-    { symbol: 'NASDAQ:NDX', label: 'NASDAQ 100', cat: 'indices' },
-    { symbol: 'CURRENCYCOM:XAUUSD', label: 'Gold', cat: 'commodities' },
-    { symbol: 'CURRENCYCOM:XAGUSD', label: 'Silver', cat: 'commodities' },
-    { symbol: 'CURRENCYCOM:OIL', label: 'Crude Oil', cat: 'commodities' }
-  ];
+    function closeLog() {
+      document.getElementById('logModal').classList.remove('open');
+    }
 
-  let watchlist = JSON.parse(localStorage.getItem('kaizen_watchlist') ||
-    JSON.stringify(DEFAULT_WL));
-  let currentCat = 'all';
+    document.getElementById('logModal').addEventListener('click', function(e) {
+      if (e.target === this) closeLog();
+    });
 
-  function saveWL() {
-    localStorage.setItem('kaizen_watchlist', JSON.stringify(watchlist));
-  }
-
-  function renderWL(items) {
-    const list = document.getElementById('wl-list');
-    if (!list) return;
-    list.innerHTML = '';
-
-    items.forEach(function(item) {
-      const el = document.createElement('div');
-      el.className = 'watchlist-item' +
-        (item.symbol === currentSymbol ? ' active' : '');
-      el.innerHTML = `
-        <div>
-          <div class="wl-symbol">${item.label}</div>
-          <div class="wl-price" style="font-size:0.58rem;color:#555;">${item.cat}</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:4px;">
-          <button class="wl-remove" onclick="removeWL(event,'${item.symbol}')">✕</button>
-        </div>
-      `;
-      el.addEventListener('click', function() {
-        loadSymbol(item.symbol, item.label);
+    function pickOpt(el, name, value, color) {
+      document.querySelectorAll('.log-opt').forEach(function(o) {
+        const inp = o.querySelector('input');
+        if (inp && inp.name === name) {
+          o.classList.remove('sel-gold', 'sel-red');
+          inp.checked = false;
+        }
       });
-      list.appendChild(el);
-    });
-  }
+      el.classList.add(color === 'gold' ? 'sel-gold' : 'sel-red');
+      const inp = el.querySelector('input');
+      if (inp) inp.checked = true;
+    }
+  </script>
 
-  function filterWL(btn, cat) {
-    document.querySelectorAll('.wl-cat').forEach(function(b) {
-      b.classList.remove('active');
-    });
-    btn.classList.add('active');
-    currentCat = cat;
-
-    const filtered = cat === 'all'
-      ? watchlist
-      : watchlist.filter(function(i) { return i.cat === cat; });
-    renderWL(filtered);
-  }
-
-  function searchWL(q) {
-    const filtered = watchlist.filter(function(i) {
-      return i.label.toLowerCase().includes(q.toLowerCase()) ||
-             i.symbol.toLowerCase().includes(q.toLowerCase());
-    });
-    renderWL(filtered);
-  }
-
-  function loadSymbol(symbol, label) {
-    currentSymbol = symbol;
-    const quick = document.getElementById('quick-asset');
-    if (quick) quick.value = label || symbol;
-    initChart(symbol);
-    renderWL(currentCat === 'all' ? watchlist :
-      watchlist.filter(function(i) { return i.cat === currentCat; }));
-  }
-
-  function addToWatchlist() {
-    const inp = document.getElementById('wl-add-input');
-    const cat = document.getElementById('wl-add-cat');
-    if (!inp || !inp.value.trim()) return;
-
-    const sym = inp.value.trim().toUpperCase();
-    const tvSym = cat.value === 'crypto'
-      ? 'BINANCE:' + sym
-      : cat.value === 'forex'
-      ? 'FX:' + sym.replace('/', '')
-      : cat.value === 'stocks'
-      ? 'NASDAQ:' + sym
-      : sym;
-
-    watchlist.push({
-      symbol: tvSym,
-      label: sym,
-      cat: cat.value
-    });
-
-    saveWL();
-    closeModal('addWLModal');
-    inp.value = '';
-    renderWL(watchlist);
-  }
-
-  function removeWL(e, symbol) {
-    e.stopPropagation();
-    watchlist = watchlist.filter(function(i) { return i.symbol !== symbol; });
-    saveWL();
-    renderWL(currentCat === 'all' ? watchlist :
-      watchlist.filter(function(i) { return i.cat === currentCat; }));
-  }
-
-  function showAddModal() { openModal('addWLModal'); }
-
-  // Init watchlist
-  renderWL(watchlist);
-
-  // ── PANEL TOGGLES
-  let wlVisible = true;
-
-  function toggleWatchlist() {
-    const panel = document.getElementById('watchlistPanel');
-    const btn = document.getElementById('wl-btn');
-    wlVisible = !wlVisible;
-    panel.classList.toggle('collapsed', !wlVisible);
-    btn.classList.toggle('active', wlVisible);
-  }
-
-  function openJournalPanel() {
-    document.getElementById('journalPanel').classList.add('open');
-    document.getElementById('journal-btn').classList.add('active');
-  }
-
-  function closeJournalPanel() {
-    document.getElementById('journalPanel').classList.remove('open');
-    document.getElementById('journal-btn').classList.remove('active');
-  }
-
-  let aiVisible = false;
-  function toggleAI() {
-    aiVisible = !aiVisible;
-    document.getElementById('aiPanel').classList.toggle('open', aiVisible);
-    document.getElementById('ai-btn').classList.toggle('active', aiVisible);
-  }
-
-  // ── POPUP MENU
-  function toggleChartPopup() {
-    document.getElementById('chartNavPopup').classList.toggle('open');
-    document.getElementById('chartPopupOverlay').classList.toggle('open');
-  }
-
-  function closeChartPopup() {
-    document.getElementById('chartNavPopup').classList.remove('open');
-    document.getElementById('chartPopupOverlay').classList.remove('open');
-  }
-
-  // ── MODALS
-  function openModal(id) {
-    document.getElementById(id).classList.add('open');
-  }
-
-  function closeModal(id) {
-    document.getElementById(id).classList.remove('open');
-  }
-
-  document.querySelectorAll('.modal-overlay').forEach(function(overlay) {
-    overlay.addEventListener('click', function(e) {
-      if (e.target === this) this.classList.remove('open');
-    });
-  });
-
-  // ── QUICK OPTION SELECT
-  function pickQ(el, name, value, color) {
-    document.querySelectorAll('.quick-opt').forEach(function(o) {
-      const inp = o.querySelector('input');
-      if (inp && inp.name === name) {
-        o.classList.remove('sel-g', 'sel-r');
-        inp.checked = false;
-      }
-    });
-    el.classList.add(color === 'g' ? 'sel-g' : 'sel-r');
-    const inp = el.querySelector('input');
-    if (inp) inp.checked = true;
-  }
-
-  // ── THEME (sync with main app)
-  function toggleTheme() {
-    const current = document.documentElement.getAttribute('data-theme');
-    const next = current === 'dark' ? 'light' : 'dark';
-    document.documentElement.setAttribute('data-theme', next);
-    localStorage.setItem('kaizen-theme', next);
-    const icon = document.getElementById('chartThemeIcon');
-    if (icon) icon.textContent = next === 'dark' ? '◑' : '◐';
-    // Reinit chart with new theme
-    initChart(currentSymbol);
-  }
-
-  // Apply saved theme
-  const savedTheme = localStorage.getItem('kaizen-theme') || 'dark';
-  document.documentElement.setAttribute('data-theme', savedTheme);
-  const themeIcon = document.getElementById('chartThemeIcon');
-  if (themeIcon) themeIcon.textContent = savedTheme === 'dark' ? '◑' : '◐';
-
-  // ── KAIZEN AI (basic — full AI in Phase 3)
-  async function sendAI() {
-    const input = document.getElementById('ai-input');
-    const messages = document.getElementById('ai-messages');
-    if (!input || !input.value.trim()) return;
-
-    const userText = input.value.trim();
-    input.value = '';
-
-    // User message
-    const userMsg = document.createElement('div');
-    userMsg.style.cssText = 'font-size:0.82rem;color:#F5F3EF;line-height:1.6;padding:8px 10px;background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.12);text-align:right;';
-    userMsg.textContent = userText;
-    messages.appendChild(userMsg);
-
-    // AI thinking
-    const thinkMsg = document.createElement('div');
-    thinkMsg.className = 'ai-msg';
-    thinkMsg.innerHTML = '<div class="ai-msg-label">改 Kaizen</div>Analyzing your session data...';
-    messages.appendChild(thinkMsg);
-    messages.scrollTop = messages.scrollHeight;
-
-    // Contextual responses based on user data
-    setTimeout(function() {
-      const responses = {
-        default: [
-          'Based on your trading profile, focus on following your defined rules before anything else. Consistency is the foundation.',
-          'Your discipline score reflects your behavioral patterns. Every compliant session moves you toward Elite tier.',
-          'Review your last journal entry. The patterns in your writing reveal more than the trade outcome itself.',
-          'Kaizen AI is learning your style. Keep journaling consistently for more personalized insights.',
-          'Remember your rule: max <%= user.tradingStyle ? user.tradingStyle.riskPerTrade : "1" %>% risk per trade. Stick to it regardless of conviction.'
-        ],
-        loss: [
-          'A loss is data, not failure. What does your journal say about your rule compliance on this trade?',
-          'Before trading again, review your entry criteria. Did this trade match your defined edge?',
-          'Your profile shows you tend to break rules after losses. This is the moment to close the platform and journal instead.'
-        ],
-        win: [
-          'Good result. Now check if you followed your rules or if you got lucky. Both look the same on the P&L but only one is repeatable.',
-          'Winning trades can be dangerous if they came from breaking your rules. Verify your process first.'
-        ]
-      };
-
-      const lowerText = userText.toLowerCase();
-      let pool = responses.default;
-      if (lowerText.includes('loss') || lowerText.includes('lost') || lowerText.includes('down')) {
-        pool = responses.loss;
-      } else if (lowerText.includes('win') || lowerText.includes('profit') || lowerText.includes('up')) {
-        pool = responses.win;
-      }
-
-      const reply = pool[Math.floor(Math.random() * pool.length)];
-      thinkMsg.innerHTML = '<div class="ai-msg-label">改 Kaizen</div>' + reply;
-      messages.scrollTop = messages.scrollHeight;
-    }, 1200);
-  }
-
-  // Enter key for AI
-  document.getElementById('ai-input').addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') sendAI();
-  });
-
-</script>
-
+  <script src="/js/app.js"></script>
 </body>
 </html>
