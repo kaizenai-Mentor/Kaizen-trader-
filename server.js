@@ -151,13 +151,7 @@ app.get('/', (req, res) => {
   });
 });
 
-// Info pages
-app.get('/about', (req, res) => res.render('about', { user: req.session.user || null }));
-app.get('/services', (req, res) => res.render('services', { user: req.session.user || null }));
-app.get('/support', (req, res) => res.render('support', { user: req.session.user || null }));
-app.get('/privacy', (req, res) => res.render('privacy', { user: req.session.user || null }));
-app.get('/terms', (req, res) => res.render('terms', { user: req.session.user || null }));
-app.get('/help', (req, res) => res.render('help', { user: req.session.user || null }));
+const Memory = require('./models/Memory');
 
 // Kaizen AI page
 app.get('/kaizen-ai', (req, res) => {
@@ -166,10 +160,41 @@ app.get('/kaizen-ai', (req, res) => {
 });
 
 // Memories page
-app.get('/memories', (req, res) => {
+app.get('/memories', async (req, res) => {
   if (!req.session.user) return res.redirect('/auth/login');
-  res.render('memories', { user: req.session.user });
+  try {
+    const memories = await Memory.find({
+      userId: req.session.user.id
+    }).sort({ createdAt: -1 });
+    res.render('memories', { user: req.session.user, memories });
+  } catch (err) {
+    res.render('memories', { user: req.session.user, memories: [] });
+  }
 });
+
+// Save memory (called from client after AI response)
+app.post('/memories/save', async (req, res) => {
+  if (!req.session.user) return res.json({ success: false });
+  try {
+    const { sessionData, response } = req.body;
+    await Memory.create({
+      userId: req.session.user.id,
+      sessionData: sessionData || '',
+      response: response || ''
+    });
+    res.json({ success: true });
+  } catch (err) {
+    res.json({ success: false, error: err.message });
+  }
+});
+
+// Info pages
+app.get('/about', (req, res) => res.render('about', { user: req.session.user || null }));
+app.get('/services', (req, res) => res.render('services', { user: req.session.user || null }));
+app.get('/support', (req, res) => res.render('support', { user: req.session.user || null }));
+app.get('/privacy', (req, res) => res.render('privacy', { user: req.session.user || null }));
+app.get('/terms', (req, res) => res.render('terms', { user: req.session.user || null }));
+app.get('/help', (req, res) => res.render('help', { user: req.session.user || null }));
 
 // Support form submission
 app.post('/support/send', async (req, res) => {
