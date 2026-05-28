@@ -159,6 +159,18 @@ app.get('/privacy', (req, res) => res.render('privacy', { user: req.session.user
 app.get('/terms', (req, res) => res.render('terms', { user: req.session.user || null }));
 app.get('/help', (req, res) => res.render('help', { user: req.session.user || null }));
 
+// Kaizen AI page
+app.get('/kaizen-ai', (req, res) => {
+  if (!req.session.user) return res.redirect('/auth/login');
+  res.render('kaizen-ai', { user: req.session.user });
+});
+
+// Memories page
+app.get('/memories', (req, res) => {
+  if (!req.session.user) return res.redirect('/auth/login');
+  res.render('memories', { user: req.session.user });
+});
+
 // Support form submission
 app.post('/support/send', async (req, res) => {
   try {
