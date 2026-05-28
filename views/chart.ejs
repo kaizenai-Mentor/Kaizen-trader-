@@ -10,6 +10,7 @@
       background: #080808;
       overflow: hidden;
       height: 100vh;
+      max-height: 100vh;
       display: flex;
       flex-direction: column;
       font-family: 'Outfit', sans-serif;
@@ -19,13 +20,14 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 10px 20px;
+      padding: 0 16px;
+      height: 48px;
+      min-height: 48px;
       background: #0A0A0A;
       border-bottom: 1px solid rgba(201,168,76,0.18);
+      gap: 10px;
+      z-index: 20;
       flex-shrink: 0;
-      gap: 12px;
-      flex-wrap: wrap;
-      z-index: 10;
     }
 
     .topbar-left {
@@ -40,119 +42,153 @@
       color: #C9A84C;
       text-decoration: none;
       letter-spacing: 0.08em;
+      transition: opacity 0.2s;
     }
     .back-link:hover { opacity: 0.7; }
 
-    .chart-logo {
+    .chart-title {
       font-family: 'DM Mono', monospace;
-      font-size: 0.8rem;
-      color: rgba(201,168,76,0.55);
-      letter-spacing: 0.1em;
+      font-size: 0.78rem;
+      color: #C9A84C;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      font-weight: 500;
+    }
+
+    .discipline-badge {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.08em;
+      color: #A8A09A;
+      background: rgba(201,168,76,0.06);
+      border: 1px solid rgba(201,168,76,0.15);
+      padding: 5px 12px;
+      white-space: nowrap;
+    }
+    .discipline-badge span {
+      color: #C9A84C;
+      font-weight: 600;
     }
 
     .topbar-right {
       display: flex;
       align-items: center;
       gap: 8px;
-      flex-wrap: wrap;
     }
 
-    .topbar-btn {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.62rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: #A8A09A;
-      background: #161616;
+    .theme-btn {
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: none;
       border: 1px solid rgba(255,255,255,0.07);
-      padding: 7px 14px;
+      color: #A8A09A;
       cursor: pointer;
-      text-decoration: none;
-      display: inline-block;
+      font-size: 0.85rem;
       transition: all 0.2s;
-      white-space: nowrap;
     }
-    .topbar-btn:hover { border-color: rgba(201,168,76,0.35); color: #C9A84C; }
-
-    .topbar-btn-gold {
-      background: rgba(201,168,76,0.1);
+    .theme-btn:hover {
       border-color: rgba(201,168,76,0.35);
       color: #C9A84C;
     }
 
-    .discipline-badge {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.62rem;
-      letter-spacing: 0.08em;
-      color: #A8A09A;
-      background: #111;
-      border: 1px solid rgba(201,168,76,0.15);
-      padding: 7px 14px;
-      white-space: nowrap;
+    .three-dot-btn {
+      width: 32px;
+      height: 32px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      background: none;
+      border: 1px solid rgba(255,255,255,0.07);
+      cursor: pointer;
+      transition: all 0.2s;
+      padding: 0;
     }
-    .discipline-badge span { color: #C9A84C; font-weight: 600; }
+    .three-dot-btn span {
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: #A8A09A;
+      display: block;
+      transition: background 0.2s;
+    }
+    .three-dot-btn:hover {
+      border-color: rgba(201,168,76,0.35);
+    }
+    .three-dot-btn:hover span { background: #C9A84C; }
 
-    /* CHART CONTAINER */
+    /* CHART FILLS REMAINING HEIGHT */
     .chart-frame {
       flex: 1;
       position: relative;
       overflow: hidden;
+      min-height: 0;
     }
 
     #tv-chart-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
       width: 100%;
       height: 100%;
     }
 
-    /* LOG MODAL */
-    .log-modal {
+    /* POPUP OVERLAY */
+    .popup-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,0.88);
-      z-index: 500;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
+      background: rgba(0,0,0,0.6);
+      z-index: 998;
       opacity: 0;
       pointer-events: none;
       transition: opacity 0.3s;
-      backdrop-filter: blur(6px);
+      backdrop-filter: blur(2px);
     }
-    .log-modal.open { opacity: 1; pointer-events: all; }
+    .popup-overlay.open {
+      opacity: 1;
+      pointer-events: all;
+    }
 
-    .log-card {
-      background: #111;
-      border: 1px solid rgba(201,168,76,0.25);
-      width: 100%;
-      max-width: 480px;
-      max-height: 88vh;
+    /* POPUP MENU */
+    .nav-popup {
+      position: fixed;
+      top: 0; right: 0;
+      width: 300px;
+      height: 100vh;
+      background: #131313;
+      border-left: 1px solid rgba(255,255,255,0.07);
+      z-index: 999;
+      display: flex;
+      flex-direction: column;
+      transform: translateX(100%);
+      transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
+      box-shadow: -8px 0 40px rgba(0,0,0,0.5);
       overflow-y: auto;
-      position: relative;
     }
-    .log-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 2px;
-      background: linear-gradient(90deg, transparent, #C9A84C, transparent);
-    }
+    .nav-popup.open { transform: translateX(0); }
 
-    .log-header {
-      padding: 18px 22px 14px;
+    .popup-header {
+      padding: 18px 20px;
       border-bottom: 1px solid rgba(255,255,255,0.06);
       display: flex;
       justify-content: space-between;
       align-items: center;
+      flex-shrink: 0;
     }
-    .log-header h3 {
+    .popup-logo {
       font-family: 'DM Mono', monospace;
-      font-size: 0.75rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
+      font-size: 1rem;
       color: #C9A84C;
+      font-weight: 500;
+      letter-spacing: 0.08em;
     }
-    .log-close {
+    .popup-close {
       background: none;
       border: none;
       color: #A8A09A;
@@ -161,98 +197,332 @@
       line-height: 1;
       transition: color 0.2s;
     }
-    .log-close:hover { color: #F5F3EF; }
+    .popup-close:hover { color: #F5F3EF; }
 
-    .log-body { padding: 20px 22px; }
-    .log-form { display: flex; flex-direction: column; gap: 14px; }
+    .popup-section {
+      padding: 6px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
 
-    .log-label {
+    .popup-section-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.58rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #A8A09A;
+      padding: 6px 20px 3px;
+    }
+
+    .popup-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 11px 20px;
+      color: #F5F3EF;
+      font-size: 0.88rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+      text-decoration: none;
+      border: none;
+      background: none;
+      width: 100%;
+      text-align: left;
+    }
+    .popup-item:hover {
+      background: rgba(201,168,76,0.06);
+      color: #C9A84C;
+    }
+
+    .popup-item-active {
+      color: #C9A84C !important;
+      background: rgba(201,168,76,0.05) !important;
+    }
+
+    .popup-footer {
+      margin-top: auto;
+      padding: 14px 20px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      flex-shrink: 0;
+    }
+
+    .popup-user {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .popup-avatar {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: rgba(201,168,76,0.1);
+      border: 1px solid rgba(201,168,76,0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      color: #C9A84C;
+      font-size: 0.88rem;
+      flex-shrink: 0;
+    }
+    .popup-username {
+      font-weight: 600;
+      font-size: 0.88rem;
+      color: #F5F3EF;
+    }
+    .popup-user-email {
+      font-size: 0.72rem;
+      color: #A8A09A;
+    }
+
+    .popup-socials {
+      display: flex;
+      gap: 8px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .popup-social-link {
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(255,255,255,0.08);
+      color: #A8A09A;
+      transition: all 0.2s;
+      text-decoration: none;
+    }
+    .popup-social-link:hover {
+      border-color: #C9A84C;
+      color: #C9A84C;
+    }
+
+    /* SECURITY MODAL */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.75);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+      backdrop-filter: blur(4px);
+    }
+    .modal-overlay.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .modal {
+      background: #111;
+      border: 1px solid rgba(255,255,255,0.08);
+      width: 100%;
+      max-width: 400px;
+      position: relative;
+    }
+    .modal::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg,
+        transparent, #C9A84C, transparent);
+    }
+
+    .modal-header {
+      padding: 18px 22px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .modal-header h3 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #F5F3EF;
+    }
+    .modal-close {
+      background: none;
+      border: none;
+      color: #A8A09A;
+      font-size: 1.4rem;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+    .modal-close:hover { color: #F5F3EF; }
+
+    .modal-body { padding: 22px; }
+
+    .m-label {
       font-family: 'DM Mono', monospace;
       font-size: 0.6rem;
-      letter-spacing: 0.14em;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
       color: #A8A09A;
       display: block;
       margin-bottom: 6px;
     }
-
-    .log-input, .log-textarea {
+    .m-input {
       width: 100%;
       background: #161616;
-      border: 1px solid rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.08);
       color: #F5F3EF;
-      font-family: 'Outfit', sans-serif;
-      font-size: 0.88rem;
       padding: 10px 14px;
       outline: none;
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.88rem;
+      margin-bottom: 14px;
       transition: border-color 0.2s;
     }
-    .log-input:focus, .log-textarea:focus { border-color: #C9A84C; }
-    .log-textarea { min-height: 110px; resize: vertical; line-height: 1.7; }
-
-    .log-row { display: flex; gap: 10px; }
-
-    .log-opt {
-      flex: 1;
-      padding: 10px;
-      border: 1px solid rgba(255,255,255,0.07);
-      background: #161616;
-      cursor: pointer;
-      text-align: center;
-      font-family: 'DM Mono', monospace;
-      font-size: 0.62rem;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: #A8A09A;
-      transition: all 0.2s;
-    }
-    .log-opt:hover { border-color: rgba(201,168,76,0.3); color: #C9A84C; }
-    .log-opt input { display: none; }
-    .log-opt.sel-gold { border-color: rgba(201,168,76,0.45); background: rgba(201,168,76,0.08); color: #C9A84C; }
-    .log-opt.sel-red { border-color: rgba(248,113,113,0.4); background: rgba(248,113,113,0.06); color: #F87171; }
-
-    .log-submit {
+    .m-input:focus { border-color: #C9A84C; }
+    .m-btn {
       background: #C9A84C;
       color: #000;
       border: none;
       font-family: 'DM Mono', monospace;
       font-size: 0.72rem;
-      letter-spacing: 0.12em;
+      letter-spacing: 0.1em;
       text-transform: uppercase;
       font-weight: 700;
-      padding: 14px;
+      padding: 12px;
       width: 100%;
       cursor: pointer;
       transition: background 0.2s;
-      margin-top: 4px;
     }
-    .log-submit:hover { background: #E2C46A; }
+    .m-btn:hover { background: #E2C46A; }
 
     @media (max-width: 600px) {
-      .chart-topbar { padding: 8px 12px; }
-      .chart-logo { display: none; }
+      .chart-title { display: none; }
       .discipline-badge { display: none; }
+      .nav-popup { width: 100%; }
     }
   </style>
 </head>
 <body>
 
+  <!-- POPUP OVERLAY -->
+  <div class="popup-overlay" id="popupOverlay"
+    onclick="closePopup()"></div>
+
+  <!-- POPUP MENU -->
+  <div class="nav-popup" id="navPopup">
+    <div class="popup-header">
+      <span class="popup-logo">改 KAIZEN</span>
+      <button class="popup-close" onclick="closePopup()">×</button>
+    </div>
+
+    <div class="popup-section">
+      <div class="popup-section-label">Navigation</div>
+      <a href="/dashboard" class="popup-item">▪ Dashboard</a>
+      <a href="/chart" class="popup-item popup-item-active">▪ Chart</a>
+      <a href="/journal" class="popup-item">▪ My Journal</a>
+      <a href="/kaizen-ai" class="popup-item">▪ Kaizen AI</a>
+      <a href="/memories" class="popup-item">▪ Memories</a>
+      <a href="/za/bounties" class="popup-item">▪ Bounties</a>
+      <a href="/za/reputation/<%= user.id %>" class="popup-item">▪ Reputation</a>
+    </div>
+
+    <div class="popup-section">
+      <div class="popup-section-label">Settings</div>
+      <button class="popup-item"
+        onclick="toggleTheme();closePopup()">
+        ▪ Dark / Light Mode
+      </button>
+      <button class="popup-item"
+        onclick="openModal('securityModal');closePopup()">
+        ▪ Security
+      </button>
+    </div>
+
+    <div class="popup-section">
+      <div class="popup-section-label">Info</div>
+      <a href="/about" class="popup-item">▪ About KAIZEN</a>
+      <a href="/help" class="popup-item">▪ Help Center</a>
+      <a href="/support" class="popup-item">▪ Support</a>
+      <a href="/privacy" class="popup-item">▪ Privacy Policy</a>
+      <a href="/terms" class="popup-item">▪ Terms of Service</a>
+    </div>
+
+    <div class="popup-section">
+      <a href="/auth/logout" class="popup-item"
+        style="color:#F87171;">▪ Log Out</a>
+    </div>
+
+    <div class="popup-footer">
+      <div class="popup-user">
+        <div class="popup-avatar">
+          <%= user.username.charAt(0).toUpperCase() %>
+        </div>
+        <div>
+          <div class="popup-username"><%= user.username %></div>
+          <div class="popup-user-email"><%= user.email %></div>
+        </div>
+      </div>
+      <div class="popup-socials">
+        <a href="https://x.com/kaizenaibot" target="_blank"
+          class="popup-social-link" title="X (Twitter)">
+          <svg width="12" height="12" viewBox="0 0 24 24"
+            fill="currentColor">
+            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECURITY MODAL -->
+  <div class="modal-overlay" id="securityModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Security</h3>
+        <button class="modal-close"
+          onclick="closeModal('securityModal')">×</button>
+      </div>
+      <div class="modal-body">
+        <form action="/auth/change-password" method="POST">
+          <label class="m-label">Current Password</label>
+          <input type="password" name="currentPassword" class="m-input"
+            placeholder="Enter current password">
+          <label class="m-label">New Password</label>
+          <input type="password" name="newPassword" class="m-input"
+            placeholder="Enter new password">
+          <label class="m-label">Confirm New Password</label>
+          <input type="password" name="confirmPassword" class="m-input"
+            placeholder="Confirm new password">
+          <button type="submit" class="m-btn">Update Password</button>
+        </form>
+        <div style="margin-top:16px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.06);">
+          <p style="font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.08em;color:#3A3530;text-align:center;">
+            2FA — Coming in Phase 3
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- TOP BAR -->
   <div class="chart-topbar">
     <div class="topbar-left">
       <a href="/dashboard" class="back-link">← 改</a>
-      <span class="chart-logo">KAIZEN Chart</span>
-    </div>
-    <div class="topbar-right">
+      <span class="chart-title">KAIZEN · Chart</span>
       <div class="discipline-badge">
         Score: <span><%= user.disciplineScore || 0 %>/100</span>
       </div>
-      <button class="topbar-btn topbar-btn-gold" onclick="openLog()">
-        + Log Session
+    </div>
+    <div class="topbar-right">
+      <button class="theme-btn" onclick="toggleTheme()">
+        <span id="chartThemeIcon">◑</span>
       </button>
-      <a href="/dashboard/journal" class="topbar-btn">Journal</a>
-      <a href="/za/bounties" class="topbar-btn">Bounties</a>
-      <a href="/dashboard" class="topbar-btn">Dashboard</a>
+      <button class="three-dot-btn" onclick="togglePopup()">
+        <span></span><span></span><span></span>
+      </button>
     </div>
   </div>
 
@@ -261,119 +531,84 @@
     <div id="tv-chart-container"></div>
   </div>
 
-  <!-- LOG MODAL -->
-  <div class="log-modal" id="logModal">
-    <div class="log-card">
-      <div class="log-header">
-        <h3>Log This Session</h3>
-        <button class="log-close" onclick="closeLog()">×</button>
-      </div>
-      <div class="log-body">
-        <form action="/dashboard/journal" method="POST" class="log-form">
-          <div>
-            <label class="log-label">Asset Analyzed</label>
-            <input type="text" name="asset" class="log-input"
-              placeholder="e.g. BTC/USDT, EUR/USD, GOLD" required>
-          </div>
-          <div>
-            <label class="log-label">Session Type</label>
-            <div class="log-row">
-              <div class="log-opt" onclick="pickOpt(this,'direction','Live Trade','gold')">
-                <input type="radio" name="direction" value="Live Trade" required>
-                Live Trade
-              </div>
-              <div class="log-opt" onclick="pickOpt(this,'direction','Backtesting','gold')">
-                <input type="radio" name="direction" value="Backtesting">
-                Backtesting
-              </div>
-            </div>
-          </div>
-          <div>
-            <label class="log-label">Session Notes</label>
-            <textarea name="notes" class="log-textarea"
-              placeholder="What did you see? What trade did you take and why? How did you feel? Did you follow your rules? Be completely honest."
-              required></textarea>
-          </div>
-          <div>
-            <label class="log-label">Did you follow ALL your rules?</label>
-            <div class="log-row">
-              <div class="log-opt" onclick="pickOpt(this,'ruleCompliance','true','gold')">
-                <input type="radio" name="ruleCompliance" value="true" required>
-                Yes — Compliant
-              </div>
-              <div class="log-opt" onclick="pickOpt(this,'ruleCompliance','false','red')">
-                <input type="radio" name="ruleCompliance" value="false">
-                No — Violated
-              </div>
-            </div>
-          </div>
-          <input type="hidden" name="timeframe" value="Chart Session">
-          <input type="hidden" name="outcome" value="Pending">
-          <input type="hidden" name="emotion" value="Logged from Chart">
-          <input type="hidden" name="sessionScore" value="50">
-          <button type="submit" class="log-submit">Save Session Entry</button>
-        </form>
-      </div>
-    </div>
-  </div>
-
-  <!-- TradingView Widget Script -->
+  <!-- TradingView Script -->
   <script type="text/javascript"
-    src="https://s3.tradingview.com/tv.js">
-  </script>
+    src="https://s3.tradingview.com/tv.js"></script>
 
   <script>
-    // Init TradingView Widget
-    new TradingView.widget({
-      container_id: 'tv-chart-container',
-      width: '100%',
-      height: '100%',
-      symbol: 'BINANCE:BTCUSDT',
-      interval: '60',
-      timezone: 'Etc/UTC',
-      theme: 'dark',
-      style: '1',
-      locale: 'en',
-      toolbar_bg: '#080808',
-      enable_publishing: false,
-      allow_symbol_change: true,
-      hide_top_toolbar: false,
-      hide_legend: false,
-      save_image: true,
-      studies: [],
-      show_popup_button: false,
-      popup_width: '1000',
-      popup_height: '650',
-      no_referral_id: true
-    });
+    // Apply saved theme
+    const savedTheme = localStorage.getItem('kaizen-theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    const ti = document.getElementById('chartThemeIcon');
+    if (ti) ti.textContent = savedTheme === 'dark' ? '◑' : '◐';
 
-    // Modal functions
-    function openLog() {
-      document.getElementById('logModal').classList.add('open');
-    }
+    // Init chart
+    let tvWidget = null;
 
-    function closeLog() {
-      document.getElementById('logModal').classList.remove('open');
-    }
-
-    document.getElementById('logModal').addEventListener('click', function(e) {
-      if (e.target === this) closeLog();
-    });
-
-    function pickOpt(el, name, value, color) {
-      document.querySelectorAll('.log-opt').forEach(function(o) {
-        const inp = o.querySelector('input');
-        if (inp && inp.name === name) {
-          o.classList.remove('sel-gold', 'sel-red');
-          inp.checked = false;
-        }
+    function initChart() {
+      const isDark = localStorage.getItem('kaizen-theme') !== 'light';
+      if (tvWidget) {
+        try { tvWidget.remove(); } catch(e) {}
+      }
+      tvWidget = new TradingView.widget({
+        container_id: 'tv-chart-container',
+        autosize: true,
+        symbol: 'BINANCE:BTCUSDT',
+        interval: '60',
+        timezone: 'Etc/UTC',
+        theme: isDark ? 'dark' : 'light',
+        style: '1',
+        locale: 'en',
+        toolbar_bg: isDark ? '#0A0A0A' : '#f5f5f5',
+        enable_publishing: false,
+        allow_symbol_change: true,
+        save_image: true,
+        hide_top_toolbar: false,
+        no_referral_id: true
       });
-      el.classList.add(color === 'gold' ? 'sel-gold' : 'sel-red');
-      const inp = el.querySelector('input');
-      if (inp) inp.checked = true;
     }
+
+    initChart();
+
+    // Theme toggle
+    function toggleTheme() {
+      const current = document.documentElement
+        .getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('kaizen-theme', next);
+      const icon = document.getElementById('chartThemeIcon');
+      if (icon) icon.textContent = next === 'dark' ? '◑' : '◐';
+      initChart();
+    }
+
+    // Popup
+    function togglePopup() {
+      document.getElementById('navPopup').classList.toggle('open');
+      document.getElementById('popupOverlay').classList.toggle('open');
+    }
+
+    function closePopup() {
+      document.getElementById('navPopup').classList.remove('open');
+      document.getElementById('popupOverlay').classList.remove('open');
+    }
+
+    // Modals
+    function openModal(id) {
+      closePopup();
+      document.getElementById(id).classList.add('open');
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('open');
+    }
+
+    document.querySelectorAll('.modal-overlay').forEach(function(o) {
+      o.addEventListener('click', function(e) {
+        if (e.target === this) this.classList.remove('open');
+      });
+    });
   </script>
 
-  <script src="/js/app.js"></script>
 </body>
 </html>
