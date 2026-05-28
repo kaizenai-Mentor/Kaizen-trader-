@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('partials/head') %>
+  <title>KAIZEN — Memories</title>
+</head>
+<body class="app-page">
+
+  <%- include('partials/navbar') %>
+
+  <main class="app-main">
+
+    <div class="page-header">
+      <div>
+        <h1 style="color:var(--gold);">Memories</h1>
+        <p class="page-sub">Every Kaizen AI response — saved for reflection and tracking.</p>
+      </div>
+      <a href="/kaizen-ai" class="btn-outline">Kaizen AI →</a>
+    </div>
+
+    <% if (memories && memories.length > 0) { %>
+      <div style="display:flex;flex-direction:column;gap:2px;">
+        <% memories.forEach(function(memory) { %>
+          <div class="card" style="cursor:pointer;"
+            onclick="toggleMemory('<%= memory._id %>')">
+
+            <div style="
+              display:flex;
+              justify-content:space-between;
+              align-items:flex-start;
+              gap:16px;
+              flex-wrap:wrap;
+            ">
+              <div>
+                <div style="
+                  font-family:var(--font-mono);
+                  font-size:0.62rem;
+                  letter-spacing:0.15em;
+                  text-transform:uppercase;
+                  color:var(--gold);
+                  margin-bottom:8px;
+                ">改 Kaizen AI · <%= new Date(memory.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) %></div>
+                <p style="
+                  font-size:0.88rem;
+                  color:var(--ash-light);
+                  line-height:1.7;
+                  max-width:700px;
+                ">
+                  <%= memory.response.substring(0, 180) %>...
+                </p>
+              </div>
+              <span style="
+                font-family:var(--font-mono);
+                font-size:0.6rem;
+                letter-spacing:0.1em;
+                color:var(--ash);
+                flex-shrink:0;
+              ">Tap to expand</span>
+            </div>
+
+            <div id="memory-<%= memory._id %>"
+              style="display:none;margin-top:20px;padding-top:20px;border-top:1px solid var(--border);">
+              <div style="
+                font-size:0.9rem;
+                color:var(--ash-light);
+                line-height:1.9;
+                white-space:pre-wrap;
+              "><%= memory.response %></div>
+              <% if (memory.sessionData) { %>
+                <div style="
+                  margin-top:16px;
+                  padding:14px;
+                  background:var(--bg-surface);
+                  border:1px solid var(--border);
+                ">
+                  <div style="
+                    font-family:var(--font-mono);
+                    font-size:0.6rem;
+                    letter-spacing:0.12em;
+                    text-transform:uppercase;
+                    color:var(--ash);
+                    margin-bottom:8px;
+                  ">Session Entry</div>
+                  <p style="font-size:0.82rem;color:var(--ash);line-height:1.7;">
+                    <%= memory.sessionData %>
+                  </p>
+                </div>
+              <% } %>
+            </div>
+
+          </div>
+        <% }); %>
+      </div>
+    <% } else { %>
+      <div class="card">
+        <div class="empty-state">
+          <div style="
+            font-family:var(--font-mono);
+            font-size:2.5rem;
+            color:rgba(201,168,76,0.15);
+            margin-bottom:16px;
+          ">改</div>
+          <p style="font-size:1rem;font-weight:600;color:var(--text-primary);margin-bottom:8px;">
+            No memories yet.
+          </p>
+          <p>Log a session in My Journal and Kaizen AI will analyze it. The response is saved here automatically.</p>
+          <a href="/dashboard/journal" class="btn-primary"
+            style="margin-top:20px;display:inline-block;">
+            Log Your First Session
+          </a>
+        </div>
+      </div>
+    <% } %>
+
+  </main>
+
+  <%- include('partials/footer') %>
+  <script src="/js/app.js"></script>
+  <script>
+    function toggleMemory(id) {
+      const el = document.getElementById('memory-' + id);
+      if (el) {
+        el.style.display = el.style.display === 'none' ? 'block' : 'none';
+      }
+    }
+  </script>
+</body>
+</html>
