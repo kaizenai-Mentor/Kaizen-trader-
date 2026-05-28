@@ -188,6 +188,11 @@ app.post('/memories/save', async (req, res) => {
   }
 });
 
+app.get('/journal', (req, res) => {
+  if (!req.session.user) return res.redirect('/auth/login');
+  res.redirect('/dashboard/journal');
+});
+
 // Info pages
 app.get('/about', (req, res) => res.render('about', { user: req.session.user || null }));
 app.get('/services', (req, res) => res.render('services', { user: req.session.user || null }));
