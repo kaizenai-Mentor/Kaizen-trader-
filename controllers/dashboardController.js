@@ -180,7 +180,7 @@ Session Score: ${score}/100
 Discipline Score Impact: ${compliant ? '+2' : '-3'} points
 
 改善 — Small improvement. Every session.`;
-        }
+}
 
 // GET /dashboard/journal
 const getJournals = async (req, res) => {
