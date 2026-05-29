@@ -50,6 +50,10 @@ const addJournal = async (req, res) => {
       sessionScore
     } = req.body;
 
+    if (!notes || notes.trim() === '') {
+      return res.redirect('/dashboard/journal');
+    }
+
     const journal = await Journal.create({
       userId: req.session.user.id,
       asset: asset || 'General',
@@ -57,84 +61,18 @@ const addJournal = async (req, res) => {
       notes,
       emotion: emotion || 'Logged',
       ruleCompliance: ruleCompliance === 'true',
-      direction: direction || 'No Trade',
+      direction: direction || 'Live Trade',
       outcome: outcome || 'Pending',
       sessionScore: parseInt(sessionScore) || 50
     });
 
-    // Get user rules for AI context
     const user = await User.findById(req.session.user.id);
 
-    // Build AI prompt
-    const systemPrompt = `You are Kaizen — a disciplined, professional AI trading mentor. You analyze trader journal entries and give structured, honest feedback.
-
-TRADER PROFILE:
-Name: ${user.username}
-Discipline Score: ${user.disciplineScore}/100
-Trading Edge: ${user.tradingStyle?.tradingEdge || 'Not specified'}
-Max Risk Per Trade: ${user.tradingStyle?.riskPerTrade || 'Not specified'}%
-Daily Drawdown Limit: ${user.tradingStyle?.dailyDrawdown || 'Not specified'}%
-Entry Rule: ${user.tradingStyle?.entryRule || 'Not specified'}
-Stop Loss Rule: ${user.tradingStyle?.stopLossRule || 'Not specified'}
-Emotional Triggers: ${user.tradingStyle?.emotionalTriggers || 'Not specified'}
-Max Daily Trades: ${user.tradingStyle?.maxDailyTrades || 'Not specified'}
-
-YOUR RESPONSE MUST INCLUDE:
-1. What was done well (be specific and reference their actual notes)
-2. What rules were violated or risks taken (be strict and honest)
-3. Emotional patterns detected (reference their writing style and language)
-4. One specific improvement action for next session
-5. Session Score: X/100 (strict scoring — discipline over outcome)
-6. Impact on Discipline Score: +X or -X points
-
-RULES:
-- Never predict market direction
-- Never give buy/sell signals  
-- Always reference the trader's own words from their journal
-- Be direct but supportive — like a respected senior trader
-- Keep response under 350 words
-- Format cleanly without bullet symbols — use numbered sections`;
-
-    const userMessage = `Asset: ${asset}
-Session Type: ${direction}
-Rule Compliance: ${ruleCompliance === 'true' ? 'Yes' : 'No'}
-Journal Entry:
-${notes}`;
-
-    // Call Claude API for AI response
-    let aiResponse = '';
-    try {
-      const axios = require('axios');
-      const aiResult = await axios.post(
-        'https://api.anthropic.com/v1/messages',
-        {
-          model: 'claude-opus-4-5',
-          max_tokens: 600,
-          system: systemPrompt,
-          messages: [{ role: 'user', content: userMessage }]
-        },
-        {
-          headers: {
-            'x-api-key': process.env.ANTHROPIC_API_KEY,
-            'anthropic-version': '2023-06-01',
-            'content-type': 'application/json'
-          },
-          timeout: 25000
-        }
-      );
-      aiResponse = aiResult.data?.content?.[0]?.text || '';
-    } catch (aiErr) {
-      console.error('AI error:', aiErr.message);
-      aiResponse = generateFallbackResponse(notes, ruleCompliance, asset, user);
-    }
-
-    // Update journal with AI analysis
-    await Journal.findByIdAndUpdate(journal._id, {
-      aiAnalysis: aiResponse
+    // Update discipline score
+    const allJournals = await Journal.find({
+      userId: req.session.user.id
     });
 
-    // Update discipline score
-    const allJournals = await Journal.find({ userId: req.session.user.id });
     if (allJournals.length > 0) {
       const compliant = allJournals.filter(j => j.ruleCompliance).length;
       const score = Math.round((compliant / allJournals.length) * 100);
@@ -144,41 +82,134 @@ ${notes}`;
       req.session.user.disciplineScore = score;
     }
 
-    // Pass response via query param (encoded)
-    const encoded = encodeURIComponent(aiResponse);
-    const sessionEncoded = encodeURIComponent(notes.substring(0, 200));
-    res.redirect(`/kaizen-ai?response=${encoded}&session=${sessionEncoded}`);
+    // Generate AI response
+    let aiResponse = '';
+
+    if (process.env.ANTHROPIC_API_KEY) {
+      try {
+        const axios = require('axios');
+        const result = await axios.post(
+          'https://api.anthropic.com/v1/messages',
+          {
+            model: 'claude-haiku-4-5',
+            max_tokens: 500,
+            system: `You are Kaizen, a disciplined AI trading mentor. Analyze this trader's journal entry and give structured feedback.
+
+Trader: ${user.username}
+Discipline Score: ${user.disciplineScore}/100
+Strategy: ${user.tradingStyle?.tradingEdge || 'Not set'}
+Max Risk: ${user.tradingStyle?.riskPerTrade || '1'}% per trade
+Daily Limit: ${user.tradingStyle?.dailyDrawdown || '3'}%
+Emotional Triggers: ${user.tradingStyle?.emotionalTriggers || 'Not set'}
+
+Respond with exactly this format:
+
+WHAT YOU DID WELL
+[2-3 sentences]
+
+WHAT NEEDS IMPROVEMENT
+[2-3 sentences, be honest and direct]
+
+EMOTIONAL PATTERN DETECTED
+[1-2 sentences about their emotional state from their writing]
+
+ACTION FOR NEXT SESSION
+[1 specific action]
+
+SESSION SCORE: [X]/100
+DISCIPLINE IMPACT: [+X or -X] points`,
+            messages: [{
+              role: 'user',
+              content: `Asset: ${asset || 'Not specified'}
+Session Type: ${direction || 'Live Trade'}
+Rule Compliance: ${ruleCompliance === 'true' ? 'Yes' : 'No'}
+
+Journal Entry:
+${notes}`
+            }]
+          },
+          {
+            headers: {
+              'x-api-key': process.env.ANTHROPIC_API_KEY,
+              'anthropic-version': '2023-06-01',
+              'content-type': 'application/json'
+            },
+            timeout: 20000
+          }
+        );
+        aiResponse = result.data?.content?.[0]?.text || '';
+      } catch (aiErr) {
+        console.error('Anthropic API error:', aiErr.message);
+        aiResponse = buildFallback(notes, ruleCompliance === 'true', asset, user.username);
+      }
+    } else {
+      aiResponse = buildFallback(notes, ruleCompliance === 'true', asset, user.username);
+    }
+
+    // Save to journal
+    await Journal.findByIdAndUpdate(journal._id, {
+      aiAnalysis: aiResponse
+    });
+
+    // Save to memories
+    const Memory = require('../models/Memory');
+    await Memory.create({
+      userId: req.session.user.id,
+      sessionData: notes.substring(0, 500),
+      response: aiResponse,
+      asset: asset || 'General',
+      sessionScore: parseInt(sessionScore) || 50
+    });
+
+    // Redirect to Kaizen AI page with response
+    const encoded = Buffer.from(aiResponse).toString('base64');
+    res.redirect('/kaizen-ai?r=' + encoded);
 
   } catch (error) {
-    console.error('Journal error:', error);
-    res.redirect('/dashboard/journal');
+    console.error('Journal submission error:', error.message);
+    res.redirect('/dashboard/journal?error=true');
   }
 };
 
-function generateFallbackResponse(notes, ruleCompliance, asset, user) {
-  const compliant = ruleCompliance === 'true';
-  const score = compliant ? Math.floor(Math.random() * 20) + 65 : Math.floor(Math.random() * 20) + 35;
+function buildFallback(notes, compliant, asset, username) {
+  const score = compliant
+    ? Math.floor(Math.random() * 15) + 70
+    : Math.floor(Math.random() * 15) + 35;
 
-  return `KAIZEN AI · Session Analysis
+  const hasFOMO = notes.toLowerCase().includes('fomo');
+  const hasLoss = notes.toLowerCase().includes('sl') ||
+                  notes.toLowerCase().includes('loss') ||
+                  notes.toLowerCase().includes('stop');
+  const hasWin = notes.toLowerCase().includes('tp') ||
+                 notes.toLowerCase().includes('profit') ||
+                 notes.toLowerCase().includes('win');
 
-1. What Was Done Well
-You took the time to document this session honestly. That discipline in journaling is itself a form of rule-following that compounds over time.
-
-2. Rules Assessment
+  return `WHAT YOU DID WELL
 ${compliant
-  ? 'You marked this session as rule-compliant. Kaizen notes this. Consistency across multiple sessions is what builds the discipline score.'
-  : `You acknowledged a rule violation on ${asset}. This honesty is the first step. The traders who improve fastest are the ones who can name their mistakes without excuses.`
+  ? `You followed your rules this session on ${asset || 'this asset'}. That is the foundation of everything. Consistent rule-following compounds into profitability over time.`
+  : `You took the time to journal this session honestly. Self-awareness is the beginning of discipline. The fact that you acknowledged what happened shows you are building the right habits.`
 }
 
-3. Emotional Pattern
-Your writing shows ${notes.includes('FOMO') || notes.includes('fear') ? 'signs of emotional interference — specifically fear or FOMO. This is your most important area of work.' : 'reasonable emotional awareness. Continue developing this self-observation skill.'}
+WHAT NEEDS IMPROVEMENT
+${!compliant
+  ? `You marked this session as non-compliant. Identify the exact rule that was broken and write it down before your next session. Vague awareness does not create change — specific identification does.`
+  : `Continue logging sessions with this level of detail. The more specific your notes, the more patterns Kaizen can identify over time.`
+}
+${hasLoss ? `Stop loss hits are part of the process. What matters is whether the entry followed your rules. If it did, the loss is irrelevant to your discipline score.` : ''}
+${hasFOMO ? `FOMO was present in this session. This is your identified emotional trigger. The next time you feel it, write it down immediately before acting on it.` : ''}
 
-4. Next Session Action
-Before your next session, write down the one rule you will focus on following. Single-point focus builds stronger habits than trying to fix everything at once.
+EMOTIONAL PATTERN DETECTED
+${hasFOMO
+  ? 'FOMO detected in your writing. This is a pattern Kaizen will monitor. Your onboarding profile flagged this as a known trigger — be especially cautious after missing moves.'
+  : hasLoss
+  ? 'Post-loss emotional state is detectable in your language. Avoid making decisions immediately after a stop loss is hit.'
+  : 'Your writing suggests a relatively neutral emotional state this session. This is ideal for disciplined trading.'}
 
-Session Score: ${score}/100
-Discipline Score Impact: ${compliant ? '+2' : '-3'} points
+ACTION FOR NEXT SESSION
+Before opening any chart, write down the one rule you will prioritize following. Place it where you can see it. Review it after the session.
 
+SESSION SCORE: ${score}/100
+DISCIPLINE IMPACT: ${compliant ? '+' + Math.floor(score / 20) : '-' + Math.floor((100 - score) / 15)} points
 改善 — Small improvement. Every session.`;
 }
 
