@@ -9,11 +9,11 @@ const JournalSchema = new mongoose.Schema({
   asset: {
     type: String,
     required: true,
-    default: 'BTC/USDT'
+    default: 'General'
   },
   timeframe: {
     type: String,
-    default: '1H'
+    default: 'N/A'
   },
   notes: {
     type: String,
@@ -21,7 +21,6 @@ const JournalSchema = new mongoose.Schema({
   },
   emotion: {
     type: String,
-    enum: ['Fear', 'Greed', 'Neutral', 'Confident', 'Anxious'],
     default: 'Neutral'
   },
   ruleCompliance: {
@@ -39,13 +38,15 @@ const JournalSchema = new mongoose.Schema({
   },
   direction: {
     type: String,
-    enum: ['Long', 'Short', 'No Trade'],
-    default: 'No Trade'
+    default: 'Live Trade'
   },
   outcome: {
     type: String,
-    enum: ['Win', 'Loss', 'Breakeven', 'Pending'],
     default: 'Pending'
+  },
+  aiAnalysis: {
+    type: String,
+    default: ''
   },
   createdAt: {
     type: Date,
