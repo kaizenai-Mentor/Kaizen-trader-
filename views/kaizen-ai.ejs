@@ -13,81 +13,160 @@
     <div class="page-header">
       <div>
         <h1 style="color:var(--gold);">Kaizen AI</h1>
-        <p class="page-sub">Your AI discipline mentor. Responses appear here after each session.</p>
+        <p class="page-sub">
+          Your AI discipline mentor. Responses appear
+          here after each session is logged.
+        </p>
       </div>
-      <a href="/memories" class="btn-outline">View Memories →</a>
+      <a href="/memories" class="btn-outline">Memories →</a>
     </div>
 
-    <!-- BACKGROUND TEXT -->
-    <div style="position:relative;">
+    <div class="card" style="min-height:500px;position:relative;">
+
+      <!-- Watermark -->
       <div style="
         position:absolute;
         top:50%;
         left:50%;
         transform:translate(-50%,-50%);
-        font-family:var(--font-mono);
-        font-size:clamp(0.6rem,1.5vw,0.8rem);
-        letter-spacing:0.2em;
+        font-family:'DM Mono',monospace;
+        font-size:clamp(0.55rem,1.2vw,0.72rem);
+        letter-spacing:0.18em;
         text-transform:uppercase;
-        color:rgba(201,168,76,0.08);
+        color:rgba(201,168,76,0.05);
         text-align:center;
         pointer-events:none;
         white-space:nowrap;
         z-index:0;
+        width:100%;
       ">
         Go to Memories to access previous responses
       </div>
 
-      <div class="card" style="min-height:500px;position:relative;z-index:1;">
-        <div id="ai-response-area" style="
-          display:flex;
-          flex-direction:column;
-          align-items:center;
-          justify-content:center;
-          min-height:460px;
-          text-align:center;
-          gap:20px;
-        ">
+      <!-- Content -->
+      <div style="position:relative;z-index:1;">
 
-          <!-- Default empty state -->
-          <div id="ai-empty-state">
+        <% if (aiResponse) { %>
+          <!-- AI Response Section -->
+          <div style="
+            border-left:2px solid var(--gold);
+            padding-left:24px;
+            margin-bottom:32px;
+          ">
             <div style="
-              font-family:var(--font-mono);
-              font-size:3rem;
-              color:rgba(201,168,76,0.15);
-              margin-bottom:16px;
-              line-height:1;
-            ">改</div>
-            <p style="
-              font-size:0.95rem;
-              color:var(--ash);
-              max-width:400px;
-              line-height:1.8;
-              margin-bottom:8px;
-            ">
-              Log a session in My Journal and Kaizen AI will analyze it here.
-            </p>
-            <p style="
-              font-family:var(--font-mono);
-              font-size:0.65rem;
+              font-family:'DM Mono',monospace;
+              font-size:0.62rem;
               letter-spacing:0.15em;
               text-transform:uppercase;
-              color:rgba(201,168,76,0.3);
+              color:var(--gold);
+              margin-bottom:20px;
+              display:flex;
+              align-items:center;
+              gap:10px;
             ">
-              Go to Memories to access previous responses
-            </p>
-            <a href="/dashboard/journal" class="btn-primary"
-              style="margin-top:24px;display:inline-block;">
-              Log a Session
+              <span>改 Kaizen AI</span>
+              <span style="color:rgba(201,168,76,0.3);">·</span>
+              <span>Session Analysis</span>
+            </div>
+
+            <div id="streaming-text" style="
+              font-size:0.92rem;
+              color:var(--ash-light);
+              line-height:1.95;
+              white-space:pre-wrap;
+            "></div>
+          </div>
+
+          <div style="
+            display:flex;
+            gap:12px;
+            flex-wrap:wrap;
+            padding-top:20px;
+            border-top:1px solid var(--border);
+          ">
+            <a href="/memories" class="btn-outline">
+              View All Memories →
+            </a>
+            <a href="/dashboard/journal" class="btn-primary">
+              <span>Log Another Session</span>
             </a>
           </div>
 
-          <!-- Response display — shown after journal submission -->
-          <div id="ai-response-display"
-            style="display:none;width:100%;text-align:left;">
-          </div>
+          <script>
+            const rawText = <%= JSON.stringify(aiResponse) %>;
+            const el = document.getElementById('streaming-text');
+            let i = 0;
 
-        </div>
+            function stream() {
+              if (i < rawText.length) {
+                el.textContent += rawText[i];
+                i++;
+                // Scroll to show latest text
+                el.scrollIntoView({ block: 'end', behavior: 'smooth' });
+                setTimeout(stream, 10);
+              }
+            }
+
+            // Start streaming after small delay
+            setTimeout(stream, 400);
+          </script>
+
+        <% } else { %>
+          <!-- Empty State -->
+          <div style="
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            justify-content:center;
+            min-height:420px;
+            text-align:center;
+            gap:16px;
+          ">
+            <div style="
+              font-family:'DM Mono',monospace;
+              font-size:3.5rem;
+              color:rgba(201,168,76,0.12);
+              line-height:1;
+            ">改</div>
+
+            <p style="
+              font-size:0.95rem;
+              color:var(--ash);
+              max-width:380px;
+              line-height:1.85;
+            ">
+              Log a session in My Journal and Kaizen AI
+              will analyze your discipline, strategy, and
+              emotional patterns here.
+            </p>
+
+            <p style="
+              font-family:'DM Mono',monospace;
+              font-size:0.6rem;
+              letter-spacing:0.15em;
+              text-transform:uppercase;
+              color:rgba(201,168,76,0.25);
+            ">
+              Go to Memories to access previous responses
+            </p>
+
+            <div style="
+              display:flex;
+              gap:12px;
+              flex-wrap:wrap;
+              justify-content:center;
+              margin-top:8px;
+            ">
+              <a href="/dashboard/journal" class="btn-primary">
+                <span>Log a Session</span>
+              </a>
+              <a href="/memories" class="btn-outline">
+                View Memories
+              </a>
+            </div>
+          </div>
+        <% } %>
+
       </div>
     </div>
 
@@ -95,66 +174,5 @@
 
   <%- include('partials/footer') %>
   <script src="/js/app.js"></script>
-<script>
-  const urlParams = new URLSearchParams(window.location.search);
-  const rParam = urlParams.get('r');
-
-  if (rParam) {
-    let aiText = '';
-    try {
-      aiText = atob(rParam);
-    } catch(e) {
-      aiText = decodeURIComponent(rParam);
-    }
-
-    document.getElementById('ai-empty-state').style.display = 'none';
-    const display = document.getElementById('ai-response-display');
-    display.style.display = 'block';
-
-    display.innerHTML = `
-      <div style="
-        border-left:2px solid var(--gold);
-        padding:0 0 0 24px;
-        margin-bottom:32px;
-      ">
-        <div style="
-          font-family:'DM Mono',monospace;
-          font-size:0.62rem;
-          letter-spacing:0.15em;
-          text-transform:uppercase;
-          color:var(--gold);
-          margin-bottom:16px;
-        ">改 Kaizen AI · Session Analysis</div>
-        <div id="streaming-text" style="
-          font-size:0.9rem;
-          color:var(--ash-light);
-          line-height:1.9;
-          white-space:pre-wrap;
-        "></div>
-      </div>
-      <div style="display:flex;gap:12px;flex-wrap:wrap;">
-        <a href="/memories" class="btn-outline">View All Memories →</a>
-        <a href="/dashboard/journal" class="btn-primary">
-          <span>Log Another Session</span>
-        </a>
-      </div>
-    `;
-
-    const el = document.getElementById('streaming-text');
-    let i = 0;
-
-    function stream() {
-      if (i < aiText.length) {
-        el.textContent += aiText[i];
-        i++;
-        setTimeout(stream, 12);
-      } else {
-        window.history.replaceState({}, '', '/kaizen-ai');
-      }
-    }
-
-    stream();
-  }
-</script>
 </body>
 </html>
