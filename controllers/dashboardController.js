@@ -161,9 +161,11 @@ ${notes}`
       sessionScore: parseInt(sessionScore) || 50
     });
 
-    // Redirect to Kaizen AI page with response
-    const encoded = Buffer.from(aiResponse).toString('base64');
-    res.redirect('/kaizen-ai?r=' + encoded);
+    // Store AI response in session for retrieval
+    req.session.aiResponse = aiResponse;
+    req.session.save(function(err) {
+      res.redirect('/kaizen-ai');
+    });
 
   } catch (error) {
     console.error('Journal submission error:', error.message);
