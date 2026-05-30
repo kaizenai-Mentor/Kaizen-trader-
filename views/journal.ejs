@@ -25,7 +25,7 @@
         <span class="card-badge">Write Freely</span>
       </div>
 
-      <form action="/dashboard/journal" method="POST" class="journal-form">
+      <form action="/dashboard/journal" method="POST" class="journal-form" id="journal-form">
 
         <div class="form-row">
           <div class="form-group">
@@ -93,31 +93,32 @@ What is the one thing you will do differently next session?"
         <input type="hidden" name="emotion" value="Logged">
         <input type="hidden" name="sessionScore" value="50">
 
-        <button type="submit" class="btn-primary btn-full" id="journal-submit-btn"
-  onclick="showResponding()">
+        <button type="submit" class="btn-primary btn-full" id="journal-submit-btn">
   Save Session Entry
 </button>
 
 <div id="responding-state" style="
   display:none;
   text-align:center;
-  padding:24px;
-  background:var(--bg-surface);
-  border:1px solid var(--gold-border);
+  padding:24px 16px;
+  border:1px solid rgba(201,168,76,0.2);
+  background:rgba(201,168,76,0.04);
   margin-top:16px;
 ">
   <div id="responding-text" style="
-    font-family:var(--font-mono);
-    font-size:0.8rem;
+    font-family:'DM Mono',monospace;
+    font-size:0.78rem;
     letter-spacing:0.15em;
     text-transform:uppercase;
-    color:var(--gold);
-  ">KAIZEN AI IS RESPONDING...</div>
+    color:#C9A84C;
+    transition:opacity 0.7s;
+  ">改 KAIZEN AI IS RESPONDING...</div>
   <p style="
-    font-size:0.78rem;
-    color:var(--ash);
-    margin-top:8px;
-  ">Redirecting to Kaizen AI in a moment</p>
+    font-size:0.75rem;
+    color:#A8A09A;
+    margin-top:10px;
+    font-family:'DM Mono',monospace;
+  ">Analyzing your session. Please wait.</p>
 </div>
 
       </form>
