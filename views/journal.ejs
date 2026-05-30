@@ -194,22 +194,23 @@ What is the one thing you will do differently next session?"
   <script src="/js/app.js"></script>
 
   <script>
-  function showResponding() {
+  document.getElementById('journal-form').addEventListener('submit', function() {
     const btn = document.getElementById('journal-submit-btn');
     const state = document.getElementById('responding-state');
-    if (btn) btn.style.display = 'none';
-    if (state) state.style.display = 'block';
 
-    // Fade in fade out animation
+    btn.style.display = 'none';
+    state.style.display = 'block';
+
+    // Fade animation
     let visible = true;
     const textEl = document.getElementById('responding-text');
     setInterval(function() {
       if (textEl) {
-        textEl.style.opacity = visible ? '0.3' : '1';
+        textEl.style.opacity = visible ? '0.2' : '1';
         visible = !visible;
       }
-    }, 700);
-  }
+    }, 600);
+  });
 </script>
 </body>
 </html>
