@@ -93,9 +93,32 @@ What is the one thing you will do differently next session?"
         <input type="hidden" name="emotion" value="Logged">
         <input type="hidden" name="sessionScore" value="50">
 
-        <button type="submit" class="btn-primary btn-full">
-          Save Session Entry
-        </button>
+        <button type="submit" class="btn-primary btn-full" id="journal-submit-btn"
+  onclick="showResponding()">
+  Save Session Entry
+</button>
+
+<div id="responding-state" style="
+  display:none;
+  text-align:center;
+  padding:24px;
+  background:var(--bg-surface);
+  border:1px solid var(--gold-border);
+  margin-top:16px;
+">
+  <div id="responding-text" style="
+    font-family:var(--font-mono);
+    font-size:0.8rem;
+    letter-spacing:0.15em;
+    text-transform:uppercase;
+    color:var(--gold);
+  ">KAIZEN AI IS RESPONDING...</div>
+  <p style="
+    font-size:0.78rem;
+    color:var(--ash);
+    margin-top:8px;
+  ">Redirecting to Kaizen AI in a moment</p>
+</div>
 
       </form>
     </div>
@@ -168,5 +191,24 @@ What is the one thing you will do differently next session?"
 
   <%- include('partials/footer') %>
   <script src="/js/app.js"></script>
+
+  <script>
+  function showResponding() {
+    const btn = document.getElementById('journal-submit-btn');
+    const state = document.getElementById('responding-state');
+    if (btn) btn.style.display = 'none';
+    if (state) state.style.display = 'block';
+
+    // Fade in fade out animation
+    let visible = true;
+    const textEl = document.getElementById('responding-text');
+    setInterval(function() {
+      if (textEl) {
+        textEl.style.opacity = visible ? '0.3' : '1';
+        visible = !visible;
+      }
+    }, 700);
+  }
+</script>
 </body>
 </html>
