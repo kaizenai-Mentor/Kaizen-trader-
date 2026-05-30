@@ -95,78 +95,66 @@
 
   <%- include('partials/footer') %>
   <script src="/js/app.js"></script>
-  <script>
-    // Read response from URL params (set by journal submission)
-    const urlParams = new URLSearchParams(window.location.search);
-    const responseParam = urlParams.get('response');
-    const sessionParam = urlParams.get('session');
+<script>
+  const urlParams = new URLSearchParams(window.location.search);
+  const rParam = urlParams.get('r');
 
-    if (responseParam) {
-      const aiText = decodeURIComponent(responseParam);
-      const sessionText = decodeURIComponent(sessionParam || '');
+  if (rParam) {
+    let aiText = '';
+    try {
+      aiText = atob(rParam);
+    } catch(e) {
+      aiText = decodeURIComponent(rParam);
+    }
 
-      document.getElementById('ai-empty-state').style.display = 'none';
-      const display = document.getElementById('ai-response-display');
-      display.style.display = 'block';
+    document.getElementById('ai-empty-state').style.display = 'none';
+    const display = document.getElementById('ai-response-display');
+    display.style.display = 'block';
 
-      display.innerHTML = `
+    display.innerHTML = `
+      <div style="
+        border-left:2px solid var(--gold);
+        padding:0 0 0 24px;
+        margin-bottom:32px;
+      ">
         <div style="
-          border-left:2px solid var(--gold);
-          padding:0 24px;
-          margin-bottom:32px;
-        ">
-          <div style="
-            font-family:var(--font-mono);
-            font-size:0.62rem;
-            letter-spacing:0.15em;
-            text-transform:uppercase;
-            color:var(--gold);
-            margin-bottom:16px;
-          ">改 Kaizen AI · Session Analysis</div>
-          <div id="streaming-text" style="
-            font-size:0.95rem;
-            color:var(--ash-light);
-            line-height:1.9;
-            white-space:pre-wrap;
-          "></div>
-        </div>
-        <div style="display:flex;gap:12px;flex-wrap:wrap;">
-          <a href="/memories" class="btn-outline">View All Memories →</a>
-          <a href="/dashboard/journal" class="btn-primary">
-            <span>Log Another Session</span>
-          </a>
-        </div>
-      `;
+          font-family:'DM Mono',monospace;
+          font-size:0.62rem;
+          letter-spacing:0.15em;
+          text-transform:uppercase;
+          color:var(--gold);
+          margin-bottom:16px;
+        ">改 Kaizen AI · Session Analysis</div>
+        <div id="streaming-text" style="
+          font-size:0.9rem;
+          color:var(--ash-light);
+          line-height:1.9;
+          white-space:pre-wrap;
+        "></div>
+      </div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;">
+        <a href="/memories" class="btn-outline">View All Memories →</a>
+        <a href="/dashboard/journal" class="btn-primary">
+          <span>Log Another Session</span>
+        </a>
+      </div>
+    `;
 
-      // Stream text
-      const el = document.getElementById('streaming-text');
-      let i = 0;
+    const el = document.getElementById('streaming-text');
+    let i = 0;
 
-      function streamChar() {
-        if (i < aiText.length) {
-          el.textContent += aiText[i];
-          i++;
-          setTimeout(streamChar, 14);
-        } else {
-          // Auto-save to memories
-          saveToMemories(sessionText, aiText);
-          // Clean URL
-          window.history.replaceState({}, '', '/kaizen-ai');
-        }
+    function stream() {
+      if (i < aiText.length) {
+        el.textContent += aiText[i];
+        i++;
+        setTimeout(stream, 12);
+      } else {
+        window.history.replaceState({}, '', '/kaizen-ai');
       }
-
-      streamChar();
     }
 
-    async function saveToMemories(sessionData, response) {
-      try {
-        await fetch('/memories/save', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ sessionData, response })
-        });
-      } catch(e) {}
-    }
-  </script>
+    stream();
+  }
+</script>
 </body>
 </html>
