@@ -156,7 +156,15 @@ const Memory = require('./models/Memory');
 // Kaizen AI page
 app.get('/kaizen-ai', (req, res) => {
   if (!req.session.user) return res.redirect('/auth/login');
-  res.render('kaizen-ai', { user: req.session.user });
+  const aiResponse = req.session.aiResponse || null;
+  // Clear after reading
+  if (req.session.aiResponse) {
+    delete req.session.aiResponse;
+  }
+  res.render('kaizen-ai', {
+    user: req.session.user,
+    aiResponse: aiResponse
+  });
 });
 
 // Memories page
