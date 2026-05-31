@@ -93,23 +93,30 @@
           </div>
 
           <script>
-            const rawText = <%= JSON.stringify(aiResponse) %>;
-            const el = document.getElementById('streaming-text');
-            let i = 0;
+  const rawText = <%- JSON.stringify(aiResponse) %>;
+  const el = document.getElementById('streaming-text');
+  let i = 0;
 
-            function stream() {
-              if (i < rawText.length) {
-                el.textContent += rawText[i];
-                i++;
-                // Scroll to show latest text
-                el.scrollIntoView({ block: 'end', behavior: 'smooth' });
-                setTimeout(stream, 10);
-              }
-            }
+  function stream() {
+    if (i < rawText.length) {
+      // Add one character at a time
+      const char = rawText[i];
+      el.textContent += char;
+      i++;
 
-            // Start streaming after small delay
-            setTimeout(stream, 400);
-          </script>
+      // Variable speed — faster for spaces, slower for punctuation
+      let delay = 12;
+      if (char === '.' || char === '\n') delay = 80;
+      else if (char === ',' || char === ':') delay = 40;
+      else if (char === ' ') delay = 8;
+
+      setTimeout(stream, delay);
+    }
+  }
+
+  // Start after 300ms delay
+  setTimeout(stream, 300);
+</script>
 
         <% } else { %>
           <!-- Empty State -->
