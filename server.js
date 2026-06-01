@@ -167,6 +167,44 @@ app.get('/kaizen-ai', (req, res) => {
   });
 });
 
+// Test
+app.get('/test-ai', async (req, res) => {
+  if (!process.env.ANTHROPIC_API_KEY) {
+    return res.send('NO API KEY SET');
+  }
+  try {
+    const https = require('https');
+    const payload = JSON.stringify({
+      model: 'claude-haiku-4-5',
+      max_tokens: 100,
+      messages: [{ role: 'user', content: 'Say: KAIZEN AI is working.' }]
+    });
+    const response = await new Promise((resolve, reject) => {
+      const req2 = https.request({
+        hostname: 'api.anthropic.com',
+        path: '/v1/messages',
+        method: 'POST',
+        headers: {
+          'x-api-key': process.env.ANTHROPIC_API_KEY,
+          'anthropic-version': '2023-06-01',
+          'content-type': 'application/json',
+          'content-length': Buffer.byteLength(payload)
+        }
+      }, (res2) => {
+        let data = '';
+        res2.on('data', c => data += c);
+        res2.on('end', () => resolve(data));
+      });
+      req2.on('error', reject);
+      req2.write(payload);
+      req2.end();
+    });
+    res.send(response);
+  } catch(e) {
+    res.send('ERROR: ' + e.message);
+  }
+});
+
 // Memories page
 app.get('/memories', async (req, res) => {
   if (!req.session.user) return res.redirect('/auth/login');
