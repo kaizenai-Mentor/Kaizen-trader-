@@ -1,7 +1,6 @@
 const User = require('../models/User');
 const Journal = require('../models/Journal');
 
-// GET /dashboard
 const getDashboard = async (req, res) => {
   try {
     const user = await User.findById(req.session.user.id);
@@ -36,28 +35,38 @@ const getDashboard = async (req, res) => {
   }
 };
 
-// POST /dashboard/journal
 const addJournal = async (req, res) => {
   console.log('=== JOURNAL SUBMISSION START ===');
 
   try {
-    const {
-      asset, timeframe, notes,
-      emotion, ruleCompliance, direction,
-      outcome, sessionScore
-    } = req.body;
+    const { notes, ruleCompliance, direction, timeframe, outcome, sessionScore } = req.body;
 
     if (!notes || notes.trim() === '') {
       return res.redirect('/dashboard/journal');
     }
 
-    // Create journal entry
+    // Extract asset from notes automatically
+    const assetPatterns = [
+      /\b([A-Z]{3}\/[A-Z]{3})\b/g,
+      /\b([A-Z]{6})\b/g,
+      /\b(GOLD|SILVER|OIL|BTC|ETH|XAU|XAG)\b/gi
+    ];
+    let detectedAsset = 'General';
+    for (const pattern of assetPatterns) {
+      const match = notes.match(pattern);
+      if (match && match[0]) {
+        detectedAsset = match[0];
+        break;
+      }
+    }
+    const asset = req.body.asset || detectedAsset;
+
     const journal = await Journal.create({
       userId: req.session.user.id,
-      asset: asset || 'General',
+      asset,
       timeframe: timeframe || 'N/A',
       notes: notes.trim(),
-      emotion: emotion || 'Neutral',
+      emotion: 'Logged',
       ruleCompliance: ruleCompliance === 'true',
       direction: direction || 'Live Trade',
       outcome: outcome || 'Pending',
@@ -66,122 +75,100 @@ const addJournal = async (req, res) => {
 
     console.log('Journal created:', journal._id);
 
-    // Get user and ALL their past sessions
     const user = await User.findById(req.session.user.id);
     const allJournals = await Journal.find({
       userId: req.session.user.id
     }).sort({ createdAt: -1 });
 
-    // Update discipline score
     const compliantCount = allJournals.filter(j => j.ruleCompliance).length;
-    const score = Math.round((compliantCount / allJournals.length) * 100);
+    const overallScore = Math.round((compliantCount / allJournals.length) * 100);
     await User.findByIdAndUpdate(req.session.user.id, {
-      disciplineScore: score
+      disciplineScore: overallScore
     });
-    req.session.user.disciplineScore = score;
+    req.session.user.disciplineScore = overallScore;
 
-    // Build behavioral context from history
+    // Build session history context
     const totalSessions = allJournals.length;
-    const winRate = Math.round((compliantCount / totalSessions) * 100);
     const recentSessions = allJournals.slice(0, 10);
     const recentCompliant = recentSessions.filter(j => j.ruleCompliance).length;
-    const recentTrend = recentCompliant > recentSessions.length * 0.6
+    const recentTrend = recentCompliant > recentSessions.length * 0.65
       ? 'improving'
       : recentCompliant < recentSessions.length * 0.4
       ? 'declining'
       : 'inconsistent';
 
-    // Find repeated patterns
-    const allNotes = allJournals.map(j => j.notes.toLowerCase()).join(' ');
-    const fomoCount = (allNotes.match(/fomo/gi) || []).length;
-    const revengeCount = (allNotes.match(/revenge|frustrat/gi) || []).length;
-    const assetsTraded = [...new Set(allJournals.map(j => j.asset))];
+    const allText = allJournals.map(j => j.notes.toLowerCase()).join(' ');
+    const fomoCount = (allText.match(/fomo/gi) || []).length;
+    const revengeCount = (allText.match(/revenge|frustrat/gi) || []).length;
 
-    // Build last 5 sessions summary for context
-    const sessionHistory = allJournals.slice(0, 5).map((j, idx) => {
-      return `Session ${idx + 1} (${new Date(j.createdAt).toLocaleDateString()}):
-Asset: ${j.asset} | Compliant: ${j.ruleCompliance ? 'Yes' : 'No'} | Score: ${j.sessionScore}/100
-Notes excerpt: ${j.notes.substring(0, 200)}`;
-    }).join('\n\n');
+    const sessionHistory = allJournals.slice(1, 6).map((j, i) => {
+      return `Past session ${i + 1}: ${j.asset} | Compliant: ${j.ruleCompliance ? 'Yes' : 'No'} | "${j.notes.substring(0, 150)}"`;
+    }).join('\n');
 
-    console.log('Building AI prompt with', totalSessions, 'sessions of history');
-
-    // Generate AI response
     let aiResponse = '';
 
     if (process.env.ANTHROPIC_API_KEY) {
       try {
         const https = require('https');
 
-        const systemPrompt = `You are Kaizen — a world-class AI trading discipline mentor. You are direct, honest, deeply analytical, and genuinely care about this trader's long-term success. You are NOT generic. You reference specific details from their journal and their history.
+        const systemPrompt = `You are Kaizen — an elite AI trading mentor. You are direct, specific, deeply observant, and psychologically sophisticated. You are not a chatbot. You are a senior trader who has seen thousands of journals.
 
 TRADER PROFILE:
 Name: ${user.username}
-Total Sessions Logged: ${totalSessions}
-Overall Discipline Score: ${score}/100
-Overall Rule Compliance: ${winRate}%
-Recent Trend (last 10): ${recentTrend}
-Assets Traded: ${assetsTraded.join(', ')}
-Primary Strategy: ${user.tradingStyle?.tradingEdge || 'Not specified'}
-Max Risk Per Trade: ${user.tradingStyle?.riskPerTrade || 'Not specified'}%
-Daily Loss Limit: ${user.tradingStyle?.dailyDrawdown || 'Not specified'}%
-Entry Rule: ${user.tradingStyle?.entryRule || 'Not specified'}
-Stop Loss Rule: ${user.tradingStyle?.stopLossRule || 'Not specified'}
-Emotional Triggers (self-reported): ${user.tradingStyle?.emotionalTriggers || 'Not specified'}
-Max Daily Trades: ${user.tradingStyle?.maxDailyTrades || 'Not specified'}
-FOMO mentions across all sessions: ${fomoCount} times
-Revenge trade mentions: ${revengeCount} times
-
-PSYCHOLOGICAL FRAMEWORK YOU OPERATE FROM:
-You apply Cognitive Behavioral principles — you identify distorted thinking patterns in the trader's language before addressing outcomes.
-
-You distinguish between process and outcome — a rule-compliant losing trade scores higher than a rule-violating winning trade.
-
-You are predictive, not just reactive — when you detect a pattern across sessions, warn about future risk, not just past failure.
-
-You never anthropomorphize the market. If the trader blames the market, gently redirect to their decision-making process.
-
-You track psychological progression across sessions — if the trader is improving their emotional awareness, name it. If they are regressing, name that too.
-
-COMMUNICATION STYLE:
-- Speak like a respected senior trader who has seen everything
-- Never use corporate language or generic affirmations
-- Reference their specific words, pairs, prices, and strategy steps
-- When delivering hard truths, deliver them directly and then immediately offer the path forward
-- Vary your sentence structure and opening lines every response
-- Never start two consecutive sections the same way
+Sessions logged: ${totalSessions}
+Overall discipline: ${overallScore}%
+Recent trend (last 10): ${recentTrend}
+FOMO mentions all-time: ${fomoCount}
+Revenge trade mentions: ${revengeCount}
+Strategy: ${user.tradingStyle?.tradingEdge || 'Not set'}
+Max risk per trade: ${user.tradingStyle?.riskPerTrade || 'Not set'}%
+Daily loss limit: ${user.tradingStyle?.dailyDrawdown || 'Not set'}%
+Entry rule: ${user.tradingStyle?.entryRule || 'Not set'}
+Stop loss rule: ${user.tradingStyle?.stopLossRule || 'Not set'}
+Known triggers: ${user.tradingStyle?.emotionalTriggers || 'Not set'}
 
 RECENT SESSION HISTORY:
-${sessionHistory || 'This is their first session.'}
+${sessionHistory || 'First session.'}
 
-YOUR RESPONSE RULES:
-1. Reference SPECIFIC details from their journal entry — mention the actual pairs, prices, timeframes, strategy steps they wrote
-2. Reference their HISTORY — if this is not their first session mention patterns you see across sessions
-3. Never give the same response twice — every session is unique data
-4. Be honest and direct — do not sugarcoat violations
-5. Score strictly — a session with FOMO and a rule violation should score below 50
-6. Keep total response under 400 words
-7. End with exactly this format:
-SESSION SCORE: [X]/100
-DISCIPLINE IMPACT: [+X or -X] points
-OVERALL SCORE: ${score}/100
+RESPONSE RULES — READ CAREFULLY:
+1. Reference SPECIFIC details: exact pairs, prices, timeframes, strategy steps the trader mentioned
+2. Do NOT always assume emotional causes — sometimes failures are technical (bad entry, wrong timeframe, misread structure). Identify the actual root cause
+3. Do NOT use the word "emotional" unless emotion is actually the root cause
+4. Do NOT repeat advice from previous sessions — vary your language and insights every single time
+5. Do NOT give generic trading advice — only reference what THIS trader wrote
+6. Score strictly: 0-100% based on process adherence, not outcome
+7. Be concise — maximum 300 words total
+8. Format your response with these FLEXIBLE sections — only include sections relevant to this specific entry:
 
-Do NOT use bullet points or asterisks. Write in flowing paragraphs under clear section headers.`;
+WHAT YOU EXECUTED WELL
+[specific to their entry — mention actual details they wrote]
 
-        const userMessage = `Current Session:
-Asset: ${asset || 'Not specified'}
-Session Type: ${direction || 'Live Trade'}
-Followed ALL Rules: ${ruleCompliance === 'true' ? 'Yes' : 'No'}
+WHERE THE BREAKDOWN OCCURRED  
+[identify the real cause — technical, behavioral, psychological, or situational]
 
-Journal Entry:
+PATTERN KAIZEN IS TRACKING
+[only mention if a genuine pattern exists across sessions — skip if first session or no clear pattern]
+
+ONE THING TO FOCUS ON
+[single specific action for next session — must be different from generic advice]
+
+DISCIPLINE SCORE: [X]%
+OVERALL SCORE: ${overallScore}%`;
+
+        const userMessage = `Session type: ${direction || 'Live Trade'}
+Followed all rules: ${ruleCompliance === 'true' ? 'Yes' : 'No'}
+
+Full journal entry:
 ${notes}`;
 
         const payload = JSON.stringify({
           model: 'claude-haiku-4-5',
-          max_tokens: 600,
+          max_tokens: 500,
           system: systemPrompt,
           messages: [{ role: 'user', content: userMessage }]
         });
+
+        console.log('Calling Anthropic API...');
 
         const response = await new Promise((resolve, reject) => {
           const req2 = https.request({
@@ -200,8 +187,13 @@ ${notes}`;
             res2.on('end', () => resolve(data));
           });
 
-          req2.on('error', reject);
+          req2.on('error', (e) => {
+            console.error('HTTPS error:', e.message);
+            reject(e);
+          });
+
           req2.setTimeout(20000, () => {
+            console.error('Anthropic timeout');
             req2.destroy();
             reject(new Error('Timeout'));
           });
@@ -210,54 +202,42 @@ ${notes}`;
           req2.end();
         });
 
+        console.log('Raw Anthropic response:', response.substring(0, 200));
+
         const parsed = JSON.parse(response);
-        if (parsed.content && parsed.content[0] && parsed.content[0].text) {
+        if (parsed.content?.[0]?.text) {
           aiResponse = parsed.content[0].text;
-          console.log('Claude API response received successfully');
+          console.log('Claude response received, length:', aiResponse.length);
         } else if (parsed.error) {
-          console.error('Claude API error:', parsed.error);
-          aiResponse = buildFallbackResponse(
-            notes, ruleCompliance === 'true',
-            asset, user, totalSessions, recentTrend
-          );
+          console.error('Claude API error:', JSON.stringify(parsed.error));
+          aiResponse = buildVariedFallback(notes, ruleCompliance === 'true', asset, user, totalSessions, recentTrend, overallScore);
         }
 
       } catch (aiErr) {
         console.error('Anthropic call failed:', aiErr.message);
-        aiResponse = buildFallbackResponse(
-          notes, ruleCompliance === 'true',
-          asset, user, totalSessions, recentTrend
-        );
+        aiResponse = buildVariedFallback(notes, ruleCompliance === 'true', asset, user, totalSessions, recentTrend, overallScore);
       }
     } else {
-      console.log('No Anthropic key — using fallback');
-      aiResponse = buildFallbackResponse(
-        notes, ruleCompliance === 'true',
-        asset, user, totalSessions, recentTrend
-      );
+      console.log('ANTHROPIC_API_KEY not set — using fallback');
+      aiResponse = buildVariedFallback(notes, ruleCompliance === 'true', asset, user, totalSessions, recentTrend, overallScore);
     }
 
-    // Update journal with AI analysis
-    await Journal.findByIdAndUpdate(journal._id, {
-      aiAnalysis: aiResponse
-    });
+    await Journal.findByIdAndUpdate(journal._id, { aiAnalysis: aiResponse });
 
-    // Save to Memory
     try {
       const Memory = require('../models/Memory');
       await Memory.create({
         userId: req.session.user.id,
         sessionData: notes.substring(0, 500),
         response: aiResponse,
-        asset: asset || 'General',
+        asset,
         sessionScore: parseInt(sessionScore) || 50
       });
-      console.log('Saved to memories');
+      console.log('Memory saved');
     } catch (memErr) {
       console.error('Memory save failed:', memErr.message);
     }
 
-    // Store in session and redirect
     req.session.aiResponse = aiResponse;
     req.session.save((err) => {
       if (err) console.error('Session save error:', err.message);
@@ -272,59 +252,69 @@ ${notes}`;
   }
 };
 
-function buildFallbackResponse(notes, compliant, asset, user, totalSessions, trend) {
-  const score = compliant
+function buildVariedFallback(notes, compliant, asset, user, totalSessions, trend, overallScore) {
+  const sessionScore = compliant
     ? Math.floor(Math.random() * 20) + 65
     : Math.floor(Math.random() * 25) + 25;
 
   const hasFOMO = /fomo|fear of missing/i.test(notes);
-  const hasRevenge = /revenge|frustrat|angry/i.test(notes);
-  const hasLoss = /sl|stop loss|loss|losing/i.test(notes);
-  const hasWin = /tp|take profit|profit|win/i.test(notes);
-  const hasChecklist = /checklist|check list/i.test(notes);
-  const isFirstSession = totalSessions <= 1;
-
-  const sessionContext = isFirstSession
-    ? 'This is your first logged session with Kaizen.'
-    : `This is session ${totalSessions} in your Kaizen journey. Your discipline trend is ${trend}.`;
+  const hasTA = /entry|structure|timeframe|sweep|mss|liquidity|zone|level|trend|checklist/i.test(notes);
+  const hasLoss = /sl|stop loss|loss|losing|blew|blow/i.test(notes);
+  const hasWin = /tp|take profit|win|profit|hit/i.test(notes);
+  const hasProp = /prop|funded|account/i.test(notes);
 
   const impact = compliant
-    ? `+${Math.max(1, Math.floor(score / 25))}`
-    : `-${Math.max(2, Math.floor((100 - score) / 15))}`;
+    ? `+${Math.max(1, Math.floor(sessionScore / 25))}%`
+    : `-${Math.max(2, Math.floor((100 - sessionScore) / 15))}%`;
 
-  return `WHAT YOU DID WELL
-${sessionContext} ${compliant
-    ? `Following your rules on ${asset} — especially ${hasChecklist ? 'completing your full checklist before entry' : 'your entry criteria'} — is exactly the behavior that compounds into long-term profitability.`
-    : `You documented this session with honesty. That takes more discipline than most traders show.`}
+  const variations = [
+    {
+      well: compliant
+        ? `The checklist discipline on ${asset} is the exact behavior that separates developing traders from consistent ones. You executed the process.`
+        : `You documented what happened without excuses. That level of self-honesty is rarer than most traders admit.`,
+      breakdown: hasTA && !compliant
+        ? `The breakdown was technical — ${hasFOMO ? 'FOMO pushed you into an entry before your setup was complete' : 'the entry criteria were not fully met before execution'}. This is a process gap, not a character flaw. Fix the process.`
+        : !compliant
+        ? `A rule was bypassed. The specific rule matters more than the outcome — identify which rule broke and under what condition.`
+        : `No critical breakdown this session. Focus on replicating this process.`,
+      focus: hasLoss && hasProp
+        ? `With a prop account under pressure, your next session must start with a written rule: no entry without full checklist completion, regardless of how clear the setup appears.`
+        : hasFOMO
+        ? `Before the next session, identify the specific moment FOMO appeared. Write the time, the pair, and what price was doing. Specificity turns awareness into prevention.`
+        : `Log your next session with the same level of detail as this one. The pattern Kaizen is building about your trading requires consistent data.`
+    },
+    {
+      well: compliant
+        ? `Following your process on ${asset} when the market was moving requires more discipline than most traders have. This is bankable behavior.`
+        : `Honest documentation after a difficult session is not small. Many traders avoid journaling precisely when it matters most.`,
+      breakdown: hasTA && !compliant
+        ? `The entry on ${asset} did not meet your defined criteria. That is a technical execution failure — your edge requires specific conditions, and this entry bypassed at least one of them.`
+        : !compliant
+        ? `Something overrode your rules. Whether it was speed, conviction, or external noise — identify the exact override mechanism. That is where your work is.`
+        : `The session held together. What you want now is to understand why — so you can replicate it.`,
+      focus: totalSessions < 5
+        ? `You are still in the early data-building phase. Kaizen needs at least 10 sessions to begin showing reliable patterns. Keep logging with this level of honesty.`
+        : trend === 'declining'
+        ? `Your recent sessions are trending toward lower compliance. Before the next session, review your last three entries and identify the common thread.`
+        : `Your compliance is building. The next test is whether you hold this standard when a trade is moving against you mid-position.`
+    }
+  ];
 
-WHAT NEEDS IMPROVEMENT
-${!compliant
-    ? `A rule was violated this session. ${hasFOMO ? 'The FOMO on ' + asset + ' cost you a disciplined entry. FOMO is a pattern Kaizen will track closely across your sessions.' : 'Identify the exact decision point where the rule broke. That moment is where your focus belongs.'}
-${hasLoss ? 'The stop loss hit is secondary — the process failure is what matters.' : ''}`
-    : `${hasChecklist ? 'Your checklist discipline is building. The challenge now is maintaining it under pressure — when the market moves fast and FOMO appears.' : 'Continue documenting with this level of detail. The data builds over time.'}`}
+  const v = variations[Math.floor(Math.random() * variations.length)];
 
-EMOTIONAL PATTERN
-${hasFOMO
-    ? `FOMO appears directly in your writing around ${asset}. This is the third most common cause of account destruction among retail traders. It is your priority emotional work.`
-    : hasRevenge
-    ? 'Frustration is detectable in your writing. Trading from this emotional state multiplies risk significantly.'
-    : hasLoss
-    ? 'Your language around the loss is measured. Monitor how you feel going into your next session — post-loss decisions are where most discipline breaks.'
-    : 'Your emotional state in this entry appears controlled. This is the foundation everything else is built on.'}
+  return `WHAT YOU EXECUTED WELL
+${v.well}
 
-NEXT SESSION ACTION
-${hasFOMO
-    ? `Before your next ${asset} session: write "I will wait for the re-entry" on paper and place it next to your screen.`
-    : !compliant
-    ? 'Write your most violated rule at the top of your journal before you analyze a single chart tomorrow.'
-    : 'Document your analysis reasoning before entry — not after. This forces clarity before emotion can interfere.'}
+WHERE THE BREAKDOWN OCCURRED
+${v.breakdown}
 
-SESSION SCORE: ${score}/100
-DISCIPLINE IMPACT: ${impact} points
-OVERALL SCORE: ${user.disciplineScore || score}/100`;
-      } 
-      
-// GET /dashboard/journal
+ONE THING TO FOCUS ON
+${v.focus}
+
+DISCIPLINE SCORE: ${sessionScore}%
+OVERALL SCORE: ${overallScore}%`;
+}
+
 const getJournals = async (req, res) => {
   try {
     const journals = await Journal.find({
@@ -332,20 +322,16 @@ const getJournals = async (req, res) => {
     }).sort({ createdAt: -1 });
 
     const user = await User.findById(req.session.user.id);
-
     if (!user) return res.redirect('/auth/login');
 
-    res.render('journal', {
-      user,
-      journals: journals || []
-    });
+    res.render('journal', { user, journals: journals || [] });
 
   } catch (error) {
     console.error('Journals error:', error.message);
     res.status(500).send(`
       <html>
         <body style="background:#080808;color:#F5F3EF;font-family:sans-serif;padding:40px;text-align:center;">
-          <h2 style="color:#C9A84C;">改 Kaizen</h2>
+          <h2 style="color:#C9A84C;">改 KAIZEN</h2>
           <p>Journal temporarily unavailable.</p>
           <a href="/dashboard" style="color:#C9A84C;">← Back to Dashboard</a>
         </body>
@@ -354,8 +340,4 @@ const getJournals = async (req, res) => {
   }
 };
 
-module.exports = {
-  getDashboard,
-  addJournal,
-  getJournals
-};
+module.exports = { getDashboard, addJournal, getJournals };
