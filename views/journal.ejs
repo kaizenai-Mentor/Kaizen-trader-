@@ -27,101 +27,86 @@
 
       <form action="/dashboard/journal" method="POST" class="journal-form" id="journal-form">
 
-        <div class="form-row">
-          <div class="form-group">
-            <label class="form-label">Asset Traded</label>
-            <input type="text" name="asset" class="form-input"
-              placeholder="e.g. BTC/USDT, EUR/USD, GOLD">
-          </div>
-          <div class="form-group">
-            <label class="form-label">Session Type</label>
-            <div class="radio-group" style="flex-direction:row;gap:12px;">
-              <label class="radio-option" style="flex:1;justify-content:center;">
-                <input type="radio" name="direction" value="Live Trade" required>
-                <span style="color:var(--gold);font-weight:600;">Live Trade</span>
-              </label>
-              <label class="radio-option" style="flex:1;justify-content:center;">
-                <input type="radio" name="direction" value="Backtesting">
-                <span style="color:var(--ash-light);font-weight:600;">Backtesting</span>
-              </label>
-            </div>
-          </div>
+  <!-- MAIN NOTEPAD — the only thing that matters -->
+  <div class="form-group">
+    <label class="form-label">Session Notes</label>
+    <div class="notepad-wrapper">
+      <div class="notepad-toolbar">
+        <span class="notepad-hint">
+          Write everything — what you analyzed, what you traded,
+          what happened, and why. Be completely honest.
+          Kaizen AI reads every word.
+        </span>
+      </div>
+      <textarea
+        name="notes"
+        class="form-input notepad-textarea"
+        placeholder="Start writing about your session...
 
-        <!-- MAIN NOTEPAD -->
-        <div class="form-group">
-          <label class="form-label">Session Notes</label>
-          <div class="notepad-wrapper">
-            <div class="notepad-toolbar">
-              <span class="notepad-hint">
-                Write everything — what you saw, what you did,
-                what you felt, what you learned. Be completely honest.
-                Kaizen AI reads this to understand how you trade.
-              </span>
-            </div>
-            <textarea
-              name="notes"
-              class="form-input notepad-textarea"
-              placeholder="Start writing about your session...
+What pair did you analyze? What timeframe?
+What did you see on the chart?
+Did you take a trade? What was your entry, SL, and TP?
+Did you follow your checklist?
+What happened — win, loss, or no trade?
+What did you feel during the session?
+What would you do differently?"
+        required
+        style="min-height:320px;"></textarea>
+    </div>
+  </div>
 
-What market did you analyze? What did you see on the chart?
-Did you take a trade? Why or why not?
-What was your entry, stop loss, and target?
-How did you feel during the session?
-Did anything make you anxious, greedy, or uncertain?
-Did you follow your rules? If not, where did you break them?
-What is the one thing you will do differently next session?"
-              required></textarea>
-          </div>
-        </div>
+  <!-- COMPLIANCE — simplified -->
+  <div class="form-group">
+    <label class="form-label">Did you follow ALL your trading rules?</label>
+    <div class="radio-group" style="flex-direction:row;gap:12px;">
+      <label class="radio-option" style="flex:1;justify-content:center;padding:14px;">
+        <input type="radio" name="ruleCompliance" value="true" required>
+        <span style="color:var(--green);font-weight:600;font-size:0.9rem;">Yes</span>
+      </label>
+      <label class="radio-option" style="flex:1;justify-content:center;padding:14px;">
+        <input type="radio" name="ruleCompliance" value="false">
+        <span style="color:var(--red);font-weight:600;font-size:0.9rem;">No</span>
+      </label>
+    </div>
+  </div>
 
-        <div class="form-group">
-          <label class="form-label">Did you follow ALL your trading rules this session?</label>
-          <div class="radio-group" style="flex-direction:row;gap:12px;">
-            <label class="radio-option" style="flex:1;justify-content:center;">
-              <input type="radio" name="ruleCompliance" value="true" required>
-              <span style="color:var(--green);font-weight:600;">Yes — Fully Compliant</span>
-            </label>
-            <label class="radio-option" style="flex:1;justify-content:center;">
-              <input type="radio" name="ruleCompliance" value="false">
-              <span style="color:var(--red);font-weight:600;">No — Rules Violated</span>
-            </label>
-          </div>
-        </div>
+  <!-- Hidden fields -->
+  <input type="hidden" name="asset" value="">
+  <input type="hidden" name="timeframe" value="N/A">
+  <input type="hidden" name="outcome" value="Pending">
+  <input type="hidden" name="emotion" value="Logged">
+  <input type="hidden" name="sessionScore" value="50">
+  <input type="hidden" name="direction" value="Live Trade">
 
-        <input type="hidden" name="timeframe" value="N/A">
-        <input type="hidden" name="outcome" value="Pending">
-        <input type="hidden" name="emotion" value="Logged">
-        <input type="hidden" name="sessionScore" value="50">
+  <button type="submit" class="btn-primary btn-full" id="journal-submit-btn">
+    Save Session Entry
+  </button>
 
-        <button type="submit" class="btn-primary btn-full" id="journal-submit-btn">
-  Save Session Entry
-</button>
+  <div id="responding-state" style="
+    display:none;
+    text-align:center;
+    padding:28px 16px;
+    border:1px solid rgba(201,168,76,0.2);
+    background:rgba(201,168,76,0.03);
+    margin-top:16px;
+  ">
+    <div id="responding-text" style="
+      font-family:'DM Mono',monospace;
+      font-size:0.78rem;
+      letter-spacing:0.15em;
+      text-transform:uppercase;
+      color:#C9A84C;
+    ">改 KAIZEN AI IS RESPONDING...</div>
+    <p style="
+      font-size:0.75rem;
+      color:#A8A09A;
+      margin-top:10px;
+      font-family:'DM Mono',monospace;
+      letter-spacing:0.05em;
+    ">Analyzing your session. Redirecting shortly.</p>
+  </div>
 
-<div id="responding-state" style="
-  display:none;
-  text-align:center;
-  padding:24px 16px;
-  border:1px solid rgba(201,168,76,0.2);
-  background:rgba(201,168,76,0.04);
-  margin-top:16px;
-">
-  <div id="responding-text" style="
-    font-family:'DM Mono',monospace;
-    font-size:0.78rem;
-    letter-spacing:0.15em;
-    text-transform:uppercase;
-    color:#C9A84C;
-    transition:opacity 0.7s;
-  ">改 KAIZEN AI IS RESPONDING...</div>
-  <p style="
-    font-size:0.75rem;
-    color:#A8A09A;
-    margin-top:10px;
-    font-family:'DM Mono',monospace;
-  ">Analyzing your session. Please wait.</p>
-</div>
-
-      </form>
+</form>
     </div>
 
     <!-- PAST ENTRIES -->
