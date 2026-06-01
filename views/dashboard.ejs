@@ -22,7 +22,7 @@
       <div class="stat-card">
         <div class="stat-card-label">Discipline Score</div>
         <div class="stat-card-val gold">
-          <%= disciplineScore %><span>/100</span>
+          <%= disciplineScore %><span>%</span>
         </div>
         <div class="score-bar">
           <div class="score-fill" style="width:<%= disciplineScore %>%"></div>
@@ -78,7 +78,7 @@
               <div class="journal-item-top">
                 <span class="journal-asset"><%= journal.asset %></span>
                 <span class="journal-score <%= journal.ruleCompliance ? 'score-good' : 'score-bad' %>">
-                  <%= journal.sessionScore %>/100
+                  <%= journal.sessionScore %>%
                 </span>
               </div>
               <div class="journal-item-mid">
