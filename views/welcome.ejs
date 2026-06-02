@@ -9,54 +9,513 @@
   <%- include('partials/navbar') %>
 
   <% if (typeof deleted !== 'undefined' && deleted) { %>
-    <div class="alert alert-success" style="text-align:center;margin:0;">
-      Your account has been deleted. We hope to see you back.
+    <div class="alert alert-success" style="text-align:center;margin:0;border-radius:0;">
+      Your account has been deleted successfully.
     </div>
   <% } %>
 
-  <main class="welcome-main">
-    <div class="welcome-content">
+  <!-- HERO -->
+  <section style="
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:flex-start;
+    padding:100px 60px 80px;
+    position:relative;
+    overflow:hidden;
+    max-width:1200px;
+    margin:0 auto;
+  ">
 
-      <div class="welcome-badge">
-        <span class="badge-dot"></span>
-        Discipline-First Trading Platform
+    <!-- Background glow -->
+    <div style="
+      position:absolute;
+      top:20%;
+      right:10%;
+      width:500px;
+      height:500px;
+      background:radial-gradient(ellipse,rgba(201,168,76,0.07),transparent 70%);
+      pointer-events:none;
+    "></div>
+
+    <div style="
+      position:absolute;
+      bottom:20%;
+      left:5%;
+      width:400px;
+      height:400px;
+      background:radial-gradient(ellipse,rgba(59,130,246,0.04),transparent 70%);
+      pointer-events:none;
+    "></div>
+
+    <!-- Badge -->
+    <div style="
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      font-family:'DM Mono',monospace;
+      font-size:0.68rem;
+      letter-spacing:0.15em;
+      text-transform:uppercase;
+      color:var(--gold);
+      border:1px solid rgba(201,168,76,0.25);
+      background:rgba(201,168,76,0.05);
+      padding:7px 18px;
+      margin-bottom:40px;
+    ">
+      <span style="
+        width:6px;height:6px;
+        border-radius:50%;
+        background:#4ADE80;
+        box-shadow:0 0 8px rgba(74,222,128,0.6);
+        animation:pulse 2s infinite;
+      "></span>
+      Now Live · Powered by Zero Authority DAO
+    </div>
+
+    <!-- Main headline -->
+    <h1 style="
+      font-family:'DM Mono',monospace;
+      font-size:clamp(2.8rem,6vw,5.5rem);
+      font-weight:700;
+      line-height:1.05;
+      letter-spacing:-0.02em;
+      color:var(--text-primary);
+      margin-bottom:28px;
+      max-width:800px;
+    ">
+      Most traders know<br>
+      their rules.<br>
+      <span style="color:var(--gold);">Few follow them.</span>
+    </h1>
+
+    <!-- Subheadline -->
+    <p style="
+      font-size:1.15rem;
+      color:var(--text-secondary);
+      max-width:560px;
+      line-height:1.85;
+      margin-bottom:20px;
+    ">
+      KAIZEN is an AI trading discipline mentor that analyzes
+      your sessions, learns your behavioral patterns, and holds
+      you accountable to the rules
+      <strong style="color:var(--text-primary);">you yourself created.</strong>
+    </p>
+
+    <p style="
+      font-size:0.95rem;
+      color:var(--ash);
+      max-width:500px;
+      line-height:1.8;
+      margin-bottom:48px;
+    ">
+      Not a signal app. Not a copy-trading platform.
+      A mentor that makes you a better trader from the inside out.
+    </p>
+
+    <!-- CTAs -->
+    <div style="display:flex;gap:14px;flex-wrap:wrap;margin-bottom:80px;">
+      <a href="/auth/register" class="btn-primary" style="padding:16px 40px;font-size:0.85rem;">
+        Start Free Today
+      </a>
+      <a href="#how-it-works" class="btn-outline" style="padding:16px 32px;font-size:0.85rem;">
+        See How It Works
+      </a>
+    </div>
+
+    <!-- Stats row -->
+    <div style="
+      display:flex;
+      gap:48px;
+      flex-wrap:wrap;
+      padding-top:40px;
+      border-top:1px solid var(--border);
+    ">
+      <div>
+        <div style="font-family:'DM Mono',monospace;font-size:2rem;font-weight:700;color:var(--gold);line-height:1;">改</div>
+        <div style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--ash);margin-top:6px;">Philosophy</div>
+      </div>
+      <div>
+        <div style="font-family:'DM Mono',monospace;font-size:2rem;font-weight:700;color:var(--gold);line-height:1;">AI</div>
+        <div style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--ash);margin-top:6px;">Powered Mentor</div>
+      </div>
+      <div>
+        <div style="font-family:'DM Mono',monospace;font-size:2rem;font-weight:700;color:var(--gold);line-height:1;">ZA</div>
+        <div style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--ash);margin-top:6px;">On-Chain Reputation</div>
+      </div>
+      <div>
+        <div style="font-family:'DM Mono',monospace;font-size:2rem;font-weight:700;color:var(--gold);line-height:1;">100%</div>
+        <div style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--ash);margin-top:6px;">Free to Start</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section id="how-it-works" style="
+    padding:100px 60px;
+    border-top:1px solid var(--border);
+    max-width:1200px;
+    margin:0 auto;
+  ">
+    <div style="text-align:center;margin-bottom:70px;">
+      <div style="
+        font-family:'DM Mono',monospace;
+        font-size:0.68rem;
+        letter-spacing:0.2em;
+        text-transform:uppercase;
+        color:var(--gold);
+        margin-bottom:14px;
+      ">How It Works</div>
+      <h2 style="
+        font-size:clamp(2rem,4vw,3rem);
+        font-weight:700;
+        color:var(--text-primary);
+        line-height:1.1;
+      ">
+        Your discipline journey in four steps
+      </h2>
+    </div>
+
+    <div style="
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+      gap:2px;
+    ">
+
+      <div style="background:var(--bg-card);border:1px solid var(--border);padding:36px 28px;position:relative;">
+        <div style="
+          font-family:'DM Mono',monospace;
+          font-size:3rem;
+          font-weight:700;
+          color:rgba(201,168,76,0.08);
+          position:absolute;
+          top:16px;right:20px;
+          line-height:1;
+        ">01</div>
+        <div style="font-size:1.8rem;margin-bottom:16px;">📋</div>
+        <h3 style="font-size:1rem;font-weight:700;color:var(--text-primary);margin-bottom:10px;">
+          Define Your Rules
+        </h3>
+        <p style="font-size:0.85rem;color:var(--text-secondary);line-height:1.75;">
+          Set your max risk, entry criteria, and trading rules during onboarding. These become the standard KAIZEN holds you to.
+        </p>
       </div>
 
-      <h1 class="welcome-title">
-        Most traders know<br>their rules.<br>
-        <span class="gold-text">Few follow them.</span>
-      </h1>
-
-      <p class="welcome-sub">
-        Kaizen is not a signal app. It is a <strong>behavioral accountability system</strong>
-        built to help you execute your own strategy — consistently,
-        session after session, until discipline becomes instinct.
-      </p>
-
-      <div class="welcome-ctas">
-        <a href="/auth/register" class="btn-primary">Start Your Journey</a>
-        <a href="/auth/login" class="btn-outline">Sign In</a>
+      <div style="background:var(--bg-card);border:1px solid var(--border);padding:36px 28px;position:relative;">
+        <div style="
+          font-family:'DM Mono',monospace;
+          font-size:3rem;
+          font-weight:700;
+          color:rgba(201,168,76,0.08);
+          position:absolute;
+          top:16px;right:20px;
+          line-height:1;
+        ">02</div>
+        <div style="font-size:1.8rem;margin-bottom:16px;">✍️</div>
+        <h3 style="font-size:1rem;font-weight:700;color:var(--text-primary);margin-bottom:10px;">
+          Log Every Session
+        </h3>
+        <p style="font-size:0.85rem;color:var(--text-secondary);line-height:1.75;">
+          Write honest session notes after every trade or backtest. What you saw, what you did, what you felt. KAIZEN reads all of it.
+        </p>
       </div>
 
-      <div class="welcome-stats">
-        <div>
-          <div class="stat-val">改</div>
-          <div class="stat-label">Philosophy</div>
-        </div>
-        <div>
-          <div class="stat-val">100</div>
-          <div class="stat-label">Max Score</div>
-        </div>
-        <div>
-          <div class="stat-val">ZA</div>
-          <div class="stat-label">On-Chain</div>
-        </div>
+      <div style="background:var(--bg-card);border:1px solid var(--border);padding:36px 28px;position:relative;border-color:rgba(201,168,76,0.2);">
+        <div style="
+          font-family:'DM Mono',monospace;
+          font-size:3rem;
+          font-weight:700;
+          color:rgba(201,168,76,0.08);
+          position:absolute;
+          top:16px;right:20px;
+          line-height:1;
+        ">03</div>
+        <div style="font-size:1.8rem;margin-bottom:16px;">🤖</div>
+        <h3 style="font-size:1rem;font-weight:700;color:var(--gold);margin-bottom:10px;">
+          KAIZEN AI Responds
+        </h3>
+        <p style="font-size:0.85rem;color:var(--text-secondary);line-height:1.75;">
+          Kaizen AI analyzes your entry, cross-references your history, identifies patterns, and gives you specific actionable feedback. Not generic advice.
+        </p>
+      </div>
+
+      <div style="background:var(--bg-card);border:1px solid var(--border);padding:36px 28px;position:relative;">
+        <div style="
+          font-family:'DM Mono',monospace;
+          font-size:3rem;
+          font-weight:700;
+          color:rgba(201,168,76,0.08);
+          position:absolute;
+          top:16px;right:20px;
+          line-height:1;
+        ">04</div>
+        <div style="font-size:1.8rem;margin-bottom:16px;">📈</div>
+        <h3 style="font-size:1rem;font-weight:700;color:var(--text-primary);margin-bottom:10px;">
+          Track Your Growth
+        </h3>
+        <p style="font-size:0.85rem;color:var(--text-secondary);line-height:1.75;">
+          Your Discipline Score updates after every session. Watch it rise as your consistency builds. Earn on-chain reputation through Zero Authority DAO.
+        </p>
       </div>
 
     </div>
-  </main>
+  </section>
+
+  <!-- WHAT KAIZEN TRACKS -->
+  <section style="
+    padding:100px 60px;
+    border-top:1px solid var(--border);
+    background:linear-gradient(180deg,transparent,rgba(201,168,76,0.02),transparent);
+    max-width:1200px;
+    margin:0 auto;
+  ">
+    <div style="
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:80px;
+      align-items:center;
+    ">
+      <div>
+        <div style="
+          font-family:'DM Mono',monospace;
+          font-size:0.68rem;
+          letter-spacing:0.2em;
+          text-transform:uppercase;
+          color:var(--gold);
+          margin-bottom:14px;
+          display:flex;
+          align-items:center;
+          gap:10px;
+        ">
+          <span style="width:24px;height:1px;background:var(--gold);display:inline-block;"></span>
+          What KAIZEN AI Tracks
+        </div>
+        <h2 style="
+          font-size:clamp(1.8rem,3.5vw,2.8rem);
+          font-weight:700;
+          color:var(--text-primary);
+          line-height:1.15;
+          margin-bottom:24px;
+        ">
+          The patterns you cannot see yourself
+        </h2>
+        <p style="
+          font-size:0.95rem;
+          color:var(--text-secondary);
+          line-height:1.85;
+          margin-bottom:32px;
+        ">
+          KAIZEN AI learns from every session you log. Over time it builds a behavioral profile specific to you — your triggers, your tendencies, your blind spots — and surfaces them with data you cannot argue with.
+        </p>
+        <a href="/auth/register" class="btn-primary">
+          Start Tracking Free
+        </a>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:2px;">
+
+        <div style="background:var(--bg-card);border:1px solid var(--border);padding:20px 22px;display:flex;gap:16px;align-items:flex-start;">
+          <div style="color:var(--gold);font-size:1.1rem;flex-shrink:0;margin-top:2px;">◆</div>
+          <div>
+            <div style="font-weight:700;font-size:0.9rem;color:var(--text-primary);margin-bottom:4px;">Rule Compliance Rate</div>
+            <div style="font-size:0.82rem;color:var(--text-secondary);line-height:1.6;">Tracks whether you follow your own defined entry and risk rules across every session.</div>
+          </div>
+        </div>
+
+        <div style="background:var(--bg-card);border:1px solid var(--border);padding:20px 22px;display:flex;gap:16px;align-items:flex-start;">
+          <div style="color:var(--gold);font-size:1.1rem;flex-shrink:0;margin-top:2px;">◆</div>
+          <div>
+            <div style="font-weight:700;font-size:0.9rem;color:var(--text-primary);margin-bottom:4px;">Emotional Trigger Patterns</div>
+            <div style="font-size:0.82rem;color:var(--text-secondary);line-height:1.6;">Detects FOMO, revenge trading, and overconfidence in your writing before they become habits.</div>
+          </div>
+        </div>
+
+        <div style="background:var(--bg-card);border:1px solid var(--border);padding:20px 22px;display:flex;gap:16px;align-items:flex-start;">
+          <div style="color:var(--gold);font-size:1.1rem;flex-shrink:0;margin-top:2px;">◆</div>
+          <div>
+            <div style="font-weight:700;font-size:0.9rem;color:var(--text-primary);margin-bottom:4px;">Technical Execution Quality</div>
+            <div style="font-size:0.82rem;color:var(--text-secondary);line-height:1.6;">Identifies whether losses come from strategy errors or discipline failures — critical distinction.</div>
+          </div>
+        </div>
+
+        <div style="background:var(--bg-card);border:1px solid var(--border);padding:20px 22px;display:flex;gap:16px;align-items:flex-start;">
+          <div style="color:var(--gold);font-size:1.1rem;flex-shrink:0;margin-top:2px;">◆</div>
+          <div>
+            <div style="font-weight:700;font-size:0.9rem;color:var(--text-primary);margin-bottom:4px;">Discipline Score Progression</div>
+            <div style="font-size:0.82rem;color:var(--text-secondary);line-height:1.6;">Your score updates after every session. Rising score means rising consistency — not luck.</div>
+          </div>
+        </div>
+
+        <div style="background:var(--bg-card);border:1px solid var(--border);padding:20px 22px;display:flex;gap:16px;align-items:flex-start;border-color:rgba(59,130,246,0.2);">
+          <div style="color:var(--blue);font-size:1.1rem;flex-shrink:0;margin-top:2px;">◆</div>
+          <div>
+            <div style="font-weight:700;font-size:0.9rem;color:var(--text-primary);margin-bottom:4px;">On-Chain Reputation via ZA DAO</div>
+            <div style="font-size:0.82rem;color:var(--text-secondary);line-height:1.6;">Your discipline milestones become verifiable on-chain through Zero Authority DAO. Proof of consistency that follows you across Web3.</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- WHO IS KAIZEN FOR -->
+  <section style="
+    padding:100px 60px;
+    border-top:1px solid var(--border);
+    max-width:1200px;
+    margin:0 auto;
+  ">
+    <div style="text-align:center;margin-bottom:60px;">
+      <h2 style="font-size:clamp(1.8rem,4vw,2.8rem);font-weight:700;color:var(--text-primary);">
+        Built for serious traders
+      </h2>
+      <p style="font-size:0.95rem;color:var(--text-secondary);max-width:500px;margin:16px auto 0;line-height:1.8;">
+        Whether you trade Forex, Crypto, Stocks, or Indices — if you have a strategy and struggle with consistent execution, KAIZEN is for you.
+      </p>
+    </div>
+
+    <div style="
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+      gap:2px;
+      margin-bottom:60px;
+    ">
+
+      <div style="background:var(--bg-card);border:1px solid var(--border);padding:32px 28px;">
+        <div style="
+          font-family:'DM Mono',monospace;
+          font-size:0.62rem;
+          letter-spacing:0.15em;
+          text-transform:uppercase;
+          color:var(--gold);
+          margin-bottom:12px;
+        ">Developing Trader</div>
+        <h3 style="font-size:1rem;font-weight:700;color:var(--text-primary);margin-bottom:10px;">
+          0-2 years experience
+        </h3>
+        <p style="font-size:0.85rem;color:var(--text-secondary);line-height:1.75;">
+          Build the right habits from the beginning. KAIZEN prevents the bad behavioral patterns that take most traders years to identify and fix.
+        </p>
+      </div>
+
+      <div style="background:var(--bg-card);border:1px solid rgba(201,168,76,0.2);padding:32px 28px;">
+        <div style="
+          font-family:'DM Mono',monospace;
+          font-size:0.62rem;
+          letter-spacing:0.15em;
+          text-transform:uppercase;
+          color:var(--gold);
+          margin-bottom:12px;
+        ">Consistent Trader</div>
+        <h3 style="font-size:1rem;font-weight:700;color:var(--text-primary);margin-bottom:10px;">
+          2-5 years experience
+        </h3>
+        <p style="font-size:0.85rem;color:var(--text-secondary);line-height:1.75;">
+          You have a strategy. The problem is executing it consistently. KAIZEN gives you data on exactly where and why your discipline breaks — and fixes it.
+        </p>
+      </div>
+
+      <div style="background:var(--bg-card);border:1px solid var(--border);padding:32px 28px;">
+        <div style="
+          font-family:'DM Mono',monospace;
+          font-size:0.62rem;
+          letter-spacing:0.15em;
+          text-transform:uppercase;
+          color:var(--gold);
+          margin-bottom:12px;
+        ">Prop Firm Trader</div>
+        <h3 style="font-size:1rem;font-weight:700;color:var(--text-primary);margin-bottom:10px;">
+          Funded or seeking funding
+        </h3>
+        <p style="font-size:0.85rem;color:var(--text-secondary);line-height:1.75;">
+          Prop firms fund discipline, not luck. KAIZEN builds and verifies your behavioral track record — on-chain proof that you follow your rules under pressure.
+        </p>
+      </div>
+
+    </div>
+
+    <!-- Final CTA -->
+    <div style="
+      text-align:center;
+      padding:60px 40px;
+      border:1px solid rgba(201,168,76,0.2);
+      background:linear-gradient(135deg,rgba(201,168,76,0.04),rgba(59,130,246,0.02));
+      position:relative;
+      overflow:hidden;
+    ">
+      <div style="
+        position:absolute;
+        top:50%;left:50%;
+        transform:translate(-50%,-50%);
+        width:600px;height:300px;
+        background:radial-gradient(ellipse,rgba(201,168,76,0.06),transparent 70%);
+        pointer-events:none;
+      "></div>
+      <div style="position:relative;z-index:1;">
+        <div style="
+          font-family:'DM Mono',monospace;
+          font-size:0.68rem;
+          letter-spacing:0.2em;
+          text-transform:uppercase;
+          color:var(--gold);
+          margin-bottom:20px;
+          display:flex;
+          align-items:center;
+          justify-content:center;
+          gap:12px;
+        ">
+          <span style="width:32px;height:1px;background:var(--gold);display:inline-block;"></span>
+          Start Your Journey
+          <span style="width:32px;height:1px;background:var(--gold);display:inline-block;"></span>
+        </div>
+        <h2 style="
+          font-size:clamp(2rem,4vw,3.5rem);
+          font-weight:700;
+          color:var(--text-primary);
+          margin-bottom:16px;
+          line-height:1.1;
+        ">
+          Your discipline is<br>
+          <span style="color:var(--gold);">your edge.</span>
+        </h2>
+        <p style="
+          font-size:0.95rem;
+          color:var(--text-secondary);
+          max-width:440px;
+          margin:0 auto 36px;
+          line-height:1.8;
+        ">
+          Free to start. No credit card. No signals. No shortcuts.
+          Just honest feedback that makes you a better trader.
+        </p>
+        <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;">
+          <a href="/auth/register" class="btn-primary" style="padding:16px 44px;font-size:0.88rem;">
+            Create Free Account
+          </a>
+          <a href="/about" class="btn-outline" style="padding:16px 32px;font-size:0.88rem;">
+            Learn More
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </section>
 
   <%- include('partials/footer') %>
   <script src="/js/app.js"></script>
+
+  <style>
+    @keyframes pulse {
+      0%,100% { box-shadow:0 0 0 0 rgba(74,222,128,0.4); }
+      50% { box-shadow:0 0 0 8px rgba(74,222,128,0); }
+    }
+    @media (max-width:768px) {
+      section { padding:70px 24px !important; }
+      .welcome-two-col { grid-template-columns:1fr !important; gap:40px !important; }
+    }
+  </style>
+
 </body>
 </html>
