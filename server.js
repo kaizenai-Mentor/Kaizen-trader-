@@ -153,6 +153,24 @@ app.get('/', (req, res) => {
 
 const Memory = require('./models/Memory');
 
+app.get('/leaderboard', async (req, res) => {
+  if (!req.session.user) return res.redirect('/auth/login');
+  try {
+    const User = require('./models/User');
+    const leaders = await User.find({ disciplineScore: { $gt: 0 } })
+      .sort({ disciplineScore: -1 })
+      .limit(50)
+      .select('username disciplineScore streak createdAt');
+
+    res.render('leaderboard', {
+      user: req.session.user,
+      leaders
+    });
+  } catch (err) {
+    res.redirect('/dashboard');
+  }
+});
+
 // Kaizen AI page
 app.get('/kaizen-ai', (req, res) => {
   if (!req.session.user) return res.redirect('/auth/login');
