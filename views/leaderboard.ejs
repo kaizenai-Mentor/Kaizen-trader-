@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('partials/head') %>
+  <title>KAIZEN — Leaderboard</title>
+</head>
+<body class="app-page">
+  <%- include('partials/navbar') %>
+  <main class="app-main">
+
+    <div class="page-header">
+      <div>
+        <h1 style="color:var(--gold);">Discipline Leaderboard</h1>
+        <p class="page-sub">
+          Ranked by discipline score — not profit.
+          The most consistent traders, not the luckiest.
+        </p>
+      </div>
+    </div>
+
+    <!-- NOTE -->
+    <div style="
+      padding:14px 20px;
+      background:rgba(59,130,246,0.06);
+      border:1px solid rgba(59,130,246,0.15);
+      margin-bottom:24px;
+      font-size:0.82rem;
+      color:var(--ash-light);
+      line-height:1.7;
+    ">
+      <strong style="color:var(--text-primary);">改 KAIZEN Leaderboard</strong> — 
+      Rankings are based purely on discipline score, calculated from rule compliance 
+      across logged sessions. P&L is not tracked or displayed. 
+      Consistent process wins long-term.
+    </div>
+
+    <div class="card">
+      <% if (leaders && leaders.length > 0) { %>
+        <div style="display:flex;flex-direction:column;gap:2px;">
+          <% leaders.forEach(function(leader, index) { %>
+            <div style="
+              display:flex;
+              align-items:center;
+              gap:16px;
+              padding:16px 20px;
+              background:var(--bg-surface);
+              border:1px solid var(--border);
+              <%= leader.username === user.username ? 'border-color:rgba(201,168,76,0.3);background:rgba(201,168,76,0.04);' : '' %>
+              transition:border-color 0.2s;
+            ">
+              <!-- Rank -->
+              <div style="
+                width:36px;
+                font-family:'DM Mono',monospace;
+                font-size:<%= index < 3 ? '1.2rem' : '0.9rem' %>;
+                font-weight:700;
+                color:<%= index === 0 ? '#C9A84C' : index === 1 ? '#A8A09A' : index === 2 ? '#CD7F32' : 'var(--ash)' %>;
+                flex-shrink:0;
+                text-align:center;
+              ">
+                <%= index === 0 ? '1' : index === 1 ? '2' : index === 2 ? '3' : index + 1 %>
+              </div>
+
+              <!-- Avatar -->
+              <div style="
+                width:36px;height:36px;
+                border-radius:50%;
+                background:rgba(201,168,76,0.1);
+                border:1px solid rgba(201,168,76,0.2);
+                display:flex;align-items:center;justify-content:center;
+                font-weight:700;color:var(--gold);font-size:0.9rem;
+                flex-shrink:0;
+              ">
+                <%= leader.username.charAt(0).toUpperCase() %>
+              </div>
+
+              <!-- Name -->
+              <div style="flex:1;">
+                <div style="
+                  font-weight:700;
+                  font-size:0.92rem;
+                  color:var(--text-primary);
+                ">
+                  <%= leader.username %>
+                  <% if (leader.username === user.username) { %>
+                    <span style="
+                      font-family:'DM Mono',monospace;
+                      font-size:0.55rem;
+                      letter-spacing:0.1em;
+                      color:var(--gold);
+                      background:rgba(201,168,76,0.1);
+                      border:1px solid rgba(201,168,76,0.2);
+                      padding:2px 7px;
+                      margin-left:8px;
+                    ">YOU</span>
+                  <% } %>
+                </div>
+                <div style="
+                  font-family:'DM Mono',monospace;
+                  font-size:0.6rem;
+                  color:var(--ash);
+                  margin-top:3px;
+                  letter-spacing:0.08em;
+                ">
+                  <%= leader.streak || 0 %> day streak
+                </div>
+              </div>
+
+              <!-- Score -->
+              <div style="text-align:right;flex-shrink:0;">
+                <div style="
+                  font-family:'DM Mono',monospace;
+                  font-size:1.2rem;
+                  font-weight:700;
+                  color:<%= leader.disciplineScore >= 80 ? 'var(--gold)' : leader.disciplineScore >= 60 ? 'var(--blue)' : 'var(--ash)' %>;
+                ">
+                  <%= leader.disciplineScore %>%
+                </div>
+                <div style="
+                  font-family:'DM Mono',monospace;
+                  font-size:0.55rem;
+                  letter-spacing:0.1em;
+                  color:<%= leader.disciplineScore >= 80 ? 'var(--gold)' : leader.disciplineScore >= 60 ? 'var(--blue)' : leader.disciplineScore >= 40 ? '#FBBF24' : 'var(--red)' %>;
+                  text-transform:uppercase;
+                ">
+                  <%= leader.disciplineScore >= 80 ? 'Elite' : leader.disciplineScore >= 60 ? 'Consistent' : leader.disciplineScore >= 40 ? 'Building' : 'Developing' %>
+                </div>
+              </div>
+
+            </div>
+          <% }); %>
+        </div>
+      <% } else { %>
+        <div class="empty-state">
+          <p style="font-size:1rem;font-weight:600;color:var(--text-primary);margin-bottom:8px;">
+            No rankings yet.
+          </p>
+          <p>Be the first. Log sessions and build your discipline score.</p>
+          <a href="/dashboard/journal" class="btn-primary"
+            style="margin-top:20px;display:inline-block;">
+            Log a Session
+          </a>
+        </div>
+      <% } %>
+    </div>
+
+  </main>
+  <%- include('partials/footer') %>
+  <script src="/js/app.js"></script>
+</body>
+</html>
