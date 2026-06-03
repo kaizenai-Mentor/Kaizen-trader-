@@ -126,6 +126,52 @@ if (ruleCompliance === 'true') {
   req.session.user.streak = 0;
   } 
 
+    // After fetching allJournals, add:
+let predictiveWarning = null;
+
+if (allJournals.length >= 5) {
+  const recentFive = allJournals.slice(0, 5);
+  const violations = recentFive.filter(j => !j.ruleCompliance).length;
+  const allText = recentFive.map(j => j.notes.toLowerCase()).join(' ');
+  const fomoCount = (allText.match(/fomo/gi) || []).length;
+  const revengeCount = (allText.match(/revenge|frustrat/gi) || []).length;
+
+  if (violations >= 3) {
+    predictiveWarning = {
+      type: 'compliance',
+      message: `You have violated rules in ${violations} of your last 5 sessions. Before opening any chart today, review your entry criteria.`,
+      level: 'high'
+    };
+  } else if (fomoCount >= 2) {
+    predictiveWarning = {
+      type: 'fomo',
+      message: 'FOMO has appeared in your recent sessions. Stay off the charts until a valid setup forms today.',
+      level: 'medium'
+    };
+  } else if (revengeCount >= 1) {
+    predictiveWarning = {
+      type: 'revenge',
+      message: 'Signs of frustration detected in recent sessions. Trade only if your emotional state is neutral today.',
+      level: 'medium'
+    };
+  } else if (violations === 0 && recentFive.length === 5) {
+    predictiveWarning = {
+      type: 'positive',
+      message: 'Five consecutive compliant sessions. Your discipline is building. Protect this streak today.',
+      level: 'positive'
+    };
+  }
+}
+
+// Add to render call:
+res.render('dashboard', {
+  user,
+  journals,
+  disciplineScore: score,
+  totalSessions: allJournals.length,
+  predictiveWarning
+});
+
     // Build session history context
     const totalSessions = allJournals.length;
     const recentSessions = allJournals.slice(0, 10);
