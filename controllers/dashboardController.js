@@ -87,6 +87,45 @@ const addJournal = async (req, res) => {
     });
     req.session.user.disciplineScore = overallScore;
 
+    // Update streak
+const today = new Date();
+today.setHours(0, 0, 0, 0);
+const yesterday = new Date(today);
+yesterday.setDate(yesterday.getDate() - 1);
+
+const lastSession = allJournals[1]; // second most recent (first is current)
+
+if (ruleCompliance === 'true') {
+  if (lastSession) {
+    const lastDate = new Date(lastSession.createdAt);
+    lastDate.setHours(0, 0, 0, 0);
+    const isYesterday = lastDate.getTime() === yesterday.getTime();
+    const isToday = lastDate.getTime() === today.getTime();
+
+    if (isYesterday) {
+      // Consecutive day — increment streak
+      await User.findByIdAndUpdate(req.session.user.id, {
+        $inc: { streak: 1 }
+      });
+      req.session.user.streak = (req.session.user.streak || 0) + 1;
+    } else if (isToday) {
+      // Same day — keep streak
+    } else {
+      // Gap in days — reset streak to 1
+      await User.findByIdAndUpdate(req.session.user.id, { streak: 1 });
+      req.session.user.streak = 1;
+    }
+  } else {
+    // First session ever
+    await User.findByIdAndUpdate(req.session.user.id, { streak: 1 });
+    req.session.user.streak = 1;
+  }
+} else {
+  // Rule violated — reset streak
+  await User.findByIdAndUpdate(req.session.user.id, { streak: 0 });
+  req.session.user.streak = 0;
+  } 
+
     // Build session history context
     const totalSessions = allJournals.length;
     const recentSessions = allJournals.slice(0, 10);
