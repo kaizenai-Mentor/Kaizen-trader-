@@ -239,6 +239,116 @@ app.get('/journal', (req, res) => {
   res.redirect('/dashboard/journal');
 });
 
+// Weekly summary (can be triggered manually or by cron)
+app.get('/weekly-summary', async (req, res) => {
+  if (!req.session.user) return res.redirect('/auth/login');
+
+  try {
+    const Journal = require('./models/Journal');
+    const User = require('./models/User');
+
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+    const weekJournals = await Journal.find({
+      userId: req.session.user.id,
+      createdAt: { $gte: sevenDaysAgo }
+    }).sort({ createdAt: -1 });
+
+    const user = await User.findById(req.session.user.id);
+
+    if (weekJournals.length === 0) {
+      return res.render('weekly-summary', {
+        user,
+        summary: null,
+        weekJournals: []
+      });
+    }
+
+    const compliant = weekJournals.filter(j => j.ruleCompliance).length;
+    const weekScore = Math.round((compliant / weekJournals.length) * 100);
+    const allText = weekJournals.map(j => j.notes).join('\n\n');
+
+    let summary = '';
+
+    if (process.env.ANTHROPIC_API_KEY) {
+      try {
+        const https = require('https');
+        const payload = JSON.stringify({
+          model: 'claude-haiku-4-5',
+          max_tokens: 600,
+          system: `You are Kaizen AI generating a weekly trading discipline report for ${user.username}.
+
+Be specific. Be honest. Reference actual patterns from their sessions.
+Format with these sections:
+WEEK IN REVIEW
+[2-3 sentences summarizing the week]
+
+STRONGEST MOMENT
+[The best thing they did this week — be specific]
+
+BIGGEST PATTERN TO FIX
+[The one thing that most needs improvement — be direct]
+
+WEEK SCORE: ${weekScore}%
+NEXT WEEK FOCUS
+[One specific behavioral goal for next week]`,
+          messages: [{
+            role: 'user',
+            content: `Sessions this week: ${weekJournals.length}
+Compliant sessions: ${compliant}
+Rule compliance rate: ${weekScore}%
+
+All journal entries this week:
+${allText.substring(0, 2000)}`
+          }]
+        });
+
+        const response = await new Promise((resolve, reject) => {
+          const req2 = https.request({
+            hostname: 'api.anthropic.com',
+            path: '/v1/messages',
+            method: 'POST',
+            headers: {
+              'x-api-key': process.env.ANTHROPIC_API_KEY,
+              'anthropic-version': '2023-06-01',
+              'content-type': 'application/json',
+              'content-length': Buffer.byteLength(payload)
+            }
+          }, (r) => {
+            let d = '';
+            r.on('data', c => d += c);
+            r.on('end', () => resolve(d));
+          });
+          req2.on('error', reject);
+          req2.setTimeout(20000, () => { req2.destroy(); reject(new Error('Timeout')); });
+          req2.write(payload);
+          req2.end();
+        });
+
+        const parsed = JSON.parse(response);
+        summary = parsed.content?.[0]?.text || 'Summary unavailable.';
+      } catch (e) {
+        summary = `Week Score: ${weekScore}%\n\nYou logged ${weekJournals.length} sessions this week with ${compliant} compliant. Keep building consistency.`;
+      }
+    } else {
+      summary = `Week Score: ${weekScore}%\n\nYou logged ${weekJournals.length} sessions this week with ${compliant} compliant.`;
+    }
+
+    res.render('weekly-summary', {
+      user,
+      summary,
+      weekJournals,
+      weekScore,
+      compliant
+    });
+
+  } catch (err) {
+    console.error('Weekly summary error:', err.message);
+    res.redirect('/dashboard');
+  }
+});
+
 // Info pages
 app.get('/about', (req, res) => res.render('about', { user: req.session.user || null }));
 app.get('/services', (req, res) => res.render('services', { user: req.session.user || null }));
