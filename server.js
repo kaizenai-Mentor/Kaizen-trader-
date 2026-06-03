@@ -349,6 +349,24 @@ ${allText.substring(0, 2000)}`
   }
 });
 
+// Test email route
+app.get('/test-email', async (req, res) => {
+  if (!process.env.RESEND_API_KEY) {
+    return res.send('RESEND_API_KEY not set on Render');
+  }
+  try {
+    const { sendWelcomeEmail } = require('./config/email');
+    const testEmail = req.query.email || (req.session.user && req.session.user.email);
+    if (!testEmail) {
+      return res.send('Add ?email=youremail@gmail.com to the URL');
+    }
+    await sendWelcomeEmail(testEmail, 'TestUser');
+    res.send(`Test email sent to ${testEmail} — check your inbox and spam folder`);
+  } catch (err) {
+    res.send('Email failed: ' + err.message);
+  }
+});
+
 // Info pages
 app.get('/about', (req, res) => res.render('about', { user: req.session.user || null }));
 app.get('/services', (req, res) => res.render('services', { user: req.session.user || null }));
