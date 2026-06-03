@@ -69,12 +69,14 @@
               <span>Session Analysis</span>
             </div>
 
-            <div id="streaming-text" style="
-              font-size:0.92rem;
-              color:var(--ash-light);
-              line-height:1.95;
-              white-space:pre-wrap;
-            "></div>
+            <div id="streaming-text"
+  data-content="<%- aiResponse.replace(/"/g, '&quot;') %>"
+  style="
+    font-size:0.92rem;
+    color:var(--ash-light);
+    line-height:1.95;
+    white-space:pre-wrap;
+  "></div>
           </div>
 
           <div style="
@@ -92,30 +94,33 @@
             </a>
           </div>
 
-          <script>
-  const rawText = <%- JSON.stringify(aiResponse) %>;
-  const el = document.getElementById('streaming-text');
-  let i = 0;
+          <script src="/js/app.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const streamEl = document.getElementById('streaming-text');
+    if (!streamEl) return;
 
-  function stream() {
-    if (i < rawText.length) {
-      // Add one character at a time
-      const char = rawText[i];
-      el.textContent += char;
-      i++;
+    const rawText = streamEl.getAttribute('data-content');
+    if (!rawText) return;
 
-      // Variable speed — faster for spaces, slower for punctuation
-      let delay = 12;
-      if (char === '.' || char === '\n') delay = 80;
-      else if (char === ',' || char === ':') delay = 40;
-      else if (char === ' ') delay = 8;
+    streamEl.textContent = '';
+    let i = 0;
 
-      setTimeout(stream, delay);
+    function stream() {
+      if (i < rawText.length) {
+        const char = rawText[i];
+        streamEl.textContent += char;
+        i++;
+        let delay = 12;
+        if (char === '.' || char === '\n') delay = 70;
+        else if (char === ',') delay = 35;
+        else if (char === ' ') delay = 6;
+        setTimeout(stream, delay);
+      }
     }
-  }
 
-  // Start after 300ms delay
-  setTimeout(stream, 300);
+    setTimeout(stream, 400);
+  });
 </script>
 
         <% } else { %>
