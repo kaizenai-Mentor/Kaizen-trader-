@@ -367,6 +367,53 @@ app.get('/test-email', async (req, res) => {
   }
 });
 
+// Admin stats — only accessible with secret key
+app.get('/admin/stats', async (req, res) => {
+  const adminKey = req.query.key;
+  if (adminKey !== process.env.ADMIN_KEY) {
+    return res.status(403).send('Forbidden');
+  }
+
+  try {
+    const User = require('./models/User');
+    const Journal = require('./models/Journal');
+
+    const totalUsers = await User.countDocuments();
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+    const activeUserIds = await Journal.distinct('userId', {
+      createdAt: { $gte: sevenDaysAgo }
+    });
+
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+    const monthlyActiveIds = await Journal.distinct('userId', {
+      createdAt: { $gte: thirtyDaysAgo }
+    });
+
+    const totalJournals = await Journal.countDocuments();
+    const recentUsers = await User.find()
+      .sort({ createdAt: -1 })
+      .limit(10)
+      .select('username email createdAt disciplineScore streak');
+
+    res.json({
+      totalUsers,
+      weeklyActiveUsers: activeUserIds.length,
+      monthlyActiveUsers: monthlyActiveIds.length,
+      totalJournalEntries: totalJournals,
+      avgEntriesPerUser: totalUsers > 0
+        ? Math.round(totalJournals / totalUsers)
+        : 0,
+      recentSignups: recentUsers
+    });
+
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // Info pages
 app.get('/about', (req, res) => res.render('about', { user: req.session.user || null }));
 app.get('/services', (req, res) => res.render('services', { user: req.session.user || null }));
