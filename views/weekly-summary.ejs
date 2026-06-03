@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('partials/head') %>
+  <title>KAIZEN — Weekly Report</title>
+</head>
+<body class="app-page">
+  <%- include('partials/navbar') %>
+  <main class="app-main" style="max-width:800px;">
+
+    <div class="page-header">
+      <div>
+        <h1 style="color:var(--gold);">Weekly Report</h1>
+        <p class="page-sub">Your discipline summary for the past 7 days</p>
+      </div>
+      <a href="/dashboard" class="btn-outline">← Dashboard</a>
+    </div>
+
+    <% if (!summary || weekJournals.length === 0) { %>
+      <div class="card">
+        <div class="empty-state">
+          <p style="font-size:1rem;font-weight:600;color:var(--text-primary);margin-bottom:8px;">
+            No sessions this week yet.
+          </p>
+          <p>Log at least one session to generate your weekly report.</p>
+          <a href="/dashboard/journal" class="btn-primary"
+            style="margin-top:20px;display:inline-block;">
+            Log a Session
+          </a>
+        </div>
+      </div>
+    <% } else { %>
+
+      <!-- WEEK SCORE -->
+      <div style="
+        display:grid;
+        grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+        gap:2px;
+        margin-bottom:2px;
+      ">
+        <div class="stat-card">
+          <div class="stat-card-label">Week Score</div>
+          <div class="stat-card-val gold"><%= weekScore %>%</div>
+          <div class="score-bar">
+            <div class="score-fill" style="width:<%= weekScore %>%"></div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-label">Sessions Logged</div>
+          <div class="stat-card-val"><%= weekJournals.length %></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-label">Compliant Sessions</div>
+          <div class="stat-card-val gold"><%= compliant %></div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-label">Violations</div>
+          <div class="stat-card-val" style="color:var(--red);">
+            <%= weekJournals.length - compliant %>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI SUMMARY -->
+      <div class="card card-gold" style="margin-bottom:2px;">
+        <div class="card-header">
+          <h2>Kaizen AI · Weekly Analysis</h2>
+          <span class="card-badge">Week Report</span>
+        </div>
+        <div id="summary-text" style="
+          font-size:0.92rem;
+          color:var(--ash-light);
+          line-height:1.95;
+          white-space:pre-wrap;
+        "></div>
+        <script>
+          const text = <%- JSON.stringify(summary) %>;
+          const el = document.getElementById('summary-text');
+          let i = 0;
+          function stream() {
+            if (i < text.length) {
+              el.textContent += text[i++];
+              setTimeout(stream, 10);
+            }
+          }
+          setTimeout(stream, 300);
+        </script>
+      </div>
+
+      <!-- SESSION LIST -->
+      <div class="card">
+        <div class="card-header">
+          <h2>This Week's Sessions</h2>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <% weekJournals.forEach(function(j) { %>
+            <div style="
+              background:var(--bg-surface);
+              border:1px solid var(--border);
+              padding:14px 16px;
+              display:flex;
+              justify-content:space-between;
+              align-items:center;
+              gap:12px;
+              flex-wrap:wrap;
+            ">
+              <div>
+                <div style="font-weight:700;font-size:0.88rem;margin-bottom:4px;">
+                  <%= j.asset %>
+                </div>
+                <div style="font-size:0.78rem;color:var(--ash);">
+                  <%= new Date(j.createdAt).toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'}) %>
+                </div>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;">
+                <% if (j.ruleCompliance) { %>
+                  <span class="compliance-good">Compliant</span>
+                <% } else { %>
+                  <span class="compliance-bad">Violated</span>
+                <% } %>
+              </div>
+            </div>
+          <% }); %>
+        </div>
+      </div>
+
+    <% } %>
+
+  </main>
+  <%- include('partials/footer') %>
+  <script src="/js/app.js"></script>
+</body>
+</html>
