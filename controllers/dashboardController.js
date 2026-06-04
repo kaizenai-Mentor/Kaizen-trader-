@@ -4,17 +4,12 @@ const Journal = require('../models/Journal');
 const getDashboard = async (req, res) => {
   try {
     const user = await User.findById(req.session.user.id);
-    const journals = await Journal.find({ userId: req.session.user.id })
-      .sort({ createdAt: -1 })
-      .limit(5);
-
-    const journals = await Journal.find({ userId: req.session.user.id })
-  .sort({ createdAt: -1 })
-  .limit(10); // Changed from 5 to 10 for chart
 
     const allJournals = await Journal.find({
       userId: req.session.user.id
-    });
+    }).sort({ createdAt: -1 });
+
+    const journals = allJournals.slice(0, 10);
 
     let score = 0;
     if (allJournals.length > 0) {
@@ -26,11 +21,48 @@ const getDashboard = async (req, res) => {
       req.session.user.disciplineScore = score;
     }
 
+    // Predictive warning
+    let predictiveWarning = null;
+    if (allJournals.length >= 5) {
+      const recentFive = allJournals.slice(0, 5);
+      const violations = recentFive.filter(j => !j.ruleCompliance).length;
+      const allText = recentFive.map(j => j.notes.toLowerCase()).join(' ');
+      const fomoCount = (allText.match(/fomo/gi) || []).length;
+      const revengeCount = (allText.match(/revenge|frustrat/gi) || []).length;
+
+      if (violations >= 3) {
+        predictiveWarning = {
+          type: 'compliance',
+          message: `You have violated rules in ${violations} of your last 5 sessions. Before opening any chart today, review your entry criteria.`,
+          level: 'high'
+        };
+      } else if (fomoCount >= 2) {
+        predictiveWarning = {
+          type: 'fomo',
+          message: 'FOMO has appeared in your recent sessions. Stay off the charts until a valid setup forms today.',
+          level: 'medium'
+        };
+      } else if (revengeCount >= 1) {
+        predictiveWarning = {
+          type: 'revenge',
+          message: 'Signs of frustration detected in recent sessions. Trade only if your emotional state is neutral today.',
+          level: 'medium'
+        };
+      } else if (violations === 0 && recentFive.length === 5) {
+        predictiveWarning = {
+          type: 'positive',
+          message: 'Five consecutive compliant sessions. Your discipline is building. Protect this streak today.',
+          level: 'positive'
+        };
+      }
+    }
+
     res.render('dashboard', {
       user,
       journals,
       disciplineScore: score,
-      totalSessions: allJournals.length
+      totalSessions: allJournals.length,
+      predictiveWarning
     });
 
   } catch (error) {
