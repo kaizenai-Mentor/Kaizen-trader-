@@ -8,6 +8,10 @@ const getDashboard = async (req, res) => {
       .sort({ createdAt: -1 })
       .limit(5);
 
+    const journals = await Journal.find({ userId: req.session.user.id })
+  .sort({ createdAt: -1 })
+  .limit(10); // Changed from 5 to 10 for chart
+
     const allJournals = await Journal.find({
       userId: req.session.user.id
     });
