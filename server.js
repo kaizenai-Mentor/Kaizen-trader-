@@ -264,6 +264,27 @@ app.get('/test-ai', async (req, res) => {
   }
 });
 
+app.get('/news', async (req, res) => {
+  if (!req.session.user) return res.redirect('/auth/login');
+  try {
+    const axios = require('axios');
+    const response = await axios.get('https://api.marketaux.com/v1/news/all', {
+      params: {
+        api_token: process.env.MARKETAUX_KEY,
+        language: 'en',
+        limit: 20,
+        filter_entities: true
+      },
+      timeout: 8000
+    });
+    const news = response.data?.data || [];
+    res.render('news', { user: req.session.user, news });
+  } catch (err) {
+    console.error('News error:', err.message);
+    res.render('news', { user: req.session.user, news: [] });
+  }
+});
+
 // Memories page
 app.get('/memories', async (req, res) => {
   if (!req.session.user) return res.redirect('/auth/login');
