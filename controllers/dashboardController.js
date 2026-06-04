@@ -400,6 +400,19 @@ DISCIPLINE SCORE: ${sessionScore}%
 OVERALL SCORE: ${overallScore}%`;
 }
 
+// Extract score from AI response
+let extractedScore = parseInt(sessionScore) || 50;
+const scoreMatch = aiResponse.match(/DISCIPLINE SCORE:\s*(\d+)%/i);
+if (scoreMatch && scoreMatch[1]) {
+  extractedScore = parseInt(scoreMatch[1]);
+}
+
+// Update journal with AI analysis AND extracted score
+await Journal.findByIdAndUpdate(journal._id, {
+  aiAnalysis: aiResponse,
+  sessionScore: extractedScore
+});
+
 const getJournals = async (req, res) => {
   try {
     const journals = await Journal.find({
