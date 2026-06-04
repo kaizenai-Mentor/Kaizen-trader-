@@ -1,0 +1,74 @@
+<div class="card">
+  <div style="display:flex;flex-direction:column;gap:2px;">
+    <% leaders.forEach(function(leader, index) { %>
+      <div style="
+        display:flex;align-items:center;gap:14px;
+        padding:14px 18px;
+        background:var(--bg-surface);
+        border:1px solid <%= leader.username === currentUser.username ? 'rgba(201,168,76,0.3)' : 'var(--border)' %>;
+        background:<%=  leader.username === currentUser.username ? 'rgba(201,168,76,0.04)' : 'var(--bg-surface)' %>;
+      ">
+        <!-- Rank -->
+        <div style="
+          width:28px;text-align:center;flex-shrink:0;
+          font-family:'DM Mono',monospace;font-weight:700;
+          font-size:<%= index < 3 ? '1rem' : '0.82rem' %>;
+          color:<%= index === 0 ? '#C9A84C' : index === 1 ? '#A8A09A' : index === 2 ? '#CD7F32' : 'var(--ash)' %>;
+        ">
+          <%= index + 1 %>
+        </div>
+
+        <!-- Avatar -->
+        <div style="
+          width:34px;height:34px;border-radius:50%;
+          background:rgba(201,168,76,0.08);
+          border:1px solid rgba(201,168,76,0.15);
+          display:flex;align-items:center;justify-content:center;
+          font-weight:700;color:var(--gold);font-size:0.85rem;
+          flex-shrink:0;
+        ">
+          <%= leader.username.charAt(0).toUpperCase() %>
+        </div>
+
+        <!-- Info -->
+        <div style="flex:1;min-width:0;">
+          <div style="font-weight:700;font-size:0.88rem;color:var(--text-primary);">
+            <%= leader.username %>
+            <% if (leader.username === currentUser.username) { %>
+              <span style="
+                font-family:'DM Mono',monospace;font-size:0.52rem;
+                letter-spacing:0.1em;color:var(--gold);
+                background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.2);
+                padding:2px 6px;margin-left:6px;
+              ">YOU</span>
+            <% } %>
+          </div>
+          <div style="font-family:'DM Mono',monospace;font-size:0.58rem;color:var(--ash);margin-top:2px;">
+            <%= (leader.streak || 0) %> day streak
+            <% if (showSessions && leader.sessions) { %>
+              · <%= leader.sessions %> sessions this week
+            <% } %>
+          </div>
+        </div>
+
+        <!-- Score -->
+        <div style="text-align:right;flex-shrink:0;">
+          <% const score = leader[scoreKey] || 0; %>
+          <div style="
+            font-family:'DM Mono',monospace;font-size:1.1rem;font-weight:700;
+            color:<%= score >= 80 ? '#C9A84C' : score >= 60 ? '#3B82F6' : score >= 40 ? '#FBBF24' : '#F87171' %>;
+          ">
+            <%= score %>%
+          </div>
+          <div style="
+            font-family:'DM Mono',monospace;font-size:0.52rem;letter-spacing:0.08em;
+            color:<%= score >= 80 ? '#C9A84C' : score >= 60 ? '#3B82F6' : score >= 40 ? '#FBBF24' : '#F87171' %>;
+            text-transform:uppercase;margin-top:2px;
+          ">
+            <%= score >= 80 ? 'Elite' : score >= 60 ? 'Consistent' : score >= 40 ? 'Building' : 'Developing' %>
+          </div>
+        </div>
+      </div>
+    <% }); %>
+  </div>
+</div>
