@@ -1,3 +1,4 @@
+const mantle = require('../config/mantle');
 const User = require('../models/User');
 const Journal = require('../models/Journal');
 
@@ -434,6 +435,39 @@ ${v.focus}
 
 DISCIPLINE SCORE: ${sessionScore}%
 OVERALL SCORE: ${overallScore}%`;
+}
+
+// Record on Mantle blockchain
+try {
+  const previousScore = req.session.user.disciplineScore || 0;
+  await mantle.recordScoreChange(
+    req.session.user.id,
+    previousScore,
+    score,
+    ruleCompliance === 'true' ? 'Compliant session' : 'Rule violation'
+  );
+
+  // Check for patterns to record
+  const allText = allJournals.map(j => j.notes.toLowerCase()).join(' ');
+  const fomoCount = (allText.match(/fomo/gi) || []).length;
+  if (fomoCount >= 3) {
+    await mantle.recordPattern(req.session.user.id, 'FOMO', 'high');
+  }
+
+  // Check milestones
+  if (allJournals.length === 10) {
+    await mantle.recordMilestone(req.session.user.id, '10_sessions', score);
+  } else if (allJournals.length === 50) {
+    await mantle.recordMilestone(req.session.user.id, '50_sessions', score);
+  }
+
+  if (score >= 80 && previousScore < 80) {
+    await mantle.recordMilestone(req.session.user.id, 'elite_tier_reached', score);
+  }
+
+} catch (mantleErr) {
+  console.error('Mantle integration error:', mantleErr.message);
+  // Non-critical — never block journal submission
 }
 
 // Extract score from AI response
