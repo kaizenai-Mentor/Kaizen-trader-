@@ -1,0 +1,10 @@
+{
+  "name": "kaizen-contracts",
+  "version": "1.0.0",
+  "scripts": {
+    "deploy": "node deploy.js"
+  },
+  "dependencies": {
+    "ethers": "^6.9.0"
+  }
+}
