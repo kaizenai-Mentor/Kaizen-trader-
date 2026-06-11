@@ -22,6 +22,14 @@
       <div class="alert alert-error"><%= error %></div>
     <% } %>
 
+     <a href="https://explorer.sepolia.mantle.xyz/address/<%= process.env.MANTLE_CONTRACT_ADDRESS %>"
+  target="_blank"
+  class="btn-outline"
+  style="margin-top:16px;display:inline-flex;align-items:center;gap:8px;">
+  <span>View on Mantle Explorer</span>
+  <span style="font-size:0.7rem;">↗</span>
+</a>
+
     <div class="rep-grid">
 
       <!-- KAIZEN SCORE -->
