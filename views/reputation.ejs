@@ -13,7 +13,7 @@
     <div class="page-header">
       <div>
         <h1 style="color:var(--gold);">Your Reputation</h1>
-        <p class="page-sub">Kaizen Discipline Score + Zero Authority DAO on-chain reputation</p>
+        <p class="page-sub">Kaizen Discipline Score + DUAL on-chain reputation</p>
       </div>
       <a href="/dashboard" class="btn-outline">← Dashboard</a>
     </div>
@@ -22,15 +22,7 @@
       <div class="alert alert-error"><%= error %></div>
     <% } %>
 
-     <a href="https://explorer.sepolia.mantle.xyz/address/<%= process.env.MANTLE_CONTRACT_ADDRESS %>"
-  target="_blank"
-  class="btn-outline"
-  style="margin-top:16px;display:inline-flex;align-items:center;gap:8px;">
-  <span>View on Mantle Explorer</span>
-  <span style="font-size:0.7rem;">↗</span>
-</a>
-
-    <div class="rep-grid">
+         <div class="rep-grid">
 
       <!-- KAIZEN SCORE -->
       <div class="card card-gold">
@@ -115,6 +107,14 @@
             </a>
           </div>
         <% } %>
+
+     <a href="https://explorer.sepolia.mantle.xyz/address/<%= process.env.MANTLE_CONTRACT_ADDRESS %>"
+  target="_blank"
+  class="btn-outline"
+  style="margin-top:16px;display:inline-flex;align-items:center;gap:8px;">
+  <span>View on Mantle Explorer</span>
+  <span style="font-size:0.7rem;">↗</span>
+</a>
 
       </div>
     </div>
