@@ -52,22 +52,39 @@ const getReputation = async (req, res) => {
     const response = await zaClient.get(`/users/${req.params.userId}/reputation`);
     const reputation = response.data;
 
+    const getReputation = async (req, res) => {
+  try {
+    const User = require('../models/User');
+    const user = await User.findById(req.params.userId);
+
+    let zaData = null;
+    try {
+      const axios = require('axios');
+      const response = await axios.get(
+        `${process.env.ZA_BASE_URL}/users/${user.zaUserId || req.params.userId}/reputation`,
+        { timeout: 5000 }
+      );
+      zaData = response.data;
+    } catch (zaErr) {
+      console.log('ZA Reputation error:', zaErr.message);
+      zaData = null;
+    }
+
     res.render('reputation', {
       user: req.session.user,
-      reputation: reputation || {},
-      error: null
+      profileUser: user,
+      disciplineScore: user.disciplineScore || 0,
+      totalSessions: user.totalSessions || 0,
+      streak: user.streak || 0,
+      zaData
     });
 
   } catch (error) {
-    console.error('ZA Reputation error:', error.message);
-    res.render('reputation', {
-      user: req.session.user,
-      reputation: {},
-      error: 'Unable to load reputation data right now.'
-    });
+    console.error('Reputation page error:', error.message);
+    res.redirect('/dashboard');
   }
 };
-
+    
 module.exports = {
   getBounties,
   getBountyById,
