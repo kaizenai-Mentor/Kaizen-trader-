@@ -52,6 +52,10 @@ const getReputation = async (req, res) => {
     const User = require('../models/User');
     const user = await User.findById(req.params.userId);
 
+    if (!user) {
+      return res.redirect('/dashboard');
+    }
+
     let zaData = null;
     try {
       const axios = require('axios');
@@ -71,7 +75,8 @@ const getReputation = async (req, res) => {
       disciplineScore: user.disciplineScore || 0,
       totalSessions: user.totalSessions || 0,
       streak: user.streak || 0,
-      zaData
+      zaData: zaData,
+      error: null
     });
 
   } catch (error) {
