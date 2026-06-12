@@ -76,6 +76,7 @@ const getReputation = async (req, res) => {
       totalSessions: user.totalSessions || 0,
       streak: user.streak || 0,
       zaData: zaData,
+      reputation: zaData,
       error: null
     });
 
