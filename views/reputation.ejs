@@ -108,16 +108,121 @@
           </div>
         <% } %>
 
-     <a href="https://explorer.sepolia.mantle.xyz/address/<%= process.env.MANTLE_CONTRACT_ADDRESS %>"
-  target="_blank"
-  class="btn-outline"
-  style="margin-top:16px;display:inline-flex;align-items:center;gap:8px;">
-  <span>View on Mantle Explorer</span>
-  <span style="font-size:0.7rem;">↗</span>
-</a>
-
       </div>
     </div>
+
+<!-- MANTLE AI BENCHMARK -->
+<div class="card" style="margin-top:2px;">
+  <div class="card-header">
+    <h2>Mantle AI Benchmark</h2>
+    <span class="card-badge">ON-CHAIN</span>
+  </div>
+
+  <div style="text-align:center;padding:20px 0;">
+    <p style="
+      font-size:0.88rem;
+      color:var(--text-secondary);
+      line-height:1.85;
+      max-width:480px;
+      margin:0 auto 24px;
+    ">
+      Every Kaizen AI decision about your account — discipline
+      score changes, behavioral pattern detections, and milestone
+      achievements — is permanently recorded on the Mantle
+      blockchain. This is a verifiable, tamper-proof record of
+      how KAIZEN AI has guided your progress.
+    </p>
+
+    <div style="
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(120px,1fr));
+      gap:2px;
+      margin-bottom:24px;
+    ">
+      <div style="
+        background:var(--bg-surface);
+        border:1px solid var(--border);
+        padding:16px;
+      ">
+        <div style="
+          font-family:'DM Mono',monospace;
+          font-size:1.4rem;
+          font-weight:700;
+          color:var(--gold);
+        "><%= disciplineScore %>%</div>
+        <div style="
+          font-family:'DM Mono',monospace;
+          font-size:0.55rem;
+          letter-spacing:0.1em;
+          text-transform:uppercase;
+          color:var(--ash);
+          margin-top:4px;
+        ">Current Score</div>
+      </div>
+
+      <div style="
+        background:var(--bg-surface);
+        border:1px solid var(--border);
+        padding:16px;
+      ">
+        <div style="
+          font-family:'DM Mono',monospace;
+          font-size:1.4rem;
+          font-weight:700;
+          color:var(--blue);
+        "><%= totalSessions || 0 %></div>
+        <div style="
+          font-family:'DM Mono',monospace;
+          font-size:0.55rem;
+          letter-spacing:0.1em;
+          text-transform:uppercase;
+          color:var(--ash);
+          margin-top:4px;
+        ">On-Chain Events</div>
+      </div>
+
+      <div style="
+        background:var(--bg-surface);
+        border:1px solid var(--border);
+        padding:16px;
+      ">
+        <div style="
+          font-family:'DM Mono',monospace;
+          font-size:1.4rem;
+          font-weight:700;
+          color:var(--green);
+        "><%= streak || 0 %></div>
+        <div style="
+          font-family:'DM Mono',monospace;
+          font-size:0.55rem;
+          letter-spacing:0.1em;
+          text-transform:uppercase;
+          color:var(--ash);
+          margin-top:4px;
+        ">Day Streak</div>
+      </div>
+    </div>
+
+    <a href="https://explorer.sepolia.mantle.xyz/address/<%= process.env.MANTLE_CONTRACT_ADDRESS || '' %>"
+      target="_blank"
+      class="btn-outline"
+      style="display:inline-flex;align-items:center;gap:8px;">
+      <span>View on Mantle Explorer</span>
+      <span style="font-size:0.7rem;">↗</span>
+    </a>
+
+    <p style="
+      font-family:'DM Mono',monospace;
+      font-size:0.6rem;
+      letter-spacing:0.08em;
+      color:rgba(201,168,76,0.4);
+      margin-top:16px;
+      text-transform:uppercase;
+    ">
+      Powered by KaizenBenchmark.sol · Mantle Sepolia Testnet
+    </p>
+  </div>
+</div>
 
   </main>
 
