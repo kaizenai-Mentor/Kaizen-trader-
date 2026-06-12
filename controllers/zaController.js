@@ -49,11 +49,6 @@ const getBountyById = async (req, res) => {
 // GET /za/reputation/:userId
 const getReputation = async (req, res) => {
   try {
-    const response = await zaClient.get(`/users/${req.params.userId}/reputation`);
-    const reputation = response.data;
-
-    const getReputation = async (req, res) => {
-  try {
     const User = require('../models/User');
     const user = await User.findById(req.params.userId);
 
