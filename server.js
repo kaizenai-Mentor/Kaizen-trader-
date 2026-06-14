@@ -319,6 +319,92 @@ app.get('/journal', (req, res) => {
   res.redirect('/dashboard/journal');
 });
 
+app.post('/dashboard/pretrade', async (req, res) => {
+  if (!req.session.user) return res.json({ response: 'Not logged in.' });
+
+  try {
+    const { note } = req.body;
+    const User = require('./models/User');
+    const Journal = require('./models/Journal');
+
+    const user = await User.findById(req.session.user.id);
+    const recentJournals = await Journal.find({
+      userId: req.session.user.id
+    }).sort({ createdAt: -1 }).limit(5);
+
+    const history = recentJournals.map(j =>
+      `${j.asset} | Compliant: ${j.ruleCompliance ? 'Yes' : 'No'} | "${j.notes.substring(0, 100)}"`
+    ).join('\n');
+
+    let response = '';
+
+    if (process.env.ANTHROPIC_API_KEY) {
+      const https = require('https');
+      const payload = JSON.stringify({
+        model: 'claude-haiku-4-5',
+        max_tokens: 200,
+        system: `You are Kaizen AI giving a pre-trade reality check in under 150 words.
+
+Trader: ${user.username}
+Discipline Score: ${user.disciplineScore}%
+Strategy: ${user.tradingStyle?.tradingEdge || 'Not set'}
+Entry Rule: ${user.tradingStyle?.entryRule || 'Not set'}
+Known Triggers: ${user.tradingStyle?.emotionalTriggers || 'Not set'}
+
+Recent sessions:
+${history || 'No history yet.'}
+
+Be direct. Reference their specific words. 
+If you detect FOMO or rule-skipping intent, name it clearly.
+End with one YES or WAIT recommendation.`,
+        messages: [{ role: 'user', content: note }]
+      });
+
+      const apiResponse = await new Promise((resolve, reject) => {
+        const req2 = https.request({
+          hostname: 'api.anthropic.com',
+          path: '/v1/messages',
+          method: 'POST',
+          headers: {
+            'x-api-key': process.env.ANTHROPIC_API_KEY,
+            'anthropic-version': '2023-06-01',
+            'content-type': 'application/json',
+            'content-length': Buffer.byteLength(payload)
+          }
+        }, (r) => {
+          let d = '';
+          r.on('data', c => d += c);
+          r.on('end', () => resolve(d));
+        });
+        req2.on('error', reject);
+        req2.setTimeout(10000, () => { req2.destroy(); reject(new Error('Timeout')); });
+        req2.write(payload);
+        req2.end();
+      });
+
+      const parsed = JSON.parse(apiResponse);
+      response = parsed.content?.[0]?.text || '';
+    }
+
+    if (!response) {
+      // Fallback pre-trade response
+      const hasFOMO = /fomo|rushing|afraid|missing|moving fast/i.test(note);
+      const hasSkip = /but|however|early|before confirmation|urge/i.test(note);
+
+      if (hasFOMO || hasSkip) {
+        response = `改 KAIZEN says: WAIT.\n\nYour message contains the exact language that precedes your most common discipline failures. "Moving fast," "urge to enter" — these are your documented warning signals.\n\nDoes your checklist say enter? If not, the answer is no.\n\nClose this tab for 3 minutes. Come back. If the setup is still valid, enter then.`;
+      } else {
+        response = `改 KAIZEN says: Proceed with discipline.\n\nYour setup description sounds aligned with your process. Enter only if every item on your checklist is confirmed — not mostly confirmed. Fully confirmed.\n\nRisk 1% as defined. Set your stop. Walk away from the screen.`;
+      }
+    }
+
+    res.json({ response });
+  } catch(err) {
+    console.error('Pre-trade error:', err.message);
+    res.json({ response: '改 KAIZEN AI is temporarily unavailable.' });
+  }
+});
+
 // Weekly summary (can be triggered manually or by cron)
 app.get('/weekly-summary', async (req, res) => {
   if (!req.session.user) return res.redirect('/auth/login');
