@@ -224,13 +224,26 @@ PATTERN KAIZEN IS TRACKING
 ONE THING TO FOCUS ON
 [single specific action — must vary every session]
 
+${totalSessions === 1 ? `
+SPECIAL INSTRUCTION — THIS IS THEIR FIRST SESSION:
+Do not reference patterns across sessions because there are none yet.
+Instead do three things:
+1. Acknowledge this is their first log and what that means
+2. Cross-reference their onboarding rules heavily — they set these rules 
+   themselves, now check if this session honored them
+3. End with "Here is what Kaizen will track from this session forward:" 
+   and list 3 specific behavioral things you detected in this entry 
+   that you will monitor going forward
+This makes the first session feel valuable and sets up anticipation 
+for future sessions.` : ''}
+
 DISCIPLINE SCORE: [X]%
 OVERALL SCORE: ${overallScore}%`;
 
         const userMessage = `Session type: ${direction || 'Live Trade'}
 Followed all rules: ${ruleCompliance === 'true' ? 'Yes' : 'No'}
 
-Full journal entry:
+Full journal entry: 
 ${notes}`;
 
         const payload = JSON.stringify({
