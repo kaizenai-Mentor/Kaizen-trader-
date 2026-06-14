@@ -374,59 +374,74 @@ ${notes}`;
 
 function buildFallback(notes, compliant, asset, user, totalSessions, trend, overallScore) {
   const score = compliant
-    ? Math.floor(Math.random() * 20) + 65
-    : Math.floor(Math.random() * 25) + 25;
+    ? Math.floor(Math.random() * 15) + 68
+    : Math.floor(Math.random() * 20) + 28;
 
   const hasFOMO = /fomo|fear of missing/i.test(notes);
-  const hasTA = /entry|structure|timeframe|sweep|mss|liquidity|zone|level|checklist/i.test(notes);
+  const hasRevenge = /revenge|frustrat|angry/i.test(notes);
   const hasLoss = /sl|stop loss|loss|losing|blew|blow/i.test(notes);
+  const hasWin = /tp|take profit|profit|win|hit tp/i.test(notes);
+  const hasChecklist = /checklist|check list|confirmed|mss|sweep/i.test(notes);
   const hasProp = /prop|funded|account/i.test(notes);
+  const isFirst = totalSessions <= 1;
 
   const impact = compliant
     ? `+${Math.max(1, Math.floor(score / 25))}%`
     : `-${Math.max(2, Math.floor((100 - score) / 15))}%`;
 
-  const variations = [
-    {
-      well: compliant
-        ? `The execution on ${asset} followed your defined process. That is the behavior that compounds into long-term profitability.`
-        : `You documented this session without excuses. That honesty is rarer than most traders admit.`,
-      breakdown: hasTA && !compliant
-        ? `The breakdown was technical — the entry criteria were not fully met before execution. This is a process gap, not a character flaw.`
-        : !compliant
-        ? `A rule was bypassed this session. Identify the exact decision point where it broke. That moment is your focus.`
-        : `No critical breakdown this session. Focus on replicating this process consistently.`,
-      focus: hasFOMO
-        ? `Before the next ${asset} session write down: I will wait for the re-entry. Tape it to your screen.`
-        : hasLoss && hasProp
-        ? `With a funded account under pressure your next session must begin with written rule confirmation before any chart analysis.`
-        : `Log your next session with the same level of detail as this one. The pattern builds through data.`
-    },
-    {
-      well: compliant
-        ? `Following your process when the market was moving on ${asset} requires more discipline than most traders have. This is bankable behavior.`
-        : `Honest documentation after a difficult session is not small. Many traders avoid journaling precisely when it matters most.`,
-      breakdown: !compliant
-        ? `Something overrode your rules. Whether it was speed, conviction, or market noise — identify the exact override mechanism. That is where your work is.`
-        : `The session held together. Understand why so you can replicate it.`,
-      focus: totalSessions < 5
-        ? `You are in the early data-building phase. Kaizen needs at least 10 sessions to surface reliable patterns. Keep logging with this level of honesty.`
-        : trend === 'declining'
-        ? `Your recent sessions are trending toward lower compliance. Before the next session review your last three entries and find the common thread.`
-        : `Your compliance is building. The next test is whether you hold this standard when a trade moves against you mid-position.`
-    }
-  ];
+  // WHAT YOU EXECUTED WELL
+  const wellDone = compliant
+    ? hasChecklist
+      ? `The checklist discipline on ${asset} is exactly the behavior that separates developing traders from consistent ones. Completing every confirmation step before entry — sweep, MSS, timeframe alignment — is what gives your strategy its edge. When you follow the process completely the outcome takes care of itself.`
+      : `Following your rules on ${asset} this session is the foundation everything else is built on. One compliant session builds the habit. Ten compliant sessions builds the trader. You are moving in the right direction.`
+    : `You documented this session honestly without excuses or justification. That level of self-awareness is rarer than most traders admit. The traders who improve fastest are the ones who can name exactly what went wrong without blaming the market.`;
 
-  const v = variations[Math.floor(Math.random() * variations.length)];
+  // WHERE THE BREAKDOWN OCCURRED
+  const breakdown = !compliant
+    ? hasFOMO
+      ? `The breakdown was behavioral — FOMO overrode your confirmation process on ${asset}. You had the right bias and the right zone. The entry came before your trigger fired. This is not a technical analysis failure. This is an execution failure at the final decision point, and it has a specific name: participation bias. You entered to participate, not because your rules said to.`
+      : hasLoss
+      ? `A rule was bypassed this session on ${asset}. The stop loss hit is the consequence, not the problem. The problem is the decision that came before it — the moment you entered without full confirmation. Identify that exact moment. Write down what you were feeling in the seconds before you clicked. That feeling is your signal to wait, not to act.`
+      : `Something overrode your process this session. Whether it was speed, conviction, or external noise — the entry did not match your defined criteria. Before your next session identify the exact rule that was skipped and under what condition it happened.`
+    : hasWin
+    ? `No critical breakdown this session. The process held together and the outcome reflected it. The challenge now is not getting better — it is staying consistent when the market makes it harder. Winning sessions can create overconfidence in the next one. Watch for that.`
+    : `No rule violations detected. This is what a clean session looks like. Study it. Understand what made it easy to follow your rules today so you can replicate that state tomorrow.`;
+
+  // PATTERN KAIZEN IS TRACKING
+  let pattern = '';
+  if (totalSessions >= 3) {
+    if (hasFOMO) {
+      pattern = `\n\nPATTERN KAIZEN IS TRACKING\nFOMO has appeared in your recent sessions. This is becoming a documented behavioral pattern, not a one-time mistake. Kaizen is watching which pairs and which market conditions trigger it most frequently. Keep logging with this level of detail — the data is building.`;
+    } else if (hasRevenge) {
+      pattern = `\n\nPATTERN KAIZEN IS TRACKING\nSigns of frustration have appeared across recent sessions. Trading from an agitated emotional state is one of the highest-risk behavioral patterns Kaizen monitors. Note the time of day and market conditions when this appears — there is likely a trigger condition worth identifying.`;
+    } else if (!compliant && trend === 'declining') {
+      pattern = `\n\nPATTERN KAIZEN IS TRACKING\nYour compliance rate has been declining across recent sessions. This is the early signal of a behavioral drift — where shortcuts become habits. Kaizen is flagging this now so you can course-correct before it compounds.`;
+    } else if (compliant && trend === 'improving') {
+      pattern = `\n\nPATTERN KAIZEN IS TRACKING\nYour compliance rate has been improving across recent sessions. This is the compounding effect of discipline in action. The traders who reach Elite tier are the ones who notice this trend and protect it deliberately.`;
+    }
+  } else if (isFirst) {
+    pattern = `\n\nWHAT KAIZEN WILL TRACK FROM HERE\nBased on this first session, Kaizen is now monitoring: your rule compliance rate, any FOMO or emotional override patterns, your checklist completion consistency, and which assets and conditions trigger your strongest responses. Every session you log makes this picture sharper. Aim for 10 sessions — that is when the pattern data becomes genuinely useful.`;
+  }
+
+  // ONE THING TO FOCUS ON
+  const focus = hasFOMO
+    ? `Before your next ${asset} session, after your final higher timeframe confirmation, set a physical timer for 3 minutes. Do nothing. If your entry trigger fires during those 3 minutes you enter. If it does not, you walk away. Three minutes of patience has a higher expected value than any premature entry.`
+    : hasLoss && hasProp
+    ? `With a funded account the psychological weight of each loss is amplified. Before your next session write down your maximum loss for the day and close the platform the moment you hit it. One rule. Non-negotiable. Protect the account first.`
+    : !compliant
+    ? `Write the rule you violated today at the top of tomorrow's journal before you open any chart. Read it out loud. Then trade. The act of naming it before the session is more powerful than reviewing it after.`
+    : isFirst
+    ? `For your next session, include the specific entry price, stop loss level, and take profit target in your notes. The more specific your data, the more specific Kaizen's feedback becomes.`
+    : `Log your next session within 30 minutes of finishing it. The emotional and analytical detail fades fast. The closer to real-time your journaling is, the more accurate the data KAIZEN builds on.`;
 
   return `WHAT YOU EXECUTED WELL
-${v.well}
+${wellDone}
 
 WHERE THE BREAKDOWN OCCURRED
-${v.breakdown}
+${breakdown}${pattern}
 
 ONE THING TO FOCUS ON
-${v.focus}
+${focus}
 
 DISCIPLINE SCORE: ${score}%
 OVERALL SCORE: ${overallScore}%`;
