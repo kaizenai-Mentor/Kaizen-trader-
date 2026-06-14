@@ -269,5 +269,42 @@
 
   <%- include('partials/footer') %>
   <script src="/js/app.js"></script>
+
+<script>
+async function submitPreTrade() {
+  const input = document.getElementById('pretrade-input');
+  const responseEl = document.getElementById('pretrade-response');
+  const text = input.value.trim();
+
+  if (!text) return;
+
+  responseEl.style.display = 'block';
+  responseEl.textContent = '改 KAIZEN is thinking...';
+
+  try {
+    const res = await fetch('/dashboard/pretrade', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ note: text })
+    });
+    const data = await res.json();
+
+    // Stream the response
+    responseEl.textContent = '';
+    const reply = data.response || 'Kaizen could not process this right now.';
+    let i = 0;
+    function stream() {
+      if (i < reply.length) {
+        responseEl.textContent += reply[i];
+        i++;
+        setTimeout(stream, 10);
+      }
+    }
+    stream();
+  } catch(e) {
+    responseEl.textContent = '改 Could not reach KAIZEN AI right now.';
+  }
+}
+</script>
 </body>
 </html>
