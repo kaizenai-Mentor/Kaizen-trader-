@@ -28,8 +28,6 @@ const MemorySchema = new mongoose.Schema({
   }
 });
 
-module.exports = mongoose.model('Memory', MemorySchema);
-
 const mongoose = require('mongoose');
 
 const MemorySchema = new mongoose.Schema({
