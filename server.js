@@ -126,9 +126,26 @@ app.get('/auth/google/callback',
       id: req.user._id,
       username: req.user.username,
       email: req.user.email,
-      disciplineScore: req.user.disciplineScore,
-      streak: req.user.streak
+      disciplineScore: req.user.disciplineScore || 0,
+      streak: req.user.streak || 0
     };
+
+    // Check if onboarding is complete
+    const ts = req.user.tradingStyle;
+    const onboardingComplete = ts &&
+      ts.riskPerTrade &&
+      ts.riskPerTrade !== '' &&
+      ts.tradingEdge &&
+      ts.tradingEdge !== '';
+
+    if (!onboardingComplete) {
+      return res.render('register', {
+        error: null,
+        step: 'questions',
+        questionNum: 1
+      });
+    }
+
     res.redirect('/dashboard');
   }
 );
