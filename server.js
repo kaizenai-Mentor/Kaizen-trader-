@@ -243,6 +243,173 @@ app.get('/kaizen-ai', (req, res) => {
   });
 });
 
+// Psychology Session
+app.get('/psychology', async (req, res) => {
+  if (!req.session.user) return res.redirect('/auth/login');
+  try {
+    const Memory = require('./models/Memory');
+    const sessions = await Memory.find({
+      userId: req.session.user.id,
+      type: 'psychology'
+    }).sort({ createdAt: -1 }).limit(10);
+    res.render('psychology', {
+      user: req.session.user,
+      sessions
+    });
+  } catch(err) {
+    res.render('psychology', {
+      user: req.session.user,
+      sessions: []
+    });
+  }
+});
+
+app.post('/psychology/ask', async (req, res) => {
+  if (!req.session.user) return res.json({ response: 'Not logged in.' });
+
+  try {
+    const { message } = req.body;
+    const User = require('./models/User');
+    const Journal = require('./models/Journal');
+    const Memory = require('./models/Memory');
+
+    const user = await User.findById(req.session.user.id);
+    const recentJournals = await Journal.find({
+      userId: req.session.user.id
+    }).sort({ createdAt: -1 }).limit(10);
+
+    const allText = recentJournals
+      .map(j => j.notes.toLowerCase()).join(' ');
+    const fomoCount = (allText.match(/fomo/gi) || []).length;
+    const lossCount = (allText.match(/loss|sl|stop/gi) || []).length;
+    const winCount = (allText.match(/tp|win|profit/gi) || []).length;
+    const totalSessions = recentJournals.length;
+    const compliantCount = recentJournals
+      .filter(j => j.ruleCompliance).length;
+
+    let response = '';
+
+    if (process.env.ANTHROPIC_API_KEY) {
+      const https = require('https');
+
+      const systemPrompt = `You are Kaizen — an AI trading psychologist and mentor. 
+
+This is NOT a trade journal session. This is a psychology session where the trader is sharing how they feel about trading, their mindset, their fears, their confidence, or anything on their mind. Your role here is fundamentally different from trade analysis.
+
+TRADER PROFILE:
+Name: ${user.username}
+Discipline Score: ${user.disciplineScore || 0}%
+Total Sessions Logged: ${totalSessions}
+Rule Compliance Rate: ${totalSessions > 0 ? Math.round((compliantCount / totalSessions) * 100) : 0}%
+FOMO mentions across sessions: ${fomoCount}
+Loss mentions across sessions: ${lossCount}
+Known Emotional Triggers: ${user.tradingStyle?.emotionalTriggers || 'Not set'}
+Strategy: ${user.tradingStyle?.tradingEdge || 'Not set'}
+
+YOUR ROLE IN PSYCHOLOGY SESSIONS:
+1. Listen first — acknowledge what they said before anything else
+2. Ask ONE focused follow-up question that goes deeper
+3. Identify underlying beliefs about money, risk, self-worth, or fear that affect their trading
+4. Never give trade signals or market analysis here
+5. Connect their mindset to their behavioral data when relevant
+6. End with one practical psychological exercise they can do today
+7. Be warm but honest — like a trusted mentor who has seen everything
+8. Keep response under 250 words
+9. Never start with "I" — vary your opening every response
+
+TOPICS YOU HANDLE IN PSYCHOLOGY SESSIONS:
+- Fear of pulling the trigger on valid setups
+- Fear of success or sabotaging winning trades
+- Anxiety when opening charts
+- Dealing with losing streaks emotionally
+- Overconfidence after winning streaks
+- Identity as a trader
+- Pressure from financial need while trading
+- Comparing yourself to other traders
+- Imposter syndrome
+- Relationship between self-worth and trade outcomes`;
+
+      const payload = JSON.stringify({
+        model: 'claude-haiku-4-5',
+        max_tokens: 350,
+        system: systemPrompt,
+        messages: [{ role: 'user', content: message }]
+      });
+
+      const apiResponse = await new Promise((resolve, reject) => {
+        const req2 = https.request({
+          hostname: 'api.anthropic.com',
+          path: '/v1/messages',
+          method: 'POST',
+          headers: {
+            'x-api-key': process.env.ANTHROPIC_API_KEY,
+            'anthropic-version': '2023-06-01',
+            'content-type': 'application/json',
+            'content-length': Buffer.byteLength(payload)
+          }
+        }, (r) => {
+          let d = '';
+          r.on('data', c => d += c);
+          r.on('end', () => resolve(d));
+        });
+        req2.on('error', reject);
+        req2.setTimeout(15000, () => {
+          req2.destroy();
+          reject(new Error('Timeout'));
+        });
+        req2.write(payload);
+        req2.end();
+      });
+
+      const parsed = JSON.parse(apiResponse);
+      response = parsed.content?.[0]?.text || '';
+    }
+
+    // Fallback
+    if (!response) {
+      const msg = message.toLowerCase();
+      const hasAnxiety = /anxious|anxiety|nervous|scared|afraid/i.test(msg);
+      const hasFear = /fear|doubt|unsure|uncertain|confident/i.test(msg);
+      const hasLoss = /loss|losing|lost|blew|down/i.test(msg);
+      const hasPressure = /pressure|need|money|bills|financial/i.test(msg);
+
+      if (hasPressure) {
+        response = `Trading from financial need is one of the most psychologically dangerous states a trader can be in. When you need the money, every loss feels catastrophic and every missed trade feels like a failure. The market does not care about your bills.\n\nWhat would it feel like to trade an amount so small that losing it meant nothing? That emotional state — detached, process-focused, calm — is the state you need to replicate at your actual size.\n\nToday's exercise: Write down the worst realistic outcome of your next session. Then ask yourself: will I survive it? If yes, trade. If the answer creates panic, do not open the charts today.\n\nWhat is driving the financial pressure right now?`;
+      } else if (hasAnxiety) {
+        response = `The anxiety you feel before opening your charts is your nervous system responding to perceived threat. It is not weakness — it is biology. The question is not how to eliminate it but how to trade alongside it without letting it make your decisions.\n\nYour data shows ${fomoCount > 0 ? `FOMO has appeared ${fomoCount} times in your sessions` : 'you have been building your session history'}. Anxiety and FOMO often travel together — anxiety about missing a move triggers premature entries.\n\nToday's exercise: Before opening any chart, sit for two minutes and write down the single rule you will not break today. One rule. Read it after every trade.\n\nWhen does the anxiety feel strongest — before entry, during the trade, or after?`;
+      } else if (hasLoss) {
+        response = `Losses affect traders in two distinct ways — financially and psychologically. The financial impact is measurable. The psychological impact is often invisible and far more damaging because it shapes every decision that follows.\n\nHow you respond in the 30 minutes after a stop loss hit is one of the most important behavioral patterns in trading. Most revenge trades happen in that window.\n\nToday's exercise: After your next stop loss, close your platform for exactly 15 minutes before doing anything else. Set a timer. No exceptions. This single habit has saved more trading accounts than any strategy.\n\nHow long after a loss do you typically take your next trade?`;
+      } else if (hasFear) {
+        response = `Doubt before a valid setup is one of the most common and costly psychological patterns in trading. You do the analysis. You see the setup. You hesitate. The trade moves without you. Now you feel worse — and more likely to chase the next one.\n\nThe doubt is not telling you the trade is wrong. It is telling you that you do not yet fully trust your own process. That trust is built through repetition and data — exactly what your KAIZEN sessions are building.\n\nToday's exercise: On your next valid setup, write down your confidence level from 1 to 10 before entry. Write why. After the trade, write the actual outcome. Over 20 sessions you will see your doubt calibration improve.\n\nWhat specifically makes you doubt — the entry timing, the direction, or something else?`;
+      } else {
+        response = `Thank you for sharing that. What you're describing is something many serious traders carry but rarely talk about — and the fact that you're willing to examine it honestly is already more than most do.\n\nYour discipline score of ${user.disciplineScore || 0}% reflects your behavioral consistency across your logged sessions. But scores only capture what happens during trades. The mindset work you're doing right now — this conversation — is what happens between trades. Both matter.\n\nToday's exercise: Write one sentence that completes this: "The story I tell myself about my trading is..." Do not filter it. Whatever comes out first is usually the most honest.\n\nWhat made you want to start this psychology session today specifically?`;
+      }
+    }
+
+    // Save to memories as psychology type
+    try {
+      await Memory.create({
+        userId: req.session.user.id,
+        sessionData: message.substring(0, 300),
+        response,
+        asset: 'Psychology Session',
+        sessionScore: 0,
+        type: 'psychology'
+      });
+    } catch(memErr) {
+      console.error('Psychology memory save error:', memErr.message);
+    }
+
+    res.json({ response });
+
+  } catch(err) {
+    console.error('Psychology session error:', err.message);
+    res.json({
+      response: '改 KAIZEN AI is temporarily unavailable. Try again in a moment.'
+    });
+  }
+});
+
 // Test
 app.get('/test-ai', async (req, res) => {
   if (!process.env.ANTHROPIC_API_KEY) {
