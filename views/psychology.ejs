@@ -420,9 +420,21 @@
           body: JSON.stringify({ message: text })
         });
         const data = await res.json();
+thinking.remove();
+addMessage(data.response, 'kaizen');
 
-        thinking.remove();
-        addMessage(data.response, 'kaizen');
+// Show psychology score contribution
+if (data.psychScore) {
+  const scoreLine = document.getElementById('psych-score-line');
+  if (scoreLine) {
+    scoreLine.textContent = `This session scored ${data.psychScore}% · Psychology contributes 30% to your discipline score`;
+    scoreLine.style.color = data.psychScore >= 70
+      ? 'rgba(52,211,153,0.5)'
+      : data.psychScore >= 50
+      ? 'rgba(201,168,76,0.5)'
+      : 'rgba(248,113,113,0.4)';
+  }
+}
       } catch(e) {
         thinking.remove();
         addMessage('改 KAIZEN AI is temporarily unavailable. Try again in a moment.', 'kaizen');
