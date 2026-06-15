@@ -386,21 +386,79 @@ TOPICS YOU HANDLE IN PSYCHOLOGY SESSIONS:
       }
     }
 
-    // Save to memories as psychology type
-    try {
-      await Memory.create({
-        userId: req.session.user.id,
-        sessionData: message.substring(0, 300),
-        response,
-        asset: 'Psychology Session',
-        sessionScore: 0,
-        type: 'psychology'
-      });
-    } catch(memErr) {
-      console.error('Psychology memory save error:', memErr.message);
-    }
+    // Calculate psychology score contribution
+const psychScore = (() => {
+  const msg = message.toLowerCase();
+  const hasReflection = /feel|felt|think|realize|notice|aware|understand/i.test(msg);
+  const hasSpecific = /when|because|after|before|during|every time/i.test(msg);
+  const hasOwnership = /i did|i chose|i decided|my fault|i know|i realize/i.test(msg);
+  const hasAvoidance = /market|luck|should have|they|it just/i.test(msg);
 
-    res.json({ response });
+  let score = 50; // base
+  if (hasReflection) score += 15;
+  if (hasSpecific) score += 15;
+  if (hasOwnership) score += 20;
+  if (hasAvoidance) score -= 10;
+  return Math.min(100, Math.max(10, score));
+})();
+
+// Save to memories
+try {
+  await Memory.create({
+    userId: req.session.user.id,
+    sessionData: message.substring(0, 300),
+    response,
+    asset: 'Psychology Session',
+    sessionScore: psychScore,
+    type: 'psychology'
+  });
+} catch(memErr) {
+  console.error('Psychology memory save error:', memErr.message);
+}
+
+// Update discipline score to include psychology sessions
+try {
+  const Journal = require('./models/Journal');
+  const allJournals = await Journal.find({
+    userId: req.session.user.id
+  });
+  const allMemories = await Memory.find({
+    userId: req.session.user.id,
+    type: 'psychology'
+  });
+
+  const journalCompliant = allJournals.filter(j => j.ruleCompliance).length;
+  const journalTotal = allJournals.length;
+
+  // Journal compliance = 70% weight
+  // Psychology engagement = 30% weight
+  const journalScore = journalTotal > 0
+    ? Math.round((journalCompliant / journalTotal) * 100)
+    : 0;
+
+  const psychAvg = allMemories.length > 0
+    ? Math.round(
+        allMemories.reduce((sum, m) => sum + (m.sessionScore || 50), 0)
+        / allMemories.length
+      )
+    : 0;
+
+  // Only factor psychology in if user has at least 1 psychology session
+  const newScore = allMemories.length > 0
+    ? Math.round((journalScore * 0.7) + (psychAvg * 0.3))
+    : journalScore;
+
+  await User.findByIdAndUpdate(req.session.user.id, {
+    disciplineScore: newScore
+  });
+  req.session.user.disciplineScore = newScore;
+
+  console.log(`Discipline score updated with psychology: ${newScore}%`);
+} catch(scoreErr) {
+  console.error('Score update error:', scoreErr.message);
+}
+
+res.json({ response, psychScore });
 
   } catch(err) {
     console.error('Psychology session error:', err.message);
