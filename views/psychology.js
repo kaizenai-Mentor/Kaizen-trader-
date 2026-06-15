@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('partials/head') %>
+  <title>KAIZEN — Psychology Session</title>
+</head>
+<body class="app-page">
+
+  <%- include('partials/navbar') %>
+
+  <main class="app-main">
+
+    <div class="page-header">
+      <div>
+        <h1 style="color:var(--gold);">Psychology Session</h1>
+        <p class="page-sub">
+          This is not about a specific trade.
+          Talk to KAIZEN AI about how you feel about trading.
+        </p>
+      </div>
+      <a href="/dashboard" class="btn-outline">← Dashboard</a>
+    </div>
+
+    <!-- INTRO CARD -->
+    <div style="
+      padding:18px 22px;
+      background:rgba(201,168,76,0.04);
+      border:1px solid rgba(201,168,76,0.15);
+      margin-bottom:2px;
+      display:flex;
+      gap:14px;
+      align-items:flex-start;
+    ">
+      <div style="
+        font-family:'DM Mono',monospace;
+        font-size:1.4rem;
+        color:rgba(201,168,76,0.4);
+        flex-shrink:0;
+        line-height:1;
+      ">改</div>
+      <div>
+        <div style="
+          font-weight:700;
+          font-size:0.88rem;
+          color:var(--text-primary);
+          margin-bottom:6px;
+        ">
+          Your trading mindset matters as much as your strategy.
+        </div>
+        <p style="
+          font-size:0.82rem;
+          color:var(--text-secondary);
+          line-height:1.75;
+          margin:0;
+        ">
+          Use this space to talk about fear, confidence, pressure,
+          anxiety, self-doubt, or anything on your mind about trading.
+          KAIZEN AI responds as a trading psychologist — not a trade analyst.
+          Nothing you say here affects your discipline score.
+        </p>
+      </div>
+    </div>
+
+    <!-- CHAT INTERFACE -->
+    <div class="card" style="margin-bottom:2px;">
+
+      <!-- Conversation history -->
+      <div id="chat-history" style="
+        min-height:200px;
+        max-height:400px;
+        overflow-y:auto;
+        margin-bottom:20px;
+        display:flex;
+        flex-direction:column;
+        gap:16px;
+      ">
+        <!-- Messages appear here -->
+        <div style="
+          text-align:center;
+          padding:40px 20px;
+          color:var(--ash);
+          font-size:0.82rem;
+          line-height:1.8;
+        " id="empty-state">
+          <div style="
+            font-size:2rem;
+            color:rgba(201,168,76,0.15);
+            margin-bottom:12px;
+          ">改</div>
+          Start by telling KAIZEN how you are feeling about
+          your trading right now.<br>
+          There are no wrong answers here.
+        </div>
+      </div>
+
+      <!-- Suggested prompts -->
+      <div id="suggestions" style="
+        display:flex;
+        gap:8px;
+        flex-wrap:wrap;
+        margin-bottom:16px;
+      ">
+        <button onclick="usePrompt(this)"
+          class="suggestion-btn">
+          I feel anxious every time I open my charts
+        </button>
+        <button onclick="usePrompt(this)"
+          class="suggestion-btn">
+          I keep second-guessing valid setups
+        </button>
+        <button onclick="usePrompt(this)"
+          class="suggestion-btn">
+          I trade better in backtesting than live
+        </button>
+        <button onclick="usePrompt(this)"
+          class="suggestion-btn">
+          I feel pressure because I need this to work financially
+        </button>
+        <button onclick="usePrompt(this)"
+          class="suggestion-btn">
+          After a loss I feel like giving up
+        </button>
+        <button onclick="usePrompt(this)"
+          class="suggestion-btn">
+          I don't feel like I deserve to win trades
+        </button>
+      </div>
+
+      <!-- Input -->
+      <div style="display:flex;gap:10px;align-items:flex-end;">
+        <textarea
+          id="psych-input"
+          class="form-input"
+          rows="3"
+          style="flex:1;resize:none;font-size:0.88rem;line-height:1.6;"
+          placeholder="Tell KAIZEN how you are feeling about your trading today..."></textarea>
+        <button
+          onclick="sendMessage()"
+          id="send-btn"
+          style="
+            background:var(--gold);
+            color:#000;
+            border:none;
+            font-family:'DM Mono',monospace;
+            font-size:0.65rem;
+            letter-spacing:0.1em;
+            text-transform:uppercase;
+            font-weight:700;
+            padding:0 20px;
+            cursor:pointer;
+            align-self:stretch;
+            transition:background 0.2s;
+            white-space:nowrap;
+          "
+          onmouseover="this.style.background='#E2C46A'"
+          onmouseout="this.style.background='var(--gold)'">
+          Send
+        </button>
+      </div>
+
+      <!-- Disclaimer -->
+      <p style="
+        font-family:'DM Mono',monospace;
+        font-size:0.58rem;
+        letter-spacing:0.08em;
+        color:rgba(168,160,154,0.4);
+        margin-top:10px;
+        text-transform:uppercase;
+      ">
+        Psychology sessions are saved to Memories but do not
+        affect your discipline score
+      </p>
+    </div>
+
+    <!-- PAST PSYCHOLOGY SESSIONS -->
+    <% if (sessions && sessions.length > 0) { %>
+      <div style="margin-top:8px;">
+        <div style="
+          font-family:'DM Mono',monospace;
+          font-size:0.62rem;
+          letter-spacing:0.15em;
+          text-transform:uppercase;
+          color:var(--ash);
+          margin-bottom:12px;
+          padding-left:4px;
+        ">Past Psychology Sessions</div>
+
+        <div style="display:flex;flex-direction:column;gap:2px;">
+          <% sessions.forEach(function(s) { %>
+            <div class="card" style="cursor:pointer;"
+              onclick="this.querySelector('.psych-expand').style.display = this.querySelector('.psych-expand').style.display === 'none' ? 'block' : 'none'">
+              <div style="
+                display:flex;
+                justify-content:space-between;
+                align-items:flex-start;
+                gap:12px;
+              ">
+                <div style="flex:1;">
+                  <div style="
+                    font-family:'DM Mono',monospace;
+                    font-size:0.6rem;
+                    letter-spacing:0.12em;
+                    text-transform:uppercase;
+                    color:var(--gold);
+                    margin-bottom:6px;
+                  ">
+                    改 Psychology · <%= new Date(s.createdAt).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) %>
+                  </div>
+                  <p style="
+                    font-size:0.82rem;
+                    color:var(--ash-light);
+                    line-height:1.6;
+                    font-style:italic;
+                  ">
+                    "<%= s.sessionData.substring(0, 120) %>..."
+                  </p>
+                </div>
+                <span style="
+                  font-family:'DM Mono',monospace;
+                  font-size:0.58rem;
+                  color:var(--ash);
+                  flex-shrink:0;
+                ">Tap to expand</span>
+              </div>
+
+              <div class="psych-expand" style="
+                display:none;
+                margin-top:16px;
+                padding-top:16px;
+                border-top:1px solid var(--border);
+              ">
+                <div style="
+                  font-family:'DM Mono',monospace;
+                  font-size:0.6rem;
+                  letter-spacing:0.1em;
+                  text-transform:uppercase;
+                  color:var(--ash);
+                  margin-bottom:8px;
+                ">You said</div>
+                <p style="
+                  font-size:0.85rem;
+                  color:var(--ash-light);
+                  line-height:1.75;
+                  font-style:italic;
+                  margin-bottom:16px;
+                  padding:12px 16px;
+                  background:var(--bg-surface);
+                  border-left:2px solid rgba(201,168,76,0.2);
+                ">
+                  "<%= s.sessionData %>"
+                </p>
+                <div style="
+                  font-family:'DM Mono',monospace;
+                  font-size:0.6rem;
+                  letter-spacing:0.1em;
+                  text-transform:uppercase;
+                  color:var(--gold);
+                  margin-bottom:8px;
+                ">改 Kaizen responded</div>
+                <div style="
+                  font-size:0.88rem;
+                  color:var(--ash-light);
+                  line-height:1.9;
+                  white-space:pre-wrap;
+                "><%= s.response %></div>
+              </div>
+            </div>
+          <% }); %>
+        </div>
+      </div>
+    <% } %>
+
+  </main>
+
+  <%- include('partials/footer') %>
+  <script src="/js/app.js"></script>
+
+  <style>
+    .suggestion-btn {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      color: var(--ash-light);
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.75rem;
+      padding: 7px 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: left;
+      line-height: 1.4;
+    }
+    .suggestion-btn:hover {
+      border-color: rgba(201,168,76,0.3);
+      color: var(--gold);
+      background: rgba(201,168,76,0.04);
+    }
+
+    .chat-user {
+      align-self: flex-end;
+      max-width: 80%;
+      background: rgba(201,168,76,0.06);
+      border: 1px solid rgba(201,168,76,0.15);
+      padding: 12px 16px;
+      font-size: 0.88rem;
+      color: var(--text-primary);
+      line-height: 1.7;
+    }
+
+    .chat-kaizen {
+      align-self: flex-start;
+      max-width: 90%;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-left: 2px solid var(--gold);
+      padding: 14px 16px;
+      font-size: 0.88rem;
+      color: var(--ash-light);
+      line-height: 1.85;
+      white-space: pre-wrap;
+    }
+
+    .chat-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.55rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+  </style>
+
+  <script>
+    const chatHistory = document.getElementById('chat-history');
+    const emptyState = document.getElementById('empty-state');
+    const suggestions = document.getElementById('suggestions');
+    const input = document.getElementById('psych-input');
+    const sendBtn = document.getElementById('send-btn');
+
+    function usePrompt(btn) {
+      input.value = btn.textContent.trim();
+      input.focus();
+      suggestions.style.display = 'none';
+    }
+
+    function addMessage(text, type) {
+      // Remove empty state on first message
+      if (emptyState) emptyState.style.display = 'none';
+
+      const wrapper = document.createElement('div');
+      wrapper.style.display = 'flex';
+      wrapper.style.flexDirection = 'column';
+
+      const label = document.createElement('div');
+      label.className = 'chat-label';
+
+      const bubble = document.createElement('div');
+
+      if (type === 'user') {
+        wrapper.style.alignItems = 'flex-end';
+        label.textContent = 'You';
+        label.style.color = 'var(--ash)';
+        label.style.textAlign = 'right';
+        bubble.className = 'chat-user';
+        bubble.textContent = text;
+      } else {
+        wrapper.style.alignItems = 'flex-start';
+        label.textContent = '改 Kaizen AI';
+        label.style.color = 'var(--gold)';
+        bubble.className = 'chat-kaizen';
+        bubble.textContent = '';
+
+        wrapper.appendChild(label);
+        wrapper.appendChild(bubble);
+        chatHistory.appendChild(wrapper);
+        chatHistory.scrollTop = chatHistory.scrollHeight;
+
+        // Stream the text
+        let i = 0;
+        function stream() {
+          if (i < text.length) {
+            bubble.textContent += text[i];
+            i++;
+            let delay = 10;
+            if (text[i] === '.' || text[i] === '\n') delay = 60;
+            else if (text[i] === ',') delay = 30;
+            chatHistory.scrollTop = chatHistory.scrollHeight;
+            setTimeout(stream, delay);
+          }
+        }
+        stream();
+        return;
+      }
+
+      wrapper.appendChild(label);
+      wrapper.appendChild(bubble);
+      chatHistory.appendChild(wrapper);
+      chatHistory.scrollTop = chatHistory.scrollHeight;
+    }
+
+    async function sendMessage() {
+      const text = input.value.trim();
+      if (!text) return;
+
+      // Hide suggestions after first message
+      suggestions.style.display = 'none';
+
+      addMessage(text, 'user');
+      input.value = '';
+      sendBtn.disabled = true;
+      sendBtn.textContent = '...';
+
+      // Add thinking indicator
+      const thinking = document.createElement('div');
+      thinking.style.cssText = 'font-family:"DM Mono",monospace;font-size:0.7rem;color:var(--ash);padding:8px 4px;';
+      thinking.textContent = '改 Kaizen is thinking...';
+      chatHistory.appendChild(thinking);
+      chatHistory.scrollTop = chatHistory.scrollHeight;
+
+      try {
+        const res = await fetch('/psychology/ask', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: text })
+        });
+        const data = await res.json();
+
+        thinking.remove();
+        addMessage(data.response, 'kaizen');
+      } catch(e) {
+        thinking.remove();
+        addMessage('改 KAIZEN AI is temporarily unavailable. Try again in a moment.', 'kaizen');
+      }
+
+      sendBtn.disabled = false;
+      sendBtn.textContent = 'Send';
+    }
+
+    // Enter key to send (Shift+Enter for new line)
+    input.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+      }
+    });
+  </script>
+
+</body>
+</html>
