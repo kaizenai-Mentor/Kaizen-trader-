@@ -422,13 +422,56 @@ try {
   const allJournals = await Journal.find({
     userId: req.session.user.id
   });
-  const allMemories = await Memory.find({
+
+  // Get ALL memories with psychology type
+  const psychMemories = await Memory.find({
     userId: req.session.user.id,
-    type: 'psychology'
+    $or: [
+      { type: 'psychology' },
+      { asset: 'Psychology Session' }
+    ]
   });
 
   const journalCompliant = allJournals.filter(j => j.ruleCompliance).length;
   const journalTotal = allJournals.length;
+
+  const journalScore = journalTotal > 0
+    ? Math.round((journalCompliant / journalTotal) * 100)
+    : 0;
+
+  const psychAvg = psychMemories.length > 0
+    ? Math.round(
+        psychMemories.reduce((sum, m) =>
+          sum + (m.sessionScore || 50), 0)
+        / psychMemories.length
+      )
+    : 0;
+
+  const newScore = psychMemories.length > 0
+    ? Math.round((journalScore * 0.7) + (psychAvg * 0.3))
+    : journalScore;
+
+  await User.findByIdAndUpdate(req.session.user.id, {
+    disciplineScore: newScore
+  });
+
+  // Update session so dashboard reflects immediately
+  req.session.user.disciplineScore = newScore;
+  await new Promise((resolve, reject) => {
+    req.session.save((err) => {
+      if (err) reject(err);
+      else resolve();
+    });
+  });
+
+  console.log(`Psychology score: ${psychAvg}% | Journal score: ${journalScore}% | Combined: ${newScore}%`);
+
+  res.json({ response, psychScore });
+
+} catch(scoreErr) {
+  console.error('Score update error:', scoreErr.message);
+  res.json({ response, psychScore });
+  }
 
   // Journal compliance = 70% weight
   // Psychology engagement = 30% weight
