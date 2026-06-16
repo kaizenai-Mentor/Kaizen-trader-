@@ -75,6 +75,12 @@ const UserSchema = new mongoose.Schema({
     default: Date.now
   }
 });
+badges: [{
+  id: { type: String },
+  name: { type: String },
+  description: { type: String },
+  earnedAt: { type: Date, default: Date.now }
+}]
 
 UserSchema.pre('save', async function(next) {
   if (!this.isModified('password') || !this.password) return next();
