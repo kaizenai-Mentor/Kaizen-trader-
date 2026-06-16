@@ -402,6 +402,16 @@ const psychScore = (() => {
   return Math.min(100, Math.max(10, score));
 })();
 
+// Check for new badges after psychology session
+try {
+  const checkBadges = require('./config/checkBadges');
+  const newBadges = await checkBadges(req.session.user.id);
+  if (newBadges.length > 0) {
+    req.session.newBadges = newBadges;
+    await new Promise((resolve) => req.session.save(resolve));
+  }
+} catch(e) {}
+
 // Save to memories
 try {
   await Memory.create({
