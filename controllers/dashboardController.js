@@ -67,6 +67,23 @@ const getDashboard = async (req, res) => {
   }
 };
 
+const userWithBadges = await User.findById(req.session.user.id);
+
+const newBadges = req.session.newBadges || null;
+if (req.session.newBadges) {
+  delete req.session.newBadges;
+  req.session.save(() => {});
+}
+
+res.render('dashboard', {
+  user: userWithBadges,
+  journals,
+  disciplineScore: score,
+  totalSessions: allJournals.length,
+  predictiveWarning,
+  newBadges
+});
+
 const addJournal = async (req, res) => {
   console.log('=== JOURNAL SUBMISSION START ===');
 
