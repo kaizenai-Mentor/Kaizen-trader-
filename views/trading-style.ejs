@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('partials/head') %>
+  <title>KAIZEN — Update Trading Style</title>
+</head>
+<body class="app-page">
+  <%- include('partials/navbar') %>
+  <main class="app-main" style="max-width:680px;">
+
+    <div class="page-header">
+      <div>
+        <h1 style="color:var(--gold);">Trading Style</h1>
+        <p class="page-sub">
+          Update your rules as you evolve.
+          KAIZEN AI uses these to calibrate every response.
+        </p>
+      </div>
+      <a href="/dashboard" class="btn-outline">← Dashboard</a>
+    </div>
+
+    <% if (success) { %>
+      <div style="
+        padding:14px 18px;
+        background:rgba(52,211,153,0.06);
+        border:1px solid rgba(52,211,153,0.2);
+        color:#34D399;
+        font-size:0.85rem;
+        margin-bottom:16px;
+      "><%= success %></div>
+    <% } %>
+
+    <div class="card">
+      <div style="
+        padding:12px 16px;
+        background:rgba(201,168,76,0.04);
+        border:1px solid rgba(201,168,76,0.12);
+        margin-bottom:20px;
+        font-size:0.82rem;
+        color:var(--ash-light);
+        line-height:1.75;
+      ">
+        改 Your trading style evolves as you improve.
+        Update it whenever your strategy, rules, or risk parameters change.
+        KAIZEN stores your history so it can track how you have grown.
+      </div>
+
+      <form action="/settings/trading-style" method="POST"
+        style="display:flex;flex-direction:column;gap:16px;">
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Risk Per Trade (%)</label>
+            <input type="text" name="riskPerTrade" class="form-input"
+              value="<%= user.tradingStyle?.riskPerTrade || '' %>"
+              placeholder="e.g. 1">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Daily Drawdown Limit (%)</label>
+            <input type="text" name="dailyDrawdown" class="form-input"
+              value="<%= user.tradingStyle?.dailyDrawdown || '' %>"
+              placeholder="e.g. 3">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Trading Edge / Strategy</label>
+          <input type="text" name="tradingEdge" class="form-input"
+            value="<%= user.tradingStyle?.tradingEdge || '' %>"
+            placeholder="e.g. Daily Candlestick Liquidity (DCL)">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Entry Rule</label>
+          <textarea name="entryRule" class="form-input" rows="2"
+            placeholder="e.g. Weekly/Daily sweep → 4H MSS → 4H sweep → 30min MSS entry"
+            ><%= user.tradingStyle?.entryRule || '' %></textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Stop Loss Rule</label>
+            <input type="text" name="stopLossRule" class="form-input"
+              value="<%= user.tradingStyle?.stopLossRule || '' %>"
+              placeholder="e.g. Above last swing high">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Take Profit Rule</label>
+            <input type="text" name="takeProfitRule" class="form-input"
+              value="<%= user.tradingStyle?.takeProfitRule || '' %>"
+              placeholder="e.g. Minimum 1:2 RR">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Emotional Triggers to Watch</label>
+          <input type="text" name="emotionalTriggers" class="form-input"
+            value="<%= user.tradingStyle?.emotionalTriggers || '' %>"
+            placeholder="e.g. FOMO, revenge trading, moving SL">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Max Daily Trades</label>
+            <input type="text" name="maxDailyTrades" class="form-input"
+              value="<%= user.tradingStyle?.maxDailyTrades || '' %>"
+              placeholder="e.g. 3">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Max Position Size (%)</label>
+            <input type="text" name="maxPositionSize" class="form-input"
+              value="<%= user.tradingStyle?.maxPositionSize || '' %>"
+              placeholder="e.g. 5">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Markets Traded</label>
+          <input type="text" name="markets" class="form-input"
+            value="<%= user.tradingStyle?.markets || '' %>"
+            placeholder="e.g. Forex, Crypto, Indices">
+        </div>
+
+        <button type="submit" class="btn-primary btn-full">
+          Update Trading Style
+        </button>
+
+      </form>
+    </div>
+
+  </main>
+  <%- include('partials/footer') %>
+  <script src="/js/app.js"></script>
+</body>
+</html>
