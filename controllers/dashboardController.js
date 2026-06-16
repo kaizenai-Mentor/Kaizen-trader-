@@ -1,3 +1,4 @@
+const checkBadges = require('../config/checkBadges');
 const User = require('../models/User');
 const Journal = require('../models/Journal');
 
@@ -375,6 +376,13 @@ ${notes}`;
     req.session.save((err) => {
       if (err) console.error('Session save error:', err.message);
       console.log('Redirecting to /kaizen-ai');
+      // Check for new badges
+try {
+  const newBadges = await checkBadges(req.session.user.id);
+  if (newBadges.length > 0) {
+    req.session.newBadges = newBadges;
+  }
+} catch(e) {}
       res.redirect('/kaizen-ai');
     });
 
