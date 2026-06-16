@@ -81,6 +81,18 @@ badges: [{
   description: { type: String },
   earnedAt: { type: Date, default: Date.now }
 }]
+tradingStyleHistory: [{
+  riskPerTrade: String,
+  dailyDrawdown: String,
+  tradingEdge: String,
+  entryRule: String,
+  stopLossRule: String,
+  emotionalTriggers: String,
+  maxDailyTrades: String,
+  markets: String,
+  maxPositionSize: String,
+  savedAt: Date
+}]
 
 UserSchema.pre('save', async function(next) {
   if (!this.isModified('password') || !this.password) return next();
