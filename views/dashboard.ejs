@@ -267,6 +267,115 @@
   <% } %>
 </div>
 
+<!-- BADGES -->
+<% if (user.badges && user.badges.length > 0) { %>
+<div class="card" style="margin-top:2px;">
+  <div class="card-header">
+    <h2>Achievements</h2>
+    <span class="card-badge"><%= user.badges.length %> Earned</span>
+  </div>
+  <div style="display:flex;flex-wrap:wrap;gap:10px;">
+    <% user.badges.forEach(function(badge) { %>
+      <div style="
+        background:var(--bg-surface);
+        border:1px solid rgba(201,168,76,0.2);
+        padding:10px 14px;
+        display:flex;
+        align-items:center;
+        gap:8px;
+        min-width:140px;
+      " title="<%= badge.description %> — Earned <%= new Date(badge.earnedAt).toLocaleDateString() %>">
+        <span style="font-size:1.2rem;">
+          <%
+            const emojiMap = {
+              'first_session':'改','sessions_5':'📓','sessions_10':'🔥',
+              'sessions_25':'📈','sessions_50':'⚡','sessions_100':'💯',
+              'score_40':'🌱','score_60':'⭐','score_80':'🏆',
+              'score_95':'改善','streak_3':'🎯','streak_7':'🗓️',
+              'streak_14':'💪','streak_30':'🔱','psych_first':'🧠',
+              'psych_5':'🔮','psych_10':'🎭','perfect_week':'✨',
+              'comeback':'🦅','honest_trader':'🪞'
+            };
+          %>
+          <%= emojiMap[badge.id] || '🏅' %>
+        </span>
+        <div>
+          <div style="
+            font-size:0.78rem;
+            font-weight:700;
+            color:var(--text-primary);
+          "><%= badge.name %></div>
+          <div style="
+            font-family:'DM Mono',monospace;
+            font-size:0.55rem;
+            color:var(--ash);
+            letter-spacing:0.06em;
+          ">
+            <%= new Date(badge.earnedAt).toLocaleDateString('en-US',{month:'short',day:'numeric'}) %>
+          </div>
+        </div>
+      </div>
+    <% }); %>
+  </div>
+</div>
+<% } %>
+
+<!-- NEW BADGE NOTIFICATION -->
+<% if (typeof newBadges !== 'undefined' && newBadges && newBadges.length > 0) { %>
+<div id="badge-notification" style="
+  position:fixed;
+  bottom:24px;
+  right:24px;
+  background:#111;
+  border:1px solid rgba(201,168,76,0.4);
+  padding:16px 20px;
+  max-width:280px;
+  z-index:1000;
+  box-shadow:0 8px 32px rgba(0,0,0,0.5);
+  animation:slideIn 0.4s ease;
+">
+  <div style="
+    font-family:'DM Mono',monospace;
+    font-size:0.6rem;
+    letter-spacing:0.15em;
+    text-transform:uppercase;
+    color:var(--gold);
+    margin-bottom:8px;
+  ">🏅 Achievement Unlocked</div>
+  <% newBadges.forEach(function(b) { %>
+    <div style="
+      font-size:0.88rem;
+      font-weight:700;
+      color:var(--text-primary);
+      margin-bottom:2px;
+    "><%= b.name %></div>
+    <div style="
+      font-size:0.78rem;
+      color:var(--ash-light);
+    "><%= b.description %></div>
+  <% }); %>
+  <button onclick="document.getElementById('badge-notification').remove()"
+    style="
+      margin-top:12px;
+      background:rgba(201,168,76,0.1);
+      border:1px solid rgba(201,168,76,0.3);
+      color:var(--gold);
+      font-family:'DM Mono',monospace;
+      font-size:0.6rem;
+      letter-spacing:0.08em;
+      padding:5px 12px;
+      cursor:pointer;
+      width:100%;
+    ">Dismiss</button>
+</div>
+<style>
+@keyframes slideIn {
+  from { transform:translateX(120%); opacity:0; }
+  to { transform:translateX(0); opacity:1; }
+}
+</style>
+<% } %>
+
   <%- include('partials/footer') %>
   <script src="/js/app.js"></script>
 
