@@ -577,28 +577,6 @@ app.get('/cron/weekly-email', async (req, res) => {
   }
 });
 
-            // Send weekly summary email
-        // Uses existing sendWelcomeEmail as placeholder
-        // Full weekly template in next email build
-        console.log(`Weekly email queued for ${user.email}: ${weekScore}%`);
-        sent++;
-      } catch(e) {
-        console.error('Weekly email user error:', e.message);
-      }
-    }
-
-    res.json({
-      success: true,
-      usersNotified: sent,
-      timestamp: new Date().toISOString()
-    });
-
-  } catch(err) {
-    console.error('Weekly cron error:', err.message);
-    res.status(500).json({ error: err.message });
-  }
-});
-
 // Test
 app.get('/test-ai', async (req, res) => {
   if (!process.env.ANTHROPIC_API_KEY) {
