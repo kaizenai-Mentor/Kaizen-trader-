@@ -430,128 +430,92 @@ TOPICS YOU HANDLE IN PSYCHOLOGY SESSIONS:
     }
 
     // Calculate psychology score contribution
-const psychScore = (() => {
-  const msg = message.toLowerCase();
-  const hasReflection = /feel|felt|think|realize|notice|aware|understand/i.test(msg);
-  const hasSpecific = /when|because|after|before|during|every time/i.test(msg);
-  const hasOwnership = /i did|i chose|i decided|my fault|i know|i realize/i.test(msg);
-  const hasAvoidance = /market|luck|should have|they|it just/i.test(msg);
+    const psychScore = (() => {
+      const msg = message.toLowerCase();
+      const hasReflection = /feel|felt|think|realize|notice|aware|understand/i.test(msg);
+      const hasSpecific = /when|because|after|before|during|every time/i.test(msg);
+      const hasOwnership = /i did|i chose|i decided|my fault|i know|i realize/i.test(msg);
+      const hasAvoidance = /market|luck|should have|they|it just/i.test(msg);
 
-  let score = 50; // base
-  if (hasReflection) score += 15;
-  if (hasSpecific) score += 15;
-  if (hasOwnership) score += 20;
-  if (hasAvoidance) score -= 10;
-  return Math.min(100, Math.max(10, score));
-})();
+      let score = 50;
+      if (hasReflection) score += 15;
+      if (hasSpecific) score += 15;
+      if (hasOwnership) score += 20;
+      if (hasAvoidance) score -= 10;
+      return Math.min(100, Math.max(10, score));
+    })();
 
-// Check for new badges after psychology session
-try {
-  const checkBadges = require('./config/checkBadges');
-  const newBadges = await checkBadges(req.session.user.id);
-  if (newBadges.length > 0) {
-    req.session.newBadges = newBadges;
-    await new Promise((resolve) => req.session.save(resolve));
-  }
-} catch(e) {}
+    // Save to memories
+    try {
+      await Memory.create({
+        userId: req.session.user.id,
+        sessionData: message.substring(0, 300),
+        response,
+        asset: 'Psychology Session',
+        sessionScore: psychScore,
+        type: 'psychology'
+      });
+    } catch(memErr) {
+      console.error('Psychology memory save error:', memErr.message);
+    }
 
-// Save to memories
-try {
-  await Memory.create({
-    userId: req.session.user.id,
-    sessionData: message.substring(0, 300),
-    response,
-    asset: 'Psychology Session',
-    sessionScore: psychScore,
-    type: 'psychology'
-  });
-} catch(memErr) {
-  console.error('Psychology memory save error:', memErr.message);
-}
-
-// Update discipline score to include psychology sessions
-try {
-  const Journal = require('./models/Journal');
-  const allJournals = await Journal.find({
-    userId: req.session.user.id
-  });
-
-  // Get ALL memories with psychology type
-  const psychMemories = await Memory.find({
-    userId: req.session.user.id,
-    $or: [
-      { type: 'psychology' },
-      { asset: 'Psychology Session' }
-    ]
-  });
-
-  const journalCompliant = allJournals.filter(j => j.ruleCompliance).length;
-  const journalTotal = allJournals.length;
-
-  const journalScore = journalTotal > 0
-    ? Math.round((journalCompliant / journalTotal) * 100)
-    : 0;
-
-  const psychAvg = psychMemories.length > 0
-    ? Math.round(
-        psychMemories.reduce((sum, m) =>
-          sum + (m.sessionScore || 50), 0)
-        / psychMemories.length
-      )
-    : 0;
-
-  const newScore = psychMemories.length > 0
-    ? Math.round((journalScore * 0.7) + (psychAvg * 0.3))
-    : journalScore;
-
-  await User.findByIdAndUpdate(req.session.user.id, {
-    disciplineScore: newScore
-  });
-
-  // Update session so dashboard reflects immediately
-  req.session.user.disciplineScore = newScore;
-  await new Promise((resolve, reject) => {
-    req.session.save((err) => {
-      if (err) reject(err);
-      else resolve();
+    // Update discipline score to include psychology sessions
+    const allJournals = await Journal.find({
+      userId: req.session.user.id
     });
-  });
 
-  console.log(`Psychology score: ${psychAvg}% | Journal score: ${journalScore}% | Combined: ${newScore}%`);
+    const psychMemories = await Memory.find({
+      userId: req.session.user.id,
+      $or: [
+        { type: 'psychology' },
+        { asset: 'Psychology Session' }
+      ]
+    });
 
-  res.json({ response, psychScore });
+    const journalCompliant = allJournals.filter(j => j.ruleCompliance).length;
+    const journalTotal = allJournals.length;
 
-} catch(scoreErr) {
-  console.error('Score update error:', scoreErr.message);
-  res.json({ response, psychScore });
-  }
+    const journalScore = journalTotal > 0
+      ? Math.round((journalCompliant / journalTotal) * 100)
+      : 0;
 
-  // Journal compliance = 70% weight
-  // Psychology engagement = 30% weight
-  const journalScore = journalTotal > 0
-    ? Math.round((journalCompliant / journalTotal) * 100)
-    : 0;
+    const psychAvg = psychMemories.length > 0
+      ? Math.round(
+          psychMemories.reduce((sum, m) =>
+            sum + (m.sessionScore || 50), 0)
+          / psychMemories.length
+        )
+      : 0;
 
-  const psychAvg = allMemories.length > 0
-    ? Math.round(
-        allMemories.reduce((sum, m) => sum + (m.sessionScore || 50), 0)
-        / allMemories.length
-      )
-    : 0;
+    const newScore = psychMemories.length > 0
+      ? Math.round((journalScore * 0.7) + (psychAvg * 0.3))
+      : journalScore;
 
-  // Only factor psychology in if user has at least 1 psychology session
-  const newScore = allMemories.length > 0
-    ? Math.round((journalScore * 0.7) + (psychAvg * 0.3))
-    : journalScore;
+    await User.findByIdAndUpdate(req.session.user.id, {
+      disciplineScore: newScore
+    });
 
-  await User.findByIdAndUpdate(req.session.user.id, {
-    disciplineScore: newScore
-  });
-  req.session.user.disciplineScore = newScore;
+    req.session.user.disciplineScore = newScore;
+    await new Promise((resolve, reject) => {
+      req.session.save((err) => {
+        if (err) reject(err);
+        else resolve();
+      });
+    });
 
-  console.log(`Discipline score updated with psychology: ${newScore}%`);
+    console.log(`Psychology score: ${psychAvg}% | Journal score: ${journalScore}% | Combined: ${newScore}%`);
 
-  res.json({ response, psychScore });
+    // Check for new badges after psychology session
+    try {
+      const checkBadges = require('./config/checkBadges');
+      const newBadges = await checkBadges(req.session.user.id);
+      if (newBadges.length > 0) {
+        req.session.newBadges = newBadges;
+        await new Promise((resolve) => req.session.save(resolve));
+      }
+    } catch(e) {}
+
+    res.json({ response, psychScore });
 
   } catch(err) {
     console.error('Psychology session error:', err.message);
@@ -574,7 +538,6 @@ app.get('/cron/weekly-email', async (req, res) => {
     const sevenDaysAgo = new Date();
     sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
 
-    // Find all users who logged sessions this week
     const activeJournals = await Journal.find({
       createdAt: { $gte: sevenDaysAgo }
     }).distinct('userId');
