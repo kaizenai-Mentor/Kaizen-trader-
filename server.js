@@ -614,28 +614,7 @@ app.get('/cron/weekly-email', async (req, res) => {
   }
 });
 
-    // Find all users who logged sessions this week
-    const activeJournals = await Journal.find({
-      createdAt: { $gte: sevenDaysAgo }
-    }).distinct('userId');
-
-    let sent = 0;
-    for (const userId of activeJournals) {
-      try {
-        const user = await User.findById(userId);
-        if (!user || !user.email) continue;
-
-        const weekJournals = await Journal.find({
-          userId,
-          createdAt: { $gte: sevenDaysAgo }
-        });
-
-        const compliant = weekJournals.filter(j => j.ruleCompliance).length;
-        const weekScore = Math.round(
-          (compliant / weekJournals.length) * 100
-        );
-
-        // Send weekly summary email
+            // Send weekly summary email
         // Uses existing sendWelcomeEmail as placeholder
         // Full weekly template in next email build
         console.log(`Weekly email queued for ${user.email}: ${weekScore}%`);
