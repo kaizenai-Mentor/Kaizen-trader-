@@ -550,11 +550,8 @@ try {
   req.session.user.disciplineScore = newScore;
 
   console.log(`Discipline score updated with psychology: ${newScore}%`);
-} catch(scoreErr) {
-  console.error('Score update error:', scoreErr.message);
-}
 
-res.json({ response, psychScore });
+  res.json({ response, psychScore });
 
   } catch(err) {
     console.error('Psychology session error:', err.message);
@@ -563,19 +560,6 @@ res.json({ response, psychScore });
     });
   }
 });
-
-app.get('/cron/weekly-email', async (req, res) => {
-  if (req.query.key !== process.env.CRON_KEY) {
-    return res.status(403).json({ error: 'Forbidden' });
-  }
-
-  try {
-    const User = require('./models/User');
-    const Journal = require('./models/Journal');
-    const { sendWelcomeEmail } = require('./config/email');
-
-    const sevenDaysAgo = new Date();
-    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
 
     // Find all users who logged sessions this week
     const activeJournals = await Journal.find({
