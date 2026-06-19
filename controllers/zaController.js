@@ -52,18 +52,31 @@ const getReputation = async (req, res) => {
     const User = require('../models/User');
     const user = await User.findById(req.params.userId);
 
-    if (!user) {
-      return res.redirect('/dashboard');
-    }
+    if (!user) return res.redirect('/dashboard');
 
     let zaData = null;
     try {
-      const axios = require('axios');
-      const response = await axios.get(
-        `${process.env.ZA_BASE_URL}/users/${user.zaUserId || req.params.userId}/reputation`,
-        { timeout: 5000 }
-      );
-      zaData = response.data;
+      // Search by username to find this user's ZA profile
+      const response = await zaClient.get('/users', {
+        params: {
+          search: user.username,
+          limit: 5,
+          includeStats: true
+        }
+      });
+
+      const results = response.data?.data;
+      if (results && results.length > 0) {
+        // Match by zaUserId if set, otherwise take first result
+        const match = user.zaUserId
+          ? results.find(u => u.id === user.zaUserId) || results[0]
+          : results[0];
+        zaData = match;
+        console.log('ZA data found:', match.username,
+          '| Activity:', match.activityScore);
+      } else {
+        console.log('ZA: no results for:', user.username);
+      }
     } catch (zaErr) {
       console.log('ZA Reputation error:', zaErr.message);
       zaData = null;
@@ -75,7 +88,7 @@ const getReputation = async (req, res) => {
       disciplineScore: user.disciplineScore || 0,
       totalSessions: user.totalSessions || 0,
       streak: user.streak || 0,
-      zaData: zaData,
+      zaData,
       reputation: zaData,
       error: null
     });
