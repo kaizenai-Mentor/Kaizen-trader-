@@ -74,39 +74,89 @@
           <span class="card-badge">On-Chain</span>
         </div>
 
-        <% if (reputation && Object.keys(reputation).length > 0) { %>
-          <div class="rep-score-big blue">
-            <%= reputation.score || reputation.points || '—' %>
-          </div>
-          <div class="rep-details">
-            <% if (reputation.badges && reputation.badges.length > 0) { %>
-              <h4>Badges Earned</h4>
-              <div class="badges-row">
-                <% reputation.badges.forEach(function(badge) { %>
-                  <span class="za-badge"><%= badge.name || badge %></span>
-                <% }); %>
-              </div>
-            <% } %>
-            <% if (reputation.rank) { %>
-              <div class="rep-stat">
-                <span class="rep-stat-label">Rank</span>
-                <span class="rep-stat-val"><%= reputation.rank %></span>
-              </div>
-            <% } %>
-          </div>
-        <% } else { %>
-          <div class="empty-state" style="padding:32px 0;">
-            <p style="margin-bottom:8px;">No ZA reputation data found.</p>
-            <p style="margin-bottom:24px;font-size:0.82rem;">
-              Connect your Zero Authority DAO account to display
-              your on-chain reputation here alongside your Kaizen score.
-            </p>
-            <a href="https://zeroauthoritydao.com"
-              target="_blank" class="btn-primary">
-              Visit Zero Authority
-            </a>
-          </div>
-        <% } %>
+        <% if (reputation && reputation.activityScore !== undefined) { %>
+  <div style="text-align:center;padding:10px 0 20px;">
+
+    <div style="
+      font-family:'DM Mono',monospace;
+      font-size:2.5rem;
+      font-weight:700;
+      color:var(--blue);
+      line-height:1;
+      margin-bottom:6px;
+    "><%= reputation.activityScore || 0 %></div>
+
+    <div style="
+      font-family:'DM Mono',monospace;
+      font-size:0.6rem;
+      letter-spacing:0.15em;
+      text-transform:uppercase;
+      color:var(--ash);
+      margin-bottom:20px;
+    ">Activity Score</div>
+
+    <div style="
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(110px,1fr));
+      gap:2px;
+      margin-bottom:20px;
+    ">
+      <div style="background:var(--bg-surface);border:1px solid var(--border);padding:12px 8px;text-align:center;">
+        <div style="font-family:'DM Mono',monospace;font-size:1.2rem;font-weight:700;color:var(--gold);">
+          <%= reputation._count?.wonBounties || 0 %>
+        </div>
+        <div style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-top:4px;">
+          Bounties Won
+        </div>
+      </div>
+      <div style="background:var(--bg-surface);border:1px solid var(--border);padding:12px 8px;text-align:center;">
+        <div style="font-family:'DM Mono',monospace;font-size:1.2rem;font-weight:700;color:var(--gold);">
+          <%= reputation._count?.receivedEndorsements || 0 %>
+        </div>
+        <div style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-top:4px;">
+          Endorsements
+        </div>
+      </div>
+      <div style="background:var(--bg-surface);border:1px solid var(--border);padding:12px 8px;text-align:center;">
+        <div style="font-family:'DM Mono',monospace;font-size:1.2rem;font-weight:700;color:var(--gold);">
+          <%= reputation._count?.bountySubmissions || 0 %>
+        </div>
+        <div style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-top:4px;">
+          Submissions
+        </div>
+      </div>
+      <div style="background:var(--bg-surface);border:1px solid var(--border);padding:12px 8px;text-align:center;">
+        <div style="font-family:'DM Mono',monospace;font-size:1.2rem;font-weight:700;color:var(--gold);">
+          <%= reputation.profileCompleteness || 0 %>%
+        </div>
+        <div style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-top:4px;">
+          Profile Complete
+        </div>
+      </div>
+    </div>
+
+    <a href="https://zeroauthoritydao.com/profile/<%= user.zaUserId %>"
+      target="_blank"
+      class="btn-outline"
+      style="display:inline-flex;align-items:center;gap:8px;">
+      <span>View ZA Profile</span>
+      <span style="font-size:0.7rem;">↗</span>
+    </a>
+
+  </div>
+
+<% } else { %>
+  <div style="text-align:center;padding:20px 0;">
+    <p style="font-size:0.85rem;color:var(--ash);line-height:1.75;max-width:420px;margin:0 auto 20px;">
+      Connect your Zero Authority DAO account to display your
+      on-chain reputation here alongside your Kaizen score.
+    </p>
+    <a href="https://zeroauthoritydao.com" target="_blank"
+      class="btn-primary">
+      Visit Zero Authority
+    </a>
+  </div>
+<% } %>
 
       </div>
     </div>
