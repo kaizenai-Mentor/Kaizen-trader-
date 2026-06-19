@@ -6,7 +6,7 @@ if (process.env.ZA_API_KEY) {
 }
 
 const zaClient = axios.create({
-  baseURL: process.env.ZA_BASE_URL,
+  baseURL: process.env.ZA_BASE_URL || 'https://zeroauthoritydao.com/api',
   headers,
   timeout: 10000
 });
