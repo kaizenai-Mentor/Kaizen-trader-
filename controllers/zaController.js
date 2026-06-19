@@ -49,47 +49,52 @@ const getBountyById = async (req, res) => {
 // GET /za/reputation/:userId
 const getReputation = async (req, res) => {
   try {
-    const User = require('../models/User');
-    const user = await User.findById(req.params.userId);
+  const searchName = user.username
+    ? user.username.replace(/-/g, '').toLowerCase()
+    : '';
 
-    if (!user) return res.redirect('/dashboard');
+  let zaFound = null;
 
-    let zaData = null;
+  // Try /users list endpoint with search param
+  try {
+    const listRes = await zaClient.get('/users', {
+      params: { search: searchName, limit: 5, includeStats: true }
+    });
+    const listResults = listRes.data?.data;
+    if (listResults && listResults.length > 0) {
+      zaFound = user.zaUserId
+        ? listResults.find(u => u.id === user.zaUserId) || listResults[0]
+        : listResults[0];
+      console.log('ZA found via list:', zaFound.username);
+    }
+  } catch (e) {
+    console.log('ZA list search failed:', e.message);
+  }
+
+  // If not found, try search endpoint
+  if (!zaFound) {
     try {
-      const searchName = user.username
-        ? user.username.replace(/-/g, '').toLowerCase()
-        : '';
-
-      // Step 1 — find user via dedicated search endpoint
-      const searchRes = await zaClient.get('/users/search', {
+      const searchRes = await zaClient.get('/search/users', {
         params: { q: searchName, type: 'username', limit: 5 }
       });
-
       const searchResults = searchRes.data?.data;
       if (searchResults && searchResults.length > 0) {
-        const found = user.zaUserId
+        zaFound = user.zaUserId
           ? searchResults.find(u => u.id === user.zaUserId) || searchResults[0]
           : searchResults[0];
-
-        // Step 2 — fetch full profile with stats
-        const profileRes = await zaClient.get('/users', {
-          params: { search: found.username, limit: 1, includeStats: true }
-        });
-
-        const profileResults = profileRes.data?.data;
-        zaData = profileResults && profileResults.length > 0
-          ? profileResults[0]
-          : found;
-
-        console.log('ZA data found:', zaData.username,
-          '| Activity:', zaData.activityScore);
-      } else {
-        console.log('ZA: no results for:', searchName);
+        console.log('ZA found via search:', zaFound.username);
       }
+    } catch (e) {
+      console.log('ZA search endpoint failed:', e.message);
+    }
+  }
 
-    } catch (zaErr) {
-      console.log('ZA Reputation error:', zaErr.message);
-      zaData = null;
+  zaData = zaFound;
+  if (!zaData) console.log('ZA: no profile found for:', searchName);
+
+} catch (zaErr) {
+  console.log('ZA Reputation error:', zaErr.message);
+  zaData = null;
     }
 
     res.render('reputation', {
