@@ -56,27 +56,37 @@ const getReputation = async (req, res) => {
 
     let zaData = null;
     try {
-      // Search by username to find this user's ZA profile
-      const response = await zaClient.get('/users', {
-        params: {
-          search: user.username,
-          limit: 5,
-          includeStats: true
-        }
+      const searchName = user.username
+        ? user.username.replace(/-/g, '').toLowerCase()
+        : '';
+
+      // Step 1 — find user via dedicated search endpoint
+      const searchRes = await zaClient.get('/users/search', {
+        params: { q: searchName, type: 'username', limit: 5 }
       });
 
-      const results = response.data?.data;
-      if (results && results.length > 0) {
-        // Match by zaUserId if set, otherwise take first result
-        const match = user.zaUserId
-          ? results.find(u => u.id === user.zaUserId) || results[0]
-          : results[0];
-        zaData = match;
-        console.log('ZA data found:', match.username,
-          '| Activity:', match.activityScore);
+      const searchResults = searchRes.data?.data;
+      if (searchResults && searchResults.length > 0) {
+        const found = user.zaUserId
+          ? searchResults.find(u => u.id === user.zaUserId) || searchResults[0]
+          : searchResults[0];
+
+        // Step 2 — fetch full profile with stats
+        const profileRes = await zaClient.get('/users', {
+          params: { search: found.username, limit: 1, includeStats: true }
+        });
+
+        const profileResults = profileRes.data?.data;
+        zaData = profileResults && profileResults.length > 0
+          ? profileResults[0]
+          : found;
+
+        console.log('ZA data found:', zaData.username,
+          '| Activity:', zaData.activityScore);
       } else {
-        console.log('ZA: no results for:', user.username);
+        console.log('ZA: no results for:', searchName);
       }
+
     } catch (zaErr) {
       console.log('ZA Reputation error:', zaErr.message);
       zaData = null;
@@ -98,7 +108,7 @@ const getReputation = async (req, res) => {
     res.redirect('/dashboard');
   }
 };
-    
+
 module.exports = {
   getBounties,
   getBountyById,
