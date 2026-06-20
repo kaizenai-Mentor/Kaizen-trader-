@@ -267,7 +267,10 @@
   <% } %>
 </div>
 
-<!-- BADGES -->
+<!-- BADGES SECTION â€” paste this into dashboard.ejs replacing the existing badges block -->
+<!-- Uses Feather Icons inline SVG instead of emojis -->
+<!-- Feather CDN must be in partials/head.ejs or added to dashboard.ejs head -->
+
 <% if (user.badges && user.badges.length > 0) { %>
 <div class="card" style="margin-top:2px;">
   <div class="card-header">
@@ -275,39 +278,74 @@
     <span class="card-badge"><%= user.badges.length %> Earned</span>
   </div>
   <div style="display:flex;flex-wrap:wrap;gap:10px;">
-    <% user.badges.forEach(function(badge) { %>
-      <div style="
-        background:var(--bg-surface);
-        border:1px solid rgba(201,168,76,0.2);
-        padding:10px 14px;
-        display:flex;
-        align-items:center;
-        gap:8px;
-        min-width:140px;
-      " title="<%= badge.description %> — Earned <%= new Date(badge.earnedAt).toLocaleDateString() %>">
-        <span style="font-size:1.2rem;">
-          <%
-            const emojiMap = {
-              'first_session':'改','sessions_5':'📓','sessions_10':'🔥',
-              'sessions_25':'📈','sessions_50':'⚡','sessions_100':'💯',
-              'score_40':'🌱','score_60':'⭐','score_80':'🏆',
-              'score_95':'改善','streak_3':'🎯','streak_7':'🗓️',
-              'streak_14':'💪','streak_30':'🔱','psych_first':'🧠',
-              'psych_5':'🔮','psych_10':'🎭','perfect_week':'✨',
-              'comeback':'🦅','honest_trader':'🪞'
-            };
-          %>
-          <%= emojiMap[badge.id] || '🏅' %>
-        </span>
+    <% user.badges.forEach(function(badge) {
+
+      // Feather icon name map â€” all outline, no emojis
+      const iconMap = {
+        'first_session':   'star',
+        'sessions_5':      'book-open',
+        'sessions_10':     'zap',
+        'sessions_25':     'trending-up',
+        'sessions_50':     'activity',
+        'sessions_100':    'award',
+        'score_40':        'bar-chart',
+        'score_60':        'bar-chart-2',
+        'score_80':        'shield',
+        'score_95':        'shield',
+        'streak_3':        'target',
+        'streak_7':        'calendar',
+        'streak_14':       'clock',
+        'streak_30':       'lock',
+        'psych_first':     'heart',
+        'psych_5':         'eye',
+        'psych_10':        'compass',
+        'perfect_week':    'check-circle',
+        'comeback':        'corner-up-right',
+        'honest_trader':   'user-check'
+      };
+
+      const colorMap = {
+        'first_session':  'var(--gold)',
+        'sessions_100':   'var(--gold)',
+        'score_80':       'var(--gold)',
+        'score_95':       'var(--gold)',
+        'streak_30':      'var(--gold)',
+        'psych_10':       'var(--blue)',
+        'perfect_week':   '#4ADE80',
+        'comeback':       '#F87171',
+        'honest_trader':  'var(--gold)'
+      };
+
+      const icon = iconMap[badge.id] || 'award';
+      const color = colorMap[badge.id] || 'var(--ash-light)';
+    %>
+      <div title="<%= badge.description %> â€” Earned <%= new Date(badge.earnedAt).toLocaleDateString() %>"
+        style="
+          background:var(--bg-surface);
+          border:1px solid rgba(201,168,76,0.15);
+          padding:10px 14px;
+          display:flex;
+          align-items:center;
+          gap:10px;
+          min-width:160px;
+        ">
+        <div style="
+          width:28px;height:28px;
+          border:1px solid rgba(201,168,76,0.2);
+          background:rgba(201,168,76,0.04);
+          display:flex;align-items:center;justify-content:center;
+          color:<%= color %>;
+          flex-shrink:0;
+        ">
+          <i data-feather="<%= icon %>" width="14" height="14"></i>
+        </div>
         <div>
-          <div style="
-            font-size:0.78rem;
-            font-weight:700;
-            color:var(--text-primary);
-          "><%= badge.name %></div>
+          <div style="font-size:0.78rem;font-weight:700;color:var(--text-primary);">
+            <%= badge.name %>
+          </div>
           <div style="
             font-family:'DM Mono',monospace;
-            font-size:0.55rem;
+            font-size:0.52rem;
             color:var(--ash);
             letter-spacing:0.06em;
           ">
@@ -320,50 +358,59 @@
 </div>
 <% } %>
 
-<!-- NEW BADGE NOTIFICATION -->
+<!-- NEW BADGE NOTIFICATION â€” replaces emoji toast -->
 <% if (typeof newBadges !== 'undefined' && newBadges && newBadges.length > 0) { %>
 <div id="badge-notification" style="
   position:fixed;
   bottom:24px;
   right:24px;
-  background:#111;
-  border:1px solid rgba(201,168,76,0.4);
-  padding:16px 20px;
+  background:var(--bg-card);
+  border:1px solid rgba(201,168,76,0.35);
+  padding:18px 20px;
   max-width:280px;
   z-index:1000;
-  box-shadow:0 8px 32px rgba(0,0,0,0.5);
+  box-shadow:0 8px 32px rgba(0,0,0,0.4);
   animation:slideIn 0.4s ease;
 ">
   <div style="
-    font-family:'DM Mono',monospace;
-    font-size:0.6rem;
-    letter-spacing:0.15em;
-    text-transform:uppercase;
-    color:var(--gold);
-    margin-bottom:8px;
-  ">🏅 Achievement Unlocked</div>
+    display:flex;align-items:center;gap:10px;
+    margin-bottom:10px;
+  ">
+    <div style="
+      width:28px;height:28px;
+      border:1px solid rgba(201,168,76,0.3);
+      background:rgba(201,168,76,0.08);
+      display:flex;align-items:center;justify-content:center;
+      color:var(--gold);flex-shrink:0;
+    ">
+      <i data-feather="award" width="14" height="14"></i>
+    </div>
+    <div style="
+      font-family:'DM Mono',monospace;
+      font-size:0.58rem;
+      letter-spacing:0.15em;
+      text-transform:uppercase;
+      color:var(--gold);
+    ">Achievement Unlocked</div>
+  </div>
   <% newBadges.forEach(function(b) { %>
-    <div style="
-      font-size:0.88rem;
-      font-weight:700;
-      color:var(--text-primary);
-      margin-bottom:2px;
-    "><%= b.name %></div>
-    <div style="
-      font-size:0.78rem;
-      color:var(--ash-light);
-    "><%= b.description %></div>
+    <div style="font-size:0.88rem;font-weight:700;color:var(--text-primary);margin-bottom:2px;">
+      <%= b.name %>
+    </div>
+    <div style="font-size:0.78rem;color:var(--ash-light);line-height:1.5;">
+      <%= b.description %>
+    </div>
   <% }); %>
   <button onclick="document.getElementById('badge-notification').remove()"
     style="
       margin-top:12px;
-      background:rgba(201,168,76,0.1);
-      border:1px solid rgba(201,168,76,0.3);
+      background:rgba(201,168,76,0.08);
+      border:1px solid rgba(201,168,76,0.25);
       color:var(--gold);
       font-family:'DM Mono',monospace;
       font-size:0.6rem;
       letter-spacing:0.08em;
-      padding:5px 12px;
+      padding:6px 12px;
       cursor:pointer;
       width:100%;
     ">Dismiss</button>
@@ -371,7 +418,7 @@
 <style>
 @keyframes slideIn {
   from { transform:translateX(120%); opacity:0; }
-  to { transform:translateX(0); opacity:1; }
+  to   { transform:translateX(0);    opacity:1; }
 }
 </style>
 <% } %>
