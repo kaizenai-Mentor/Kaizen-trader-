@@ -705,3 +705,222 @@
       top:16px;right:20px;
       line-height:1;
     }
+    .step-icon {
+      width:40px;height:40px;
+      border:1px solid rgba(201,168,76,0.2);
+      background:rgba(201,168,76,0.05);
+      display:flex;align-items:center;justify-content:center;
+      color:var(--gold);
+      margin-bottom:18px;
+    }
+    .step-title {
+      font-size:1rem;
+      font-weight:700;
+      color:var(--text-primary);
+      margin-bottom:10px;
+    }
+    .step-desc {
+      font-size:0.85rem;
+      color:var(--text-secondary);
+      line-height:1.75;
+    }
+
+    /* â”€â”€ WHAT KAIZEN TRACKS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    .tracks-section {
+      padding:100px 60px;
+      border-top:1px solid var(--border);
+      max-width:1200px;
+      margin:0 auto;
+    }
+    .tracks-inner {
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:80px;
+      align-items:center;
+    }
+    .tracks-right {
+      display:flex;
+      flex-direction:column;
+      gap:2px;
+    }
+    .track-item {
+      background:var(--bg-card);
+      border:1px solid var(--border);
+      padding:18px 20px;
+      display:flex;
+      gap:14px;
+      align-items:flex-start;
+    }
+    .track-item-blue {
+      border-color:rgba(59,130,246,0.2);
+    }
+    .track-icon {
+      width:28px;height:28px;
+      border:1px solid rgba(201,168,76,0.2);
+      background:rgba(201,168,76,0.05);
+      display:flex;align-items:center;justify-content:center;
+      color:var(--gold);
+      flex-shrink:0;
+      margin-top:2px;
+    }
+    .track-icon-blue {
+      border-color:rgba(59,130,246,0.2);
+      background:rgba(59,130,246,0.05);
+      color:var(--blue);
+    }
+    .track-title {
+      font-weight:700;
+      font-size:0.88rem;
+      color:var(--text-primary);
+      margin-bottom:4px;
+    }
+    .track-desc {
+      font-size:0.8rem;
+      color:var(--text-secondary);
+      line-height:1.65;
+    }
+
+    /* â”€â”€ AUDIENCE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    .audience-section {
+      padding:100px 60px;
+      border-top:1px solid var(--border);
+      max-width:1200px;
+      margin:0 auto;
+    }
+    .audience-grid {
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+      gap:2px;
+      margin-bottom:60px;
+    }
+    .audience-card {
+      background:var(--bg-card);
+      border:1px solid var(--border);
+      padding:32px 28px;
+    }
+    .audience-card-featured {
+      border-color:rgba(201,168,76,0.2);
+    }
+    .audience-icon {
+      width:36px;height:36px;
+      border:1px solid rgba(201,168,76,0.2);
+      background:rgba(201,168,76,0.05);
+      display:flex;align-items:center;justify-content:center;
+      color:var(--gold);
+      margin-bottom:14px;
+    }
+    .audience-tier {
+      font-family:'DM Mono',monospace;
+      font-size:0.6rem;
+      letter-spacing:0.15em;
+      text-transform:uppercase;
+      color:var(--gold);
+      margin-bottom:10px;
+    }
+    .audience-level {
+      font-size:1rem;
+      font-weight:700;
+      color:var(--text-primary);
+      margin-bottom:10px;
+    }
+    .audience-desc {
+      font-size:0.85rem;
+      color:var(--text-secondary);
+      line-height:1.75;
+    }
+
+    /* â”€â”€ FINAL CTA â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    .final-cta {
+      text-align:center;
+      padding:80px 40px;
+      border:1px solid rgba(201,168,76,0.2);
+      background:linear-gradient(135deg,rgba(201,168,76,0.04),rgba(59,130,246,0.02));
+      position:relative;
+      overflow:hidden;
+    }
+    .final-cta-glow {
+      position:absolute;
+      top:50%;left:50%;
+      transform:translate(-50%,-50%);
+      width:600px;height:300px;
+      background:radial-gradient(ellipse,rgba(201,168,76,0.06),transparent 70%);
+      pointer-events:none;
+    }
+    .final-cta-inner { position:relative;z-index:1; }
+    .final-cta-headline {
+      font-size:clamp(2rem,4vw,3.5rem);
+      font-weight:700;
+      color:var(--text-primary);
+      margin-bottom:16px;
+      line-height:1.1;
+    }
+    .final-cta-sub {
+      font-size:0.95rem;
+      color:var(--text-secondary);
+      max-width:440px;
+      margin:0 auto 36px;
+      line-height:1.8;
+    }
+    .final-cta-btns {
+      display:flex;
+      gap:14px;
+      justify-content:center;
+      flex-wrap:wrap;
+    }
+
+    /* â”€â”€ MOBILE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    @media (max-width:768px) {
+      .hero-section,
+      .preview-section,
+      .how-section,
+      .tracks-section,
+      .audience-section { padding:70px 24px !important; }
+
+      .hero-headline { font-size:2.6rem; }
+      .hero-sub { font-size:1rem; }
+
+      .trust-row {
+        gap:20px;
+      }
+      .trust-item {
+        width:calc(50% - 10px);
+      }
+
+      .tracks-inner {
+        grid-template-columns:1fr !important;
+        gap:48px !important;
+      }
+      .tracks-left {
+        text-align:center;
+      }
+      .tracks-left .section-eyebrow {
+        justify-content:center !important;
+      }
+      .tracks-left .section-title {
+        text-align:center;
+      }
+      .tracks-left .btn-primary {
+        display:block;
+        text-align:center;
+      }
+
+      .preview-grid,
+      .steps-grid,
+      .audience-grid {
+        grid-template-columns:1fr !important;
+      }
+
+      .final-cta { padding:60px 24px; }
+
+      .hero-ctas {
+        flex-direction:column;
+        width:100%;
+      }
+      .btn-hero {
+        text-align:center;
+      }
+    }
+  </style>
+
+</body>
+</html>
