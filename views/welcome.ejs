@@ -579,4 +579,129 @@
       width:36px;height:36px;
       border:1px solid rgba(201,168,76,0.2);
       background:rgba(201,168,76,0.05);
-      display:flex;align-items:center;justify-c
+      display:flex;align-items:center;justify-content:center;
+      color:var(--gold);
+      margin-bottom:14px;
+    }
+    .preview-card-label {
+      font-family:'DM Mono',monospace;
+      font-size:0.6rem;
+      letter-spacing:0.15em;
+      text-transform:uppercase;
+      color:var(--ash);
+      margin-bottom:16px;
+    }
+    .preview-card-desc {
+      font-size:0.82rem;
+      color:var(--text-secondary);
+      line-height:1.7;
+      margin-top:16px;
+    }
+    /* Score preview */
+    .preview-score {
+      display:flex;
+      align-items:baseline;
+      gap:4px;
+      margin-bottom:10px;
+    }
+    .score-number {
+      font-family:'DM Mono',monospace;
+      font-size:3rem;
+      font-weight:700;
+      color:var(--gold);
+      line-height:1;
+    }
+    .score-pct {
+      font-family:'DM Mono',monospace;
+      font-size:1.2rem;
+      color:var(--gold);
+    }
+    .score-bar-wrap {
+      height:4px;
+      background:rgba(201,168,76,0.1);
+      margin-bottom:4px;
+    }
+    .score-bar {
+      height:100%;
+      background:var(--gold);
+    }
+    /* AI response preview */
+    .ai-response-preview {
+      background:var(--bg-surface);
+      border-left:2px solid var(--gold);
+      padding:14px 16px;
+    }
+    .ai-section-label {
+      font-family:'DM Mono',monospace;
+      font-size:0.55rem;
+      letter-spacing:0.12em;
+      text-transform:uppercase;
+      color:var(--ash);
+      margin-bottom:6px;
+    }
+    .ai-section-text {
+      font-size:0.8rem;
+      color:var(--ash-light);
+      line-height:1.75;
+      margin:0;
+    }
+    .ai-score-line {
+      font-family:'DM Mono',monospace;
+      font-size:0.7rem;
+      color:var(--gold);
+      margin-top:14px;
+      padding-top:10px;
+      border-top:1px solid var(--border);
+    }
+    /* Pattern list */
+    .pattern-list {
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    }
+    .pattern-item {
+      display:flex;
+      align-items:center;
+      gap:8px;
+      font-family:'DM Mono',monospace;
+      font-size:0.72rem;
+      letter-spacing:0.04em;
+      padding:8px 12px;
+      border:1px solid var(--border);
+    }
+    .pattern-high   { color:#F87171;border-color:rgba(248,113,113,0.2);background:rgba(248,113,113,0.04); }
+    .pattern-medium { color:#FBBF24;border-color:rgba(251,191,36,0.2);background:rgba(251,191,36,0.04); }
+    .pattern-positive { color:#4ADE80;border-color:rgba(74,222,128,0.2);background:rgba(74,222,128,0.04); }
+
+    /* â”€â”€ HOW IT WORKS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+    .how-section {
+      padding:100px 60px;
+      border-top:1px solid var(--border);
+      background:linear-gradient(180deg,transparent,rgba(201,168,76,0.015),transparent);
+      max-width:1200px;
+      margin:0 auto;
+    }
+    .steps-grid {
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+      gap:2px;
+      margin-top:60px;
+    }
+    .step-card {
+      background:var(--bg-card);
+      border:1px solid var(--border);
+      padding:36px 28px;
+      position:relative;
+    }
+    .step-card-featured {
+      border-color:rgba(201,168,76,0.25);
+    }
+    .step-number {
+      font-family:'DM Mono',monospace;
+      font-size:3rem;
+      font-weight:700;
+      color:rgba(201,168,76,0.08);
+      position:absolute;
+      top:16px;right:20px;
+      line-height:1;
+    }
