@@ -2,52 +2,411 @@
 <html lang="en">
 <head>
   <%- include('partials/head') %>
-  <title>KAIZEN — About</title>
+  <title>About KAIZEN â€” AI Trading Discipline Mentor</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.29.0/feather.min.js"></script>
 </head>
 <body class="app-page">
   <%- include('partials/navbar') %>
-  <main class="app-main">
-    <div class="page-header">
-      <div>
-        <h1>About KAIZEN</h1>
-        <p class="page-sub">The philosophy behind the platform</p>
+
+  <main style="max-width:900px;margin:0 auto;padding:40px 24px 80px;">
+
+    <!-- HEADER -->
+    <div style="text-align:center;padding:60px 0 48px;border-bottom:1px solid var(--border);margin-bottom:48px;">
+      <div style="
+        font-family:'DM Mono',monospace;
+        font-size:0.62rem;
+        letter-spacing:0.25em;
+        text-transform:uppercase;
+        color:var(--gold);
+        margin-bottom:20px;
+        display:flex;align-items:center;justify-content:center;gap:12px;
+      ">
+        <span style="width:32px;height:1px;background:var(--gold);display:inline-block;"></span>
+        The Mission
+        <span style="width:32px;height:1px;background:var(--gold);display:inline-block;"></span>
       </div>
-    </div>
-    <div class="card card-gold">
-      <div class="card-header">
-        <h2>What is Kaizen?</h2>
-      </div>
-      <p style="color:var(--text-secondary);font-size:0.95rem;line-height:1.9;margin-bottom:20px;">
-        Kaizen (改善) is a Japanese philosophy meaning <strong style="color:var(--text-primary);">continuous improvement</strong>.
-        Applied to trading, it means building discipline through small, consistent, daily habits
-        rather than chasing dramatic wins.
-      </p>
-      <p style="color:var(--text-secondary);font-size:0.95rem;line-height:1.9;margin-bottom:20px;">
-        Kaizen is a discipline-focused trading platform that helps traders build consistency
-        through session journaling, a Discipline Score system, and Zero Authority DAO integration
-        that surfaces on-chain bounties as trading challenges and verifies reputation on-chain.
-      </p>
-      <p style="color:var(--text-secondary);font-size:0.95rem;line-height:1.9;">
-        Built during the <strong style="color:var(--gold);">Zero Authority DAO BuildSprint</strong>.
-        Powered by real ZA API data. Designed for serious traders.
+      <h1 style="
+        font-size:clamp(2.2rem,5vw,3.5rem);
+        font-weight:700;
+        color:var(--text-primary);
+        line-height:1.05;
+        margin-bottom:20px;
+      ">About <span style="color:var(--gold);">æ”¹ KAIZEN</span></h1>
+      <p style="
+        font-size:1rem;
+        color:var(--text-secondary);
+        max-width:560px;
+        margin:0 auto;
+        line-height:1.85;
+      ">
+        Built by a trader, for traders. KAIZEN exists because the gap between
+        knowing your rules and following them is where most accounts go to die.
       </p>
     </div>
 
-    <div class="card" style="margin-top:2px;">
-      <div class="card-header"><h2>The Philosophy</h2></div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:2px;">
-        <div style="background:var(--bg-surface);padding:20px;border:1px solid var(--border);">
-          <div style="font-family:var(--font-mono);font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);margin-bottom:8px;">改 — Change</div>
-          <p style="font-size:0.88rem;color:var(--text-secondary);line-height:1.7;">Every session is an opportunity to change one bad habit. Data-driven, not emotional.</p>
+    <!-- THE PROBLEM -->
+    <div style="margin-bottom:48px;">
+      <div style="
+        background:linear-gradient(135deg,rgba(248,113,113,0.05),rgba(201,168,76,0.03));
+        border:1px solid rgba(248,113,113,0.15);
+        padding:36px;
+        position:relative;
+        overflow:hidden;
+      ">
+        <div style="
+          position:absolute;top:0;right:0;
+          width:120px;height:120px;
+          background:radial-gradient(circle,rgba(248,113,113,0.06),transparent 70%);
+        "></div>
+        <div style="
+          font-family:'DM Mono',monospace;
+          font-size:0.6rem;
+          letter-spacing:0.2em;
+          text-transform:uppercase;
+          color:#F87171;
+          margin-bottom:16px;
+          display:flex;align-items:center;gap:8px;
+        ">
+          <i data-feather="alert-triangle" width="14" height="14"></i>
+          The Problem
         </div>
-        <div style="background:var(--bg-surface);padding:20px;border:1px solid var(--border);">
-          <div style="font-family:var(--font-mono);font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);margin-bottom:8px;">善 — Good</div>
-          <p style="font-size:0.88rem;color:var(--text-secondary);line-height:1.7;">The goal is not perfection. It is the consistent pursuit of better execution and discipline.</p>
-        </div>
+        <div style="
+          font-size:clamp(1.8rem,4vw,2.8rem);
+          font-weight:700;
+          color:var(--text-primary);
+          line-height:1.1;
+          margin-bottom:16px;
+        ">80â€“90% of retail traders<br>lose money.</div>
+        <p style="font-size:0.95rem;color:var(--text-secondary);line-height:1.85;max-width:560px;margin:0;">
+          Not because of bad strategies. Not because of the market.
+          Because of behavioral failures â€” FOMO entries, revenge trades,
+          rule violations under pressure, and overconfidence after wins.
+          The strategy works. The execution does not.
+        </p>
       </div>
     </div>
+
+    <!-- THE SOLUTION -->
+    <div style="margin-bottom:48px;">
+      <div style="
+        font-family:'DM Mono',monospace;
+        font-size:0.6rem;
+        letter-spacing:0.2em;
+        text-transform:uppercase;
+        color:var(--gold);
+        margin-bottom:20px;
+        display:flex;align-items:center;gap:8px;
+      ">
+        <i data-feather="cpu" width="14" height="14"></i>
+        The Solution
+      </div>
+      <h2 style="font-size:1.8rem;font-weight:700;color:var(--text-primary);margin-bottom:16px;line-height:1.15;">
+        An AI that learns how<br>you trade, specifically.
+      </h2>
+      <p style="font-size:0.95rem;color:var(--text-secondary);line-height:1.85;margin-bottom:28px;">
+        KAIZEN analyzes your free-text journal entries against your own stated rules
+        and your full session history. Every response is specific to your behavior â€”
+        your patterns, your triggers, your blind spots. Not a template. Not generic advice.
+        A mentor that builds a profile of how you trade and uses it to make you better.
+      </p>
+      <p style="font-size:0.95rem;color:var(--text-secondary);line-height:1.85;">
+        The Discipline Score measures your process consistency â€” not your profit and loss.
+        Because consistent process is the only thing that creates consistent profit.
+      </p>
+    </div>
+
+    <!-- THREE PILLARS -->
+    <div style="margin-bottom:48px;">
+      <div style="
+        font-family:'DM Mono',monospace;
+        font-size:0.6rem;
+        letter-spacing:0.2em;
+        text-transform:uppercase;
+        color:var(--gold);
+        margin-bottom:24px;
+        display:flex;align-items:center;gap:8px;
+      ">
+        <i data-feather="layers" width="14" height="14"></i>
+        What Makes KAIZEN Different
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:2px;">
+
+        <div style="
+          background:var(--bg-card);
+          border:1px solid var(--border);
+          padding:28px;
+          display:flex;gap:20px;align-items:flex-start;
+        ">
+          <div style="
+            width:40px;height:40px;min-width:40px;
+            border:1px solid rgba(201,168,76,0.2);
+            background:rgba(201,168,76,0.05);
+            display:flex;align-items:center;justify-content:center;
+            color:var(--gold);
+          ">
+            <i data-feather="brain" width="18" height="18"></i>
+          </div>
+          <div>
+            <div style="font-weight:700;font-size:1rem;color:var(--text-primary);margin-bottom:8px;">
+              Behavioral AI, Not Signals
+            </div>
+            <p style="font-size:0.88rem;color:var(--text-secondary);line-height:1.75;margin:0;">
+              KAIZEN never tells you what to trade. It tells you whether you followed your
+              own process â€” and identifies exactly where and why your discipline breaks down
+              across sessions. The intelligence grows with every entry you log.
+            </p>
+          </div>
+        </div>
+
+        <div style="
+          background:var(--bg-card);
+          border:1px solid var(--border);
+          padding:28px;
+          display:flex;gap:20px;align-items:flex-start;
+        ">
+          <div style="
+            width:40px;height:40px;min-width:40px;
+            border:1px solid rgba(201,168,76,0.2);
+            background:rgba(201,168,76,0.05);
+            display:flex;align-items:center;justify-content:center;
+            color:var(--gold);
+          ">
+            <i data-feather="heart" width="18" height="18"></i>
+          </div>
+          <div>
+            <div style="font-weight:700;font-size:1rem;color:var(--text-primary);margin-bottom:8px;">
+              Psychology, Not Just Trade Analysis
+            </div>
+            <p style="font-size:0.88rem;color:var(--text-secondary);line-height:1.75;margin:0;">
+              A dedicated Psychology Session space lets you talk to KAIZEN AI about your
+              mindset, fear of pulling the trigger, financial pressure, or self-doubt â€”
+              not tied to any specific trade. Discipline failures are often rooted in
+              psychology that never shows up in a trade log.
+            </p>
+          </div>
+        </div>
+
+        <div style="
+          background:var(--bg-card);
+          border:1px solid rgba(201,168,76,0.18);
+          padding:28px;
+          display:flex;gap:20px;align-items:flex-start;
+        ">
+          <div style="
+            width:40px;height:40px;min-width:40px;
+            border:1px solid rgba(201,168,76,0.3);
+            background:rgba(201,168,76,0.08);
+            display:flex;align-items:center;justify-content:center;
+            color:var(--gold);
+          ">
+            <i data-feather="link" width="18" height="18"></i>
+          </div>
+          <div>
+            <div style="font-weight:700;font-size:1rem;color:var(--text-primary);margin-bottom:8px;">
+              Dual On-Chain Reputation
+            </div>
+            <p style="font-size:0.88rem;color:var(--text-secondary);line-height:1.75;margin:0;">
+              KAIZEN is the first trading discipline platform with dual blockchain
+              reputation. Zero Authority DAO on Stacks records your discipline milestones
+              and trading credentials. Mantle blockchain records KAIZEN AI's own performance â€”
+              every score change, pattern detected, and milestone achieved â€” permanently and
+              verifiably. Two chains. Two angles. One complete picture.
+            </p>
+          </div>
+        </div>
+
+        <div style="
+          background:var(--bg-card);
+          border:1px solid var(--border);
+          padding:28px;
+          display:flex;gap:20px;align-items:flex-start;
+        ">
+          <div style="
+            width:40px;height:40px;min-width:40px;
+            border:1px solid rgba(201,168,76,0.2);
+            background:rgba(201,168,76,0.05);
+            display:flex;align-items:center;justify-content:center;
+            color:var(--gold);
+          ">
+            <i data-feather="user" width="18" height="18"></i>
+          </div>
+          <div>
+            <div style="font-weight:700;font-size:1rem;color:var(--text-primary);margin-bottom:8px;">
+              Built From Real Experience
+            </div>
+            <p style="font-size:0.88rem;color:var(--text-secondary);line-height:1.75;margin:0;">
+              KAIZEN was conceived from direct, personal experience with the exact discipline
+              challenges it was built to solve. The multi-timeframe liquidity strategy that
+              KAIZEN was designed to support is the same strategy the founder trades.
+              This is not a tool built by observers. It was built from the inside.
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ON-CHAIN SECTION -->
+    <div style="margin-bottom:48px;">
+      <div style="
+        font-family:'DM Mono',monospace;
+        font-size:0.6rem;
+        letter-spacing:0.2em;
+        text-transform:uppercase;
+        color:var(--gold);
+        margin-bottom:24px;
+        display:flex;align-items:center;gap:8px;
+      ">
+        <i data-feather="database" width="14" height="14"></i>
+        On-Chain Integrations
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:2px;">
+
+        <div style="
+          background:var(--bg-card);
+          border:1px solid var(--border);
+          padding:28px;
+          position:relative;
+          overflow:hidden;
+        ">
+          <div style="
+            position:absolute;top:0;right:0;
+            width:80px;height:80px;
+            background:radial-gradient(circle,rgba(201,168,76,0.06),transparent 70%);
+          "></div>
+          <div style="
+            font-family:'DM Mono',monospace;
+            font-size:0.55rem;
+            letter-spacing:0.15em;
+            text-transform:uppercase;
+            color:var(--ash);
+            margin-bottom:12px;
+          ">Stacks Blockchain</div>
+          <div style="font-size:1.1rem;font-weight:700;color:var(--text-primary);margin-bottom:10px;">
+            Zero Authority DAO
+          </div>
+          <p style="font-size:0.85rem;color:var(--text-secondary);line-height:1.75;margin-bottom:16px;">
+            Your discipline milestones, bounty completions, and trading credentials are
+            permanently recorded on the Stacks blockchain via Zero Authority DAO â€” creating
+            a verifiable on-chain identity as a disciplined trader.
+          </p>
+          <a href="https://zeroauthoritydao.com" target="_blank" style="
+            font-family:'DM Mono',monospace;
+            font-size:0.6rem;
+            letter-spacing:0.1em;
+            text-transform:uppercase;
+            color:var(--gold);
+            text-decoration:none;
+            display:flex;align-items:center;gap:6px;
+          ">
+            Visit ZA DAO
+            <i data-feather="external-link" width="11" height="11"></i>
+          </a>
+        </div>
+
+        <div style="
+          background:var(--bg-card);
+          border:1px solid rgba(59,130,246,0.15);
+          padding:28px;
+          position:relative;
+          overflow:hidden;
+        ">
+          <div style="
+            position:absolute;top:0;right:0;
+            width:80px;height:80px;
+            background:radial-gradient(circle,rgba(59,130,246,0.06),transparent 70%);
+          "></div>
+          <div style="
+            font-family:'DM Mono',monospace;
+            font-size:0.55rem;
+            letter-spacing:0.15em;
+            text-transform:uppercase;
+            color:var(--ash);
+            margin-bottom:12px;
+          ">Mantle Blockchain</div>
+          <div style="font-size:1.1rem;font-weight:700;color:var(--text-primary);margin-bottom:10px;">
+            AI Performance Benchmarking
+          </div>
+          <p style="font-size:0.85rem;color:var(--text-secondary);line-height:1.75;margin-bottom:16px;">
+            Every significant KAIZEN AI output â€” discipline score changes, behavioral pattern
+            detections, and milestone achievements â€” is permanently recorded on Mantle
+            blockchain. The first verifiable, tamper-proof performance record for a
+            behavioral trading AI agent.
+          </p>
+          <a href="https://explorer.sepolia.mantle.xyz" target="_blank" style="
+            font-family:'DM Mono',monospace;
+            font-size:0.6rem;
+            letter-spacing:0.1em;
+            text-transform:uppercase;
+            color:var(--blue);
+            text-decoration:none;
+            display:flex;align-items:center;gap:6px;
+          ">
+            View on Mantle Explorer
+            <i data-feather="external-link" width="11" height="11"></i>
+          </a>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- MISSION STATEMENT -->
+    <div style="
+      border:1px solid rgba(201,168,76,0.2);
+      background:linear-gradient(135deg,rgba(201,168,76,0.04),rgba(59,130,246,0.02));
+      padding:48px 40px;
+      text-align:center;
+    ">
+      <div style="
+        font-family:'DM Mono',monospace;
+        font-size:4rem;
+        color:rgba(201,168,76,0.15);
+        line-height:1;
+        margin-bottom:16px;
+      ">æ”¹</div>
+      <blockquote style="
+        font-size:1.2rem;
+        font-style:italic;
+        color:var(--text-primary);
+        line-height:1.7;
+        margin:0 0 20px;
+        max-width:500px;
+        margin-left:auto;
+        margin-right:auto;
+      ">
+        "KAIZEN scores discipline, not P&L â€” because consistent process
+        is what creates consistent profit."
+      </blockquote>
+      <div style="
+        font-family:'DM Mono',monospace;
+        font-size:0.62rem;
+        letter-spacing:0.15em;
+        text-transform:uppercase;
+        color:var(--ash);
+      ">æ”¹å–„ â€” Trade Better. Every Day.</div>
+    </div>
+
+    <!-- CTA -->
+    <div style="text-align:center;margin-top:48px;">
+      <a href="/auth/register" class="btn-primary" style="padding:16px 48px;font-size:0.9rem;">
+        Start Building Your Discipline Record
+      </a>
+      <p style="
+        font-family:'DM Mono',monospace;
+        font-size:0.6rem;
+        letter-spacing:0.1em;
+        text-transform:uppercase;
+        color:var(--ash);
+        margin-top:12px;
+      ">Free to start Â· No credit card Â· No signals</p>
+    </div>
+
   </main>
+
   <%- include('partials/footer') %>
   <script src="/js/app.js"></script>
+  <script>feather.replace();</script>
 </body>
 </html>
