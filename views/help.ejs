@@ -2,183 +2,458 @@
 <html lang="en">
 <head>
   <%- include('partials/head') %>
-  <title>KAIZEN — Help Center</title>
+  <title>KAIZEN Help Center</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.29.0/feather.min.js"></script>
 </head>
 <body class="app-page">
   <%- include('partials/navbar') %>
-  <main class="app-main">
-    <div class="page-header">
-      <div>
-        <h1 style="color:var(--gold);">Help Center</h1>
-        <p class="page-sub">Everything you need to know about KAIZEN</p>
+
+  <main style="max-width:860px;margin:0 auto;padding:40px 24px 80px;">
+
+    <!-- HEADER -->
+    <div style="text-align:center;padding:60px 0 48px;border-bottom:1px solid var(--border);margin-bottom:48px;">
+      <div style="
+        font-family:'DM Mono',monospace;
+        font-size:0.62rem;
+        letter-spacing:0.25em;
+        text-transform:uppercase;
+        color:var(--gold);
+        margin-bottom:20px;
+        display:flex;align-items:center;justify-content:center;gap:12px;
+      ">
+        <span style="width:32px;height:1px;background:var(--gold);display:inline-block;"></span>
+        Support
+        <span style="width:32px;height:1px;background:var(--gold);display:inline-block;"></span>
       </div>
-      <a href="/support" class="btn-primary">Contact Support</a>
-    </div>
-
-    <!-- SEARCH BAR -->
-    <div class="card" style="margin-bottom:2px;">
-      <input type="text" id="helpSearch" class="form-input"
-        placeholder="Search help articles..."
-        oninput="filterHelp(this.value)"
-        style="font-size:1rem;padding:16px 20px;">
-    </div>
-
-    <!-- HELP ARTICLES -->
-    <div id="helpGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:2px;margin-top:2px;">
-
-      <div class="help-card" data-tags="account register login password">
-        <div class="card card-gold">
-          <div class="card-header">
-            <h2>Getting Started</h2>
-            <span class="card-badge">Account</span>
-          </div>
-          <div style="display:flex;flex-direction:column;gap:14px;">
-            <div class="help-item">
-              <div class="help-q">How do I create a KAIZEN account?</div>
-              <div class="help-a">Tap Sign Up on the welcome page. Enter your username, email, and password. You will receive a 3-digit verification code to your email. Enter the code to verify, then answer 5 onboarding questions to build your trading profile.</div>
-            </div>
-            <div class="help-item" style="border-top:1px solid var(--border);padding-top:14px;">
-              <div class="help-q">I did not receive my verification code.</div>
-              <div class="help-a">Check your spam folder first. If it is not there, wait 2 minutes and try registering again. Make sure the email address you entered is correct.</div>
-            </div>
-            <div class="help-item" style="border-top:1px solid var(--border);padding-top:14px;">
-              <div class="help-q">Can I sign in with Google?</div>
-              <div class="help-a">Yes. Tap Continue with Google on the login or register page to sign in instantly without a password.</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="help-card" data-tags="journal session log entry note">
-        <div class="card">
-          <div class="card-header">
-            <h2>Trading Journal</h2>
-            <span class="card-badge">Journal</span>
-          </div>
-          <div style="display:flex;flex-direction:column;gap:14px;">
-            <div class="help-item">
-              <div class="help-q">How do I log a trading session?</div>
-              <div class="help-a">Go to the Journal section from the navigation menu. Enter the asset you traded, select Live Trade or Backtesting, then write your session notes freely in the notepad. Be as honest and detailed as possible — Kaizen AI learns from this.</div>
-            </div>
-            <div class="help-item" style="border-top:1px solid var(--border);padding-top:14px;">
-              <div class="help-q">What should I write in the session notes?</div>
-              <div class="help-a">Write what you saw on the chart, what trade you took or why you did not trade, how you felt during the session, whether you followed your rules, and what you will do differently next time.</div>
-            </div>
-            <div class="help-item" style="border-top:1px solid var(--border);padding-top:14px;">
-              <div class="help-q">Can I edit a journal entry after saving?</div>
-              <div class="help-a">Editing past entries is coming in Phase 2. For now focus on writing thoroughly the first time.</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="help-card" data-tags="discipline score points calculation">
-        <div class="card">
-          <div class="card-header">
-            <h2>Discipline Score</h2>
-            <span class="card-badge">Score</span>
-          </div>
-          <div style="display:flex;flex-direction:column;gap:14px;">
-            <div class="help-item">
-              <div class="help-q">How is my Discipline Score calculated?</div>
-              <div class="help-a">Your score is based on rule compliance across all your logged sessions. Each session you mark as fully compliant raises your score. Violations lower it. The score is a rolling average weighted toward your most recent sessions.</div>
-            </div>
-            <div class="help-item" style="border-top:1px solid var(--border);padding-top:14px;">
-              <div class="help-q">What are the score tiers?</div>
-              <div class="help-a">0-39 is Developing. 40-59 is Building. 60-79 is Consistent. 80-100 is Elite. Each tier unlocks different Zero Authority DAO opportunities.</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="help-card" data-tags="bounties zero authority dao challenges rewards">
-        <div class="card card-blue">
-          <div class="card-header">
-            <h2>Bounties & ZA DAO</h2>
-            <span class="card-badge">ZA</span>
-          </div>
-          <div style="display:flex;flex-direction:column;gap:14px;">
-            <div class="help-item">
-              <div class="help-q">What are Discipline Challenges?</div>
-              <div class="help-a">These are live bounties from Zero Authority DAO displayed inside KAIZEN. Completing them earns you STX rewards and on-chain reputation points that verify your skills publicly.</div>
-            </div>
-            <div class="help-item" style="border-top:1px solid var(--border);padding-top:14px;">
-              <div class="help-q">How do I view my on-chain reputation?</div>
-              <div class="help-a">Go to the Reputation section from the menu. Your Kaizen Discipline Score appears alongside your Zero Authority DAO on-chain reputation. Connect your ZA account at zeroauthoritydao.com to see your full on-chain profile.</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="help-card" data-tags="security password logout account delete">
-        <div class="card">
-          <div class="card-header">
-            <h2>Account & Security</h2>
-            <span class="card-badge">Security</span>
-          </div>
-          <div style="display:flex;flex-direction:column;gap:14px;">
-            <div class="help-item">
-              <div class="help-q">How do I change my password?</div>
-              <div class="help-a">Open the menu by tapping the three dots in the top right. Tap Security. Enter your current password and your new password. Tap Update Password.</div>
-            </div>
-            <div class="help-item" style="border-top:1px solid var(--border);padding-top:14px;">
-              <div class="help-q">Why was I logged out automatically?</div>
-              <div class="help-a">KAIZEN logs you out automatically after 2 hours of inactivity to protect your account security.</div>
-            </div>
-            <div class="help-item" style="border-top:1px solid var(--border);padding-top:14px;">
-              <div class="help-q">How do I delete my account?</div>
-              <div class="help-a">Go to the Reputation section. Scroll down to the Danger Zone and tap Delete Account. This permanently removes all your data including journal entries and discipline scores.</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="help-card" data-tags="chart trading view phase 2 coming soon">
-        <div class="card">
-          <div class="card-header">
-            <h2>Chart Module</h2>
-            <span class="card-badge">Phase 2</span>
-          </div>
-          <div style="display:flex;flex-direction:column;gap:14px;">
-            <div class="help-item">
-              <div class="help-q">When is the chart launching?</div>
-              <div class="help-a">The full chart module with live market data for Forex, Crypto, Stocks, Indices, Synthetics, and Commodities is coming in Phase 2. Your journal entries and onboarding profile are already preparing Kaizen AI for when the chart launches.</div>
-            </div>
-            <div class="help-item" style="border-top:1px solid var(--border);padding-top:14px;">
-              <div class="help-q">Will my chart drawings be saved?</div>
-              <div class="help-a">Yes. Drawing persistence is a core feature of Phase 2. All your trend lines, zones, and analysis will save automatically and reload when you return to any asset.</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- Still have questions -->
-    <div class="card" style="margin-top:2px;text-align:center;padding:40px;">
-      <h2 style="margin-bottom:12px;">Still have a question?</h2>
-      <p style="color:var(--text-secondary);font-size:0.88rem;margin-bottom:24px;">
-        Our support team responds within 24 hours.
+      <h1 style="
+        font-size:clamp(2.2rem,5vw,3.2rem);
+        font-weight:700;
+        color:var(--text-primary);
+        line-height:1.05;
+        margin-bottom:16px;
+      ">Help Center</h1>
+      <p style="
+        font-size:1rem;
+        color:var(--text-secondary);
+        max-width:480px;
+        margin:0 auto 28px;
+        line-height:1.85;
+      ">
+        Everything you need to know about using KAIZEN.
+        Can't find what you need? Reach us on X.
       </p>
-      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
-        <a href="/support" class="btn-primary">Contact Support</a>
-        <a href="https://x.com/kaizenaibot" target="_blank" class="btn-outline">Message on X</a>
-      </div>
+      <a href="https://x.com/kaizenaibot" target="_blank" style="
+        display:inline-flex;align-items:center;gap:8px;
+        font-family:'DM Mono',monospace;
+        font-size:0.65rem;
+        letter-spacing:0.1em;
+        text-transform:uppercase;
+        color:var(--gold);
+        border:1px solid rgba(201,168,76,0.25);
+        background:rgba(201,168,76,0.05);
+        padding:10px 20px;
+        text-decoration:none;
+      ">
+        <i data-feather="twitter" width="13" height="13"></i>
+        @kaizenaibot
+      </a>
     </div>
 
-  </main>
-  <%- include('partials/footer') %>
-  <script src="/js/app.js"></script>
-  <script>
-    function filterHelp(query) {
-      const q = query.toLowerCase();
-      document.querySelectorAll('.help-card').forEach(function(card) {
-        const tags = card.getAttribute('data-tags') || '';
-        const text = card.textContent.toLowerCase();
-        card.style.display = (tags.includes(q) || text.includes(q) || q === '')
-          ? '' : 'none';
-      });
-    }
-  </script>
-</body>
-</html>
+    <!-- QUICK LINKS -->
+    <div style="
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+      gap:2px;
+      margin-bottom:48px;
+    ">
+      <% [
+        ['book-open','Getting Started','#getting-started'],
+        ['edit-3','Using the Journal','#journal'],
+        ['bar-chart-2','Discipline Score','#score'],
+        ['heart','Psychology Sessions','#psychology'],
+        ['link','On-Chain Reputation','#onchain'],
+        ['settings','Account Settings','#account']
+      ].forEach(function(s) { %>
+        <a href="<%= s[2] %>" style="
+          background:var(--bg-card);
+          border:1px solid var(--border);
+          padding:18px 16px;
+          text-decoration:none;
+          display:flex;align-items:center;gap:10px;
+          transition:border-color 0.15s;
+        " onmouseover="this.style.borderColor='rgba(201,168,76,0.3)'"
+           onmouseout="this.style.borderColor='var(--border)'">
+          <div style="
+            width:28px;height:28px;min-width:28px;
+            border:1px solid rgba(201,168,76,0.2);
+            background:rgba(201,168,76,0.04);
+            display:flex;align-items:center;justify-content:center;
+            color:var(--gold);
+          ">
+            <i data-feather="<%= s[0] %>" width="13" height="13"></i>
+          </div>
+          <span style="font-size:0.8rem;font-weight:600;color:var(--text-primary);">
+            <%= s[1] %>
+          </span>
+        </a>
+      <% }); %>
+    </div>
+
+    <!-- GETTING STARTED -->
+    <div id="getting-started" style="margin-bottom:48px;">
+      <div style="
+        font-family:'DM Mono',monospace;
+        font-size:0.6rem;
+        letter-spacing:0.2em;
+        text-transform:uppercase;
+        color:var(--gold);
+        margin-bottom:20px;
+        display:flex;align-items:center;gap:8px;
+        padding-bottom:12px;
+        border-bottom:1px solid var(--border);
+      ">
+        <i data-feather="book-open" width="14" height="14"></i>
+        Getting Started
+      </div>
+
+      <% [
+        [
+          'What is KAIZEN?',
+          'KAIZEN is an AI-powered trading discipline mentor. You log journal entries about your trading sessions, and KAIZEN\'s AI analyzes them against your own rules to give you specific behavioral feedback â€” helping you become more consistent, not just more informed.'
+        ],
+        [
+          'Is KAIZEN a signal service or copy-trading platform?',
+          'No. KAIZEN never tells you what to trade. It analyzes how you trade â€” your decision-making, your rule compliance, your emotional patterns â€” and helps you hold yourself accountable to your own process.'
+        ],
+        [
+          'How do I create an account?',
+          'Go to the Register page and sign up using your email and password, or use Google Sign-In for faster access. You will be guided through onboarding questions to build your trading profile.'
+        ],
+        [
+          'What information do I need to provide during onboarding?',
+          'Your risk per trade, daily drawdown limit, trading edge or strategy, entry and exit rules, known emotional triggers, and the markets you trade. This profile is what KAIZEN AI uses to give you personalized feedback â€” so be as specific as possible.'
+        ]
+      ].forEach(function(q) { %>
+        <div style="
+          background:var(--bg-card);
+          border:1px solid var(--border);
+          padding:22px 24px;
+          margin-bottom:2px;
+        ">
+          <div style="
+            font-weight:700;
+            font-size:0.9rem;
+            color:var(--text-primary);
+            margin-bottom:8px;
+            display:flex;align-items:flex-start;gap:10px;
+          ">
+            <i data-feather="chevron-right" width="15" height="15" style="color:var(--gold);flex-shrink:0;margin-top:2px;"></i>
+            <%= q[0] %>
+          </div>
+          <p style="font-size:0.85rem;color:var(--text-secondary);line-height:1.75;margin:0;padding-left:25px;">
+            <%= q[1] %>
+          </p>
+        </div>
+      <% }); %>
+    </div>
+
+    <!-- USING THE JOURNAL -->
+    <div id="journal" style="margin-bottom:48px;">
+      <div style="
+        font-family:'DM Mono',monospace;
+        font-size:0.6rem;
+        letter-spacing:0.2em;
+        text-transform:uppercase;
+        color:var(--gold);
+        margin-bottom:20px;
+        display:flex;align-items:center;gap:8px;
+        padding-bottom:12px;
+        border-bottom:1px solid var(--border);
+      ">
+        <i data-feather="edit-3" width="14" height="14"></i>
+        Using the Journal
+      </div>
+
+      <% [
+        [
+          'How do I log a trading session?',
+          'Go to My Journal, write a free-text description of what you did, saw, and felt during your session â€” whether it was a live trade, a backtest, or pure analysis â€” then answer whether you followed your rules. Submit to receive KAIZEN AI\'s feedback.'
+        ],
+        [
+          'Do I need to specify which asset I traded?',
+          'No. KAIZEN automatically detects the asset from your notes. Just write naturally and include the pair or instrument you traded â€” AUDJPY, EURUSD, BTC, Gold â€” and KAIZEN will pick it up.'
+        ],
+        [
+          'How honest do I need to be in my journal entries?',
+          'Completely honest. KAIZEN\'s feedback is only as useful as the detail and honesty you provide. Vague or dishonest entries produce vague, less useful feedback. The traders who improve fastest are the ones who write down exactly what happened, including mistakes.'
+        ],
+        [
+          'Can I log backtesting sessions and analysis-only sessions?',
+          'Yes. KAIZEN accepts any type of session â€” live trades, backtesting, market analysis, or pre-trade planning. Just describe what you did honestly. Backtesting sessions help KAIZEN understand your strategy before live sessions begin.'
+        ]
+      ].forEach(function(q) { %>
+        <div style="
+          background:var(--bg-card);
+          border:1px solid var(--border);
+          padding:22px 24px;
+          margin-bottom:2px;
+        ">
+          <div style="
+            font-weight:700;
+            font-size:0.9rem;
+            color:var(--text-primary);
+            margin-bottom:8px;
+            display:flex;align-items:flex-start;gap:10px;
+          ">
+            <i data-feather="chevron-right" width="15" height="15" style="color:var(--gold);flex-shrink:0;margin-top:2px;"></i>
+            <%= q[0] %>
+          </div>
+          <p style="font-size:0.85rem;color:var(--text-secondary);line-height:1.75;margin:0;padding-left:25px;">
+            <%= q[1] %>
+          </p>
+        </div>
+      <% }); %>
+    </div>
+
+    <!-- DISCIPLINE SCORE -->
+    <div id="score" style="margin-bottom:48px;">
+      <div style="
+        font-family:'DM Mono',monospace;
+        font-size:0.6rem;
+        letter-spacing:0.2em;
+        text-transform:uppercase;
+        color:var(--gold);
+        margin-bottom:20px;
+        display:flex;align-items:center;gap:8px;
+        padding-bottom:12px;
+        border-bottom:1px solid var(--border);
+      ">
+        <i data-feather="bar-chart-2" width="14" height="14"></i>
+        Discipline Score
+      </div>
+
+      <% [
+        [
+          'How is my Discipline Score calculated?',
+          'Your score is based on rule compliance across all logged journal sessions. If you have also completed psychology sessions, those contribute 30% of your score. Journal compliance contributes 70%. The formula rewards consistent process â€” not winning trades.'
+        ],
+        [
+          'Does a losing trade lower my score?',
+          'Not directly. Your score reflects whether you followed your own rules, not whether the trade was profitable. A losing trade taken in full compliance with your rules is a good process decision. A winning trade that broke your rules is dangerous â€” KAIZEN flags it exactly that way.'
+        ],
+        [
+          'Why did my score change after a psychology session?',
+          'Psychology sessions are scored based on depth of self-reflection, specificity, and ownership in your responses. Sessions showing genuine self-awareness raise your overall discipline score. Sessions that lean on external blame lower it slightly. Psychology is part of discipline.'
+        ],
+        [
+          'What do the discipline tiers mean?',
+          'Developing (0â€“39%): building the foundation. Consistent (40â€“59%): showing improvement but inconsistencies remain. Elite (60â€“79%): strong process adherence. Master (80â€“100%): exceptional behavioral discipline. Each tier reflects your process consistency across all sessions.'
+        ]
+      ].forEach(function(q) { %>
+        <div style="
+          background:var(--bg-card);
+          border:1px solid var(--border);
+          padding:22px 24px;
+          margin-bottom:2px;
+        ">
+          <div style="
+            font-weight:700;
+            font-size:0.9rem;
+            color:var(--text-primary);
+            margin-bottom:8px;
+            display:flex;align-items:flex-start;gap:10px;
+          ">
+            <i data-feather="chevron-right" width="15" height="15" style="color:var(--gold);flex-shrink:0;margin-top:2px;"></i>
+            <%= q[0] %>
+          </div>
+          <p style="font-size:0.85rem;color:var(--text-secondary);line-height:1.75;margin:0;padding-left:25px;">
+            <%= q[1] %>
+          </p>
+        </div>
+      <% }); %>
+    </div>
+
+    <!-- PSYCHOLOGY SESSIONS -->
+    <div id="psychology" style="margin-bottom:48px;">
+      <div style="
+        font-family:'DM Mono',monospace;
+        font-size:0.6rem;
+        letter-spacing:0.2em;
+        text-transform:uppercase;
+        color:var(--gold);
+        margin-bottom:20px;
+        display:flex;align-items:center;gap:8px;
+        padding-bottom:12px;
+        border-bottom:1px solid var(--border);
+      ">
+        <i data-feather="heart" width="14" height="14"></i>
+        Psychology Sessions
+      </div>
+
+      <% [
+        [
+          'What is the difference between My Journal and Psychology Sessions?',
+          'My Journal is for logging specific trading sessions â€” what you did in the market. Psychology Sessions are a separate space for talking through your mindset, fears, confidence, or pressure around trading in general â€” not tied to any specific trade. Both contribute to your Discipline Score.'
+        ],
+        [
+          'What can I talk about in a Psychology Session?',
+          'Anything affecting your trading mindset â€” fear of pulling the trigger on valid setups, anxiety when opening charts, pressure from needing trading income, imposter syndrome, overconfidence after winning streaks, comparing yourself to other traders, or struggling after a losing streak.'
+        ],
+        [
+          'Are my psychology sessions private?',
+          'Your psychology session content is stored securely in your account and used only to generate AI feedback and inform your discipline score. Refer to our Privacy Policy for full details on how this sensitive data is handled.'
+        ],
+        [
+          'Do psychology sessions affect my Discipline Score?',
+          'Yes â€” they contribute 30% of your overall score. This reflects the real relationship between mindset and execution. A trader who works on their psychology consistently is demonstrably more disciplined than one who only logs trades.'
+        ]
+      ].forEach(function(q) { %>
+        <div style="
+          background:var(--bg-card);
+          border:1px solid var(--border);
+          padding:22px 24px;
+          margin-bottom:2px;
+        ">
+          <div style="
+            font-weight:700;
+            font-size:0.9rem;
+            color:var(--text-primary);
+            margin-bottom:8px;
+            display:flex;align-items:flex-start;gap:10px;
+          ">
+            <i data-feather="chevron-right" width="15" height="15" style="color:var(--gold);flex-shrink:0;margin-top:2px;"></i>
+            <%= q[0] %>
+          </div>
+          <p style="font-size:0.85rem;color:var(--text-secondary);line-height:1.75;margin:0;padding-left:25px;">
+            <%= q[1] %>
+          </p>
+        </div>
+      <% }); %>
+    </div>
+
+    <!-- ON-CHAIN REPUTATION -->
+    <div id="onchain" style="margin-bottom:48px;">
+      <div style="
+        font-family:'DM Mono',monospace;
+        font-size:0.6rem;
+        letter-spacing:0.2em;
+        text-transform:uppercase;
+        color:var(--gold);
+        margin-bottom:20px;
+        display:flex;align-items:center;gap:8px;
+        padding-bottom:12px;
+        border-bottom:1px solid var(--border);
+      ">
+        <i data-feather="link" width="14" height="14"></i>
+        On-Chain Reputation
+      </div>
+
+      <% [
+        [
+          'What is the Mantle AI Benchmark?',
+          'Every significant KAIZEN AI output â€” your discipline score changes, behavioral patterns detected, and milestones achieved â€” is permanently recorded on the Mantle blockchain via our KaizenBenchmark smart contract. This creates a verifiable, tamper-proof record of how KAIZEN AI has tracked your progress. Anyone can verify it on the Mantle explorer.'
+        ],
+        [
+          'What is Zero Authority DAO reputation?',
+          'Zero Authority DAO (ZA DAO) is a decentralized reputation platform built on the Stacks blockchain. Connecting your ZA account to KAIZEN displays your on-chain trading credentials â€” bounty completions, endorsements, and activity score â€” alongside your KAIZEN Discipline Score. Together they form your complete on-chain trader profile.'
+        ],
+        [
+          'How do I connect my Zero Authority DAO account?',
+          'Visit zeroauthoritydao.com, create or log into your account, and find your ZA profile ID. Then contact us via X at @kaizenaibot and we will connect it to your KAIZEN account. Once connected, your ZA reputation will display automatically on your Reputation page.'
+        ],
+        [
+          'Is my raw journal content ever put on a blockchain?',
+          'Never. Only a one-way cryptographic hash of your internal user ID, along with score changes and pattern labels, is ever recorded on-chain. Your actual journal text, psychology session content, and any personally identifiable information never leave KAIZEN\'s secure database.'
+        ],
+        [
+          'Do I need a crypto wallet to use KAIZEN?',
+          'No. KAIZEN records blockchain data on your behalf using our own wallet. You never need MetaMask, MNT tokens, or any crypto to benefit from the on-chain reputation features. Everything happens automatically in the background when you log sessions.'
+        ]
+      ].forEach(function(q) { %>
+        <div style="
+          background:var(--bg-card);
+          border:1px solid var(--border);
+          padding:22px 24px;
+          margin-bottom:2px;
+        ">
+          <div style="
+            font-weight:700;
+            font-size:0.9rem;
+            color:var(--text-primary);
+            margin-bottom:8px;
+            display:flex;align-items:flex-start;gap:10px;
+          ">
+            <i data-feather="chevron-right" width="15" height="15" style="color:var(--gold);flex-shrink:0;margin-top:2px;"></i>
+            <%= q[0] %>
+          </div>
+          <p style="font-size:0.85rem;color:var(--text-secondary);line-height:1.75;margin:0;padding-left:25px;">
+            <%= q[1] %>
+          </p>
+        </div>
+      <% }); %>
+    </div>
+
+    <!-- ACCOUNT SETTINGS -->
+    <div id="account" style="margin-bottom:48px;">
+      <div style="
+        font-family:'DM Mono',monospace;
+        font-size:0.6rem;
+        letter-spacing:0.2em;
+        text-transform:uppercase;
+        color:var(--gold);
+        margin-bottom:20px;
+        display:flex;align-items:center;gap:8px;
+        padding-bottom:12px;
+        border-bottom:1px solid var(--border);
+      ">
+        <i data-feather="settings" width="14" height="14"></i>
+        Account Management
+      </div>
+
+      <% [
+        [
+          'How do I update my trading style or rules?',
+          'Go to the menu and select Update Trading Style under Settings. Your previous rules are saved to your history so KAIZEN can track how your strategy has evolved over time.'
+        ],
+        [
+          'I forgot my password. What do I do?',
+          'Password reset via email is not yet available. Please reach out to us on X at @kaizenaibot and we will help you regain access to your account directly.'
+        ],
+        [
+          'How do I delete my account?',
+          'Go to your Reputation page and select Delete Account under the Danger Zone section. This action is permanent and will remove your personal data â€” journal entries, psychology sessions, and memories â€” in accordance with our Privacy Policy.'
+        ],
+        [
+          'Can I use KAIZEN on mobile?',
+          'Yes. KAIZEN is a mobile-first web application that works in any browser on any device. A dedicated native app for Android and iOS is planned for Phase 3.'
+        ]
+      ].forEach(function(q) { %>
+        <div style="
+          background:var(--bg-card);
+          border:1px solid var(--border);
+          padding:22px 24px;
+          margin-bottom:2px;
+        ">
+          <div style="
+            font-weight:700;
+            font-size:0.9rem;
+            color:var(--text-primary);
+            margin-bottom:8px;
+            display:flex;align-items:flex-start;gap:10px;
+          ">
+            <i data-feather="chevron-right" width="15" height="15" style="color:var(--gold);flex-shrink:0;margin-top:2px;"></i>
+            <%= q[0] %>
+          </div>
+          <p style="font-size:0.85rem;color:var(--text-secondary);line-height:1.75;margin:0;padding-left:25px;">
+            <%= q[1] %>
+          </p>
+        </div>
+      <% }); %>
+    </div>
+
+    <!-- CONTACT BLOCK -->
+    <div style="
+      text-align:center;
+      padding:48px 32px;
+      border:1px solid rgba(201,168,76,0.2);
+      background:rgba(201,168,76,0.03);
