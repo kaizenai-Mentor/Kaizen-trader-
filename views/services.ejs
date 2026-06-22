@@ -2,63 +2,469 @@
 <html lang="en">
 <head>
   <%- include('partials/head') %>
-  <title>KAIZEN — Services</title>
+  <title>KAIZEN Services â€” Everything Included</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.29.0/feather.min.js"></script>
 </head>
 <body class="app-page">
   <%- include('partials/navbar') %>
-  <main class="app-main">
-    <div class="page-header">
-      <div>
-        <h1>Services</h1>
-        <p class="page-sub">What Kaizen offers traders</p>
+
+  <main style="max-width:900px;margin:0 auto;padding:40px 24px 80px;">
+
+    <!-- HEADER -->
+    <div style="text-align:center;padding:60px 0 48px;border-bottom:1px solid var(--border);margin-bottom:48px;">
+      <div style="
+        font-family:'DM Mono',monospace;
+        font-size:0.62rem;
+        letter-spacing:0.25em;
+        text-transform:uppercase;
+        color:var(--gold);
+        margin-bottom:20px;
+        display:flex;align-items:center;justify-content:center;gap:12px;
+      ">
+        <span style="width:32px;height:1px;background:var(--gold);display:inline-block;"></span>
+        Full Feature Set
+        <span style="width:32px;height:1px;background:var(--gold);display:inline-block;"></span>
+      </div>
+      <h1 style="
+        font-size:clamp(2.2rem,5vw,3.5rem);
+        font-weight:700;
+        color:var(--text-primary);
+        line-height:1.05;
+        margin-bottom:20px;
+      ">What <span style="color:var(--gold);">KAIZEN</span> Gives You</h1>
+      <p style="
+        font-size:1rem;
+        color:var(--text-secondary);
+        max-width:520px;
+        margin:0 auto;
+        line-height:1.85;
+      ">
+        Every feature built around one principle â€” provable trading discipline.
+        Free to start. No subscriptions required right now.
+      </p>
+    </div>
+
+    <!-- CORE AI FEATURES -->
+    <div style="margin-bottom:48px;">
+      <div style="
+        font-family:'DM Mono',monospace;
+        font-size:0.6rem;
+        letter-spacing:0.2em;
+        text-transform:uppercase;
+        color:var(--gold);
+        margin-bottom:20px;
+        display:flex;align-items:center;gap:8px;
+        padding-bottom:12px;
+        border-bottom:1px solid var(--border);
+      ">
+        <i data-feather="cpu" width="14" height="14"></i>
+        Core AI Features
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:2px;">
+
+        <div style="
+          background:var(--bg-card);
+          border:1px solid rgba(201,168,76,0.18);
+          padding:24px;
+          display:flex;gap:18px;align-items:flex-start;
+        ">
+          <div style="
+            width:36px;height:36px;min-width:36px;
+            border:1px solid rgba(201,168,76,0.25);
+            background:rgba(201,168,76,0.07);
+            display:flex;align-items:center;justify-content:center;
+            color:var(--gold);
+          ">
+            <i data-feather="edit-3" width="16" height="16"></i>
+          </div>
+          <div>
+            <div style="font-weight:700;font-size:0.95rem;color:var(--text-primary);margin-bottom:6px;">
+              AI Journal Analysis
+            </div>
+            <p style="font-size:0.85rem;color:var(--text-secondary);line-height:1.75;margin:0;">
+              Write freeform entries about your trading sessions, backtests, or market analysis.
+              KAIZEN AI reads every entry against your own stated rules and full session history,
+              then delivers specific behavioral feedback â€” never generic advice.
+            </p>
+          </div>
+        </div>
+
+        <div style="
+          background:var(--bg-card);
+          border:1px solid var(--border);
+          padding:24px;
+          display:flex;gap:18px;align-items:flex-start;
+        ">
+          <div style="
+            width:36px;height:36px;min-width:36px;
+            border:1px solid rgba(201,168,76,0.2);
+            background:rgba(201,168,76,0.05);
+            display:flex;align-items:center;justify-content:center;
+            color:var(--gold);
+          ">
+            <i data-feather="bar-chart-2" width="16" height="16"></i>
+          </div>
+          <div>
+            <div style="font-weight:700;font-size:0.95rem;color:var(--text-primary);margin-bottom:6px;">
+              Discipline Score
+            </div>
+            <p style="font-size:0.85rem;color:var(--text-secondary);line-height:1.75;margin:0;">
+              A single number that reflects your process consistency â€” not your profit and loss.
+              Calculated from rule compliance across journal entries and psychology session
+              engagement. Updates after every session.
+            </p>
+          </div>
+        </div>
+
+        <div style="
+          background:var(--bg-card);
+          border:1px solid var(--border);
+          padding:24px;
+          display:flex;gap:18px;align-items:flex-start;
+        ">
+          <div style="
+            width:36px;height:36px;min-width:36px;
+            border:1px solid rgba(201,168,76,0.2);
+            background:rgba(201,168,76,0.05);
+            display:flex;align-items:center;justify-content:center;
+            color:var(--gold);
+          ">
+            <i data-feather="heart" width="16" height="16"></i>
+          </div>
+          <div>
+            <div style="font-weight:700;font-size:0.95rem;color:var(--text-primary);margin-bottom:6px;">
+              Psychology Sessions
+            </div>
+            <p style="font-size:0.85rem;color:var(--text-secondary);line-height:1.75;margin:0;">
+              A dedicated chat space â€” separate from your trade journal â€” for working through
+              mindset, fear, anxiety, or financial pressure with KAIZEN AI. Psychology
+              engagement contributes 30% to your overall Discipline Score.
+            </p>
+          </div>
+        </div>
+
+        <div style="
+          background:var(--bg-card);
+          border:1px solid var(--border);
+          padding:24px;
+          display:flex;gap:18px;align-items:flex-start;
+        ">
+          <div style="
+            width:36px;height:36px;min-width:36px;
+            border:1px solid rgba(201,168,76,0.2);
+            background:rgba(201,168,76,0.05);
+            display:flex;align-items:center;justify-content:center;
+            color:var(--gold);
+          ">
+            <i data-feather="alert-circle" width="16" height="16"></i>
+          </div>
+          <div>
+            <div style="font-weight:700;font-size:0.95rem;color:var(--text-primary);margin-bottom:6px;">
+              Predictive Behavioral Warnings
+            </div>
+            <p style="font-size:0.85rem;color:var(--text-secondary);line-height:1.75;margin:0;">
+              KAIZEN monitors your recent session history for early warning signals â€” repeated
+              FOMO mentions, frustration language, or declining compliance â€” and surfaces a
+              warning before your next session, not after the damage is done.
+            </p>
+          </div>
+        </div>
+
+        <div style="
+          background:var(--bg-card);
+          border:1px solid var(--border);
+          padding:24px;
+          display:flex;gap:18px;align-items:flex-start;
+        ">
+          <div style="
+            width:36px;height:36px;min-width:36px;
+            border:1px solid rgba(201,168,76,0.2);
+            background:rgba(201,168,76,0.05);
+            display:flex;align-items:center;justify-content:center;
+            color:var(--gold);
+          ">
+            <i data-feather="clock" width="16" height="16"></i>
+          </div>
+          <div>
+            <div style="font-weight:700;font-size:0.95rem;color:var(--text-primary);margin-bottom:6px;">
+              Memories Archive
+            </div>
+            <p style="font-size:0.85rem;color:var(--text-secondary);line-height:1.75;margin:0;">
+              Every AI response KAIZEN has ever given you is saved permanently. Revisit specific
+              feedback, track how your patterns have evolved, and watch your behavioral profile
+              develop over weeks and months of consistent logging.
+            </p>
+          </div>
+        </div>
+
       </div>
     </div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:2px;">
-      <div class="card card-gold">
-        <div class="card-header"><h2>Discipline Tracking</h2></div>
-        <p style="font-size:0.88rem;color:var(--text-secondary);line-height:1.8;">
-          Track your rule compliance across every session. Your Discipline Score (0-100)
-          is calculated from real behavioral data — not P&L.
-        </p>
+
+    <!-- PLATFORM FEATURES -->
+    <div style="margin-bottom:48px;">
+      <div style="
+        font-family:'DM Mono',monospace;
+        font-size:0.6rem;
+        letter-spacing:0.2em;
+        text-transform:uppercase;
+        color:var(--gold);
+        margin-bottom:20px;
+        display:flex;align-items:center;gap:8px;
+        padding-bottom:12px;
+        border-bottom:1px solid var(--border);
+      ">
+        <i data-feather="layout" width="14" height="14"></i>
+        Platform Features
       </div>
-      <div class="card">
-        <div class="card-header"><h2>Trading Journal</h2></div>
-        <p style="font-size:0.88rem;color:var(--text-secondary);line-height:1.8;">
-          Log every session with asset, timeframe, emotion, direction, outcome,
-          and compliance data. Build a complete picture of your trading behavior.
-        </p>
-      </div>
-      <div class="card card-blue">
-        <div class="card-header"><h2>ZA Bounties</h2></div>
-        <p style="font-size:0.88rem;color:var(--text-secondary);line-height:1.8;">
-          Access live Zero Authority DAO bounties directly inside Kaizen.
-          Complete discipline challenges to earn on-chain reputation and STX rewards.
-        </p>
-      </div>
-      <div class="card">
-        <div class="card-header"><h2>On-Chain Reputation</h2></div>
-        <p style="font-size:0.88rem;color:var(--text-secondary);line-height:1.8;">
-          Your trading discipline is verified on-chain through Zero Authority DAO.
-          Build a reputation that follows you across the Web3 ecosystem.
-        </p>
-      </div>
-      <div class="card">
-        <div class="card-header"><h2>Chart Analysis — Phase 2</h2></div>
-        <p style="font-size:0.88rem;color:var(--text-secondary);line-height:1.8;">
-          Full TradingView-style charting with drawing tools and real-time
-          Bybit market data. Coming in Phase 2.
-        </p>
-      </div>
-      <div class="card">
-        <div class="card-header"><h2>AI Mentor — Phase 2</h2></div>
-        <p style="font-size:0.88rem;color:var(--text-secondary);line-height:1.8;">
-          Kaizen AI watches your chart analysis, learns your trading style,
-          and enforces the rules you defined. Silent, firm, supportive.
-        </p>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:2px;">
+
+        <div style="background:var(--bg-card);border:1px solid var(--border);padding:22px;">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+            <div style="
+              width:30px;height:30px;min-width:30px;
+              border:1px solid rgba(201,168,76,0.2);
+              background:rgba(201,168,76,0.05);
+              display:flex;align-items:center;justify-content:center;
+              color:var(--gold);
+            ">
+              <i data-feather="trending-up" width="14" height="14"></i>
+            </div>
+            <div style="font-weight:700;font-size:0.88rem;color:var(--text-primary);">Live Charting</div>
+          </div>
+          <p style="font-size:0.82rem;color:var(--text-secondary);line-height:1.7;margin:0;">
+            Full TradingView-powered charts built into KAIZEN. Analyze the market and log
+            your session without switching platforms.
+          </p>
+        </div>
+
+        <div style="background:var(--bg-card);border:1px solid var(--border);padding:22px;">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+            <div style="
+              width:30px;height:30px;min-width:30px;
+              border:1px solid rgba(201,168,76,0.2);
+              background:rgba(201,168,76,0.05);
+              display:flex;align-items:center;justify-content:center;
+              color:var(--gold);
+            ">
+              <i data-feather="users" width="14" height="14"></i>
+            </div>
+            <div style="font-weight:700;font-size:0.88rem;color:var(--text-primary);">Community Leaderboard</div>
+          </div>
+          <p style="font-size:0.82rem;color:var(--text-secondary);line-height:1.7;margin:0;">
+            Weekly and all-time discipline score rankings. See how your consistency
+            compares to other traders on KAIZEN.
+          </p>
+        </div>
+
+        <div style="background:var(--bg-card);border:1px solid var(--border);padding:22px;">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+            <div style="
+              width:30px;height:30px;min-width:30px;
+              border:1px solid rgba(201,168,76,0.2);
+              background:rgba(201,168,76,0.05);
+              display:flex;align-items:center;justify-content:center;
+              color:var(--gold);
+            ">
+              <i data-feather="award" width="14" height="14"></i>
+            </div>
+            <div style="font-weight:700;font-size:0.88rem;color:var(--text-primary);">Achievement Badges</div>
+          </div>
+          <p style="font-size:0.82rem;color:var(--text-secondary);line-height:1.7;margin:0;">
+            20 badges across session count, discipline score, streaks, and psychology
+            engagement. A visible record of your growth milestones.
+          </p>
+        </div>
+
+        <div style="background:var(--bg-card);border:1px solid var(--border);padding:22px;">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+            <div style="
+              width:30px;height:30px;min-width:30px;
+              border:1px solid rgba(201,168,76,0.2);
+              background:rgba(201,168,76,0.05);
+              display:flex;align-items:center;justify-content:center;
+              color:var(--gold);
+            ">
+              <i data-feather="refresh-cw" width="14" height="14"></i>
+            </div>
+            <div style="font-weight:700;font-size:0.88rem;color:var(--text-primary);">Trading Style Evolution</div>
+          </div>
+          <p style="font-size:0.82rem;color:var(--text-secondary);line-height:1.7;margin:0;">
+            Update your rules as your strategy evolves. KAIZEN stores your full history
+            so it can track how your approach and compliance within it has changed.
+          </p>
+        </div>
+
+        <div style="background:var(--bg-card);border:1px solid var(--border);padding:22px;">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+            <div style="
+              width:30px;height:30px;min-width:30px;
+              border:1px solid rgba(201,168,76,0.2);
+              background:rgba(201,168,76,0.05);
+              display:flex;align-items:center;justify-content:center;
+              color:var(--gold);
+            ">
+              <i data-feather="rss" width="14" height="14"></i>
+            </div>
+            <div style="font-weight:700;font-size:0.88rem;color:var(--text-primary);">Market News</div>
+          </div>
+          <p style="font-size:0.82rem;color:var(--text-secondary);line-height:1.7;margin:0;">
+            Stay current with relevant market news without leaving the platform.
+            Integrated market intelligence alongside your discipline tracking.
+          </p>
+        </div>
+
+        <div style="background:var(--bg-card);border:1px solid var(--border);padding:22px;">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+            <div style="
+              width:30px;height:30px;min-width:30px;
+              border:1px solid rgba(201,168,76,0.2);
+              background:rgba(201,168,76,0.05);
+              display:flex;align-items:center;justify-content:center;
+              color:var(--gold);
+            ">
+              <i data-feather="mail" width="14" height="14"></i>
+            </div>
+            <div style="font-weight:700;font-size:0.88rem;color:var(--text-primary);">Weekly AI Summary</div>
+          </div>
+          <p style="font-size:0.82rem;color:var(--text-secondary);line-height:1.7;margin:0;">
+            A weekly digest of your sessions, discipline trend, and key behavioral patterns â€”
+            delivered to your inbox every Sunday.
+          </p>
+        </div>
+
       </div>
     </div>
-  </main>
-  <%- include('partials/footer') %>
-  <script src="/js/app.js"></script>
-</body>
-</html>
+
+    <!-- ON-CHAIN REPUTATION -->
+    <div style="margin-bottom:48px;">
+      <div style="
+        font-family:'DM Mono',monospace;
+        font-size:0.6rem;
+        letter-spacing:0.2em;
+        text-transform:uppercase;
+        color:var(--gold);
+        margin-bottom:20px;
+        display:flex;align-items:center;gap:8px;
+        padding-bottom:12px;
+        border-bottom:1px solid var(--border);
+      ">
+        <i data-feather="link" width="14" height="14"></i>
+        On-Chain Reputation â€” Dual Blockchain
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:2px;">
+
+        <div style="
+          background:var(--bg-card);
+          border:1px solid rgba(201,168,76,0.18);
+          padding:28px;
+        ">
+          <div style="
+            font-family:'DM Mono',monospace;
+            font-size:0.55rem;
+            letter-spacing:0.15em;
+            text-transform:uppercase;
+            color:var(--ash);
+            margin-bottom:10px;
+          ">ZA DAO Â· Stacks</div>
+          <div style="font-weight:700;font-size:1rem;color:var(--text-primary);margin-bottom:10px;">
+            Trader Credentials
+          </div>
+          <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px;">
+            <div style="display:flex;align-items:center;gap:8px;font-size:0.82rem;color:var(--text-secondary);">
+              <i data-feather="check" width="13" height="13" style="color:var(--gold);flex-shrink:0;"></i>
+              Discipline milestone recordings
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;font-size:0.82rem;color:var(--text-secondary);">
+              <i data-feather="check" width="13" height="13" style="color:var(--gold);flex-shrink:0;"></i>
+              Bounty completions on-chain
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;font-size:0.82rem;color:var(--text-secondary);">
+              <i data-feather="check" width="13" height="13" style="color:var(--gold);flex-shrink:0;"></i>
+              Verifiable trading credentials
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;font-size:0.82rem;color:var(--text-secondary);">
+              <i data-feather="check" width="13" height="13" style="color:var(--gold);flex-shrink:0;"></i>
+              Endorsements from other traders
+            </div>
+          </div>
+          <a href="https://zeroauthoritydao.com" target="_blank" style="
+            font-family:'DM Mono',monospace;
+            font-size:0.6rem;
+            letter-spacing:0.1em;
+            text-transform:uppercase;
+            color:var(--gold);
+            text-decoration:none;
+            display:flex;align-items:center;gap:6px;
+          ">
+            Learn about ZA DAO
+            <i data-feather="external-link" width="11" height="11"></i>
+          </a>
+        </div>
+
+        <div style="
+          background:var(--bg-card);
+          border:1px solid rgba(59,130,246,0.15);
+          padding:28px;
+        ">
+          <div style="
+            font-family:'DM Mono',monospace;
+            font-size:0.55rem;
+            letter-spacing:0.15em;
+            text-transform:uppercase;
+            color:var(--ash);
+            margin-bottom:10px;
+          ">KaizenBenchmark.sol Â· Mantle</div>
+          <div style="font-weight:700;font-size:1rem;color:var(--text-primary);margin-bottom:10px;">
+            AI Performance Record
+          </div>
+          <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px;">
+            <div style="display:flex;align-items:center;gap:8px;font-size:0.82rem;color:var(--text-secondary);">
+              <i data-feather="check" width="13" height="13" style="color:var(--blue);flex-shrink:0;"></i>
+              Discipline score changes recorded
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;font-size:0.82rem;color:var(--text-secondary);">
+              <i data-feather="check" width="13" height="13" style="color:var(--blue);flex-shrink:0;"></i>
+              Behavioral patterns detected
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;font-size:0.82rem;color:var(--text-secondary);">
+              <i data-feather="check" width="13" height="13" style="color:var(--blue);flex-shrink:0;"></i>
+              Milestone achievements logged
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;font-size:0.82rem;color:var(--text-secondary);">
+              <i data-feather="check" width="13" height="13" style="color:var(--blue);flex-shrink:0;"></i>
+              Tamper-proof Â· publicly verifiable
+            </div>
+          </div>
+          <a href="https://explorer.sepolia.mantle.xyz" target="_blank" style="
+            font-family:'DM Mono',monospace;
+            font-size:0.6rem;
+            letter-spacing:0.1em;
+            text-transform:uppercase;
+            color:var(--blue);
+            text-decoration:none;
+            display:flex;align-items:center;gap:6px;
+          ">
+            View on Mantle Explorer
+            <i data-feather="external-link" width="11" height="11"></i>
+          </a>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- COMING SOON -->
+    <div style="margin-bottom:48px;">
+      <div style="
+        font-family:'DM Mono',monospace;
+        font-size:0.6rem;
+        letter-spacing:0.2em;
+        text-transform:uppercase;
+        color:var(--ash);
+        margin-bottom:20px;
+        display:flex;align-items:center;gap:8px;
+        padding-bottom:12px;
+        border-bottom:1px solid var(--border);
+    
