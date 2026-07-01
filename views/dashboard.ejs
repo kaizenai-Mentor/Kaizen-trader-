@@ -2,465 +2,539 @@
 <html lang="en">
 <head>
   <%- include('partials/head') %>
-  <title>KAIZEN — Dashboard</title>
+  <title>KAIZEN â€” Dashboard</title>
 </head>
 <body class="app-page">
-
   <%- include('partials/navbar') %>
 
   <main class="app-main">
 
-    <div class="page-header">
-      <div>
-        <h1 style="color:var(--gold);">Welcome back, <%= user.username %>.</h1>
-        <p class="page-sub">Your discipline is your edge.</p>
-      </div>
-      <a href="/za/bounties" class="btn-outline">View Bounties</a>
-    </div>
-
-    <div class="stats-row">
-      <div class="stat-card">
-        <div class="stat-card-label">Discipline Score</div>
-        <div class="stat-card-val gold">
-          <%= disciplineScore %><span>%</span>
-        </div>
-        <div class="score-bar">
-          <div class="score-fill" style="width:<%= disciplineScore %>%"></div>
-        </div>
-      </div>
-
-      <div class="stat-card">
-        <div class="stat-card-label">Current Streak</div>
-        <div class="stat-card-val gold">
-          <%= user.streak %><span> days</span>
-        </div>
-        <div class="stat-card-sub">Keep it going</div>
-      </div>
-
-      <div class="stat-card">
-        <div class="stat-card-label">Total Sessions</div>
-        <div class="stat-card-val">
-          <%= totalSessions %>
-        </div>
-        <div class="stat-card-sub">Sessions logged</div>
-      </div>
-
-      <div class="stat-card">
-        <div class="stat-card-label">ZA Reputation</div>
-        <div class="stat-card-val">
-          <a href="/za/reputation/<%= user.id %>" class="rep-link">View</a>
-        </div>
-        <div class="stat-card-sub">On-chain score</div>
-      </div>
-    </div>
-
-    <% if (typeof predictiveWarning !== 'undefined' && predictiveWarning) { %>
-  <div style="
-    margin-bottom:24px;
-    padding:18px 22px;
-    border-left:3px solid <%=
-      predictiveWarning.level === 'high' ? '#F87171' :
-      predictiveWarning.level === 'medium' ? '#C9A84C' :
-      '#34D399'
-    %>;
-    background:<%=
-      predictiveWarning.level === 'high' ? 'rgba(248,113,113,0.06)' :
-      predictiveWarning.level === 'medium' ? 'rgba(201,168,76,0.06)' :
-      'rgba(52,211,153,0.06)'
-    %>;
-    display:flex;
-    gap:14px;
-    align-items:flex-start;
-  ">
+    <!-- PAGE HEADER -->
     <div style="
-      font-family:'DM Mono',monospace;
-      font-size:0.6rem;
-      letter-spacing:0.15em;
-      text-transform:uppercase;
-      color:<%=
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:16px;
+      margin-bottom:24px;
+      flex-wrap:wrap;
+    ">
+      <div>
+        <div style="
+          font-family:'DM Mono',monospace;
+          font-size:0.6rem;
+          letter-spacing:0.2em;
+          text-transform:uppercase;
+          color:var(--gold);
+          margin-bottom:6px;
+          display:flex;align-items:center;gap:8px;
+        ">
+          <span style="width:16px;height:1px;background:var(--gold);display:inline-block;"></span>
+          Discipline Dashboard
+        </div>
+        <h1 style="
+          font-size:1.6rem;
+          font-weight:700;
+          color:var(--text-primary);
+          line-height:1.1;
+          margin-bottom:4px;
+        ">Welcome back, <span style="color:var(--gold);"><%= user.username %>.</span></h1>
+        <p style="font-size:0.82rem;color:var(--ash);font-style:italic;">
+          Your discipline is your edge. æ”¹å–„
+        </p>
+      </div>
+      <a href="/za/bounties" style="
+        display:inline-flex;align-items:center;gap:8px;
+        font-family:'DM Mono',monospace;
+        font-size:0.62rem;
+        letter-spacing:0.1em;
+        text-transform:uppercase;
+        color:var(--gold);
+        border:1px solid rgba(201,168,76,0.25);
+        background:rgba(201,168,76,0.04);
+        padding:10px 18px;
+        text-decoration:none;
+        white-space:nowrap;
+        transition:all 0.2s;
+      " onmouseover="this.style.background='rgba(201,168,76,0.1)'"
+         onmouseout="this.style.background='rgba(201,168,76,0.04)'">
+        <i data-feather="award" width="13" height="13"></i>
+        View Bounties
+      </a>
+    </div>
+
+    <!-- PREDICTIVE WARNING -->
+    <% if (typeof predictiveWarning !== 'undefined' && predictiveWarning) { %>
+    <div style="
+      margin-bottom:16px;
+      padding:16px 20px;
+      border-left:3px solid <%=
         predictiveWarning.level === 'high' ? '#F87171' :
         predictiveWarning.level === 'medium' ? '#C9A84C' :
         '#34D399'
       %>;
-      flex-shrink:0;
-      padding-top:2px;
-    ">改 Kaizen</div>
-    <div style="
-      font-size:0.88rem;
-      color:var(--text-primary);
-      line-height:1.7;
+      background:<%=
+        predictiveWarning.level === 'high' ? 'rgba(248,113,113,0.06)' :
+        predictiveWarning.level === 'medium' ? 'rgba(201,168,76,0.06)' :
+        'rgba(52,211,153,0.06)'
+      %>;
+      display:flex;gap:14px;align-items:flex-start;
     ">
-      <%= predictiveWarning.message %>
+      <div style="
+        width:28px;height:28px;min-width:28px;
+        border:1px solid <%=
+          predictiveWarning.level === 'high' ? 'rgba(248,113,113,0.3)' :
+          predictiveWarning.level === 'medium' ? 'rgba(201,168,76,0.3)' :
+          'rgba(52,211,153,0.3)'
+        %>;
+        background:<%=
+          predictiveWarning.level === 'high' ? 'rgba(248,113,113,0.08)' :
+          predictiveWarning.level === 'medium' ? 'rgba(201,168,76,0.08)' :
+          'rgba(52,211,153,0.08)'
+        %>;
+        display:flex;align-items:center;justify-content:center;
+        color:<%=
+          predictiveWarning.level === 'high' ? '#F87171' :
+          predictiveWarning.level === 'medium' ? '#C9A84C' :
+          '#34D399'
+        %>;
+      ">
+        <i data-feather="<%= predictiveWarning.level === 'positive' ? 'trending-up' : 'alert-triangle' %>" width="13" height="13"></i>
+      </div>
+      <div>
+        <div style="
+          font-family:'DM Mono',monospace;
+          font-size:0.55rem;
+          letter-spacing:0.15em;
+          text-transform:uppercase;
+          color:<%=
+            predictiveWarning.level === 'high' ? '#F87171' :
+            predictiveWarning.level === 'medium' ? '#C9A84C' :
+            '#34D399'
+          %>;
+          margin-bottom:5px;
+        ">æ”¹ Kaizen AI â€” Before You Trade</div>
+        <div style="font-size:0.88rem;color:var(--text-primary);line-height:1.7;">
+          <%= predictiveWarning.message %>
+        </div>
+      </div>
     </div>
-  </div>
-<% } %>
+    <% } %>
 
-<!-- PRE-TRADE CHECK-IN -->
-<div class="card" style="margin-bottom:2px;border-color:rgba(201,168,76,0.2);">
-  <div class="card-header">
-    <h2 style="font-size:0.88rem;">改 Pre-Trade Check-In</h2>
-    <span class="card-badge">Before You Enter</span>
-  </div>
-  <p style="font-size:0.82rem;color:var(--text-secondary);line-height:1.75;margin-bottom:14px;">
-    About to take a trade? Describe your setup to KAIZEN AI first.
-    Get a 30-second reality check before you click.
-  </p>
-  <div style="display:flex;gap:8px;">
-    <textarea id="pretrade-input" rows="3"
-      class="form-input"
-      style="flex:1;resize:none;font-size:0.85rem;"
-      placeholder="e.g. About to enter AUDJPY short. Daily sweep confirmed at 91.240. 4H sweep confirmed. Waiting on 30min MSS but price is moving fast and I'm feeling the urge to enter early..."></textarea>
-    <button onclick="submitPreTrade()"
-      style="
-        background:rgba(201,168,76,0.1);
-        border:1px solid rgba(201,168,76,0.3);
-        color:var(--gold);
-        font-family:'DM Mono',monospace;
-        font-size:0.65rem;
-        letter-spacing:0.08em;
-        text-transform:uppercase;
-        padding:0 16px;
-        cursor:pointer;
-        white-space:nowrap;
-        transition:all 0.2s;
-        align-self:stretch;
-      "
-      onmouseover="this.style.background='rgba(201,168,76,0.18)'"
-      onmouseout="this.style.background='rgba(201,168,76,0.1)'">
-      Ask<br>Kaizen
-    </button>
-  </div>
-  <div id="pretrade-response" style="
-    display:none;
-    margin-top:12px;
-    padding:14px 16px;
-    background:var(--bg-surface);
-    border-left:2px solid var(--gold);
-    font-size:0.85rem;
-    color:var(--ash-light);
-    line-height:1.8;
-  "></div>
-</div>
+    <!-- STATS ROW -->
+    <div style="
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+      gap:2px;
+      margin-bottom:16px;
+    ">
 
-    <!-- RECENT SESSIONS -->
-    <div class="card">
-      <div class="card-header">
-        <h2>My Journal - Recent Sessions</h2>
-        <a href="/dashboard/journal" class="card-link">View All</a>
+      <!-- Discipline Score -->
+      <div style="
+        background:var(--bg-card);
+        border:1px solid rgba(201,168,76,0.2);
+        padding:20px;
+        position:relative;
+        overflow:hidden;
+      ">
+        <div style="
+          position:absolute;top:0;right:0;
+          width:60px;height:60px;
+          background:radial-gradient(circle,rgba(201,168,76,0.08),transparent 70%);
+        "></div>
+        <div style="
+          font-family:'DM Mono',monospace;
+          font-size:0.55rem;
+          letter-spacing:0.15em;
+          text-transform:uppercase;
+          color:var(--ash);
+          margin-bottom:8px;
+          display:flex;align-items:center;gap:6px;
+        ">
+          <i data-feather="bar-chart-2" width="11" height="11" style="color:var(--gold);"></i>
+          Discipline Score
+        </div>
+        <div id="score-display" style="
+          font-family:'DM Mono',monospace;
+          font-size:2.2rem;
+          font-weight:700;
+          color:var(--gold);
+          line-height:1;
+          margin-bottom:8px;
+        ">0<span style="font-size:1rem;">%</span></div>
+        <div style="height:3px;background:rgba(201,168,76,0.1);margin-bottom:6px;">
+          <div id="score-bar-fill" style="height:100%;background:var(--gold);width:0%;transition:width 1.2s ease;"></div>
+        </div>
+        <div style="
+          font-family:'DM Mono',monospace;
+          font-size:0.55rem;
+          letter-spacing:0.1em;
+          color:var(--ash);
+        ">
+          <%= disciplineScore >= 80 ? 'ELITE' : disciplineScore >= 60 ? 'CONSISTENT' : disciplineScore >= 40 ? 'BUILDING' : 'DEVELOPING' %>
+        </div>
       </div>
 
-      <% if (journals.length === 0) { %>
-        <div class="empty-state">
-          <div class="empty-icon" style="font-size:2rem;">—</div>
-          <p>No sessions logged yet.</p>
-          <p>Go to the Journal section to log your first session.</p>
-          <a href="/dashboard/journal" class="btn-primary"
-            style="margin-top:20px;display:inline-block;">
-            Open Journal
+      <!-- Streak -->
+      <div style="
+        background:var(--bg-card);
+        border:1px solid var(--border);
+        padding:20px;
+        position:relative;
+        overflow:hidden;
+      ">
+        <div style="
+          font-family:'DM Mono',monospace;
+          font-size:0.55rem;
+          letter-spacing:0.15em;
+          text-transform:uppercase;
+          color:var(--ash);
+          margin-bottom:8px;
+          display:flex;align-items:center;gap:6px;
+        ">
+          <i data-feather="zap" width="11" height="11" style="color:var(--gold);"></i>
+          Current Streak
+        </div>
+        <div style="
+          font-family:'DM Mono',monospace;
+          font-size:2.2rem;
+          font-weight:700;
+          color:<%= (user.streak || 0) >= 7 ? '#4ADE80' : 'var(--text-primary)' %>;
+          line-height:1;
+          margin-bottom:8px;
+        ">
+          <%= user.streak || 0 %><span style="font-size:1rem;color:var(--ash);"> days</span>
+        </div>
+        <div style="
+          font-family:'DM Mono',monospace;
+          font-size:0.55rem;
+          color:var(--ash);
+        ">
+          <%= (user.streak || 0) >= 7 ? 'On fire â€” protect this' : (user.streak || 0) >= 3 ? 'Building momentum' : 'Keep going' %>
+        </div>
+      </div>
+
+      <!-- Total Sessions -->
+      <div style="
+        background:var(--bg-card);
+        border:1px solid var(--border);
+        padding:20px;
+      ">
+        <div style="
+          font-family:'DM Mono',monospace;
+          font-size:0.55rem;
+          letter-spacing:0.15em;
+          text-transform:uppercase;
+          color:var(--ash);
+          margin-bottom:8px;
+          display:flex;align-items:center;gap:6px;
+        ">
+          <i data-feather="book-open" width="11" height="11" style="color:var(--gold);"></i>
+          Total Sessions
+        </div>
+        <div style="
+          font-family:'DM Mono',monospace;
+          font-size:2.2rem;
+          font-weight:700;
+          color:var(--text-primary);
+          line-height:1;
+          margin-bottom:8px;
+        ">
+          <%= totalSessions %>
+        </div>
+        <div style="
+          font-family:'DM Mono',monospace;
+          font-size:0.55rem;
+          color:var(--ash);
+        ">
+          <%= totalSessions >= 50 ? 'Dedicated trader' : totalSessions >= 10 ? 'Building history' : 'Getting started' %>
+        </div>
+      </div>
+
+      <!-- On-Chain Reputation -->
+      <div style="
+        background:var(--bg-card);
+        border:1px solid rgba(59,130,246,0.15);
+        padding:20px;
+        cursor:pointer;
+        transition:border-color 0.2s;
+      " onclick="window.location='/za/reputation/<%= user.id %>'"
+         onmouseover="this.style.borderColor='rgba(59,130,246,0.35)'"
+         onmouseout="this.style.borderColor='rgba(59,130,246,0.15)'">
+        <div style="
+          font-family:'DM Mono',monospace;
+          font-size:0.55rem;
+          letter-spacing:0.15em;
+          text-transform:uppercase;
+          color:var(--ash);
+          margin-bottom:8px;
+          display:flex;align-items:center;gap:6px;
+        ">
+          <i data-feather="link" width="11" height="11" style="color:var(--blue);"></i>
+          On-Chain Rep
+        </div>
+        <div style="
+          font-family:'DM Mono',monospace;
+          font-size:1.1rem;
+          font-weight:700;
+          color:var(--blue);
+          line-height:1;
+          margin-bottom:8px;
+          display:flex;align-items:center;gap:6px;
+        ">
+          View
+          <i data-feather="external-link" width="12" height="12"></i>
+        </div>
+        <div style="
+          font-family:'DM Mono',monospace;
+          font-size:0.55rem;
+          color:var(--ash);
+        ">ZA DAO + Mantle</div>
+      </div>
+
+    </div>
+
+    <!-- PRE-TRADE CHECK-IN -->
+    <div style="
+      background:var(--bg-card);
+      border:1px solid rgba(201,168,76,0.2);
+      padding:20px;
+      margin-bottom:16px;
+    ">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="
+            width:28px;height:28px;
+            border:1px solid rgba(201,168,76,0.25);
+            background:rgba(201,168,76,0.06);
+            display:flex;align-items:center;justify-content:center;
+            color:var(--gold);
+          ">
+            <i data-feather="shield" width="13" height="13"></i>
+          </div>
+          <div>
+            <div style="font-weight:700;font-size:0.9rem;color:var(--text-primary);">
+              Pre-Trade Reality Check
+            </div>
+            <div style="font-size:0.75rem;color:var(--ash);">
+              Ask KAIZEN before you enter. 30-second gut check.
+            </div>
+          </div>
+        </div>
+        <span style="
+          font-family:'DM Mono',monospace;
+          font-size:0.55rem;
+          letter-spacing:0.12em;
+          text-transform:uppercase;
+          color:rgba(201,168,76,0.5);
+          border:1px solid rgba(201,168,76,0.15);
+          padding:3px 8px;
+        ">Before You Enter</span>
+      </div>
+      <div style="display:flex;gap:8px;">
+        <textarea id="pretrade-input" rows="2"
+          style="
+            flex:1;resize:none;
+            background:var(--bg-surface);
+            border:1px solid var(--border);
+            color:var(--text-primary);
+            font-family:'Outfit',sans-serif;
+            font-size:0.85rem;
+            padding:10px 14px;
+            outline:none;
+            line-height:1.6;
+          "
+          placeholder="e.g. About to enter AUDJPY short. 4H sweep confirmed. Waiting on 30min MSS but price is moving fast..."></textarea>
+        <button onclick="submitPreTrade()" style="
+          background:rgba(201,168,76,0.08);
+          border:1px solid rgba(201,168,76,0.25);
+          color:var(--gold);
+          font-family:'DM Mono',monospace;
+          font-size:0.6rem;
+          letter-spacing:0.1em;
+          text-transform:uppercase;
+          padding:0 16px;
+          cursor:pointer;
+          white-space:nowrap;
+          transition:all 0.2s;
+          align-self:stretch;
+          display:flex;align-items:center;gap:6px;
+        " onmouseover="this.style.background='rgba(201,168,76,0.15)'"
+           onmouseout="this.style.background='rgba(201,168,76,0.08)'">
+          <i data-feather="send" width="12" height="12"></i>
+          Ask
+        </button>
+      </div>
+      <div id="pretrade-response" style="
+        display:none;
+        margin-top:10px;
+        padding:12px 16px;
+        background:var(--bg-surface);
+        border-left:2px solid var(--gold);
+        font-size:0.85rem;
+        color:var(--ash-light);
+        line-height:1.8;
+      "></div>
+    </div>
+
+    <!-- RECENT SESSIONS + PROGRESS CHART side by side on desktop -->
+    <div style="
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:2px;
+      margin-bottom:16px;
+    " class="dash-grid">
+
+      <!-- RECENT SESSIONS -->
+      <div style="background:var(--bg-card);border:1px solid var(--border);padding:20px;">
+        <div style="
+          display:flex;align-items:center;justify-content:space-between;
+          margin-bottom:16px;
+        ">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <i data-feather="edit-3" width="14" height="14" style="color:var(--gold);"></i>
+            <span style="font-weight:700;font-size:0.9rem;color:var(--text-primary);">Recent Sessions</span>
+          </div>
+          <a href="/dashboard/journal" style="
+            font-family:'DM Mono',monospace;
+            font-size:0.58rem;
+            letter-spacing:0.1em;
+            text-transform:uppercase;
+            color:var(--gold);
+            text-decoration:none;
+            display:flex;align-items:center;gap:4px;
+          ">
+            View All
+            <i data-feather="chevron-right" width="12" height="12"></i>
           </a>
         </div>
-      <% } else { %>
-        <div class="journal-list">
-          <% journals.forEach(function(journal) { %>
-            <div class="journal-item">
-              <div class="journal-item-top">
-                <span class="journal-asset"><%= journal.asset %></span>
-                <span class="journal-score <%= journal.ruleCompliance ? 'score-good' : 'score-bad' %>">
-                  <%= journal.sessionScore %>%
-                </span>
-              </div>
-              <div class="journal-item-mid">
-                <span class="journal-tag"><%= journal.timeframe %></span>
-                <span class="journal-tag"><%= journal.direction %></span>
-                <span class="journal-tag <%= journal.outcome === 'Win' ? 'tag-win' : journal.outcome === 'Loss' ? 'tag-loss' : '' %>">
-                  <%= journal.outcome %>
-                </span>
-                <span class="journal-tag"><%= journal.emotion %></span>
-              </div>
-              <p class="journal-notes">
-                <%= journal.notes.substring(0, 100) %><%= journal.notes.length > 100 ? '...' : '' %>
-              </p>
-              <div class="journal-compliance">
-                <% if (journal.ruleCompliance) { %>
-                  <span class="compliance-good">Rules Followed</span>
-                <% } else { %>
-                  <span class="compliance-bad">Rules Violated</span>
-                <% } %>
-                <span class="journal-date">
-                  <%= new Date(journal.createdAt).toLocaleDateString() %>
-                </span>
-              </div>
-            </div>
-          <% }); %>
-        </div>
-      <% } %>
-    </div>
 
-  </main>
-
-<!-- PROGRESS CHART -->
-<div class="card" style="margin-top:2px;">
-  <div class="card-header">
-    <h2>Discipline Progress</h2>
-    <span class="card-badge">Last 10 Sessions</span>
-  </div>
-  <% if (journals && journals.length > 0) { %>
-    <div style="display:flex;align-items:flex-end;gap:6px;height:120px;padding:0 4px;">
-      <% journals.slice(0,10).reverse().forEach(function(j, i) { %>
-        <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;">
-          <div style="
-            font-family:'DM Mono',monospace;
-            font-size:0.52rem;
-            color:<%= j.ruleCompliance ? 'var(--green)' : 'var(--red)' %>;
-          ">
-            <%= j.sessionScore || 50 %>
-          </div>
-          <div style="
-            width:100%;
-            height:<%= Math.max(8, (j.sessionScore || 50) * 1.0) %>px;
-            background:<%= j.ruleCompliance ? 'rgba(52,211,153,0.7)' : 'rgba(248,113,113,0.7)' %>;
-            border-radius:2px 2px 0 0;
-            transition:height 0.5s ease;
-            position:relative;
-          ">
+        <% if (journals.length === 0) { %>
+          <div style="text-align:center;padding:32px 16px;">
             <div style="
-              position:absolute;
-              bottom:0;left:0;right:0;
-              height:100%;
-              background:linear-gradient(to top,
-                <%= j.ruleCompliance ? 'rgba(52,211,153,0.3)' : 'rgba(248,113,113,0.3)' %>,
-                <%= j.ruleCompliance ? 'rgba(52,211,153,0.8)' : 'rgba(248,113,113,0.8)' %>);
-              border-radius:2px 2px 0 0;
-            "></div>
+              width:40px;height:40px;
+              border:1px solid var(--border);
+              background:var(--bg-surface);
+              display:flex;align-items:center;justify-content:center;
+              color:var(--ash);
+              margin:0 auto 12px;
+            ">
+              <i data-feather="book-open" width="16" height="16"></i>
+            </div>
+            <p style="font-size:0.82rem;color:var(--ash);margin-bottom:14px;line-height:1.6;">
+              No sessions logged yet.<br>Start building your discipline record.
+            </p>
+            <a href="/dashboard/journal" style="
+              display:inline-flex;align-items:center;gap:6px;
+              background:var(--gold);
+              color:#000;
+              font-family:'DM Mono',monospace;
+              font-size:0.62rem;
+              letter-spacing:0.1em;
+              text-transform:uppercase;
+              padding:10px 20px;
+              text-decoration:none;
+              font-weight:700;
+            ">
+              <i data-feather="plus" width="12" height="12"></i>
+              Log First Session
+            </a>
           </div>
-          <div style="
+        <% } else { %>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <% journals.slice(0,5).forEach(function(journal) { %>
+              <div style="
+                background:var(--bg-surface);
+                border:1px solid var(--border);
+                border-left:2px solid <%= journal.ruleCompliance ? 'rgba(52,211,153,0.5)' : 'rgba(248,113,113,0.5)' %>;
+                padding:12px 14px;
+              ">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+                  <div style="display:flex;align-items:center;gap:8px;">
+                    <span style="
+                      font-family:'DM Mono',monospace;
+                      font-size:0.72rem;
+                      font-weight:700;
+                      color:var(--text-primary);
+                    "><%= journal.asset %></span>
+                    <span style="
+                      font-family:'DM Mono',monospace;
+                      font-size:0.55rem;
+                      letter-spacing:0.08em;
+                      text-transform:uppercase;
+                      padding:2px 7px;
+                      border:1px solid <%= journal.ruleCompliance ? 'rgba(52,211,153,0.3)' : 'rgba(248,113,113,0.3)' %>;
+                      color:<%= journal.ruleCompliance ? '#4ADE80' : '#F87171' %>;
+                      background:<%= journal.ruleCompliance ? 'rgba(52,211,153,0.05)' : 'rgba(248,113,113,0.05)' %>;
+                    ">
+                      <%= journal.ruleCompliance ? 'Compliant' : 'Violated' %>
+                    </span>
+                  </div>
+                  <span style="
+                    font-family:'DM Mono',monospace;
+                    font-size:0.65rem;
+                    font-weight:700;
+                    color:<%= journal.ruleCompliance ? '#4ADE80' : '#F87171' %>;
+                  "><%= journal.sessionScore %>%</span>
+                </div>
+                <p style="
+                  font-size:0.78rem;
+                  color:var(--ash);
+                  line-height:1.5;
+                  margin:0 0 4px;
+                "><%= journal.notes.substring(0, 80) %><%= journal.notes.length > 80 ? '...' : '' %></p>
+                <div style="
+                  font-family:'DM Mono',monospace;
+                  font-size:0.5rem;
+                  color:rgba(168,160,154,0.5);
+                "><%= new Date(journal.createdAt).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) %></div>
+              </div>
+            <% }); %>
+          </div>
+          <a href="/dashboard/journal" style="
+            display:flex;align-items:center;justify-content:center;gap:6px;
+            margin-top:12px;
+            padding:10px;
+            border:1px solid var(--border);
             font-family:'DM Mono',monospace;
-            font-size:0.48rem;
+            font-size:0.6rem;
+            letter-spacing:0.1em;
+            text-transform:uppercase;
             color:var(--ash);
-            writing-mode:vertical-rl;
-            transform:rotate(180deg);
-            max-height:32px;
-            overflow:hidden;
-          ">
-            <%= j.asset ? j.asset.substring(0,6) : 'N/A' %>
-          </div>
-        </div>
-      <% }); %>
-    </div>
-    <div style="
-      display:flex;gap:16px;margin-top:12px;
-      padding-top:10px;border-top:1px solid var(--border);
-    ">
-      <div style="display:flex;align-items:center;gap:6px;">
-        <div style="width:10px;height:10px;background:rgba(52,211,153,0.7);border-radius:1px;"></div>
-        <span style="font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--ash);">Compliant</span>
+            text-decoration:none;
+            transition:all 0.2s;
+          " onmouseover="this.style.color='var(--gold)';this.style.borderColor='rgba(201,168,76,0.3)'"
+             onmouseout="this.style.color='var(--ash)';this.style.borderColor='var(--border)'">
+            <i data-feather="plus" width="12" height="12"></i>
+            Log New Session
+          </a>
+        <% } %>
       </div>
-      <div style="display:flex;align-items:center;gap:6px;">
-        <div style="width:10px;height:10px;background:rgba(248,113,113,0.7);border-radius:1px;"></div>
-        <span style="font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--ash);">Violated</span>
-      </div>
-    </div>
-  <% } else { %>
-    <div class="empty-state" style="padding:30px;">
-      <p>Log sessions to see your progress chart.</p>
-    </div>
-  <% } %>
-</div>
 
-<!-- BADGES SECTION â€” paste this into dashboard.ejs replacing the existing badges block -->
-<!-- Uses Feather Icons inline SVG instead of emojis -->
-<!-- Feather CDN must be in partials/head.ejs or added to dashboard.ejs head -->
-
-<% if (user.badges && user.badges.length > 0) { %>
-<div class="card" style="margin-top:2px;">
-  <div class="card-header">
-    <h2>Achievements</h2>
-    <span class="card-badge"><%= user.badges.length %> Earned</span>
-  </div>
-  <div style="display:flex;flex-wrap:wrap;gap:10px;">
-    <% user.badges.forEach(function(badge) {
-
-      // Feather icon name map â€” all outline, no emojis
-      const iconMap = {
-        'first_session':   'star',
-        'sessions_5':      'book-open',
-        'sessions_10':     'zap',
-        'sessions_25':     'trending-up',
-        'sessions_50':     'activity',
-        'sessions_100':    'award',
-        'score_40':        'bar-chart',
-        'score_60':        'bar-chart-2',
-        'score_80':        'shield',
-        'score_95':        'shield',
-        'streak_3':        'target',
-        'streak_7':        'calendar',
-        'streak_14':       'clock',
-        'streak_30':       'lock',
-        'psych_first':     'heart',
-        'psych_5':         'eye',
-        'psych_10':        'compass',
-        'perfect_week':    'check-circle',
-        'comeback':        'corner-up-right',
-        'honest_trader':   'user-check'
-      };
-
-      const colorMap = {
-        'first_session':  'var(--gold)',
-        'sessions_100':   'var(--gold)',
-        'score_80':       'var(--gold)',
-        'score_95':       'var(--gold)',
-        'streak_30':      'var(--gold)',
-        'psych_10':       'var(--blue)',
-        'perfect_week':   '#4ADE80',
-        'comeback':       '#F87171',
-        'honest_trader':  'var(--gold)'
-      };
-
-      const icon = iconMap[badge.id] || 'award';
-      const color = colorMap[badge.id] || 'var(--ash-light)';
-    %>
-      <div title="<%= badge.description %> â€” Earned <%= new Date(badge.earnedAt).toLocaleDateString() %>"
-        style="
-          background:var(--bg-surface);
-          border:1px solid rgba(201,168,76,0.15);
-          padding:10px 14px;
-          display:flex;
-          align-items:center;
-          gap:10px;
-          min-width:160px;
-        ">
+      <!-- DISCIPLINE PROGRESS CHART -->
+      <div style="background:var(--bg-card);border:1px solid var(--border);padding:20px;">
         <div style="
-          width:28px;height:28px;
-          border:1px solid rgba(201,168,76,0.2);
-          background:rgba(201,168,76,0.04);
-          display:flex;align-items:center;justify-content:center;
-          color:<%= color %>;
-          flex-shrink:0;
+          display:flex;align-items:center;justify-content:space-between;
+          margin-bottom:16px;
         ">
-          <i data-feather="<%= icon %>" width="14" height="14"></i>
-        </div>
-        <div>
-          <div style="font-size:0.78rem;font-weight:700;color:var(--text-primary);">
-            <%= badge.name %>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <i data-feather="activity" width="14" height="14" style="color:var(--gold);"></i>
+            <span style="font-weight:700;font-size:0.9rem;color:var(--text-primary);">Discipline Progress</span>
           </div>
-          <div style="
+          <span style="
             font-family:'DM Mono',monospace;
-            font-size:0.52rem;
+            font-size:0.5rem;
+            letter-spacing:0.12em;
+            text-transform:uppercase;
             color:var(--ash);
-            letter-spacing:0.06em;
-          ">
-            <%= new Date(badge.earnedAt).toLocaleDateString('en-US',{month:'short',day:'numeric'}) %>
-          </div>
+          ">Last 10 Sessions</span>
         </div>
-      </div>
-    <% }); %>
-  </div>
-</div>
-<% } %>
 
-<!-- NEW BADGE NOTIFICATION â€” replaces emoji toast -->
-<% if (typeof newBadges !== 'undefined' && newBadges && newBadges.length > 0) { %>
-<div id="badge-notification" style="
-  position:fixed;
-  bottom:24px;
-  right:24px;
-  background:var(--bg-card);
-  border:1px solid rgba(201,168,76,0.35);
-  padding:18px 20px;
-  max-width:280px;
-  z-index:1000;
-  box-shadow:0 8px 32px rgba(0,0,0,0.4);
-  animation:slideIn 0.4s ease;
-">
-  <div style="
-    display:flex;align-items:center;gap:10px;
-    margin-bottom:10px;
-  ">
-    <div style="
-      width:28px;height:28px;
-      border:1px solid rgba(201,168,76,0.3);
-      background:rgba(201,168,76,0.08);
-      display:flex;align-items:center;justify-content:center;
-      color:var(--gold);flex-shrink:0;
-    ">
-      <i data-feather="award" width="14" height="14"></i>
-    </div>
-    <div style="
-      font-family:'DM Mono',monospace;
-      font-size:0.58rem;
-      letter-spacing:0.15em;
-      text-transform:uppercase;
-      color:var(--gold);
-    ">Achievement Unlocked</div>
-  </div>
-  <% newBadges.forEach(function(b) { %>
-    <div style="font-size:0.88rem;font-weight:700;color:var(--text-primary);margin-bottom:2px;">
-      <%= b.name %>
-    </div>
-    <div style="font-size:0.78rem;color:var(--ash-light);line-height:1.5;">
-      <%= b.description %>
-    </div>
-  <% }); %>
-  <button onclick="document.getElementById('badge-notification').remove()"
-    style="
-      margin-top:12px;
-      background:rgba(201,168,76,0.08);
-      border:1px solid rgba(201,168,76,0.25);
-      color:var(--gold);
-      font-family:'DM Mono',monospace;
-      font-size:0.6rem;
-      letter-spacing:0.08em;
-      padding:6px 12px;
-      cursor:pointer;
-      width:100%;
-    ">Dismiss</button>
-</div>
-<style>
-@keyframes slideIn {
-  from { transform:translateX(120%); opacity:0; }
-  to   { transform:translateX(0);    opacity:1; }
-}
-</style>
-<% } %>
-
-  <%- include('partials/footer') %>
-  <script src="/js/app.js"></script>
-
-<script>
-async function submitPreTrade() {
-  const input = document.getElementById('pretrade-input');
-  const responseEl = document.getElementById('pretrade-response');
-  const text = input.value.trim();
-
-  if (!text) return;
-
-  responseEl.style.display = 'block';
-  responseEl.textContent = '改 KAIZEN is thinking...';
-
-  try {
-    const res = await fetch('/dashboard/pretrade', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ note: text })
-    });
-    const data = await res.json();
-
-    // Stream the response
-    responseEl.textContent = '';
-    const reply = data.response || 'Kaizen could not process this right now.';
-    let i = 0;
-    function stream() {
-      if (i < reply.length) {
-        responseEl.textContent += reply[i];
-        i++;
-        setTimeout(stream, 10);
-      }
-    }
-    stream();
-  } catch(e) {
-    responseEl.textContent = '改 Could not reach KAIZEN AI right now.';
-  }
-}
-</script>
-</body>
-</html>
+        <% if (journals && journals.length > 0) { %>
+          <div style="display:flex;align-items:flex-end;gap:4px;height:110px;padding:0 2px;margin-bottom:12px;">
+            <% journals.slice(0,10).reverse().forEach(function(j, i) { %>
+              <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;position:relative;" title="<%= j.asset %>: <%= j.sessionScore %>%">
+                <div style="
+                  font-family:'DM Mono',monospace;
+                  font-size:0.45rem;
+                  color:<%= j.ruleCompliance ? '#4ADE80' : '#F87171' %>;
+                  line-height:1;
