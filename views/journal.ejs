@@ -2,173 +2,199 @@
 <html lang="en">
 <head>
   <%- include('partials/head') %>
-  <title>KAIZEN — My Journal</title>
+  <title>KAIZEN - My Journal</title>
 </head>
 <body class="app-page">
-
   <%- include('partials/navbar') %>
 
   <main class="app-main">
 
-    <div class="page-header">
+    <!-- HEADER -->
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:24px;flex-wrap:wrap;">
       <div>
-        <h1 style="color:var(--gold);">My Journal</h1>
-        <p class="page-sub">Write honestly. Kaizen learns from everything you record.</p>
+        <div style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:6px;display:flex;align-items:center;gap:8px;">
+          <span style="width:16px;height:1px;background:var(--gold);display:inline-block;"></span>
+          Trading Journal
+        </div>
+        <h1 style="font-size:1.6rem;font-weight:700;color:var(--text-primary);margin-bottom:4px;">My Journal</h1>
+        <p style="font-size:0.82rem;color:var(--ash);font-style:italic;">Write honestly. KAIZEN learns from everything you record.</p>
       </div>
-      <a href="/dashboard" class="btn-outline">← Dashboard</a>
+      <a href="/dashboard" style="display:inline-flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);border:1px solid var(--border);padding:10px 16px;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.color='var(--gold)';this.style.borderColor='rgba(201,168,76,0.3)'" onmouseout="this.style.color='var(--ash)';this.style.borderColor='var(--border)'">
+        <i data-feather="arrow-left" width="12" height="12"></i>
+        Dashboard
+      </a>
     </div>
 
-    <!-- NEW SESSION NOTE -->
-    <div class="card card-gold" style="margin-bottom:2px;">
-      <div class="card-header">
-        <h2>New Session Entry</h2>
-        <span class="card-badge">Write Freely</span>
+    <!-- TIPS ROW -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:2px;margin-bottom:16px;">
+      <% [
+        ['edit-3','Be brutally honest','AI cannot judge you. Hiding mistakes means missing the pattern.'],
+        ['activity','Log your feeling vs action','Felt FOMO but waited? Say that. Both sides matter.'],
+        ['eye','Journal no-trades too','The setups you skipped teach KAIZEN as much as the ones you took.']
+      ].forEach(function(t) { %>
+        <div style="background:var(--bg-card);border:1px solid var(--border);padding:14px 16px;display:flex;gap:10px;align-items:flex-start;">
+          <div style="width:24px;height:24px;min-width:24px;border:1px solid rgba(201,168,76,0.2);background:rgba(201,168,76,0.04);display:flex;align-items:center;justify-content:center;color:var(--gold);margin-top:1px;">
+            <i data-feather="<%= t[0] %>" width="12" height="12"></i>
+          </div>
+          <div>
+            <div style="font-weight:700;font-size:0.78rem;color:var(--text-primary);margin-bottom:3px;"><%= t[1] %></div>
+            <div style="font-size:0.72rem;color:var(--ash);line-height:1.5;"><%= t[2] %></div>
+          </div>
+        </div>
+      <% }); %>
+    </div>
+
+    <!-- NEW SESSION FORM -->
+    <div style="background:var(--bg-card);border:1px solid rgba(201,168,76,0.2);padding:24px;margin-bottom:16px;">
+
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="width:28px;height:28px;border:1px solid rgba(201,168,76,0.25);background:rgba(201,168,76,0.06);display:flex;align-items:center;justify-content:center;color:var(--gold);">
+            <i data-feather="file-text" width="13" height="13"></i>
+          </div>
+          <div>
+            <div style="font-weight:700;font-size:0.95rem;color:var(--text-primary);">New Session Entry</div>
+            <div style="font-size:0.72rem;color:var(--ash);">Write freely. KAIZEN AI reads every word</div>
+          </div>
+        </div>
+        <span style="font-family:'DM Mono',monospace;font-size:0.52rem;letter-spacing:0.12em;text-transform:uppercase;color:rgba(201,168,76,0.4);border:1px solid rgba(201,168,76,0.12);padding:3px 8px;">Write Freely</span>
       </div>
 
-      <form action="/dashboard/journal" method="POST" class="journal-form" id="journal-form">
+      <form action="/dashboard/journal" method="POST" id="journal-form">
 
-  <!-- MAIN NOTEPAD — the only thing that matters -->
-  <div class="form-group">
-    <label class="form-label">Session Notes</label>
-    <div class="notepad-wrapper">
-      <div class="notepad-toolbar">
-        <span class="notepad-hint">
-          Write everything — what you analyzed, what you traded,
-          what happened, and why. Be completely honest.
-          Kaizen AI reads every word.
-        </span>
-      </div>
-      <textarea
-        name="notes"
-        class="form-input notepad-textarea"
-        placeholder="Start writing about your session...
+        <div style="margin-bottom:14px;">
+          <label style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);display:block;margin-bottom:8px;">Session Notes</label>
+          <textarea name="notes" required style="
+            width:100%;min-height:300px;
+            background:var(--bg-surface);
+            border:1px solid var(--border);
+            color:var(--text-primary);
+            font-family:'Outfit',sans-serif;
+            font-size:0.9rem;
+            padding:16px;
+            resize:vertical;
+            outline:none;
+            line-height:1.75;
+            box-sizing:border-box;
+          " placeholder="Start writing about your session...
 
 What pair did you analyze? What timeframe?
 What did you see on the chart?
 Did you take a trade? What was your entry, SL, and TP?
 Did you follow your checklist?
-What happened — win, loss, or no trade?
+What happened? Win, loss, or no trade?
 What did you feel during the session?
-What would you do differently?"
-        required
-        style="min-height:320px;"></textarea>
+What would you do differently?"></textarea>
+        </div>
+
+        <div style="margin-bottom:20px;">
+          <label style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);display:block;margin-bottom:10px;">Did you follow ALL your trading rules?</label>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <label style="display:flex;align-items:center;justify-content:center;gap:8px;padding:14px;background:rgba(52,211,153,0.04);border:1px solid rgba(52,211,153,0.2);cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background='rgba(52,211,153,0.08)'" onmouseout="this.style.background='rgba(52,211,153,0.04)'">
+              <input type="radio" name="ruleCompliance" value="true" required>
+              <div style="display:flex;align-items:center;gap:6px;">
+                <i data-feather="check-circle" width="14" height="14" style="color:#4ADE80;"></i>
+                <span style="font-weight:700;font-size:0.9rem;color:#4ADE80;">Yes. Followed Rules</span>
+              </div>
+            </label>
+            <label style="display:flex;align-items:center;justify-content:center;gap:8px;padding:14px;background:rgba(248,113,113,0.04);border:1px solid rgba(248,113,113,0.2);cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background='rgba(248,113,113,0.08)'" onmouseout="this.style.background='rgba(248,113,113,0.04)'">
+              <input type="radio" name="ruleCompliance" value="false">
+              <div style="display:flex;align-items:center;gap:6px;">
+                <i data-feather="x-circle" width="14" height="14" style="color:#F87171;"></i>
+                <span style="font-weight:700;font-size:0.9rem;color:#F87171;">No Violated Rules</span>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <input type="hidden" name="asset" value="">
+        <input type="hidden" name="timeframe" value="N/A">
+        <input type="hidden" name="outcome" value="Pending">
+        <input type="hidden" name="emotion" value="Logged">
+        <input type="hidden" name="sessionScore" value="50">
+        <input type="hidden" name="direction" value="Live Trade">
+
+        <button type="submit" id="journal-submit-btn" style="
+          width:100%;
+          background:var(--gold);
+          color:#000;
+          border:none;
+          font-family:'DM Mono',monospace;
+          font-size:0.72rem;
+          letter-spacing:0.12em;
+          text-transform:uppercase;
+          font-weight:700;
+          padding:16px;
+          cursor:pointer;
+          display:flex;align-items:center;justify-content:center;gap:8px;
+          transition:background 0.2s;
+        " onmouseover="this.style.background='#E2C46A'" onmouseout="this.style.background='var(--gold)'">
+          <i data-feather="send" width="14" height="14"></i>
+          Save Session Get KAIZEN AI Analysis
+        </button>
+
+        <!-- Responding state -->
+        <div id="responding-state" style="display:none;text-align:center;padding:28px 16px;border:1px solid rgba(201,168,76,0.2);background:rgba(201,168,76,0.03);margin-top:12px;">
+          <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:8px;">
+            <div style="width:6px;height:6px;border-radius:50%;background:var(--gold);animation:pulse 1.2s infinite;"></div>
+            <div id="responding-text" style="font-family:'DM Mono',monospace;font-size:0.72rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);">KAIZEN AI IS RESPONDING...</div>
+          </div>
+          <p style="font-size:0.72rem;color:var(--ash);font-family:'DM Mono',monospace;letter-spacing:0.05em;">Analyzing your session. Redirecting shortly.</p>
+        </div>
+
+      </form>
     </div>
-  </div>
 
-  <!-- COMPLIANCE — simplified -->
-  <div class="form-group">
-    <label class="form-label">Did you follow ALL your trading rules?</label>
-    <div class="radio-group" style="flex-direction:row;gap:12px;">
-      <label class="radio-option" style="flex:1;justify-content:center;padding:14px;">
-        <input type="radio" name="ruleCompliance" value="true" required>
-        <span style="color:var(--green);font-weight:600;font-size:0.9rem;">Yes</span>
-      </label>
-      <label class="radio-option" style="flex:1;justify-content:center;padding:14px;">
-        <input type="radio" name="ruleCompliance" value="false">
-        <span style="color:var(--red);font-weight:600;font-size:0.9rem;">No</span>
-      </label>
-    </div>
-  </div>
-
-  <!-- Hidden fields -->
-  <input type="hidden" name="asset" value="">
-  <input type="hidden" name="timeframe" value="N/A">
-  <input type="hidden" name="outcome" value="Pending">
-  <input type="hidden" name="emotion" value="Logged">
-  <input type="hidden" name="sessionScore" value="50">
-  <input type="hidden" name="direction" value="Live Trade">
-
-  <button type="submit" class="btn-primary btn-full" id="journal-submit-btn">
-    Save Session Entry
-  </button>
-
-  <div id="responding-state" style="
-    display:none;
-    text-align:center;
-    padding:28px 16px;
-    border:1px solid rgba(201,168,76,0.2);
-    background:rgba(201,168,76,0.03);
-    margin-top:16px;
-  ">
-    <div id="responding-text" style="
-      font-family:'DM Mono',monospace;
-      font-size:0.78rem;
-      letter-spacing:0.15em;
-      text-transform:uppercase;
-      color:#C9A84C;
-    ">改 KAIZEN AI IS RESPONDING...</div>
-    <p style="
-      font-size:0.75rem;
-      color:#A8A09A;
-      margin-top:10px;
-      font-family:'DM Mono',monospace;
-      letter-spacing:0.05em;
-    ">Analyzing your session. Redirecting shortly.</p>
-  </div>
-
-</form>
-    </div>
-
-    <!-- PAST ENTRIES -->
-    <div style="margin-top:32px;">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
-        <h2 style="font-size:1rem;font-weight:700;color:var(--text-primary);">
-          Past Sessions
-        </h2>
-        <span style="font-family:var(--font-mono);font-size:0.65rem;color:var(--ash);letter-spacing:0.1em;text-transform:uppercase;">
+    <!-- PAST SESSIONS -->
+    <div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <i data-feather="clock" width="14" height="14" style="color:var(--gold);"></i>
+          <span style="font-weight:700;font-size:0.9rem;color:var(--text-primary);">Past Sessions</span>
+        </div>
+        <span style="font-family:'DM Mono',monospace;font-size:0.58rem;color:var(--ash);letter-spacing:0.1em;text-transform:uppercase;">
           <%= typeof journals !== 'undefined' ? journals.length : 0 %> entries
         </span>
       </div>
 
       <% if (typeof journals !== 'undefined' && journals.length === 0) { %>
-        <div class="card">
-          <div class="empty-state">
-            <p style="font-size:1rem;font-weight:600;color:var(--text-primary);margin-bottom:8px;">
-              No sessions logged yet.
-            </p>
-            <p>
-              Traders who journal consistently outperform those who don't.
-              Write your first entry above.
-            </p>
+        <div style="background:var(--bg-card);border:1px solid var(--border);padding:40px;text-align:center;">
+          <div style="width:40px;height:40px;border:1px solid var(--border);background:var(--bg-surface);display:flex;align-items:center;justify-content:center;color:var(--ash);margin:0 auto 12px;">
+            <i data-feather="book-open" width="16" height="16"></i>
           </div>
+          <p style="font-size:0.88rem;color:var(--ash);line-height:1.7;">
+            Traders who journal consistently outperform those who don't.<br>Write your first entry above.
+          </p>
         </div>
       <% } else if (typeof journals !== 'undefined') { %>
         <div style="display:flex;flex-direction:column;gap:2px;">
           <% journals.forEach(function(journal) { %>
-            <div class="journal-entry-card">
-              <div class="journal-entry-top">
-                <div style="display:flex;align-items:center;gap:12px;">
-                  <span class="journal-asset"><%= journal.asset %></span>
-                  <span class="journal-tag"><%= journal.direction %></span>
-                </div>
-                <div style="display:flex;align-items:center;gap:12px;">
-                  <% if (journal.ruleCompliance) { %>
-                    <span class="compliance-good">Rules Followed</span>
-                  <% } else { %>
-                    <span class="compliance-bad">Rules Violated</span>
-                  <% } %>
-                  <span class="journal-date">
-                    <%= new Date(journal.createdAt).toLocaleDateString('en-US', {
-                      month: 'short', day: 'numeric', year: 'numeric'
-                    }) %>
+            <div style="
+              background:var(--bg-card);
+              border:1px solid var(--border);
+              border-left:2px solid <%= journal.ruleCompliance ? 'rgba(52,211,153,0.4)' : 'rgba(248,113,113,0.4)' %>;
+              padding:18px;
+            ">
+              <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:8px;flex-wrap:wrap;">
+                <div style="display:flex;align-items:center;gap:10px;">
+                  <span style="font-family:'DM Mono',monospace;font-size:0.78rem;font-weight:700;color:var(--text-primary);"><%= journal.asset %></span>
+                  <span style="display:flex;align-items:center;gap:4px;font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;padding:3px 8px;border:1px solid <%= journal.ruleCompliance ? 'rgba(52,211,153,0.3)' : 'rgba(248,113,113,0.3)' %>;color:<%= journal.ruleCompliance ? '#4ADE80' : '#F87171' %>;background:<%= journal.ruleCompliance ? 'rgba(52,211,153,0.05)' : 'rgba(248,113,113,0.05)' %>;">
+                    <i data-feather="<%= journal.ruleCompliance ? 'check' : 'x' %>" width="10" height="10"></i>
+                    <%= journal.ruleCompliance ? 'Compliant' : 'Violated' %>
                   </span>
                 </div>
+                <span style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--ash);">
+                  <%= new Date(journal.createdAt).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) %>
+                </span>
               </div>
-              <div class="journal-entry-body">
-                <p><%= journal.notes %></p>
-              </div>
+              <p style="font-size:0.85rem;color:var(--ash-light);line-height:1.7;margin:0;"><%= journal.notes %></p>
             </div>
           <% }); %>
         </div>
       <% } else { %>
-        <div class="card">
-          <div class="empty-state">
-            <p>Could not load journal entries.</p>
-            <a href="/dashboard" class="btn-outline"
-              style="margin-top:16px;display:inline-block;">
-              Back to Dashboard
-            </a>
-          </div>
+        <div style="background:var(--bg-card);border:1px solid var(--border);padding:32px;text-align:center;">
+          <p style="font-size:0.85rem;color:var(--ash);">Could not load journal entries.</p>
+          <a href="/dashboard" style="display:inline-block;margin-top:12px;font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(201,168,76,0.25);padding:8px 16px;text-decoration:none;">Back to Dashboard</a>
         </div>
       <% } %>
     </div>
@@ -177,25 +203,24 @@ What would you do differently?"
 
   <%- include('partials/footer') %>
   <script src="/js/app.js"></script>
-
   <script>
-  document.getElementById('journal-form').addEventListener('submit', function() {
-    const btn = document.getElementById('journal-submit-btn');
-    const state = document.getElementById('responding-state');
-
-    btn.style.display = 'none';
-    state.style.display = 'block';
-
-    // Fade animation
-    let visible = true;
-    const textEl = document.getElementById('responding-text');
-    setInterval(function() {
-      if (textEl) {
-        textEl.style.opacity = visible ? '0.2' : '1';
-        visible = !visible;
-      }
-    }, 600);
-  });
-</script>
+    feather.replace();
+    document.getElementById('journal-form').addEventListener('submit', function() {
+      const btn = document.getElementById('journal-submit-btn');
+      const state = document.getElementById('responding-state');
+      btn.style.display = 'none';
+      state.style.display = 'block';
+      let visible = true;
+      const textEl = document.getElementById('responding-text');
+      setInterval(function() {
+        if (textEl) { textEl.style.opacity = visible ? '0.2' : '1'; visible = !visible; }
+      }, 600);
+    });
+  </script>
+  <style>
+    @keyframes pulse {
+      0%,100%{opacity:1} 50%{opacity:0.3}
+    }
+  </style>
 </body>
 </html>
