@@ -5,262 +5,164 @@
   <title>KAIZEN — Psychology Session</title>
 </head>
 <body class="app-page">
-
   <%- include('partials/navbar') %>
 
   <main class="app-main">
 
-    <div class="page-header">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:24px;flex-wrap:wrap;">
       <div>
-        <h1 style="color:var(--gold);">Psychology Session</h1>
-        <p class="page-sub">
-          This is not about a specific trade.
-          Talk to KAIZEN AI about how you feel about trading.
-        </p>
+        <div style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:6px;display:flex;align-items:center;gap:8px;">
+          <span style="width:16px;height:1px;background:var(--gold);display:inline-block;"></span>
+          Mindset Work
+        </div>
+        <h1 style="font-size:1.6rem;font-weight:700;color:var(--text-primary);margin-bottom:4px;">Psychology Session</h1>
+        <p style="font-size:0.82rem;color:var(--ash);font-style:italic;">Not about a trade. About the mind that takes them.</p>
       </div>
-      <a href="/dashboard" class="btn-outline">← Dashboard</a>
+      <a href="/dashboard" style="display:inline-flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);border:1px solid var(--border);padding:10px 16px;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.color='var(--gold)';this.style.borderColor='rgba(201,168,76,0.3)'" onmouseout="this.style.color='var(--ash)';this.style.borderColor='var(--border)'">
+        <i data-feather="arrow-left" width="12" height="12"></i>
+        Dashboard
+      </a>
     </div>
 
-    <!-- INTRO CARD -->
-    <div style="
-      padding:18px 22px;
-      background:rgba(201,168,76,0.04);
-      border:1px solid rgba(201,168,76,0.15);
-      margin-bottom:2px;
-      display:flex;
-      gap:14px;
-      align-items:flex-start;
-    ">
-      <div style="
-        font-family:'DM Mono',monospace;
-        font-size:1.4rem;
-        color:rgba(201,168,76,0.4);
-        flex-shrink:0;
-        line-height:1;
-      ">改</div>
+    <!-- INFO CARD -->
+    <div style="background:linear-gradient(135deg,rgba(201,168,76,0.04),rgba(59,130,246,0.02));border:1px solid rgba(201,168,76,0.15);padding:20px;margin-bottom:16px;display:flex;gap:14px;align-items:flex-start;">
+      <div style="width:32px;height:32px;min-width:32px;border:1px solid rgba(201,168,76,0.25);background:rgba(201,168,76,0.06);display:flex;align-items:center;justify-content:center;color:var(--gold);">
+        <i data-feather="cpu" width="15" height="15"></i>
+      </div>
       <div>
-        <div style="
-          font-weight:700;
-          font-size:0.88rem;
-          color:var(--text-primary);
-          margin-bottom:6px;
-        ">
-          Your trading mindset matters as much as your strategy.
-        </div>
-        <p style="
-          font-size:0.82rem;
-          color:var(--text-secondary);
-          line-height:1.75;
-          margin:0;
-        ">
-          Use this space to talk about fear, confidence, pressure,
-          anxiety, self-doubt, or anything on your mind about trading.
-          KAIZEN AI responds as a trading psychologist — not a trade analyst.
+        <div style="font-weight:700;font-size:0.9rem;color:var(--text-primary);margin-bottom:6px;">This is a safe space, not a trade log.</div>
+        <p style="font-size:0.82rem;color:var(--text-secondary);line-height:1.75;margin:0;">
+          Talk to KAIZEN AI about fear, confidence, financial pressure, anxiety, or self-doubt around trading.
+          Psychology sessions contribute <strong style="color:var(--gold);">30%</strong> to your overall Discipline Score — because mindset is discipline.
         </p>
       </div>
     </div>
 
     <!-- CHAT INTERFACE -->
-    <div class="card" style="margin-bottom:2px;">
+    <div style="background:var(--bg-card);border:1px solid rgba(201,168,76,0.18);padding:20px;margin-bottom:16px;">
 
       <!-- Conversation history -->
-      <div id="chat-history" style="
-        min-height:200px;
-        max-height:400px;
-        overflow-y:auto;
-        margin-bottom:20px;
-        display:flex;
-        flex-direction:column;
-        gap:16px;
-      ">
-        <!-- Messages appear here -->
-        <div style="
-          text-align:center;
-          padding:40px 20px;
-          color:var(--ash);
-          font-size:0.82rem;
-          line-height:1.8;
-        " id="empty-state">
-          <div style="
-            font-size:2rem;
-            color:rgba(201,168,76,0.15);
-            margin-bottom:12px;
-          ">改</div>
-          Start by telling KAIZEN how you are feeling about
-          your trading right now.<br>
-          There are no wrong answers here.
+      <div id="chat-history" style="min-height:200px;max-height:420px;overflow-y:auto;margin-bottom:16px;display:flex;flex-direction:column;gap:14px;">
+        <div id="empty-state" style="text-align:center;padding:48px 20px;display:flex;flex-direction:column;align-items:center;gap:12px;">
+          <div style="font-family:'DM Mono',monospace;font-size:3rem;color:rgba(201,168,76,0.1);line-height:1;">改</div>
+          <p style="font-size:0.85rem;color:var(--ash);line-height:1.75;max-width:300px;">
+            Tell KAIZEN how you're feeling about your trading right now.<br>There are no wrong answers here.
+          </p>
         </div>
       </div>
 
       <!-- Suggested prompts -->
-      <div id="suggestions" style="
-        display:flex;
-        gap:8px;
-        flex-wrap:wrap;
-        margin-bottom:16px;
-      ">
-        <button onclick="usePrompt(this)"
-          class="suggestion-btn">
-          I feel anxious every time I open my charts
-        </button>
-        <button onclick="usePrompt(this)"
-          class="suggestion-btn">
-          I keep second-guessing valid setups
-        </button>
-        <button onclick="usePrompt(this)"
-          class="suggestion-btn">
-          I trade better in backtesting than live
-        </button>
-        <button onclick="usePrompt(this)"
-          class="suggestion-btn">
-          I feel pressure because I need this to work financially
-        </button>
-        <button onclick="usePrompt(this)"
-          class="suggestion-btn">
-          After a loss I feel like giving up
-        </button>
-        <button onclick="usePrompt(this)"
-          class="suggestion-btn">
-          I don't feel like I deserve to win trades
-        </button>
+      <div id="suggestions" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;">
+        <% [
+          'I feel anxious every time I open my charts',
+          'I keep second-guessing valid setups',
+          'I trade better in backtesting than live',
+          'I feel pressure because I need this to work financially',
+          'After a loss I feel like giving up',
+          'I don\'t feel like I deserve to win trades'
+        ].forEach(function(prompt) { %>
+          <button onclick="usePrompt(this)" style="
+            background:var(--bg-surface);
+            border:1px solid var(--border);
+            color:var(--ash-light);
+            font-family:'Outfit',sans-serif;
+            font-size:0.75rem;
+            padding:7px 12px;
+            cursor:pointer;
+            transition:all 0.2s;
+            text-align:left;
+            line-height:1.4;
+          " onmouseover="this.style.borderColor='rgba(201,168,76,0.3)';this.style.color='var(--gold)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--ash-light)'">
+            <%= prompt %>
+          </button>
+        <% }); %>
       </div>
 
       <!-- Input -->
-      <div style="display:flex;gap:10px;align-items:flex-end;">
-        <textarea
-          id="psych-input"
-          class="form-input"
-          rows="3"
-          style="flex:1;resize:none;font-size:0.88rem;line-height:1.6;"
-          placeholder="Tell KAIZEN how you are feeling about your trading today..."></textarea>
-        <button
-          onclick="sendMessage()"
-          id="send-btn"
-          style="
-            background:var(--gold);
-            color:#000;
-            border:none;
-            font-family:'DM Mono',monospace;
-            font-size:0.65rem;
-            letter-spacing:0.1em;
-            text-transform:uppercase;
-            font-weight:700;
-            padding:0 20px;
-            cursor:pointer;
-            align-self:stretch;
-            transition:background 0.2s;
-            white-space:nowrap;
-          "
-          onmouseover="this.style.background='#E2C46A'"
-          onmouseout="this.style.background='var(--gold)'">
+      <div style="display:flex;gap:8px;align-items:flex-end;">
+        <textarea id="psych-input" rows="3" style="
+          flex:1;resize:none;
+          background:var(--bg-surface);
+          border:1px solid var(--border);
+          color:var(--text-primary);
+          font-family:'Outfit',sans-serif;
+          font-size:0.88rem;
+          padding:12px 14px;
+          outline:none;
+          line-height:1.6;
+        " placeholder="Tell KAIZEN how you're feeling about your trading today..."></textarea>
+        <button onclick="sendMessage()" id="send-btn" style="
+          background:var(--gold);
+          color:#000;
+          border:none;
+          font-family:'DM Mono',monospace;
+          font-size:0.62rem;
+          letter-spacing:0.1em;
+          text-transform:uppercase;
+          font-weight:700;
+          padding:0 20px;
+          cursor:pointer;
+          align-self:stretch;
+          display:flex;align-items:center;gap:6px;
+          transition:background 0.2s;
+          white-space:nowrap;
+        " onmouseover="this.style.background='#E2C46A'" onmouseout="this.style.background='var(--gold)'">
+          <i data-feather="send" width="12" height="12"></i>
           Send
         </button>
       </div>
 
-      <!-- Disclaimer -->
-      <p style="
-  font-family:'DM Mono',monospace;
-  font-size:0.58rem;
-  letter-spacing:0.08em;
-  color:rgba(168,160,154,0.4);
-  margin-top:10px;
-  text-transform:uppercase;
-" id="psych-score-line">
-  Psychology sessions contribute 30% to your overall discipline score
-</p>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:8px;flex-wrap:wrap;gap:4px;">
+        <p style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.08em;text-transform:uppercase;color:rgba(168,160,154,0.4);margin:0;" id="psych-score-line">
+          Psychology sessions contribute 30% to your discipline score
+        </p>
+        <p style="font-family:'DM Mono',monospace;font-size:0.52rem;color:rgba(168,160,154,0.35);margin:0;">
+          Press Enter to send · Shift+Enter for new line
+        </p>
+      </div>
     </div>
 
-    <!-- PAST PSYCHOLOGY SESSIONS -->
+    <!-- PAST SESSIONS -->
     <% if (sessions && sessions.length > 0) { %>
-      <div style="margin-top:8px;">
-        <div style="
-          font-family:'DM Mono',monospace;
-          font-size:0.62rem;
-          letter-spacing:0.15em;
-          text-transform:uppercase;
-          color:var(--ash);
-          margin-bottom:12px;
-          padding-left:4px;
-        ">Past Psychology Sessions</div>
-
+      <div>
+        <div style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--ash);margin-bottom:12px;display:flex;align-items:center;gap:8px;">
+          <i data-feather="clock" width="12" height="12"></i>
+          Past Psychology Sessions
+        </div>
         <div style="display:flex;flex-direction:column;gap:2px;">
           <% sessions.forEach(function(s) { %>
-            <div class="card" style="cursor:pointer;"
-              onclick="this.querySelector('.psych-expand').style.display = this.querySelector('.psych-expand').style.display === 'none' ? 'block' : 'none'">
-              <div style="
-                display:flex;
-                justify-content:space-between;
-                align-items:flex-start;
-                gap:12px;
-              ">
+            <div style="
+              background:var(--bg-card);
+              border:1px solid rgba(59,130,246,0.12);
+              border-left:2px solid rgba(59,130,246,0.3);
+              padding:18px;
+              cursor:pointer;
+              transition:border-color 0.2s;
+            " onclick="this.querySelector('.psych-expand').style.display = this.querySelector('.psych-expand').style.display === 'none' ? 'block' : 'none'"
+               onmouseover="this.style.borderColor='rgba(59,130,246,0.3)'"
+               onmouseout="this.style.borderColor='rgba(59,130,246,0.12)'">
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;">
                 <div style="flex:1;">
-                  <div style="
-                    font-family:'DM Mono',monospace;
-                    font-size:0.6rem;
-                    letter-spacing:0.12em;
-                    text-transform:uppercase;
-                    color:var(--gold);
-                    margin-bottom:6px;
-                  ">
-                    改 Psychology · <%= new Date(s.createdAt).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) %>
+                  <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+                    <i data-feather="cpu" width="11" height="11" style="color:var(--blue);"></i>
+                    <span style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--blue);">
+                      Psychology · <%= new Date(s.createdAt).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) %>
+                    </span>
                   </div>
-                  <p style="
-                    font-size:0.82rem;
-                    color:var(--ash-light);
-                    line-height:1.6;
-                    font-style:italic;
-                  ">
+                  <p style="font-size:0.82rem;color:var(--ash-light);line-height:1.6;font-style:italic;margin:0;">
                     "<%= s.sessionData.substring(0, 120) %>..."
                   </p>
                 </div>
-                <span style="
-                  font-family:'DM Mono',monospace;
-                  font-size:0.58rem;
-                  color:var(--ash);
-                  flex-shrink:0;
-                ">Tap to expand</span>
+                <span style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--ash);flex-shrink:0;display:flex;align-items:center;gap:4px;">
+                  <i data-feather="chevron-down" width="12" height="12"></i>
+                  Expand
+                </span>
               </div>
-
-              <div class="psych-expand" style="
-                display:none;
-                margin-top:16px;
-                padding-top:16px;
-                border-top:1px solid var(--border);
-              ">
-                <div style="
-                  font-family:'DM Mono',monospace;
-                  font-size:0.6rem;
-                  letter-spacing:0.1em;
-                  text-transform:uppercase;
-                  color:var(--ash);
-                  margin-bottom:8px;
-                ">You said</div>
-                <p style="
-                  font-size:0.85rem;
-                  color:var(--ash-light);
-                  line-height:1.75;
-                  font-style:italic;
-                  margin-bottom:16px;
-                  padding:12px 16px;
-                  background:var(--bg-surface);
-                  border-left:2px solid rgba(201,168,76,0.2);
-                ">
-                  "<%= s.sessionData %>"
-                </p>
-                <div style="
-                  font-family:'DM Mono',monospace;
-                  font-size:0.6rem;
-                  letter-spacing:0.1em;
-                  text-transform:uppercase;
-                  color:var(--gold);
-                  margin-bottom:8px;
-                ">改 Kaizen responded</div>
-                <div style="
-                  font-size:0.88rem;
-                  color:var(--ash-light);
-                  line-height:1.9;
-                  white-space:pre-wrap;
-                "><%= s.response %></div>
+              <div class="psych-expand" style="display:none;margin-top:16px;padding-top:16px;border-top:1px solid var(--border);">
+                <div style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-bottom:8px;">You shared</div>
+                <p style="font-size:0.82rem;color:var(--ash);font-style:italic;padding:12px 14px;background:var(--bg-surface);border-left:2px solid rgba(201,168,76,0.2);margin:0 0 14px;">"<%= s.sessionData %>"</p>
+                <div style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);margin-bottom:8px;">改 KAIZEN responded</div>
+                <div style="font-size:0.88rem;color:var(--ash-light);line-height:1.9;white-space:pre-wrap;"><%= s.response %></div>
               </div>
             </div>
           <% }); %>
@@ -272,60 +174,8 @@
 
   <%- include('partials/footer') %>
   <script src="/js/app.js"></script>
-
-  <style>
-    .suggestion-btn {
-      background: var(--bg-surface);
-      border: 1px solid var(--border);
-      color: var(--ash-light);
-      font-family: 'Outfit', sans-serif;
-      font-size: 0.75rem;
-      padding: 7px 14px;
-      cursor: pointer;
-      transition: all 0.2s;
-      text-align: left;
-      line-height: 1.4;
-    }
-    .suggestion-btn:hover {
-      border-color: rgba(201,168,76,0.3);
-      color: var(--gold);
-      background: rgba(201,168,76,0.04);
-    }
-
-    .chat-user {
-      align-self: flex-end;
-      max-width: 80%;
-      background: rgba(201,168,76,0.06);
-      border: 1px solid rgba(201,168,76,0.15);
-      padding: 12px 16px;
-      font-size: 0.88rem;
-      color: var(--text-primary);
-      line-height: 1.7;
-    }
-
-    .chat-kaizen {
-      align-self: flex-start;
-      max-width: 90%;
-      background: var(--bg-surface);
-      border: 1px solid var(--border);
-      border-left: 2px solid var(--gold);
-      padding: 14px 16px;
-      font-size: 0.88rem;
-      color: var(--ash-light);
-      line-height: 1.85;
-      white-space: pre-wrap;
-    }
-
-    .chat-label {
-      font-family: 'DM Mono', monospace;
-      font-size: 0.55rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      margin-bottom: 6px;
-    }
-  </style>
-
   <script>
+    feather.replace();
     const chatHistory = document.getElementById('chat-history');
     const emptyState = document.getElementById('empty-state');
     const suggestions = document.getElementById('suggestions');
@@ -339,38 +189,35 @@
     }
 
     function addMessage(text, type) {
-      // Remove empty state on first message
       if (emptyState) emptyState.style.display = 'none';
-
       const wrapper = document.createElement('div');
-      wrapper.style.display = 'flex';
-      wrapper.style.flexDirection = 'column';
-
+      wrapper.style.cssText = 'display:flex;flex-direction:column;';
       const label = document.createElement('div');
-      label.className = 'chat-label';
-
+      label.style.cssText = "font-family:'DM Mono',monospace;font-size:0.52rem;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:5px;";
       const bubble = document.createElement('div');
-
       if (type === 'user') {
         wrapper.style.alignItems = 'flex-end';
         label.textContent = 'You';
         label.style.color = 'var(--ash)';
         label.style.textAlign = 'right';
-        bubble.className = 'chat-user';
+        bubble.style.cssText = 'max-width:80%;background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.15);padding:12px 16px;font-size:0.88rem;color:var(--text-primary);line-height:1.7;';
         bubble.textContent = text;
+        wrapper.appendChild(label);
+        wrapper.appendChild(bubble);
       } else {
         wrapper.style.alignItems = 'flex-start';
-        label.textContent = '改 Kaizen AI';
+        label.innerHTML = '<i data-feather="cpu" width="11" height="11" style="display:inline;margin-right:4px;"></i>改 KAIZEN AI';
         label.style.color = 'var(--gold)';
-        bubble.className = 'chat-kaizen';
+        label.style.display = 'flex';
+        label.style.alignItems = 'center';
+        label.style.gap = '4px';
+        bubble.style.cssText = 'max-width:90%;background:var(--bg-surface);border:1px solid var(--border);border-left:2px solid var(--gold);padding:14px 16px;font-size:0.88rem;color:var(--ash-light);line-height:1.85;white-space:pre-wrap;';
         bubble.textContent = '';
-
         wrapper.appendChild(label);
         wrapper.appendChild(bubble);
         chatHistory.appendChild(wrapper);
         chatHistory.scrollTop = chatHistory.scrollHeight;
-
-        // Stream the text
+        feather.replace();
         let i = 0;
         function stream() {
           if (i < text.length) {
@@ -386,9 +233,6 @@
         stream();
         return;
       }
-
-      wrapper.appendChild(label);
-      wrapper.appendChild(bubble);
       chatHistory.appendChild(wrapper);
       chatHistory.scrollTop = chatHistory.scrollHeight;
     }
@@ -396,22 +240,18 @@
     async function sendMessage() {
       const text = input.value.trim();
       if (!text) return;
-
-      // Hide suggestions after first message
       suggestions.style.display = 'none';
-
       addMessage(text, 'user');
       input.value = '';
       sendBtn.disabled = true;
-      sendBtn.textContent = '...';
-
-      // Add thinking indicator
+      sendBtn.innerHTML = '<i data-feather="loader" width="12" height="12"></i>';
+      feather.replace();
       const thinking = document.createElement('div');
-      thinking.style.cssText = 'font-family:"DM Mono",monospace;font-size:0.7rem;color:var(--ash);padding:8px 4px;';
-      thinking.textContent = '改 Kaizen is thinking...';
+      thinking.style.cssText = "font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--ash);padding:8px;display:flex;align-items:center;gap:6px;";
+      thinking.innerHTML = '<i data-feather="cpu" width="12" height="12" style="color:var(--gold);"></i> 改 KAIZEN is thinking...';
       chatHistory.appendChild(thinking);
+      feather.replace();
       chatHistory.scrollTop = chatHistory.scrollHeight;
-
       try {
         const res = await fetch('/psychology/ask', {
           method: 'POST',
@@ -419,38 +259,27 @@
           body: JSON.stringify({ message: text })
         });
         const data = await res.json();
-thinking.remove();
-addMessage(data.response, 'kaizen');
-
-// Show psychology score contribution
-if (data.psychScore) {
-  const scoreLine = document.getElementById('psych-score-line');
-  if (scoreLine) {
-    scoreLine.textContent = `This session scored ${data.psychScore}% · Psychology contributes 30% to your discipline score`;
-    scoreLine.style.color = data.psychScore >= 70
-      ? 'rgba(52,211,153,0.5)'
-      : data.psychScore >= 50
-      ? 'rgba(201,168,76,0.5)'
-      : 'rgba(248,113,113,0.4)';
-  }
-}
+        thinking.remove();
+        addMessage(data.response, 'kaizen');
+        if (data.psychScore) {
+          const scoreLine = document.getElementById('psych-score-line');
+          if (scoreLine) {
+            scoreLine.textContent = `This session scored ${data.psychScore}% · Contributing to your discipline score`;
+            scoreLine.style.color = data.psychScore >= 70 ? 'rgba(52,211,153,0.5)' : data.psychScore >= 50 ? 'rgba(201,168,76,0.5)' : 'rgba(248,113,113,0.4)';
+          }
+        }
       } catch(e) {
         thinking.remove();
         addMessage('改 KAIZEN AI is temporarily unavailable. Try again in a moment.', 'kaizen');
       }
-
       sendBtn.disabled = false;
-      sendBtn.textContent = 'Send';
+      sendBtn.innerHTML = '<i data-feather="send" width="12" height="12"></i> Send';
+      feather.replace();
     }
 
-    // Enter key to send (Shift+Enter for new line)
     input.addEventListener('keydown', function(e) {
-      if (e.key === 'Enter' && !e.shiftKey) {
-        e.preventDefault();
-        sendMessage();
-      }
+      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
     });
   </script>
-
 </body>
 </html>
