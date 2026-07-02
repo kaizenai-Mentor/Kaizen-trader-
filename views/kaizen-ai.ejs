@@ -2,189 +2,162 @@
 <html lang="en">
 <head>
   <%- include('partials/head') %>
-  <title>KAIZEN AI</title>
+  <title>KAIZEN AI — Session Analysis</title>
 </head>
 <body class="app-page">
-
   <%- include('partials/navbar') %>
 
   <main class="app-main">
 
-    <div class="page-header">
+    <!-- HEADER -->
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:24px;flex-wrap:wrap;">
       <div>
-        <h1 style="color:var(--gold);">Kaizen AI</h1>
-        <p class="page-sub">
-          Your AI discipline mentor. Responses appear
-          here after each session is logged.
-        </p>
+        <div style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:6px;display:flex;align-items:center;gap:8px;">
+          <span style="width:16px;height:1px;background:var(--gold);display:inline-block;"></span>
+          AI Analysis
+        </div>
+        <h1 style="font-size:1.6rem;font-weight:700;color:var(--text-primary);margin-bottom:4px;">改 KAIZEN AI</h1>
+        <p style="font-size:0.82rem;color:var(--ash);font-style:italic;">Your AI discipline mentor. Session analysis appears here.</p>
       </div>
-      <a href="/memories" class="btn-outline">Memories →</a>
+      <a href="/memories" style="display:inline-flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);border:1px solid var(--border);padding:10px 16px;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.color='var(--gold)';this.style.borderColor='rgba(201,168,76,0.3)'" onmouseout="this.style.color='var(--ash)';this.style.borderColor='var(--border)'">
+        Memories
+        <i data-feather="arrow-right" width="12" height="12"></i>
+      </a>
     </div>
 
-    <div class="card" style="min-height:500px;position:relative;">
+    <% if (aiResponse) { %>
 
-      <!-- Watermark -->
-      <div style="
-        position:absolute;
-        top:50%;
-        left:50%;
-        transform:translate(-50%,-50%);
-        font-family:'DM Mono',monospace;
-        font-size:clamp(0.55rem,1.2vw,0.72rem);
-        letter-spacing:0.18em;
-        text-transform:uppercase;
-        color:rgba(201,168,76,0.05);
-        text-align:center;
-        pointer-events:none;
-        white-space:nowrap;
-        z-index:0;
-        width:100%;
-      ">
-        Go to Memories to access previous responses
+      <!-- RESPONSE CARD -->
+      <div style="background:var(--bg-card);border:1px solid rgba(201,168,76,0.2);padding:28px;margin-bottom:16px;position:relative;overflow:hidden;">
+
+        <!-- Background glow -->
+        <div style="position:absolute;top:0;right:0;width:200px;height:200px;background:radial-gradient(circle,rgba(201,168,76,0.04),transparent 70%);pointer-events:none;"></div>
+
+        <!-- Header -->
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border);">
+          <div style="width:32px;height:32px;border:1px solid rgba(201,168,76,0.3);background:rgba(201,168,76,0.08);display:flex;align-items:center;justify-content:center;color:var(--gold);">
+            <i data-feather="cpu" width="15" height="15"></i>
+          </div>
+          <div>
+            <div style="font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);">改 KAIZEN AI · Session Analysis</div>
+            <div style="font-size:0.72rem;color:var(--ash);margin-top:2px;">Behavioral feedback based on your session and history</div>
+          </div>
+          <div style="margin-left:auto;display:flex;align-items:center;gap:6px;">
+            <div style="width:6px;height:6px;border-radius:50%;background:#4ADE80;box-shadow:0 0 8px rgba(74,222,128,0.5);"></div>
+            <span style="font-family:'DM Mono',monospace;font-size:0.52rem;letter-spacing:0.1em;text-transform:uppercase;color:#4ADE80;">Analysis Complete</span>
+          </div>
+        </div>
+
+        <!-- Streaming text -->
+        <div style="border-left:2px solid var(--gold);padding-left:20px;">
+          <div id="streaming-text"
+            data-content="<%- aiResponse.replace(/"/g, '&quot;') %>"
+            style="font-size:0.92rem;color:var(--ash-light);line-height:1.95;white-space:pre-wrap;min-height:120px;">
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div style="display:flex;gap:10px;flex-wrap:wrap;padding-top:20px;margin-top:24px;border-top:1px solid var(--border);">
+          <a href="/memories" style="display:inline-flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);border:1px solid var(--border);padding:10px 16px;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.color='var(--gold)';this.style.borderColor='rgba(201,168,76,0.3)'" onmouseout="this.style.color='var(--ash)';this.style.borderColor='var(--border)'">
+            <i data-feather="clock" width="12" height="12"></i>
+            All Memories
+          </a>
+          <a href="/dashboard/journal" style="display:inline-flex;align-items:center;gap:6px;background:var(--gold);color:#000;font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;font-weight:700;padding:10px 20px;text-decoration:none;border:1px solid var(--gold);transition:background 0.2s;" onmouseover="this.style.background='#E2C46A'" onmouseout="this.style.background='var(--gold)'">
+            <i data-feather="plus" width="12" height="12"></i>
+            Log Another Session
+          </a>
+          <a href="/dashboard" style="display:inline-flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);border:1px solid var(--border);padding:10px 16px;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.color='var(--gold)';this.style.borderColor='rgba(201,168,76,0.3)'" onmouseout="this.style.color='var(--ash)';this.style.borderColor='var(--border)'">
+            <i data-feather="home" width="12" height="12"></i>
+            Dashboard
+          </a>
+        </div>
+
       </div>
 
-      <!-- Content -->
-      <div style="position:relative;z-index:1;">
-
-        <% if (aiResponse) { %>
-          <!-- AI Response Section -->
-          <div style="
-            border-left:2px solid var(--gold);
-            padding-left:24px;
-            margin-bottom:32px;
-          ">
-            <div style="
-              font-family:'DM Mono',monospace;
-              font-size:0.62rem;
-              letter-spacing:0.15em;
-              text-transform:uppercase;
-              color:var(--gold);
-              margin-bottom:20px;
-              display:flex;
-              align-items:center;
-              gap:10px;
-            ">
-              <span>改 Kaizen AI</span>
-              <span style="color:rgba(201,168,76,0.3);">·</span>
-              <span>Session Analysis</span>
-            </div>
-
-            <div id="streaming-text"
-  data-content="<%- aiResponse.replace(/"/g, '&quot;') %>"
-  style="
-    font-size:0.92rem;
-    color:var(--ash-light);
-    line-height:1.95;
-    white-space:pre-wrap;
-  "></div>
+      <!-- WHAT THIS MEANS -->
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:2px;">
+        <div style="background:var(--bg-card);border:1px solid var(--border);padding:18px;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+            <i data-feather="save" width="13" height="13" style="color:var(--gold);"></i>
+            <span style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);">Auto-Saved</span>
           </div>
-
-          <div style="
-            display:flex;
-            gap:12px;
-            flex-wrap:wrap;
-            padding-top:20px;
-            border-top:1px solid var(--border);
-          ">
-            <a href="/memories" class="btn-outline">
-              View All Memories →
-            </a>
-            <a href="/dashboard/journal" class="btn-primary">
-              <span>Log Another Session</span>
-            </a>
+          <p style="font-size:0.78rem;color:var(--ash);line-height:1.6;margin:0;">This response is permanently saved in your Memories archive.</p>
+        </div>
+        <div style="background:var(--bg-card);border:1px solid var(--border);padding:18px;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+            <i data-feather="trending-up" width="13" height="13" style="color:var(--gold);"></i>
+            <span style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);">Score Updated</span>
           </div>
-
-          <script src="/js/app.js"></script>
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    const streamEl = document.getElementById('streaming-text');
-    if (!streamEl) return;
-
-    const rawText = streamEl.getAttribute('data-content');
-    if (!rawText) return;
-
-    streamEl.textContent = '';
-    let i = 0;
-
-    function stream() {
-      if (i < rawText.length) {
-        const char = rawText[i];
-        streamEl.textContent += char;
-        i++;
-        let delay = 12;
-        if (char === '.' || char === '\n') delay = 70;
-        else if (char === ',') delay = 35;
-        else if (char === ' ') delay = 6;
-        setTimeout(stream, delay);
-      }
-    }
-
-    setTimeout(stream, 400);
-  });
-</script>
-
-        <% } else { %>
-          <!-- Empty State -->
-          <div style="
-            display:flex;
-            flex-direction:column;
-            align-items:center;
-            justify-content:center;
-            min-height:420px;
-            text-align:center;
-            gap:16px;
-          ">
-            <div style="
-              font-family:'DM Mono',monospace;
-              font-size:3.5rem;
-              color:rgba(201,168,76,0.12);
-              line-height:1;
-            ">改</div>
-
-            <p style="
-              font-size:0.95rem;
-              color:var(--ash);
-              max-width:380px;
-              line-height:1.85;
-            ">
-              Log a session in My Journal and Kaizen AI
-              will analyze your discipline, strategy, and
-              emotional patterns here.
-            </p>
-
-            <p style="
-              font-family:'DM Mono',monospace;
-              font-size:0.6rem;
-              letter-spacing:0.15em;
-              text-transform:uppercase;
-              color:rgba(201,168,76,0.25);
-            ">
-              Go to Memories to access previous responses
-            </p>
-
-            <div style="
-              display:flex;
-              gap:12px;
-              flex-wrap:wrap;
-              justify-content:center;
-              margin-top:8px;
-            ">
-              <a href="/dashboard/journal" class="btn-primary">
-                <span>Log a Session</span>
-              </a>
-              <a href="/memories" class="btn-outline">
-                View Memories
-              </a>
-            </div>
+          <p style="font-size:0.78rem;color:var(--ash);line-height:1.6;margin:0;">Your Discipline Score has been recalculated and updated on your dashboard.</p>
+        </div>
+        <div style="background:var(--bg-card);border:1px solid rgba(59,130,246,0.15);padding:18px;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+            <i data-feather="link" width="13" height="13" style="color:var(--blue);"></i>
+            <span style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);">On-Chain</span>
           </div>
-        <% } %>
-
+          <p style="font-size:0.78rem;color:var(--ash);line-height:1.6;margin:0;">This session's AI output is being recorded on Mantle blockchain.</p>
+        </div>
       </div>
-    </div>
+
+    <% } else { %>
+
+      <!-- EMPTY STATE -->
+      <div style="background:var(--bg-card);border:1px solid var(--border);padding:80px 32px;text-align:center;min-height:400px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;">
+
+        <div style="font-family:'DM Mono',monospace;font-size:4rem;color:rgba(201,168,76,0.1);line-height:1;">改</div>
+
+        <div>
+          <h2 style="font-size:1.1rem;font-weight:700;color:var(--text-primary);margin-bottom:8px;">No analysis yet</h2>
+          <p style="font-size:0.88rem;color:var(--ash);max-width:360px;margin:0 auto;line-height:1.8;">
+            Log a session in My Journal and KAIZEN AI will analyze your discipline, strategy, and behavioral patterns here.
+          </p>
+        </div>
+
+        <div style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.15em;text-transform:uppercase;color:rgba(201,168,76,0.25);padding:10px 20px;border:1px solid rgba(201,168,76,0.1);">
+          Previous responses saved in Memories
+        </div>
+
+        <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;">
+          <a href="/dashboard/journal" style="display:inline-flex;align-items:center;gap:6px;background:var(--gold);color:#000;font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;font-weight:700;padding:12px 24px;text-decoration:none;">
+            <i data-feather="edit-3" width="13" height="13"></i>
+            Log a Session
+          </a>
+          <a href="/memories" style="display:inline-flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);border:1px solid var(--border);padding:12px 24px;text-decoration:none;" onmouseover="this.style.color='var(--gold)';this.style.borderColor='rgba(201,168,76,0.3)'" onmouseout="this.style.color='var(--ash)';this.style.borderColor='var(--border)'">
+            <i data-feather="clock" width="13" height="13"></i>
+            View Memories
+          </a>
+        </div>
+      </div>
+
+    <% } %>
 
   </main>
 
   <%- include('partials/footer') %>
   <script src="/js/app.js"></script>
+  <script>
+    feather.replace();
+    document.addEventListener('DOMContentLoaded', function() {
+      const streamEl = document.getElementById('streaming-text');
+      if (!streamEl) return;
+      const rawText = streamEl.getAttribute('data-content');
+      if (!rawText) return;
+      streamEl.textContent = '';
+      let i = 0;
+      function stream() {
+        if (i < rawText.length) {
+          const char = rawText[i];
+          streamEl.textContent += char;
+          i++;
+          let delay = 12;
+          if (char === '.' || char === '\n') delay = 70;
+          else if (char === ',') delay = 35;
+          else if (char === ' ') delay = 6;
+          setTimeout(stream, delay);
+        }
+      }
+      setTimeout(stream, 400);
+    });
+  </script>
 </body>
 </html>
