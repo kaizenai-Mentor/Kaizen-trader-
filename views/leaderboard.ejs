@@ -6,91 +6,203 @@
 </head>
 <body class="app-page">
   <%- include('partials/navbar') %>
+
   <main class="app-main">
 
-    <div class="page-header">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:24px;flex-wrap:wrap;">
       <div>
-        <h1 style="color:var(--gold);">Leaderboard</h1>
-        <p class="page-sub">Ranked by discipline — not profit.</p>
+        <div style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:6px;display:flex;align-items:center;gap:8px;">
+          <span style="width:16px;height:1px;background:var(--gold);display:inline-block;"></span>
+          Community Rankings
+        </div>
+        <h1 style="font-size:1.6rem;font-weight:700;color:var(--text-primary);margin-bottom:4px;">Leaderboard</h1>
+        <p style="font-size:0.82rem;color:var(--ash);font-style:italic;">Ranked by discipline — not profit.</p>
       </div>
+      <a href="/dashboard" style="display:inline-flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);border:1px solid var(--border);padding:10px 16px;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.color='var(--gold)';this.style.borderColor='rgba(201,168,76,0.3)'" onmouseout="this.style.color='var(--ash)';this.style.borderColor='var(--border)'">
+        <i data-feather="arrow-left" width="12" height="12"></i>
+        Dashboard
+      </a>
     </div>
 
     <!-- TABS -->
-    <div style="display:flex;gap:2px;margin-bottom:20px;">
+    <div style="display:flex;gap:2px;margin-bottom:16px;">
       <button onclick="showTab('weekly')" id="tab-weekly" style="
         flex:1;padding:12px;
-        font-family:'DM Mono',monospace;
-        font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;
-        background:rgba(201,168,76,0.1);border:1px solid rgba(201,168,76,0.3);
-        color:var(--gold);cursor:pointer;transition:all 0.2s;
-      ">This Week</button>
+        background:var(--gold);color:#000;
+        border:1px solid var(--gold);
+        font-family:'DM Mono',monospace;font-size:0.65rem;
+        letter-spacing:0.12em;text-transform:uppercase;font-weight:700;
+        cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;
+      ">
+        <i data-feather="calendar" width="12" height="12"></i>
+        Weekly
+      </button>
       <button onclick="showTab('alltime')" id="tab-alltime" style="
         flex:1;padding:12px;
-        font-family:'DM Mono',monospace;
-        font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;
-        background:var(--bg-card);border:1px solid var(--border);
-        color:var(--ash);cursor:pointer;transition:all 0.2s;
-      ">All Time</button>
+        background:var(--bg-card);color:var(--ash);
+        border:1px solid var(--border);
+        font-family:'DM Mono',monospace;font-size:0.65rem;
+        letter-spacing:0.12em;text-transform:uppercase;
+        cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;
+        transition:all 0.2s;
+      " onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">
+        <i data-feather="award" width="12" height="12"></i>
+        All Time
+      </button>
     </div>
 
     <!-- WEEKLY TAB -->
-    <div id="panel-weekly">
-      <% if (weeklyLeaders.length === 0) { %>
-        <div class="card">
-          <div class="empty-state">
-            <p style="font-size:1rem;font-weight:600;color:var(--text-primary);margin-bottom:8px;">
-              No sessions logged this week yet.
-            </p>
-            <p>Be the first on this week's board.</p>
-            <a href="/dashboard/journal" class="btn-primary"
-              style="margin-top:20px;display:inline-block;">
-              Log a Session
-            </a>
-          </div>
+    <div id="tab-weekly-content">
+      <% if (typeof weeklyLeaders !== 'undefined' && weeklyLeaders && weeklyLeaders.length > 0) { %>
+        <div style="display:flex;flex-direction:column;gap:2px;">
+          <% weeklyLeaders.forEach(function(leader, i) { %>
+            <div style="
+              background:<%= i === 0 ? 'linear-gradient(135deg,rgba(201,168,76,0.08),rgba(201,168,76,0.03))' : 'var(--bg-card)' %>;
+              border:1px solid <%= i === 0 ? 'rgba(201,168,76,0.3)' : i === 1 ? 'rgba(168,160,154,0.2)' : 'var(--border)' %>;
+              padding:16px 20px;
+              display:flex;align-items:center;gap:16px;
+            ">
+              <!-- Rank -->
+              <div style="
+                width:36px;height:36px;min-width:36px;
+                border:1px solid <%= i === 0 ? 'rgba(201,168,76,0.4)' : i === 1 ? 'rgba(192,192,192,0.3)' : i === 2 ? 'rgba(205,127,50,0.3)' : 'var(--border)' %>;
+                background:<%= i === 0 ? 'rgba(201,168,76,0.1)' : i === 1 ? 'rgba(192,192,192,0.06)' : i === 2 ? 'rgba(205,127,50,0.06)' : 'var(--bg-surface)' %>;
+                display:flex;align-items:center;justify-content:center;
+                font-family:'DM Mono',monospace;font-size:0.8rem;font-weight:700;
+                color:<%= i === 0 ? 'var(--gold)' : i === 1 ? '#C0C0C0' : i === 2 ? '#CD7F32' : 'var(--ash)' %>;
+              ">
+                <%= i + 1 %>
+              </div>
+              <!-- User info -->
+              <div style="flex:1;">
+                <div style="font-weight:700;font-size:0.9rem;color:var(--text-primary);margin-bottom:3px;">
+                  <%= leader.username %>
+                  <% if (leader.username === user.username) { %>
+                    <span style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(201,168,76,0.25);padding:2px 6px;margin-left:6px;">You</span>
+                  <% } %>
+                </div>
+                <div style="font-size:0.72rem;color:var(--ash);display:flex;align-items:center;gap:8px;">
+                  <span><%= leader.sessionCount || 0 %> sessions</span>
+                  <% if (leader.streak > 0) { %>
+                    <span style="display:flex;align-items:center;gap:3px;color:<%= leader.streak >= 7 ? '#4ADE80' : 'var(--ash)' %>;">
+                      <i data-feather="zap" width="10" height="10"></i>
+                      <%= leader.streak %>d streak
+                    </span>
+                  <% } %>
+                </div>
+              </div>
+              <!-- Score -->
+              <div style="text-align:right;">
+                <div style="font-family:'DM Mono',monospace;font-size:1.4rem;font-weight:700;color:<%= i === 0 ? 'var(--gold)' : 'var(--text-primary)' %>;">
+                  <%= leader.disciplineScore || leader.sessionScore || 0 %>%
+                </div>
+                <div style="height:3px;background:rgba(201,168,76,0.1);margin-top:4px;width:60px;margin-left:auto;">
+                  <div style="height:100%;background:<%= i === 0 ? 'var(--gold)' : 'rgba(201,168,76,0.4)' %>;width:<%= leader.disciplineScore || leader.sessionScore || 0 %>%;"></div>
+                </div>
+              </div>
+            </div>
+          <% }); %>
         </div>
       <% } else { %>
-        <%- include('partials/leaderboard-list', {
-          leaders: weeklyLeaders,
-          scoreKey: 'weekScore',
-          currentUser: user,
-          showSessions: true
-        }) %>
+        <div style="background:var(--bg-card);border:1px solid var(--border);padding:60px 32px;text-align:center;">
+          <div style="width:40px;height:40px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--ash);margin:0 auto 12px;">
+            <i data-feather="users" width="16" height="16"></i>
+          </div>
+          <p style="font-size:0.88rem;color:var(--ash);margin-bottom:16px;">No weekly data yet. Log sessions to appear on the leaderboard.</p>
+          <a href="/dashboard/journal" style="display:inline-flex;align-items:center;gap:6px;background:var(--gold);color:#000;font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;font-weight:700;padding:10px 20px;text-decoration:none;">
+            Log a Session
+          </a>
+        </div>
       <% } %>
     </div>
 
     <!-- ALL TIME TAB -->
-    <div id="panel-alltime" style="display:none;">
-      <%- include('partials/leaderboard-list', {
-        leaders: allTimeLeaders,
-        scoreKey: 'disciplineScore',
-        currentUser: user,
-        showSessions: false
-      }) %>
+    <div id="tab-alltime-content" style="display:none;">
+      <% if (typeof allTimeLeaders !== 'undefined' && allTimeLeaders && allTimeLeaders.length > 0) { %>
+        <div style="display:flex;flex-direction:column;gap:2px;">
+          <% allTimeLeaders.forEach(function(leader, i) { %>
+            <div style="
+              background:<%= i === 0 ? 'linear-gradient(135deg,rgba(201,168,76,0.08),rgba(201,168,76,0.03))' : 'var(--bg-card)' %>;
+              border:1px solid <%= i === 0 ? 'rgba(201,168,76,0.3)' : 'var(--border)' %>;
+              padding:16px 20px;
+              display:flex;align-items:center;gap:16px;
+            ">
+              <div style="
+                width:36px;height:36px;min-width:36px;
+                border:1px solid <%= i === 0 ? 'rgba(201,168,76,0.4)' : i === 1 ? 'rgba(192,192,192,0.3)' : i === 2 ? 'rgba(205,127,50,0.3)' : 'var(--border)' %>;
+                background:<%= i === 0 ? 'rgba(201,168,76,0.1)' : 'var(--bg-surface)' %>;
+                display:flex;align-items:center;justify-content:center;
+                font-family:'DM Mono',monospace;font-size:0.8rem;font-weight:700;
+                color:<%= i === 0 ? 'var(--gold)' : i === 1 ? '#C0C0C0' : i === 2 ? '#CD7F32' : 'var(--ash)' %>;
+              "><%= i + 1 %></div>
+              <div style="flex:1;">
+                <div style="font-weight:700;font-size:0.9rem;color:var(--text-primary);margin-bottom:3px;">
+                  <%= leader.username %>
+                  <% if (leader.username === user.username) { %>
+                    <span style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(201,168,76,0.25);padding:2px 6px;margin-left:6px;">You</span>
+                  <% } %>
+                </div>
+                <div style="font-size:0.72rem;color:var(--ash);">
+                  <%= leader.totalSessions || 0 %> total sessions
+                </div>
+              </div>
+              <div style="text-align:right;">
+                <div style="font-family:'DM Mono',monospace;font-size:1.4rem;font-weight:700;color:<%= i === 0 ? 'var(--gold)' : 'var(--text-primary)' %>;">
+                  <%= leader.disciplineScore || 0 %>%
+                </div>
+              </div>
+            </div>
+          <% }); %>
+        </div>
+      <% } else { %>
+        <div style="background:var(--bg-card);border:1px solid var(--border);padding:60px 32px;text-align:center;">
+          <p style="font-size:0.88rem;color:var(--ash);">No all-time data yet.</p>
+        </div>
+      <% } %>
+    </div>
+
+    <!-- YOUR POSITION -->
+    <div style="margin-top:16px;background:var(--bg-card);border:1px solid rgba(201,168,76,0.15);padding:18px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <i data-feather="user" width="14" height="14" style="color:var(--gold);"></i>
+        <span style="font-size:0.85rem;color:var(--text-primary);">Your score: <strong style="color:var(--gold);"><%= disciplineScore %>%</strong></span>
+      </div>
+      <a href="/dashboard/journal" style="display:inline-flex;align-items:center;gap:6px;background:var(--gold);color:#000;font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;font-weight:700;padding:10px 18px;text-decoration:none;">
+        <i data-feather="plus" width="11" height="11"></i>
+        Log Session to Climb
+      </a>
     </div>
 
   </main>
+
   <%- include('partials/footer') %>
   <script src="/js/app.js"></script>
   <script>
+    feather.replace();
     function showTab(tab) {
-      document.getElementById('panel-weekly').style.display =
-        tab === 'weekly' ? 'block' : 'none';
-      document.getElementById('panel-alltime').style.display =
-        tab === 'alltime' ? 'block' : 'none';
-
-      document.getElementById('tab-weekly').style.background =
-        tab === 'weekly' ? 'rgba(201,168,76,0.1)' : 'var(--bg-card)';
-      document.getElementById('tab-weekly').style.borderColor =
-        tab === 'weekly' ? 'rgba(201,168,76,0.3)' : 'var(--border)';
-      document.getElementById('tab-weekly').style.color =
-        tab === 'weekly' ? 'var(--gold)' : 'var(--ash)';
-
-      document.getElementById('tab-alltime').style.background =
-        tab === 'alltime' ? 'rgba(201,168,76,0.1)' : 'var(--bg-card)';
-      document.getElementById('tab-alltime').style.borderColor =
-        tab === 'alltime' ? 'rgba(201,168,76,0.3)' : 'var(--border)';
-      document.getElementById('tab-alltime').style.color =
-        tab === 'alltime' ? 'var(--gold)' : 'var(--ash)';
+      const weekly = document.getElementById('tab-weekly-content');
+      const alltime = document.getElementById('tab-alltime-content');
+      const btnWeekly = document.getElementById('tab-weekly');
+      const btnAlltime = document.getElementById('tab-alltime');
+      if (tab === 'weekly') {
+        weekly.style.display = 'block';
+        alltime.style.display = 'none';
+        btnWeekly.style.background = 'var(--gold)';
+        btnWeekly.style.color = '#000';
+        btnWeekly.style.borderColor = 'var(--gold)';
+        btnAlltime.style.background = 'var(--bg-card)';
+        btnAlltime.style.color = 'var(--ash)';
+        btnAlltime.style.borderColor = 'var(--border)';
+      } else {
+        weekly.style.display = 'none';
+        alltime.style.display = 'block';
+        btnAlltime.style.background = 'var(--gold)';
+        btnAlltime.style.color = '#000';
+        btnAlltime.style.borderColor = 'var(--gold)';
+        btnWeekly.style.background = 'var(--bg-card)';
+        btnWeekly.style.color = 'var(--ash)';
+        btnWeekly.style.borderColor = 'var(--border)';
+      }
     }
   </script>
 </body>
