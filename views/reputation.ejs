@@ -5,310 +5,211 @@
   <title>KAIZEN — Reputation</title>
 </head>
 <body class="app-page">
-
   <%- include('partials/navbar') %>
 
   <main class="app-main">
 
-    <div class="page-header">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:24px;flex-wrap:wrap;">
       <div>
-        <h1 style="color:var(--gold);">Your Reputation</h1>
-        <p class="page-sub">Kaizen Discipline Score + DUAL on-chain reputation</p>
+        <div style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:6px;display:flex;align-items:center;gap:8px;">
+          <span style="width:16px;height:1px;background:var(--gold);display:inline-block;"></span>
+          On-Chain Identity
+        </div>
+        <h1 style="font-size:1.6rem;font-weight:700;color:var(--text-primary);margin-bottom:4px;">Reputation</h1>
+        <p style="font-size:0.82rem;color:var(--ash);font-style:italic;">Your discipline record — verified on two blockchains.</p>
       </div>
-      <a href="/dashboard" class="btn-outline">← Dashboard</a>
+      <a href="/dashboard" style="display:inline-flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);border:1px solid var(--border);padding:10px 16px;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.color='var(--gold)';this.style.borderColor='rgba(201,168,76,0.3)'" onmouseout="this.style.color='var(--ash)';this.style.borderColor='var(--border)'">
+        <i data-feather="arrow-left" width="12" height="12"></i>
+        Dashboard
+      </a>
     </div>
 
-    <% if (error) { %>
-      <div class="alert alert-error"><%= error %></div>
-    <% } %>
+    <!-- KAIZEN DISCIPLINE SCORE -->
+    <div style="background:var(--bg-card);border:1px solid rgba(201,168,76,0.2);padding:28px;margin-bottom:16px;position:relative;overflow:hidden;">
+      <div style="position:absolute;top:0;right:0;width:160px;height:160px;background:radial-gradient(circle,rgba(201,168,76,0.06),transparent 70%);pointer-events:none;"></div>
 
-         <div class="rep-grid">
+      <div style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--ash);margin-bottom:16px;display:flex;align-items:center;gap:8px;">
+        <i data-feather="bar-chart-2" width="12" height="12" style="color:var(--gold);"></i>
+        KAIZEN Discipline Score
+      </div>
 
-      <!-- KAIZEN SCORE -->
-      <div class="card card-gold">
-        <div class="card-header">
-          <h2>Kaizen Discipline Score</h2>
-          <span class="card-badge">In-App</span>
-        </div>
-        <div class="rep-score-big">
-          <%= user.disciplineScore || 0 %>
-          <span>/100</span>
-        </div>
-        <div class="score-bar">
-          <div class="score-fill"
-            style="width:<%= user.disciplineScore || 0 %>%"></div>
-        </div>
-        <div class="rep-tier" style="margin-top:16px;">
-          <% if ((user.disciplineScore || 0) >= 80) { %>
-            <span class="tier-badge tier-elite">Elite Trader</span>
-          <% } else if ((user.disciplineScore || 0) >= 60) { %>
-            <span class="tier-badge tier-consistent">Consistent</span>
-          <% } else if ((user.disciplineScore || 0) >= 40) { %>
-            <span class="tier-badge tier-building">Building</span>
-          <% } else { %>
-            <span class="tier-badge tier-developing">Developing</span>
-          <% } %>
-        </div>
-        <p class="rep-desc">
-          Your discipline score is calculated from rule compliance,
-          session consistency, and emotional control across all
-          logged trading sessions.
-        </p>
-
-        <!-- DELETE ACCOUNT -->
-        <div style="margin-top:28px;padding-top:20px;border-top:1px solid var(--border);">
-          <div style="font-family:var(--font-mono);font-size:0.62rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--red);margin-bottom:10px;">
-            Danger Zone
+      <div style="display:flex;align-items:flex-end;gap:16px;margin-bottom:16px;flex-wrap:wrap;">
+        <div>
+          <div style="font-family:'DM Mono',monospace;font-size:4rem;font-weight:700;color:var(--gold);line-height:1;">
+            <%= disciplineScore %><span style="font-size:1.5rem;">%</span>
           </div>
-          <button onclick="openModal('deleteModal')" class="btn-outline btn-full"
-            style="border-color:rgba(248,113,113,0.3);color:var(--red);font-size:0.82rem;">
-            Delete Account
-          </button>
+          <div style="height:4px;background:rgba(201,168,76,0.1);margin-top:8px;width:200px;">
+            <div style="height:100%;background:var(--gold);width:<%= disciplineScore %>%;transition:width 1.2s ease;"></div>
+          </div>
+        </div>
+        <div style="padding-bottom:8px;">
+          <div style="
+            font-family:'DM Mono',monospace;
+            font-size:0.7rem;
+            font-weight:700;
+            letter-spacing:0.15em;
+            text-transform:uppercase;
+            padding:6px 14px;
+            border:1px solid rgba(201,168,76,0.3);
+            color:var(--gold);
+            background:rgba(201,168,76,0.06);
+          ">
+            <%= disciplineScore >= 80 ? 'ELITE' : disciplineScore >= 60 ? 'CONSISTENT' : disciplineScore >= 40 ? 'BUILDING' : 'DEVELOPING' %>
+          </div>
+          <div style="font-size:0.75rem;color:var(--ash);margin-top:8px;">
+            Based on <%= totalSessions || 0 %> sessions logged
+          </div>
         </div>
       </div>
 
-      <!-- ZA REPUTATION -->
-      <div class="card card-blue">
-        <div class="card-header">
-          <h2>Zero Authority Reputation</h2>
-          <span class="card-badge">On-Chain</span>
+      <!-- Stats row -->
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:2px;">
+        <div style="background:var(--bg-surface);border:1px solid var(--border);padding:12px;text-align:center;">
+          <div style="font-family:'DM Mono',monospace;font-size:1.2rem;font-weight:700;color:var(--text-primary);"><%= totalSessions || 0 %></div>
+          <div style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-top:3px;">Sessions</div>
         </div>
-
-        <% if (reputation && reputation.activityScore !== undefined) { %>
-  <div style="text-align:center;padding:10px 0 20px;">
-
-    <div style="
-      font-family:'DM Mono',monospace;
-      font-size:2.5rem;
-      font-weight:700;
-      color:var(--blue);
-      line-height:1;
-      margin-bottom:6px;
-    "><%= reputation.activityScore || 0 %></div>
-
-    <div style="
-      font-family:'DM Mono',monospace;
-      font-size:0.6rem;
-      letter-spacing:0.15em;
-      text-transform:uppercase;
-      color:var(--ash);
-      margin-bottom:20px;
-    ">Activity Score</div>
-
-    <div style="
-      display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(110px,1fr));
-      gap:2px;
-      margin-bottom:20px;
-    ">
-      <div style="background:var(--bg-surface);border:1px solid var(--border);padding:12px 8px;text-align:center;">
-        <div style="font-family:'DM Mono',monospace;font-size:1.2rem;font-weight:700;color:var(--gold);">
-          <%= reputation._count?.wonBounties || 0 %>
+        <div style="background:var(--bg-surface);border:1px solid var(--border);padding:12px;text-align:center;">
+          <div style="font-family:'DM Mono',monospace;font-size:1.2rem;font-weight:700;color:<%= (streak || 0) >= 7 ? '#4ADE80' : 'var(--text-primary)' %>;"><%= streak || 0 %></div>
+          <div style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-top:3px;">Day Streak</div>
         </div>
-        <div style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-top:4px;">
-          Bounties Won
+        <div style="background:var(--bg-surface);border:1px solid var(--border);padding:12px;text-align:center;">
+          <div style="font-family:'DM Mono',monospace;font-size:1.2rem;font-weight:700;color:var(--text-primary);">
+            <%= user && user.badges ? user.badges.length : 0 %>
+          </div>
+          <div style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-top:3px;">Badges</div>
         </div>
       </div>
-      <div style="background:var(--bg-surface);border:1px solid var(--border);padding:12px 8px;text-align:center;">
-        <div style="font-family:'DM Mono',monospace;font-size:1.2rem;font-weight:700;color:var(--gold);">
-          <%= reputation._count?.receivedEndorsements || 0 %>
+
+      <!-- DANGER ZONE -->
+      <div style="margin-top:24px;padding-top:20px;border-top:1px solid var(--border);">
+        <div style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.15em;text-transform:uppercase;color:#F87171;margin-bottom:10px;display:flex;align-items:center;gap:6px;">
+          <i data-feather="alert-triangle" width="11" height="11"></i>
+          Danger Zone
         </div>
-        <div style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-top:4px;">
-          Endorsements
-        </div>
-      </div>
-      <div style="background:var(--bg-surface);border:1px solid var(--border);padding:12px 8px;text-align:center;">
-        <div style="font-family:'DM Mono',monospace;font-size:1.2rem;font-weight:700;color:var(--gold);">
-          <%= reputation._count?.bountySubmissions || 0 %>
-        </div>
-        <div style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-top:4px;">
-          Submissions
-        </div>
-      </div>
-      <div style="background:var(--bg-surface);border:1px solid var(--border);padding:12px 8px;text-align:center;">
-        <div style="font-family:'DM Mono',monospace;font-size:1.2rem;font-weight:700;color:var(--gold);">
-          <%= reputation.profileCompleteness || 0 %>%
-        </div>
-        <div style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-top:4px;">
-          Profile Complete
-        </div>
-      </div>
-    </div>
-
-    <a href="https://zeroauthoritydao.com/profile/<%= user.zaUserId %>"
-      target="_blank"
-      class="btn-outline"
-      style="display:inline-flex;align-items:center;gap:8px;">
-      <span>View ZA Profile</span>
-      <span style="font-size:0.7rem;">↗</span>
-    </a>
-
-  </div>
-
-<% } else { %>
-  <div style="text-align:center;padding:20px 0;">
-    <p style="font-size:0.85rem;color:var(--ash);line-height:1.75;max-width:420px;margin:0 auto 20px;">
-      Connect your Zero Authority DAO account to display your
-      on-chain reputation here alongside your Kaizen score.
-    </p>
-    <a href="https://zeroauthoritydao.com" target="_blank"
-      class="btn-primary">
-      Visit Zero Authority
-    </a>
-  </div>
-<% } %>
-
-      </div>
-    </div>
-
-<!-- MANTLE AI BENCHMARK -->
-<div class="card" style="margin-top:2px;">
-  <div class="card-header">
-    <h2>Mantle AI Benchmark</h2>
-    <span class="card-badge">ON-CHAIN</span>
-  </div>
-
-  <div style="text-align:center;padding:20px 0;">
-    <p style="
-      font-size:0.88rem;
-      color:var(--text-secondary);
-      line-height:1.85;
-      max-width:480px;
-      margin:0 auto 24px;
-    ">
-      Every Kaizen AI decision about your account — discipline
-      score changes, behavioral pattern detections, and milestone
-      achievements — is permanently recorded on the Mantle
-      blockchain. This is a verifiable, tamper-proof record of
-      how KAIZEN AI has guided your progress.
-    </p>
-
-    <div style="
-      display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(120px,1fr));
-      gap:2px;
-      margin-bottom:24px;
-    ">
-      <div style="
-        background:var(--bg-surface);
-        border:1px solid var(--border);
-        padding:16px;
-      ">
-        <div style="
+        <button onclick="if(confirm('Delete your account permanently? This cannot be undone.')) window.location='/auth/delete'" style="
+          background:transparent;
+          border:1px solid rgba(248,113,113,0.3);
+          color:#F87171;
           font-family:'DM Mono',monospace;
-          font-size:1.4rem;
-          font-weight:700;
-          color:var(--gold);
-        "><%= disciplineScore %>%</div>
-        <div style="
-          font-family:'DM Mono',monospace;
-          font-size:0.55rem;
+          font-size:0.6rem;
           letter-spacing:0.1em;
           text-transform:uppercase;
-          color:var(--ash);
-          margin-top:4px;
-        ">Current Score</div>
-      </div>
-
-      <div style="
-        background:var(--bg-surface);
-        border:1px solid var(--border);
-        padding:16px;
-      ">
-        <div style="
-          font-family:'DM Mono',monospace;
-          font-size:1.4rem;
-          font-weight:700;
-          color:var(--blue);
-        "><%= totalSessions || 0 %></div>
-        <div style="
-          font-family:'DM Mono',monospace;
-          font-size:0.55rem;
-          letter-spacing:0.1em;
-          text-transform:uppercase;
-          color:var(--ash);
-          margin-top:4px;
-        ">On-Chain Events</div>
-      </div>
-
-      <div style="
-        background:var(--bg-surface);
-        border:1px solid var(--border);
-        padding:16px;
-      ">
-        <div style="
-          font-family:'DM Mono',monospace;
-          font-size:1.4rem;
-          font-weight:700;
-          color:var(--green);
-        "><%= streak || 0 %></div>
-        <div style="
-          font-family:'DM Mono',monospace;
-          font-size:0.55rem;
-          letter-spacing:0.1em;
-          text-transform:uppercase;
-          color:var(--ash);
-          margin-top:4px;
-        ">Day Streak</div>
-      </div>
-    </div>
-
-    <a href="https://explorer.sepolia.mantle.xyz/address/<%= process.env.MANTLE_CONTRACT_ADDRESS || '' %>"
-      target="_blank"
-      class="btn-outline"
-      style="display:inline-flex;align-items:center;gap:8px;">
-      <span>View on Mantle Explorer</span>
-      <span style="font-size:0.7rem;">↗</span>
-    </a>
-
-    <p style="
-      font-family:'DM Mono',monospace;
-      font-size:0.6rem;
-      letter-spacing:0.08em;
-      color:rgba(201,168,76,0.4);
-      margin-top:16px;
-      text-transform:uppercase;
-    ">
-      Powered by KaizenBenchmark.sol · Mantle Sepolia Testnet
-    </p>
-  </div>
-</div>
-
-  </main>
-
-  <!-- DELETE ACCOUNT MODAL -->
-  <div class="modal-overlay" id="deleteModal">
-    <div class="modal">
-      <div class="modal-header">
-        <h3>Delete Account</h3>
-        <button class="modal-close" onclick="closeModal('deleteModal')">×</button>
-      </div>
-      <div class="modal-body">
-        <p style="font-size:0.9rem;color:var(--text-secondary);line-height:1.7;margin-bottom:16px;">
-          This action is permanent and cannot be undone. All your journal entries,
-          discipline scores, and account data will be deleted immediately.
-        </p>
-        <div style="background:rgba(248,113,113,0.06);border:1px solid rgba(248,113,113,0.2);padding:14px;margin-bottom:20px;">
-          <p style="font-size:0.82rem;color:var(--red);">
-            Deleting your account will permanently remove all your data from our servers.
-          </p>
-        </div>
-        <form action="/auth/delete-account" method="POST">
-          <button type="submit" class="btn-primary btn-full"
-            style="background:var(--red);color:var(--white);">
-            Yes, Delete My Account Permanently
-          </button>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button onclick="closeModal('deleteModal')" class="btn-outline">
-          Cancel — Keep My Account
+          padding:10px 20px;
+          cursor:pointer;
+          display:flex;align-items:center;gap:6px;
+          transition:all 0.2s;
+        " onmouseover="this.style.background='rgba(248,113,113,0.06)'" onmouseout="this.style.background='transparent'">
+          <i data-feather="trash-2" width="12" height="12"></i>
+          Delete Account
         </button>
       </div>
     </div>
-  </div>
+
+    <!-- ZERO AUTHORITY DAO -->
+    <div style="background:var(--bg-card);border:1px solid var(--border);padding:24px;margin-bottom:16px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="width:28px;height:28px;border:1px solid rgba(201,168,76,0.2);background:rgba(201,168,76,0.04);display:flex;align-items:center;justify-content:center;color:var(--gold);">
+            <i data-feather="shield" width="13" height="13"></i>
+          </div>
+          <div>
+            <div style="font-weight:700;font-size:0.95rem;color:var(--text-primary);">Zero Authority Reputation</div>
+            <div style="font-size:0.72rem;color:var(--ash);">Stacks blockchain · Trader credentials</div>
+          </div>
+        </div>
+        <span style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(201,168,76,0.2);padding:4px 10px;">ON-CHAIN</span>
+      </div>
+
+      <% if (reputation && reputation.activityScore !== undefined) { %>
+        <div style="text-align:center;padding:10px 0 20px;">
+          <div style="font-family:'DM Mono',monospace;font-size:2.8rem;font-weight:700;color:var(--blue);line-height:1;margin-bottom:5px;"><%= reputation.activityScore || 0 %></div>
+          <div style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--ash);margin-bottom:20px;">Activity Score</div>
+
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:2px;margin-bottom:20px;">
+            <% [
+              [reputation._count?.wonBounties || 0, 'Bounties Won', 'award'],
+              [reputation._count?.receivedEndorsements || 0, 'Endorsements', 'user-check'],
+              [reputation._count?.bountySubmissions || 0, 'Submissions', 'file-text'],
+              [reputation.profileCompleteness || 0, 'Profile %', 'percent']
+            ].forEach(function(s) { %>
+              <div style="background:var(--bg-surface);border:1px solid var(--border);padding:12px 8px;text-align:center;">
+                <div style="font-family:'DM Mono',monospace;font-size:1.2rem;font-weight:700;color:var(--gold);"><%= s[0] %></div>
+                <div style="font-family:'DM Mono',monospace;font-size:0.48rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-top:4px;">
+                  <i data-feather="<%= s[2] %>" width="9" height="9" style="display:inline;margin-right:3px;"></i><%= s[1] %>
+                </div>
+              </div>
+            <% }); %>
+          </div>
+
+          <a href="https://zeroauthoritydao.com/profile/<%= user.zaUserId || '' %>" target="_blank" style="display:inline-flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(201,168,76,0.25);background:rgba(201,168,76,0.04);padding:10px 18px;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.background='rgba(201,168,76,0.1)'" onmouseout="this.style.background='rgba(201,168,76,0.04)'">
+            View ZA Profile
+            <i data-feather="external-link" width="11" height="11"></i>
+          </a>
+        </div>
+      <% } else { %>
+        <div style="text-align:center;padding:28px 0;">
+          <p style="font-size:0.85rem;color:var(--ash);line-height:1.75;max-width:420px;margin:0 auto 16px;">
+            Connect your Zero Authority DAO account to display your on-chain trading credentials here alongside your KAIZEN discipline score.
+          </p>
+          <a href="https://zeroauthoritydao.com" target="_blank" style="display:inline-flex;align-items:center;gap:6px;background:var(--gold);color:#000;font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;font-weight:700;padding:12px 24px;text-decoration:none;">
+            <i data-feather="external-link" width="12" height="12"></i>
+            Visit Zero Authority
+          </a>
+          <p style="font-family:'DM Mono',monospace;font-size:0.55rem;color:rgba(168,160,154,0.4);margin-top:12px;letter-spacing:0.08em;">
+            Contact @kaizenaibot on X after creating your ZA account to link it here
+          </p>
+        </div>
+      <% } %>
+    </div>
+
+    <!-- MANTLE AI BENCHMARK -->
+    <div style="background:var(--bg-card);border:1px solid rgba(59,130,246,0.15);padding:24px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="width:28px;height:28px;border:1px solid rgba(59,130,246,0.2);background:rgba(59,130,246,0.04);display:flex;align-items:center;justify-content:center;color:var(--blue);">
+            <i data-feather="link" width="13" height="13"></i>
+          </div>
+          <div>
+            <div style="font-weight:700;font-size:0.95rem;color:var(--text-primary);">Mantle AI Benchmark</div>
+            <div style="font-size:0.72rem;color:var(--ash);">Mantle blockchain · AI performance record</div>
+          </div>
+        </div>
+        <span style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--blue);border:1px solid rgba(59,130,246,0.2);padding:4px 10px;">ON-CHAIN</span>
+      </div>
+
+      <p style="font-size:0.85rem;color:var(--text-secondary);line-height:1.8;margin-bottom:20px;">
+        Every significant KAIZEN AI output about your account is permanently recorded on Mantle blockchain — discipline score changes, pattern detections, and milestones. Verifiable by anyone. Tamper-proof.
+      </p>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:2px;margin-bottom:20px;">
+        <div style="background:var(--bg-surface);border:1px solid rgba(59,130,246,0.1);padding:16px;text-align:center;">
+          <div style="font-family:'DM Mono',monospace;font-size:1.4rem;font-weight:700;color:var(--gold);"><%= disciplineScore %>%</div>
+          <div style="font-family:'DM Mono',monospace;font-size:0.48rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-top:4px;">Current Score</div>
+        </div>
+        <div style="background:var(--bg-surface);border:1px solid rgba(59,130,246,0.1);padding:16px;text-align:center;">
+          <div style="font-family:'DM Mono',monospace;font-size:1.4rem;font-weight:700;color:var(--blue);"><%= totalSessions || 0 %></div>
+          <div style="font-family:'DM Mono',monospace;font-size:0.48rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-top:4px;">On-Chain Events</div>
+        </div>
+        <div style="background:var(--bg-surface);border:1px solid rgba(59,130,246,0.1);padding:16px;text-align:center;">
+          <div style="font-family:'DM Mono',monospace;font-size:1.4rem;font-weight:700;color:<%= (streak||0) >= 7 ? '#4ADE80' : 'var(--text-primary)' %>;"><%= streak || 0 %></div>
+          <div style="font-family:'DM Mono',monospace;font-size:0.48rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-top:4px;">Day Streak</div>
+        </div>
+      </div>
+
+      <a href="https://explorer.sepolia.mantle.xyz/address/<%= process.env.MANTLE_CONTRACT_ADDRESS || '' %>" target="_blank" style="display:inline-flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--blue);border:1px solid rgba(59,130,246,0.2);background:rgba(59,130,246,0.04);padding:10px 18px;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.background='rgba(59,130,246,0.1)'" onmouseout="this.style.background='rgba(59,130,246,0.04)'">
+        View on Mantle Explorer
+        <i data-feather="external-link" width="11" height="11"></i>
+      </a>
+
+      <p style="font-family:'DM Mono',monospace;font-size:0.52rem;letter-spacing:0.08em;color:rgba(201,168,76,0.3);margin-top:12px;text-transform:uppercase;">
+        Powered by KaizenBenchmark.sol · Mantle Sepolia Testnet
+      </p>
+    </div>
+
+  </main>
 
   <%- include('partials/footer') %>
   <script src="/js/app.js"></script>
+  <script>feather.replace();</script>
 </body>
 </html>
