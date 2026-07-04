@@ -4,300 +4,201 @@
   <%- include('partials/head') %>
   <title>KAIZEN — Create Account</title>
 </head>
-<body class="auth-page">
+<body class="welcome-page" style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;background:var(--bg-base);">
 
-  <%- include('partials/navbar') %>
+  <div style="position:fixed;top:20%;left:50%;transform:translateX(-50%);width:600px;height:400px;background:radial-gradient(ellipse,rgba(201,168,76,0.05),transparent 70%);pointer-events:none;"></div>
 
-  <main class="auth-main">
+  <div style="width:100%;max-width:480px;position:relative;z-index:1;">
 
-    <% if (step === 'otp') { %>
-    <!-- ── STEP 2: OTP ── -->
-    <div class="auth-card">
-      <div class="auth-header">
-        <div class="auth-logo">改</div>
-        <h1>Check Your Email</h1>
-        <p>We sent a 3-digit code to<br><strong><%= email %></strong></p>
-      </div>
-      <% if (error) { %>
-        <div class="alert alert-error"><%= error %></div>
-      <% } %>
-      <form action="/auth/verify-otp" method="POST" class="auth-form">
-        <div class="otp-group">
-          <input type="text" name="otp1" class="otp-input"
-            maxlength="1" inputmode="numeric" required autofocus>
-          <input type="text" name="otp2" class="otp-input"
-            maxlength="1" inputmode="numeric" required>
-          <input type="text" name="otp3" class="otp-input"
-            maxlength="1" inputmode="numeric" required>
-        </div>
-        <button type="submit" class="btn-primary btn-full">Verify</button>
-      </form>
-      <div class="auth-footer">
-        Wrong email? <a href="/auth/register">Go back</a>
-      </div>
+    <!-- Logo -->
+    <div style="text-align:center;margin-bottom:36px;">
+      <a href="/" style="text-decoration:none;display:inline-flex;flex-direction:column;align-items:center;gap:8px;">
+        <div style="font-family:'DM Mono',monospace;font-size:2.5rem;color:var(--gold);font-weight:700;line-height:1;">改</div>
+        <div style="font-family:'DM Mono',monospace;font-size:0.75rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--ash);">KAIZEN</div>
+      </a>
     </div>
 
-    <% } else if (step === 'questions') { %>
-    <!-- ── STEP 3: ONBOARDING QUESTIONS ONE AT A TIME ── -->
-    <div class="auth-card" style="max-width:500px;">
-      <div class="auth-header">
-        <div class="auth-logo">改</div>
-        <h1>Build Your Profile</h1>
-        <p>Question <%= questionNum %> of 5</p>
+    <% if (typeof step === 'undefined' || step !== 'questions') { %>
+
+    <!-- REGISTRATION FORM -->
+    <div style="background:var(--bg-card);border:1px solid rgba(201,168,76,0.18);padding:36px;">
+
+      <div style="text-align:center;margin-bottom:28px;">
+        <h1 style="font-size:1.3rem;font-weight:700;color:var(--text-primary);margin-bottom:6px;">Start your discipline journey</h1>
+        <p style="font-size:0.82rem;color:var(--ash);">Free forever. No credit card required.</p>
       </div>
 
-      <!-- PROGRESS -->
-      <div class="onboarding-progress" style="margin-bottom:28px;">
-        <div class="progress-dot <%= questionNum >= 1 ? 'active' : '' %>"></div>
-        <div class="progress-dot <%= questionNum >= 2 ? 'active' : '' %>"></div>
-        <div class="progress-dot <%= questionNum >= 3 ? 'active' : '' %>"></div>
-        <div class="progress-dot <%= questionNum >= 4 ? 'active' : '' %>"></div>
-        <div class="progress-dot <%= questionNum >= 5 ? 'active' : '' %>"></div>
-      </div>
-
-      <% if (error) { %>
-        <div class="alert alert-error"><%= error %></div>
-      <% } %>
-
-      <form action="/auth/onboarding" method="POST" class="auth-form">
-
-        <% if (questionNum === 1) { %>
-          <div class="form-group">
-            <label class="form-label" style="font-size:0.85rem;color:var(--text-primary);text-transform:none;letter-spacing:0;margin-bottom:12px;">
-              What is your maximum risk per trade and maximum daily drawdown limit?
-            </label>
-            <div class="form-row">
-              <div class="form-group">
-                <label class="form-label">Max Risk Per Trade (%)</label>
-                <input type="number" name="riskPerTrade" class="form-input"
-                  placeholder="e.g. 1" min="0.1" max="100" step="0.1" required>
-              </div>
-              <div class="form-group">
-                <label class="form-label">Daily Drawdown Limit (%)</label>
-                <input type="number" name="dailyDrawdown" class="form-input"
-                  placeholder="e.g. 3" min="0.1" max="100" step="0.1" required>
-              </div>
-            </div>
-          </div>
-
-        <% } else if (questionNum === 2) { %>
-          <div class="form-group">
-            <label class="form-label" style="font-size:0.85rem;color:var(--text-primary);text-transform:none;letter-spacing:0;margin-bottom:12px;">
-              What specific market setups or triggers form your trading edge?
-            </label>
-            <div class="radio-group">
-              <label class="radio-option">
-                <input type="radio" name="tradingEdge" value="Breakout" required>
-                <span>Breakout — Trading price breaking key levels</span>
-              </label>
-              <label class="radio-option">
-                <input type="radio" name="tradingEdge" value="Mean Reversion">
-                <span>Mean Reversion — Price returning to average</span>
-              </label>
-              <label class="radio-option">
-                <input type="radio" name="tradingEdge" value="Trend Following">
-                <span>Trend Following — Trading with the trend</span>
-              </label>
-              <label class="radio-option">
-                <input type="radio" name="tradingEdge" value="Price Action">
-                <span>Price Action — Candle patterns and structure</span>
-              </label>
-              <label class="radio-option">
-                <input type="radio" name="tradingEdge" value="Supply and Demand">
-                <span>Supply and Demand — Key zone trading</span>
-              </label>
-              <label class="radio-option">
-                <input type="radio" name="tradingEdge" value="Smart Money Concepts">
-                <span>Smart Money Concepts — ICT / institutional flow</span>
-              </label>
-            </div>
-          </div>
-
-        <% } else if (questionNum === 3) { %>
-          <div class="form-group">
-            <label class="form-label" style="font-size:0.85rem;color:var(--text-primary);text-transform:none;letter-spacing:0;margin-bottom:12px;">
-              What are your strict rules for entering and exiting trades?
-            </label>
-            <div class="form-group">
-              <label class="form-label">Describe your entry trigger</label>
-              <input type="text" name="entryRule" class="form-input"
-                placeholder="e.g. Break and retest of key level with confirmation" required>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Where do you place your stop loss?</label>
-              <input type="text" name="stopLossRule" class="form-input"
-                placeholder="e.g. Below the last swing low" required>
-            </div>
-            <div class="form-group">
-              <label class="form-label">How do you take profit?</label>
-              <input type="text" name="takeProfitRule" class="form-input"
-                placeholder="e.g. At next key level, minimum 1:2 RR" required>
-            </div>
-          </div>
-
-        <% } else if (questionNum === 4) { %>
-          <div class="form-group">
-            <label class="form-label" style="font-size:0.85rem;color:var(--text-primary);text-transform:none;letter-spacing:0;margin-bottom:12px;">
-              What emotional triggers or market conditions usually cause you to break discipline?
-            </label>
-            <p style="font-size:0.78rem;color:var(--ash);margin-bottom:12px;">Select all that apply</p>
-            <div style="display:flex;flex-direction:column;gap:8px;">
-              <label class="radio-option">
-                <input type="checkbox" name="emotionalTriggers" value="FOMO">
-                <span>FOMO — Fear of missing out on moves</span>
-              </label>
-              <label class="radio-option">
-                <input type="checkbox" name="emotionalTriggers" value="Revenge Trading">
-                <span>Revenge Trading — Trading aggressively after a loss</span>
-              </label>
-              <label class="radio-option">
-                <input type="checkbox" name="emotionalTriggers" value="Overtrading">
-                <span>Overtrading — Taking too many trades</span>
-              </label>
-              <label class="radio-option">
-                <input type="checkbox" name="emotionalTriggers" value="Moving Stop Loss">
-                <span>Moving Stop Loss — Widening SL when losing</span>
-              </label>
-              <label class="radio-option">
-                <input type="checkbox" name="emotionalTriggers" value="Cutting Winners Early">
-                <span>Cutting Winners Early — Closing profit trades too soon</span>
-              </label>
-              <label class="radio-option">
-                <input type="checkbox" name="emotionalTriggers" value="No Plan Trading">
-                <span>No Plan — Entering trades without a clear setup</span>
-              </label>
-            </div>
-          </div>
-
-        <% } else if (questionNum === 5) { %>
-          <div class="form-group">
-            <label class="form-label" style="font-size:0.85rem;color:var(--text-primary);text-transform:none;letter-spacing:0;margin-bottom:12px;">
-              What are your specific asset, volume, and daily trade count constraints?
-            </label>
-            <div class="form-group">
-              <label class="form-label">Maximum trades per day</label>
-              <input type="number" name="maxDailyTrades" class="form-input"
-                placeholder="e.g. 3" min="1" max="100" required>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Markets you trade</label>
-              <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;">
-                <label class="radio-option" style="padding:7px 12px;">
-                  <input type="checkbox" name="markets" value="Forex">
-                  <span>Forex</span>
-                </label>
-                <label class="radio-option" style="padding:7px 12px;">
-                  <input type="checkbox" name="markets" value="Crypto">
-                  <span>Crypto</span>
-                </label>
-                <label class="radio-option" style="padding:7px 12px;">
-                  <input type="checkbox" name="markets" value="Stocks">
-                  <span>Stocks</span>
-                </label>
-                <label class="radio-option" style="padding:7px 12px;">
-                  <input type="checkbox" name="markets" value="Indices">
-                  <span>Indices</span>
-                </label>
-                <label class="radio-option" style="padding:7px 12px;">
-                  <input type="checkbox" name="markets" value="Synthetic">
-                  <span>Synthetic</span>
-                </label>
-                <label class="radio-option" style="padding:7px 12px;">
-                  <input type="checkbox" name="markets" value="Commodities">
-                  <span>Commodities</span>
-                </label>
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Maximum position size (% of account)</label>
-              <input type="number" name="maxPositionSize" class="form-input"
-                placeholder="e.g. 5" min="0.1" max="100" step="0.1" required>
-            </div>
-          </div>
-        <% } %>
-
-        <input type="hidden" name="questionNum" value="<%= questionNum %>">
-        <button type="submit" class="btn-primary btn-full">
-          <%= questionNum < 5 ? 'Next →' : 'Complete Setup' %>
-        </button>
-      </form>
-    </div>
-
-    <% } else { %>
-    <!-- ── STEP 1: ACCOUNT DETAILS ── -->
-    <div class="auth-card" style="max-width:480px;">
-      <div class="auth-header">
-        <div class="auth-logo">改</div>
-        <h1>Join KAIZEN</h1>
-        <p>Start your discipline journey today</p>
-      </div>
-
-      <% if (error) { %>
-        <div class="alert alert-error"><%= error %></div>
-      <% } %>
-
-      <a href="/auth/google" class="btn-google">
-        <svg width="18" height="18" viewBox="0 0 24 24">
-          <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-          <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-          <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-          <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+      <!-- Google -->
+      <a href="/auth/google" style="
+        display:flex;align-items:center;justify-content:center;gap:10px;
+        background:var(--bg-surface);border:1px solid var(--border);
+        color:var(--text-primary);font-family:'DM Mono',monospace;
+        font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;
+        padding:14px;text-decoration:none;margin-bottom:20px;
+        transition:all 0.2s;width:100%;box-sizing:border-box;
+      " onmouseover="this.style.borderColor='rgba(201,168,76,0.3)';this.style.color='var(--gold)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-primary)'">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+          <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+          <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+          <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+          <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
         </svg>
         Continue with Google
       </a>
 
-      <div class="auth-divider"><span>or sign up with email</span></div>
-
-      <form action="/auth/register" method="POST" class="auth-form">
-        <div class="form-group">
-          <label class="form-label">Username</label>
-          <input type="text" name="username" class="form-input"
-            placeholder="e.g. denniskaizen" required>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Email</label>
-          <input type="email" name="email" class="form-input"
-            placeholder="you@example.com" required>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Password</label>
-          <div class="password-wrapper">
-            <input type="password" name="password" id="regPassword"
-              class="form-input password-input"
-              placeholder="Minimum 6 characters" required>
-            <button type="button" class="password-toggle"
-              onclick="togglePassword('regPassword', this)">
-              Show
-            </button>
-          </div>
-        </div>
-      <div class="form-group">
-        <label class="form-label">Confirm Password</label>
-        <div class="password-wrapper">
-          <input type="password" name="confirmPassword" id="regConfirmPassword"
-            class="form-input password-input"
-            placeholder="Repeat your password" required>
-          <button type="button" class="password-toggle"
-            onclick="togglePassword('regConfirmPassword', this)">
-            Show
-          </button>
-        </div>
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;">
+        <div style="flex:1;height:1px;background:var(--border);"></div>
+        <span style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);">or email</span>
+        <div style="flex:1;height:1px;background:var(--border);"></div>
       </div>
-        <button type="submit" class="btn-primary btn-full">
+
+      <% if (typeof error !== 'undefined' && error) { %>
+        <div style="padding:12px 14px;background:rgba(248,113,113,0.06);border:1px solid rgba(248,113,113,0.2);border-left:2px solid #F87171;margin-bottom:16px;display:flex;align-items:center;gap:8px;">
+          <i data-feather="alert-circle" width="13" height="13" style="color:#F87171;flex-shrink:0;"></i>
+          <span style="font-size:0.82rem;color:#F87171;"><%= error %></span>
+        </div>
+      <% } %>
+
+      <form action="/auth/register" method="POST" style="display:flex;flex-direction:column;gap:14px;">
+        <input type="hidden" name="step" value="register">
+
+        <div>
+          <label style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);display:block;margin-bottom:6px;">Username</label>
+          <input type="text" name="username" required style="width:100%;background:var(--bg-surface);border:1px solid var(--border);color:var(--text-primary);font-family:'Outfit',sans-serif;font-size:0.9rem;padding:12px 14px;outline:none;box-sizing:border-box;transition:border-color 0.2s;" placeholder="your_trader_name" onfocus="this.style.borderColor='rgba(201,168,76,0.4)'" onblur="this.style.borderColor='var(--border)'">
+        </div>
+
+        <div>
+          <label style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);display:block;margin-bottom:6px;">Email</label>
+          <input type="email" name="email" required style="width:100%;background:var(--bg-surface);border:1px solid var(--border);color:var(--text-primary);font-family:'Outfit',sans-serif;font-size:0.9rem;padding:12px 14px;outline:none;box-sizing:border-box;transition:border-color 0.2s;" placeholder="your@email.com" onfocus="this.style.borderColor='rgba(201,168,76,0.4)'" onblur="this.style.borderColor='var(--border)'">
+        </div>
+
+        <div>
+          <label style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);display:block;margin-bottom:6px;">Password</label>
+          <input type="password" name="password" required minlength="6" style="width:100%;background:var(--bg-surface);border:1px solid var(--border);color:var(--text-primary);font-family:'Outfit',sans-serif;font-size:0.9rem;padding:12px 14px;outline:none;box-sizing:border-box;transition:border-color 0.2s;" placeholder="••••••••" onfocus="this.style.borderColor='rgba(201,168,76,0.4)'" onblur="this.style.borderColor='var(--border)'">
+        </div>
+
+        <button type="submit" style="width:100%;background:var(--gold);color:#000;border:none;font-family:'DM Mono',monospace;font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;font-weight:700;padding:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:background 0.2s;margin-top:4px;" onmouseover="this.style.background='#E2C46A'" onmouseout="this.style.background='var(--gold)'">
+          <i data-feather="arrow-right" width="13" height="13"></i>
           Create Account
         </button>
       </form>
 
-      <div class="auth-footer">
-        Already have an account?
-        <a href="/auth/login">Sign in</a>
+      <div style="text-align:center;margin-top:20px;padding-top:20px;border-top:1px solid var(--border);">
+        <span style="font-size:0.82rem;color:var(--ash);">Already have an account? </span>
+        <a href="/auth/login" style="font-size:0.82rem;color:var(--gold);text-decoration:none;font-weight:600;">Sign in</a>
       </div>
+
     </div>
+
+    <% } else { %>
+
+    <!-- ONBOARDING QUESTIONS -->
+    <div style="background:var(--bg-card);border:1px solid rgba(201,168,76,0.18);padding:36px;">
+
+      <div style="text-align:center;margin-bottom:28px;">
+        <div style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:10px;display:flex;align-items:center;justify-content:center;gap:8px;">
+          <i data-feather="settings" width="12" height="12"></i>
+          Trading Profile Setup
+        </div>
+        <h1 style="font-size:1.2rem;font-weight:700;color:var(--text-primary);margin-bottom:8px;">Tell KAIZEN about your trading</h1>
+        <p style="font-size:0.82rem;color:var(--ash);line-height:1.7;">
+          This is what KAIZEN AI uses to analyze your sessions.<br>Be specific — it makes all the difference.
+        </p>
+      </div>
+
+      <!-- Progress indicator -->
+      <div style="display:flex;gap:4px;margin-bottom:28px;">
+        <% for(let i = 1; i <= 4; i++) { %>
+          <div style="flex:1;height:3px;background:<%= i === 1 ? 'var(--gold)' : 'rgba(201,168,76,0.15)' %>;border-radius:2px;"></div>
+        <% } %>
+      </div>
+
+      <form action="/auth/onboarding" method="POST" style="display:flex;flex-direction:column;gap:16px;">
+
+        <div>
+          <label style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);display:block;margin-bottom:6px;">Markets you trade</label>
+          <select name="markets" style="width:100%;background:var(--bg-surface);border:1px solid var(--border);color:var(--text-primary);font-family:'Outfit',sans-serif;font-size:0.9rem;padding:12px 14px;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='rgba(201,168,76,0.4)'" onblur="this.style.borderColor='var(--border)'">
+            <option value="">Select your market</option>
+            <option value="Forex">Forex</option>
+            <option value="Crypto">Crypto</option>
+            <option value="Stocks">Stocks</option>
+            <option value="Indices">Indices</option>
+            <option value="Commodities">Commodities</option>
+            <option value="Multiple">Multiple markets</option>
+          </select>
+        </div>
+
+        <div>
+          <label style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);display:block;margin-bottom:6px;">Your trading edge / strategy</label>
+          <input type="text" name="tradingEdge" style="width:100%;background:var(--bg-surface);border:1px solid var(--border);color:var(--text-primary);font-family:'Outfit',sans-serif;font-size:0.9rem;padding:12px 14px;outline:none;box-sizing:border-box;transition:border-color 0.2s;" placeholder="e.g. Smart Money Concepts, Price Action, ICT" onfocus="this.style.borderColor='rgba(201,168,76,0.4)'" onblur="this.style.borderColor='var(--border)'">
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div>
+            <label style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);display:block;margin-bottom:6px;">Risk per trade (%)</label>
+            <input type="text" name="riskPerTrade" style="width:100%;background:var(--bg-surface);border:1px solid var(--border);color:var(--text-primary);font-family:'Outfit',sans-serif;font-size:0.9rem;padding:12px 14px;outline:none;box-sizing:border-box;transition:border-color 0.2s;" placeholder="e.g. 1" onfocus="this.style.borderColor='rgba(201,168,76,0.4)'" onblur="this.style.borderColor='var(--border)'">
+          </div>
+          <div>
+            <label style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);display:block;margin-bottom:6px;">Daily drawdown (%)</label>
+            <input type="text" name="dailyDrawdown" style="width:100%;background:var(--bg-surface);border:1px solid var(--border);color:var(--text-primary);font-family:'Outfit',sans-serif;font-size:0.9rem;padding:12px 14px;outline:none;box-sizing:border-box;transition:border-color 0.2s;" placeholder="e.g. 3" onfocus="this.style.borderColor='rgba(201,168,76,0.4)'" onblur="this.style.borderColor='var(--border)'">
+          </div>
+        </div>
+
+        <div>
+          <label style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);display:block;margin-bottom:6px;">Your entry rule</label>
+          <textarea name="entryRule" rows="2" style="width:100%;background:var(--bg-surface);border:1px solid var(--border);color:var(--text-primary);font-family:'Outfit',sans-serif;font-size:0.88rem;padding:12px 14px;outline:none;box-sizing:border-box;resize:none;transition:border-color 0.2s;line-height:1.6;" placeholder="e.g. Daily sweep → 4H MSS → 30min MSS entry" onfocus="this.style.borderColor='rgba(201,168,76,0.4)'" onblur="this.style.borderColor='var(--border)'"></textarea>
+        </div>
+
+        <div>
+          <label style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);display:block;margin-bottom:6px;">Emotional triggers to watch</label>
+          <input type="text" name="emotionalTriggers" style="width:100%;background:var(--bg-surface);border:1px solid var(--border);color:var(--text-primary);font-family:'Outfit',sans-serif;font-size:0.9rem;padding:12px 14px;outline:none;box-sizing:border-box;transition:border-color 0.2s;" placeholder="e.g. FOMO, revenge trading, moving SL" onfocus="this.style.borderColor='rgba(201,168,76,0.4)'" onblur="this.style.borderColor='var(--border)'">
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div>
+            <label style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);display:block;margin-bottom:6px;">Stop loss rule</label>
+            <input type="text" name="stopLossRule" style="width:100%;background:var(--bg-surface);border:1px solid var(--border);color:var(--text-primary);font-family:'Outfit',sans-serif;font-size:0.9rem;padding:12px 14px;outline:none;box-sizing:border-box;transition:border-color 0.2s;" placeholder="e.g. Above swing high" onfocus="this.style.borderColor='rgba(201,168,76,0.4)'" onblur="this.style.borderColor='var(--border)'">
+          </div>
+          <div>
+            <label style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);display:block;margin-bottom:6px;">Take profit rule</label>
+            <input type="text" name="takeProfitRule" style="width:100%;background:var(--bg-surface);border:1px solid var(--border);color:var(--text-primary);font-family:'Outfit',sans-serif;font-size:0.9rem;padding:12px 14px;outline:none;box-sizing:border-box;transition:border-color 0.2s;" placeholder="e.g. Min 1:2 RR" onfocus="this.style.borderColor='rgba(201,168,76,0.4)'" onblur="this.style.borderColor='var(--border)'">
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div>
+            <label style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);display:block;margin-bottom:6px;">Max daily trades</label>
+            <input type="text" name="maxDailyTrades" style="width:100%;background:var(--bg-surface);border:1px solid var(--border);color:var(--text-primary);font-family:'Outfit',sans-serif;font-size:0.9rem;padding:12px 14px;outline:none;box-sizing:border-box;" placeholder="e.g. 3" onfocus="this.style.borderColor='rgba(201,168,76,0.4)'" onblur="this.style.borderColor='var(--border)'">
+          </div>
+          <div>
+            <label style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);display:block;margin-bottom:6px;">Max position size (%)</label>
+            <input type="text" name="maxPositionSize" style="width:100%;background:var(--bg-surface);border:1px solid var(--border);color:var(--text-primary);font-family:'Outfit',sans-serif;font-size:0.9rem;padding:12px 14px;outline:none;box-sizing:border-box;" placeholder="e.g. 5" onfocus="this.style.borderColor='rgba(201,168,76,0.4)'" onblur="this.style.borderColor='var(--border)'">
+          </div>
+        </div>
+
+        <button type="submit" style="width:100%;background:var(--gold);color:#000;border:none;font-family:'DM Mono',monospace;font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;font-weight:700;padding:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:background 0.2s;margin-top:6px;" onmouseover="this.style.background='#E2C46A'" onmouseout="this.style.background='var(--gold)'">
+          <i data-feather="check" width="13" height="13"></i>
+          Complete Setup — Go to Dashboard
+        </button>
+
+        <p style="font-family:'DM Mono',monospace;font-size:0.55rem;text-align:center;color:rgba(168,160,154,0.4);margin:0;letter-spacing:0.06em;">
+          You can update these anytime from Settings
+        </p>
+
+      </form>
+    </div>
+
     <% } %>
 
-  </main>
+    <div style="text-align:center;margin-top:20px;">
+      <p style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:rgba(168,160,154,0.35);">
+        改善 · Discipline is the edge
+      </p>
+    </div>
 
-  <%- include('partials/footer') %>
+  </div>
+
   <script src="/js/app.js"></script>
+  <script>feather.replace();</script>
 </body>
 </html>
