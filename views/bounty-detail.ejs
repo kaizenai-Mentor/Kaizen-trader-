@@ -2,135 +2,132 @@
 <html lang="en">
 <head>
   <%- include('partials/head') %>
-  <title>Kaizen — Bounty Detail</title>
+  <title>KAIZEN — Bounty Detail</title>
 </head>
 <body class="app-page">
-
   <%- include('partials/navbar') %>
 
   <main class="app-main">
 
-    <div class="page-header">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:24px;flex-wrap:wrap;">
       <div>
-        <h1>Bounty <em>Detail</em></h1>
-        <p class="page-sub">Zero Authority DAO Challenge</p>
+        <div style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:6px;display:flex;align-items:center;gap:8px;">
+          <span style="width:16px;height:1px;background:var(--gold);display:inline-block;"></span>
+          Zero Authority DAO Challenge
+        </div>
+        <h1 style="font-size:1.6rem;font-weight:700;color:var(--text-primary);margin-bottom:4px;">Bounty Detail</h1>
       </div>
-      <a href="/za/bounties" class="btn-outline">← All Bounties</a>
+      <a href="/za/bounties" style="display:inline-flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);border:1px solid var(--border);padding:10px 16px;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.color='var(--gold)';this.style.borderColor='rgba(201,168,76,0.3)'" onmouseout="this.style.color='var(--ash)';this.style.borderColor='var(--border)'">
+        <i data-feather="arrow-left" width="12" height="12"></i>
+        All Bounties
+      </a>
     </div>
 
     <% if (bounty && bounty.id) { %>
 
-      <div class="main-grid">
+      <div style="display:grid;grid-template-columns:1.6fr 1fr;gap:2px;margin-bottom:2px;" class="bounty-grid">
 
-        <div class="card card-blue">
-          <div class="card-header">
-            <h2><%= bounty.name || bounty.title %></h2>
-            <span class="bounty-badge"><%= bounty.status || 'Open' %></span>
+        <!-- MAIN BOUNTY CARD -->
+        <div style="background:var(--bg-card);border:1px solid rgba(59,130,246,0.18);padding:28px;">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:20px;flex-wrap:wrap;">
+            <h2 style="font-size:1.2rem;font-weight:700;color:var(--text-primary);margin:0;"><%= bounty.name || bounty.title %></h2>
+            <span style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:#4ADE80;border:1px solid rgba(52,211,153,0.25);padding:4px 10px;white-space:nowrap;"><%= bounty.status || 'Open' %></span>
           </div>
 
-          <div style="margin-bottom:20px;">
-            <span class="bounty-reward" style="font-size:1.5rem;">
-              <%= bounty.totalPayment || bounty.reward || '—' %>
-              <%= bounty.token ? bounty.token.symbol : 'STX' %>
+          <div style="margin-bottom:20px;display:flex;align-items:baseline;gap:8px;">
+            <span style="font-family:'DM Mono',monospace;font-size:1.8rem;font-weight:700;color:var(--blue);">
+              <%= bounty.totalPayment || bounty.reward || '—' %> <%= bounty.token ? bounty.token.symbol : 'STX' %>
             </span>
-            <span style="color:var(--ash);font-size:0.85rem;margin-left:8px;">Total Prize</span>
+            <span style="color:var(--ash);font-size:0.82rem;">Total Prize</span>
           </div>
 
-          <div style="background:var(--black-surface);padding:20px;margin-bottom:20px;border:1px solid var(--border);">
-            <p style="color:var(--ash-light);font-size:0.9rem;line-height:1.8;white-space:pre-wrap;"><%= bounty.details || bounty.description || 'No details available.' %></p>
+          <div style="background:var(--bg-surface);padding:20px;margin-bottom:20px;border:1px solid var(--border);">
+            <p style="color:var(--ash-light);font-size:0.88rem;line-height:1.85;white-space:pre-wrap;margin:0;"><%= bounty.details || bounty.description || 'No details available.' %></p>
           </div>
 
-          <div style="display:flex;gap:16px;flex-wrap:wrap;">
-            <div>
-              <div class="form-label">Type</div>
-              <div style="color:var(--white);font-weight:600;"><%= bounty.type || '—' %></div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:2px;">
+            <div style="background:var(--bg-surface);border:1px solid var(--border);padding:14px;text-align:center;">
+              <div style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-bottom:6px;">Type</div>
+              <div style="font-weight:700;color:var(--text-primary);font-size:0.85rem;"><%= bounty.type || '—' %></div>
             </div>
-            <div>
-              <div class="form-label">Days Remaining</div>
-              <div style="color:var(--gold);font-weight:600;"><%= bounty.daysRemaining || '—' %> days</div>
+            <div style="background:var(--bg-surface);border:1px solid var(--border);padding:14px;text-align:center;">
+              <div style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-bottom:6px;">Days Left</div>
+              <div style="font-weight:700;color:var(--gold);font-size:0.85rem;"><%= bounty.daysRemaining || '—' %></div>
             </div>
-            <div>
-              <div class="form-label">Submissions</div>
-              <div style="color:var(--white);font-weight:600;"><%= bounty.submissionsCount || 0 %></div>
+            <div style="background:var(--bg-surface);border:1px solid var(--border);padding:14px;text-align:center;">
+              <div style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-bottom:6px;">Submissions</div>
+              <div style="font-weight:700;color:var(--text-primary);font-size:0.85rem;"><%= bounty.submissionsCount || 0 %></div>
             </div>
           </div>
         </div>
 
-        <div class="card">
-          <div class="card-header">
-            <h2>Creator</h2>
-          </div>
+        <!-- SIDEBAR -->
+        <div style="display:flex;flex-direction:column;gap:2px;">
+
           <% if (bounty.creator) { %>
-            <div style="display:flex;gap:16px;align-items:center;margin-bottom:20px;">
+          <div style="background:var(--bg-card);border:1px solid var(--border);padding:22px;">
+            <div style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--ash);margin-bottom:14px;display:flex;align-items:center;gap:6px;">
+              <i data-feather="user" width="11" height="11"></i> Creator
+            </div>
+            <div style="display:flex;gap:12px;align-items:center;margin-bottom:14px;">
               <% if (bounty.creator.avatarUrl) { %>
-                <img src="<%= bounty.creator.avatarUrl %>"
-                  style="width:48px;height:48px;border-radius:50%;object-fit:cover;border:1px solid var(--border);">
+                <img src="<%= bounty.creator.avatarUrl %>" style="width:42px;height:42px;border-radius:50%;object-fit:cover;border:1px solid var(--border);">
+              <% } else { %>
+                <div style="width:42px;height:42px;border-radius:50%;background:var(--bg-surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--ash);">
+                  <i data-feather="user" width="16" height="16"></i>
+                </div>
               <% } %>
               <div>
-                <div style="font-weight:700;color:var(--white);">
-                  <%= bounty.creator.username %>
-                </div>
-                <div style="font-size:0.82rem;color:var(--ash);">
-                  <%= bounty.creator.twitter || '' %>
-                </div>
+                <div style="font-weight:700;font-size:0.88rem;color:var(--text-primary);"><%= bounty.creator.username %></div>
+                <div style="font-size:0.75rem;color:var(--ash);"><%= bounty.creator.twitter || '' %></div>
               </div>
             </div>
             <% if (bounty.creator.bio) { %>
-              <p style="font-size:0.85rem;color:var(--ash-light);line-height:1.7;">
-                <%= bounty.creator.bio %>
-              </p>
+              <p style="font-size:0.8rem;color:var(--ash-light);line-height:1.7;margin:0;"><%= bounty.creator.bio %></p>
             <% } %>
+          </div>
           <% } %>
 
-          <div style="margin-top:32px;">
-            <div class="card-header">
-              <h2>Kaizen Connection</h2>
+          <!-- KAIZEN CONNECTION -->
+          <div style="background:linear-gradient(135deg,rgba(201,168,76,0.06),rgba(201,168,76,0.02));border:1px solid rgba(201,168,76,0.2);padding:22px;">
+            <div style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);margin-bottom:12px;display:flex;align-items:center;gap:6px;">
+              <i data-feather="zap" width="11" height="11"></i> KAIZEN Connection
             </div>
-            <div style="background:var(--gold-pale);border:1px solid var(--gold-border);padding:16px;">
-              <p style="font-size:0.88rem;color:var(--ash-light);line-height:1.7;">
-                Complete this ZA bounty to earn on-chain reputation.
-                Your Kaizen Discipline Score proves you have the
-                consistency and focus to deliver quality work.
-              </p>
-              <div style="margin-top:16px;">
-                <span style="font-family:var(--font-mono);font-size:0.7rem;color:var(--gold);">
-                  YOUR DISCIPLINE SCORE
-                </span>
-                <div style="font-size:2rem;font-weight:700;color:var(--gold);">
-                  <%= user.disciplineScore || 0 %>/100
-                </div>
-              </div>
-            </div>
+            <p style="font-size:0.82rem;color:var(--ash-light);line-height:1.75;margin-bottom:16px;">
+              Complete this ZA bounty to earn on-chain reputation. Your KAIZEN Discipline Score proves you have the consistency and focus to deliver quality work.
+            </p>
+            <div style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);margin-bottom:4px;">Your Discipline Score</div>
+            <div style="font-family:'DM Mono',monospace;font-size:2rem;font-weight:700;color:var(--gold);"><%= user.disciplineScore || 0 %><span style="font-size:1rem;">/100</span></div>
           </div>
 
         </div>
-
       </div>
 
+      <!-- SUBMISSIONS -->
       <% if (bounty.submissions && bounty.submissions.length > 0) { %>
-        <div class="card" style="margin-top:2px;">
-          <div class="card-header">
-            <h2>Submissions (<%= bounty.submissionsCount %>)</h2>
+        <div style="background:var(--bg-card);border:1px solid var(--border);padding:22px;margin-top:2px;">
+          <div style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--ash);margin-bottom:16px;display:flex;align-items:center;gap:8px;">
+            <i data-feather="file-text" width="12" height="12"></i>
+            Submissions (<%= bounty.submissionsCount %>)
           </div>
-          <div style="display:flex;flex-direction:column;gap:12px;">
+          <div style="display:flex;flex-direction:column;gap:2px;">
             <% bounty.submissions.forEach(function(sub) { %>
-              <div style="background:var(--black-surface);border:1px solid var(--border);padding:16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+              <div style="background:var(--bg-surface);border:1px solid var(--border);padding:14px 16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
                 <div style="display:flex;gap:12px;align-items:center;">
                   <% if (sub.submitter && sub.submitter.avatarUrl) { %>
-                    <img src="<%= sub.submitter.avatarUrl %>"
-                      style="width:36px;height:36px;border-radius:50%;object-fit:cover;">
+                    <img src="<%= sub.submitter.avatarUrl %>" style="width:32px;height:32px;border-radius:50%;object-fit:cover;">
+                  <% } else { %>
+                    <div style="width:32px;height:32px;border-radius:50%;background:var(--bg-card);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--ash);">
+                      <i data-feather="user" width="13" height="13"></i>
+                    </div>
                   <% } %>
                   <div>
-                    <div style="font-weight:600;font-size:0.9rem;">
-                      <%= sub.submitter ? sub.submitter.username : 'Anonymous' %>
-                    </div>
-                    <div style="font-size:0.78rem;color:var(--ash);">
-                      <%= sub.summary ? sub.summary.substring(0, 60) : '' %>
-                    </div>
+                    <div style="font-weight:700;font-size:0.85rem;color:var(--text-primary);"><%= sub.submitter ? sub.submitter.username : 'Anonymous' %></div>
+                    <div style="font-size:0.74rem;color:var(--ash);"><%= sub.summary ? sub.summary.substring(0, 60) : '' %></div>
                   </div>
                 </div>
-                <a href="<%= sub.submissionUrl %>" target="_blank" class="btn-outline btn-sm">
-                  View →
+                <a href="<%= sub.submissionUrl %>" target="_blank" style="display:inline-flex;align-items:center;gap:5px;font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(201,168,76,0.2);padding:6px 12px;text-decoration:none;">
+                  View <i data-feather="external-link" width="10" height="10"></i>
                 </a>
               </div>
             <% }); %>
@@ -139,20 +136,27 @@
       <% } %>
 
     <% } else { %>
-      <div class="card">
-        <div class="empty-state">
-          <div class="empty-icon">⚠️</div>
-          <p>Bounty not found.</p>
-          <a href="/za/bounties" class="btn-primary" style="margin-top:20px;display:inline-block;">
-            Back to Bounties
-          </a>
+      <div style="background:var(--bg-card);border:1px solid var(--border);padding:80px 32px;text-align:center;">
+        <div style="width:44px;height:44px;border:1px solid rgba(248,113,113,0.25);background:rgba(248,113,113,0.04);display:flex;align-items:center;justify-content:center;color:#F87171;margin:0 auto 16px;">
+          <i data-feather="alert-triangle" width="18" height="18"></i>
         </div>
+        <p style="font-size:0.9rem;color:var(--ash);margin-bottom:20px;">Bounty not found.</p>
+        <a href="/za/bounties" style="display:inline-flex;align-items:center;gap:6px;background:var(--gold);color:#000;font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;font-weight:700;padding:12px 24px;text-decoration:none;">
+          <i data-feather="arrow-left" width="13" height="13"></i>
+          Back to Bounties
+        </a>
       </div>
     <% } %>
 
   </main>
 
   <%- include('partials/footer') %>
-
+  <script src="/js/app.js"></script>
+  <script>feather.replace();</script>
+  <style>
+    @media (max-width:700px) {
+      .bounty-grid { grid-template-columns:1fr !important; }
+    }
+  </style>
 </body>
 </html>
