@@ -6,105 +6,104 @@
 </head>
 <body class="app-page">
   <%- include('partials/navbar') %>
+
   <main class="app-main">
 
-    <div class="page-header">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:24px;flex-wrap:wrap;">
       <div>
-        <h1 style="color:var(--gold);">Market News</h1>
-        <p class="page-sub">Live financial news — Forex, Crypto, Stocks, Commodities</p>
+        <div style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:6px;display:flex;align-items:center;gap:8px;">
+          <span style="width:16px;height:1px;background:var(--gold);display:inline-block;"></span>
+          Market Intelligence
+        </div>
+        <h1 style="font-size:1.6rem;font-weight:700;color:var(--text-primary);margin-bottom:4px;">Market News</h1>
+        <p style="font-size:0.82rem;color:var(--ash);font-style:italic;">Stay informed. Trade with context.</p>
       </div>
-      <a href="/dashboard" class="btn-outline">← Dashboard</a>
+      <a href="/dashboard" style="display:inline-flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);border:1px solid var(--border);padding:10px 16px;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.color='var(--gold)';this.style.borderColor='rgba(201,168,76,0.3)'" onmouseout="this.style.color='var(--ash)';this.style.borderColor='var(--border)'">
+        <i data-feather="arrow-left" width="12" height="12"></i>
+        Dashboard
+      </a>
     </div>
 
-    <% if (news.length === 0) { %>
-      <div class="card">
-        <div class="empty-state">
-          <p>News unavailable right now. Check back shortly.</p>
-        </div>
-      </div>
-    <% } else { %>
-      <div style="display:flex;flex-direction:column;gap:2px;">
-        <% news.forEach(function(article) { %>
-          <a href="<%= article.url %>" target="_blank" style="text-decoration:none;" rel="noopener">
-            <div class="card" style="cursor:pointer;transition:border-color 0.2s;" onmouseover="this.style.borderColor='rgba(201,168,76,0.3)'" onmouseout="this.style.borderColor='var(--border)'">
-              <div style="display:flex;gap:16px;align-items:flex-start;">
+    <!-- WARNING BANNER -->
+    <div style="background:rgba(201,168,76,0.04);border:1px solid rgba(201,168,76,0.15);padding:14px 18px;margin-bottom:16px;display:flex;align-items:center;gap:10px;">
+      <i data-feather="alert-circle" width="13" height="13" style="color:var(--gold);flex-shrink:0;"></i>
+      <p style="font-size:0.78rem;color:var(--ash);margin:0;line-height:1.6;">
+        News is for context only — not trading signals. Always apply your own analysis before making decisions.
+      </p>
+    </div>
 
-                <% if (article.image_url) { %>
-                  <img src="<%= article.image_url %>"
-                    style="width:80px;height:60px;object-fit:cover;flex-shrink:0;border:1px solid var(--border);"
-                    onerror="this.style.display='none'">
+    <% if (typeof articles !== 'undefined' && articles && articles.length > 0) { %>
+
+      <div style="display:flex;flex-direction:column;gap:2px;">
+        <% articles.forEach(function(article, i) { %>
+          <a href="<%= article.url %>" target="_blank" rel="noopener noreferrer" style="
+            background:var(--bg-card);
+            border:1px solid var(--border);
+            padding:20px;
+            text-decoration:none;
+            display:block;
+            transition:border-color 0.2s;
+          " onmouseover="this.style.borderColor='rgba(201,168,76,0.3)'" onmouseout="this.style.borderColor='var(--border)'">
+
+            <div style="display:flex;align-items:flex-start;gap:16px;">
+
+              <% if (article.image_url || article.urlToImage) { %>
+                <div style="width:72px;height:72px;min-width:72px;background:var(--bg-surface);border:1px solid var(--border);overflow:hidden;flex-shrink:0;">
+                  <img src="<%= article.image_url || article.urlToImage %>" alt="" style="width:100%;height:100%;object-fit:cover;" onerror="this.parentElement.style.display='none'">
+                </div>
+              <% } else { %>
+                <div style="width:72px;height:72px;min-width:72px;background:var(--bg-surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                  <i data-feather="rss" width="20" height="20" style="color:var(--ash);"></i>
+                </div>
+              <% } %>
+
+              <div style="flex:1;min-width:0;">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap;">
+                  <% if (article.source_id || article.source?.name) { %>
+                    <span style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(201,168,76,0.2);padding:2px 7px;"><%= article.source_id || article.source?.name %></span>
+                  <% } %>
+                  <span style="font-family:'DM Mono',monospace;font-size:0.52rem;color:var(--ash);">
+                    <%= article.pubDate ? new Date(article.pubDate).toLocaleDateString('en-US',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}) : article.publishedAt ? new Date(article.publishedAt).toLocaleDateString('en-US',{month:'short',day:'numeric'}) : '' %>
+                  </span>
+                </div>
+
+                <h3 style="font-size:0.9rem;font-weight:700;color:var(--text-primary);line-height:1.4;margin:0 0 6px;">
+                  <%= article.title %>
+                </h3>
+
+                <% if (article.description) { %>
+                  <p style="font-size:0.78rem;color:var(--ash);line-height:1.6;margin:0;">
+                    <%= article.description.substring(0, 140) %><%= article.description.length > 140 ? '...' : '' %>
+                  </p>
                 <% } %>
 
-                <div style="flex:1;min-width:0;">
-                  <div style="
-                    display:flex;gap:8px;align-items:center;
-                    margin-bottom:6px;flex-wrap:wrap;
-                  ">
-                    <% if (article.entities && article.entities.length > 0) { %>
-                      <% article.entities.slice(0,3).forEach(function(entity) { %>
-                        <span style="
-                          font-family:'DM Mono',monospace;
-                          font-size:0.55rem;letter-spacing:0.1em;
-                          text-transform:uppercase;
-                          padding:2px 7px;
-                          background:rgba(59,130,246,0.08);
-                          border:1px solid rgba(59,130,246,0.15);
-                          color:var(--blue);
-                        "><%= entity.symbol || entity.name %></span>
-                      <% }); %>
-                    <% } %>
-                    <span style="
-                      font-family:'DM Mono',monospace;
-                      font-size:0.55rem;color:var(--ash);
-                      letter-spacing:0.08em;
-                    ">
-                      <%= article.source || 'News' %>
-                    </span>
-                  </div>
-
-                  <h3 style="
-                    font-size:0.9rem;font-weight:700;
-                    color:var(--text-primary);line-height:1.4;
-                    margin-bottom:6px;
-                  ">
-                    <%= article.title %>
-                  </h3>
-
-                  <% if (article.description) { %>
-                    <p style="
-                      font-size:0.78rem;color:var(--text-secondary);
-                      line-height:1.6;
-                      display:-webkit-box;
-                      -webkit-line-clamp:2;
-                      -webkit-box-orient:vertical;
-                      overflow:hidden;
-                    ">
-                      <%= article.description %>
-                    </p>
-                  <% } %>
-
-                  <div style="
-                    margin-top:8px;
-                    font-family:'DM Mono',monospace;
-                    font-size:0.58rem;color:var(--ash);
-                    letter-spacing:0.08em;
-                    display:flex;align-items:center;gap:8px;
-                  ">
-                    <%= article.published_at
-                      ? new Date(article.published_at).toLocaleDateString('en-US',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'})
-                      : '' %>
-                    <span style="color:var(--gold);">Read →</span>
-                  </div>
+                <div style="display:flex;align-items:center;gap:4px;margin-top:8px;font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--ash);">
+                  Read full story
+                  <i data-feather="external-link" width="10" height="10"></i>
                 </div>
               </div>
+
             </div>
           </a>
         <% }); %>
       </div>
+
+    <% } else { %>
+
+      <div style="background:var(--bg-card);border:1px solid var(--border);padding:80px 32px;text-align:center;">
+        <div style="width:44px;height:44px;border:1px solid var(--border);background:var(--bg-surface);display:flex;align-items:center;justify-content:center;color:var(--ash);margin:0 auto 16px;">
+          <i data-feather="rss" width="18" height="18"></i>
+        </div>
+        <h2 style="font-size:1rem;font-weight:700;color:var(--text-primary);margin-bottom:8px;">No news available</h2>
+        <p style="font-size:0.85rem;color:var(--ash);max-width:320px;margin:0 auto;line-height:1.7;">Market news couldn't be loaded right now. Check back shortly.</p>
+      </div>
+
     <% } %>
 
   </main>
+
   <%- include('partials/footer') %>
   <script src="/js/app.js"></script>
+  <script>feather.replace();</script>
 </body>
 </html>
