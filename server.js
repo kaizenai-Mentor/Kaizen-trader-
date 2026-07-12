@@ -38,7 +38,7 @@ app.use(session({
     ttl: 2 * 60 * 60
   }),
   cookie: {
-    secure: false,
+    secure: true,
     httpOnly: true,
     maxAge: 2 * 60 * 60 * 1000
   }
@@ -68,7 +68,7 @@ app.use(passport.session());
 passport.use(new GoogleStrategy({
   clientID: process.env.GOOGLE_CLIENT_ID || 'placeholder',
   clientSecret: process.env.GOOGLE_CLIENT_SECRET || 'placeholder',
-  callbackURL: `${process.env.APP_URL || 'http://localhost:3000'}/auth/google/callback`
+  callbackURL: 'https://kaizen-trader.onrender.com/auth/google/callback'
 }, async (accessToken, refreshToken, profile, done) => {
   try {
     let user = await User.findOne({ googleId: profile.id });
