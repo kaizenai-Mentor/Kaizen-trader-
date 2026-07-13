@@ -115,10 +115,6 @@ app.use((req, res, next) => {
 });
 
 // Google Auth Routes
-app.get('/auth/google',
-  passport.authenticate('google', { scope: ['profile', 'email'] })
-);
-
 app.get('/auth/google/callback',
   passport.authenticate('google', { failureRedirect: '/auth/login' }),
   async (req, res) => {
@@ -130,7 +126,6 @@ app.get('/auth/google/callback',
       streak: req.user.streak || 0
     };
 
-    // Check if onboarding is complete
     const ts = req.user.tradingStyle;
     const onboardingComplete = ts &&
       ts.riskPerTrade &&
@@ -138,15 +133,20 @@ app.get('/auth/google/callback',
       ts.tradingEdge &&
       ts.tradingEdge !== '';
 
-    if (!onboardingComplete) {
-      return res.render('register', {
-        error: null,
-        step: 'questions',
-        questionNum: 1
-      });
-    }
-
-    res.redirect('/dashboard');
+    req.session.save((err) => {
+      if (err) {
+        console.error('Session save error:', err);
+        return res.redirect('/auth/login');
+      }
+      if (!onboardingComplete) {
+        return res.render('register', {
+          error: null,
+          step: 'questions',
+          questionNum: 1
+        });
+      }
+      res.redirect('/dashboard');
+    });
   }
 );
 
