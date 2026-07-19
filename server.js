@@ -38,7 +38,7 @@ app.use(session({
     ttl: 2 * 60 * 60
   }),
   cookie: {
-    secure: true,
+    secure: false,
     httpOnly: true,
     maxAge: 2 * 60 * 60 * 1000
   }
@@ -115,6 +115,10 @@ app.use((req, res, next) => {
 });
 
 // Google Auth Routes
+app.get('/auth/google',
+  passport.authenticate('google', { scope: ['profile', 'email'] })
+);
+
 app.get('/auth/google/callback',
   passport.authenticate('google', { failureRedirect: '/auth/login' }),
   async (req, res) => {
