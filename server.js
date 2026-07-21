@@ -221,57 +221,32 @@ app.get('/leaderboard', async (req, res) => {
   if (!req.session.user) return res.redirect('/auth/login');
   try {
     const User = require('./models/User');
-    const Journal = require('./models/Journal');
 
-    // All time — all users regardless of score
-    const allTimeLeaders = await User.find()
-      .sort({ disciplineScore: -1, createdAt: 1 })
-      .select('username disciplineScore streak createdAt');
+    const allTimeLeaders = await User.find({})
+      .sort({ disciplineScore: -1 })
+      .limit(20)
+      .select('username disciplineScore totalSessions streak');
 
-    // Weekly — users with sessions in last 7 days
-    const sevenDaysAgo = new Date();
-    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+    const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+    const weeklyLeaders = await User.find({
+      updatedAt: { $gte: weekAgo }
+    })
+      .sort({ disciplineScore: -1 })
+      .limit(20)
+      .select('username disciplineScore totalSessions streak');
 
-    const weeklyJournals = await Journal.find({
-      createdAt: { $gte: sevenDaysAgo }
-    });
-
-    // Build weekly scores
-    const weeklyMap = {};
-    weeklyJournals.forEach(j => {
-      const uid = j.userId.toString();
-      if (!weeklyMap[uid]) {
-        weeklyMap[uid] = { total: 0, compliant: 0 };
-      }
-      weeklyMap[uid].total++;
-      if (j.ruleCompliance) weeklyMap[uid].compliant++;
-    });
-
-    const weeklyUserIds = Object.keys(weeklyMap);
-    const weeklyUsers = await User.find({
-      _id: { $in: weeklyUserIds }
-    }).select('username disciplineScore streak');
-
-    const weeklyLeaders = weeklyUsers.map(u => {
-      const stats = weeklyMap[u._id.toString()];
-      const weekScore = Math.round((stats.compliant / stats.total) * 100);
-      return {
-        username: u.username,
-        disciplineScore: u.disciplineScore,
-        weekScore,
-        sessions: stats.total,
-        streak: u.streak || 0
-      };
-    }).sort((a, b) => b.weekScore - a.weekScore);
+    const currentUser = await User.findById(req.session.user.id);
 
     res.render('leaderboard', {
       user: req.session.user,
       allTimeLeaders,
-      weeklyLeaders
+      weeklyLeaders,
+      disciplineScore: currentUser ? currentUser.disciplineScore || 0 : 0,
+      totalSessions: currentUser ? currentUser.totalSessions || 0 : 0,
+      streak: currentUser ? currentUser.streak || 0 : 0
     });
-
-  } catch (err) {
-    console.error('Leaderboard error:', err.message);
+  } catch (error) {
+    console.error('Leaderboard error:', error);
     res.redirect('/dashboard');
   }
 });
