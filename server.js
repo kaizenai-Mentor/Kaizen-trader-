@@ -251,6 +251,70 @@ app.get('/leaderboard', async (req, res) => {
   }
 });
 
+app.get('/trader/:username', async (req, res) => {
+  try {
+    const User = require('./models/User');
+    const Journal = require('./models/Journal');
+    const Memory = require('./models/Memory');
+
+    // Find the user by username
+    const profileUser = await User.findOne({
+      username: { $regex: new RegExp('^' + req.params.username + '$', 'i') }
+    });
+
+    if (!profileUser) {
+      return res.status(404).render('404', {
+        user: req.session.user || null,
+        message: 'Trader profile not found'
+      }) || res.redirect('/leaderboard');
+    }
+
+    // Get recent journal sessions (public stats only, not content)
+    const journals = await Journal.find({
+      userId: profileUser._id
+    }).sort({ createdAt: -1 }).limit(50);
+
+    // Calculate stats
+    const totalSessions = journals.length;
+    const compliantSessions = journals.filter(j => j.ruleCompliance).length;
+    const complianceRate = totalSessions > 0
+      ? Math.round((compliantSessions / totalSessions) * 100)
+      : 0;
+
+    // Recent 10 sessions for activity display
+    const recentActivity = journals.slice(0, 10).map(j => ({
+      date: j.createdAt,
+      compliant: j.ruleCompliance,
+      score: j.sessionScore || 0,
+      asset: j.asset || 'N/A'
+    }));
+
+    // Is this the logged-in user's own profile?
+    const isOwnProfile = req.session.user &&
+      req.session.user.id === profileUser._id.toString();
+
+    res.render('public-profile', {
+      user: req.session.user || null,
+      profileUser: {
+        username: profileUser.username,
+        disciplineScore: profileUser.disciplineScore || 0,
+        totalSessions,
+        streak: profileUser.streak || 0,
+        badges: profileUser.badges || [],
+        memberSince: profileUser.createdAt,
+        zaUserId: profileUser.zaUserId || null,
+        complianceRate
+      },
+      recentActivity,
+      isOwnProfile
+    });
+
+  } catch (error) {
+    console.error('Public profile error:', error);
+    res.redirect('/leaderboard');
+  }
+});
+
 // Kaizen AI page
 app.get('/kaizen-ai', (req, res) => {
   if (!req.session.user) return res.redirect('/auth/login');
