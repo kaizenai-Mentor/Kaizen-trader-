@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('partials/head') %>
+  <title>KAIZEN — <%= profileUser.username %>'s Discipline Profile</title>
+  <meta property="og:title" content="<%= profileUser.username %>'s KAIZEN Discipline Profile">
+  <meta property="og:description" content="Discipline Score: <%= profileUser.disciplineScore %>% | <%= profileUser.totalSessions %> sessions logged | <%= profileUser.streak %> day streak">
+  <meta property="og:url" content="https://kaizen-trader.onrender.com/trader/<%= profileUser.username %>">
+</head>
+<body class="app-page">
+  <%- include('partials/navbar') %>
+
+  <main class="app-main" style="max-width:700px;">
+
+    <!-- PROFILE HEADER -->
+    <div style="
+      background:var(--bg-card);
+      border:1px solid rgba(201,168,76,0.2);
+      padding:32px;
+      margin-bottom:2px;
+      position:relative;
+      overflow:hidden;
+    ">
+      <div style="position:absolute;top:0;right:0;width:200px;height:200px;background:radial-gradient(circle,rgba(201,168,76,0.05),transparent 70%);pointer-events:none;"></div>
+
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;">
+
+        <div style="display:flex;align-items:center;gap:16px;">
+          <!-- Avatar -->
+          <div style="
+            width:60px;height:60px;
+            border:2px solid rgba(201,168,76,0.3);
+            background:rgba(201,168,76,0.06);
+            display:flex;align-items:center;justify-content:center;
+            font-family:'DM Mono',monospace;
+            font-size:1.6rem;
+            font-weight:700;
+            color:var(--gold);
+            flex-shrink:0;
+          ">
+            <%= profileUser.username.charAt(0).toUpperCase() %>
+          </div>
+
+          <div>
+            <div style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--ash);margin-bottom:4px;">
+              改 KAIZEN Trader
+            </div>
+            <h1 style="font-size:1.4rem;font-weight:700;color:var(--text-primary);margin-bottom:4px;">
+              <%= profileUser.username %>
+            </h1>
+            <div style="font-size:0.75rem;color:var(--ash);">
+              Member since <%= new Date(profileUser.memberSince).toLocaleDateString('en-US',{month:'long',year:'numeric'}) %>
+            </div>
+          </div>
+        </div>
+
+        <!-- Share button -->
+        <button onclick="copyProfile()" style="
+          display:inline-flex;align-items:center;gap:6px;
+          font-family:'DM Mono',monospace;font-size:0.6rem;
+          letter-spacing:0.1em;text-transform:uppercase;
+          color:var(--ash);border:1px solid var(--border);
+          background:transparent;padding:8px 14px;cursor:pointer;
+          transition:all 0.2s;
+        " onmouseover="this.style.color='var(--gold)';this.style.borderColor='rgba(201,168,76,0.3)'"
+           onmouseout="this.style.color='var(--ash)';this.style.borderColor='var(--border)'"
+           id="share-btn">
+          <i data-feather="share-2" width="11" height="11"></i>
+          Share Profile
+        </button>
+
+      </div>
+    </div>
+
+    <!-- DISCIPLINE SCORE HERO -->
+    <div style="
+      background:linear-gradient(135deg,rgba(201,168,76,0.08),rgba(201,168,76,0.02));
+      border:1px solid rgba(201,168,76,0.2);
+      padding:28px;
+      margin-bottom:2px;
+    ">
+      <div style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--ash);margin-bottom:12px;display:flex;align-items:center;gap:6px;">
+        <i data-feather="bar-chart-2" width="12" height="12" style="color:var(--gold);"></i>
+        Discipline Score
+      </div>
+
+      <div style="display:flex;align-items:flex-end;gap:12px;margin-bottom:12px;flex-wrap:wrap;">
+        <div style="font-family:'DM Mono',monospace;font-size:3.5rem;font-weight:700;color:var(--gold);line-height:1;">
+          <%= profileUser.disciplineScore %><span style="font-size:1.2rem;">%</span>
+        </div>
+        <div style="padding-bottom:8px;">
+          <span style="
+            font-family:'DM Mono',monospace;font-size:0.68rem;font-weight:700;
+            letter-spacing:0.15em;text-transform:uppercase;
+            padding:6px 14px;
+            border:1px solid rgba(201,168,76,0.3);
+            color:var(--gold);background:rgba(201,168,76,0.06);
+          ">
+            <%= profileUser.disciplineScore >= 80 ? 'ELITE' :
+                profileUser.disciplineScore >= 60 ? 'CONSISTENT' :
+                profileUser.disciplineScore >= 40 ? 'BUILDING' : 'DEVELOPING' %>
+          </span>
+        </div>
+      </div>
+
+      <div style="height:6px;background:rgba(201,168,76,0.1);margin-bottom:8px;">
+        <div style="height:100%;background:linear-gradient(to right,var(--gold),rgba(201,168,76,0.6));width:<%= profileUser.disciplineScore %>%;transition:width 1.2s ease;"></div>
+      </div>
+
+      <div style="font-size:0.75rem;color:var(--ash);">
+        Process consistency — not profit and loss
+      </div>
+    </div>
+
+    <!-- STATS ROW -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:2px;margin-bottom:2px;">
+
+      <div style="background:var(--bg-card);border:1px solid var(--border);padding:18px;text-align:center;">
+        <div style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--ash);margin-bottom:6px;display:flex;align-items:center;justify-content:center;gap:4px;">
+          <i data-feather="edit-3" width="9" height="9"></i>Sessions
+        </div>
+        <div style="font-family:'DM Mono',monospace;font-size:1.6rem;font-weight:700;color:var(--text-primary);"><%= profileUser.totalSessions %></div>
+      </div>
+
+      <div style="background:var(--bg-card);border:1px solid var(--border);padding:18px;text-align:center;">
+        <div style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--ash);margin-bottom:6px;display:flex;align-items:center;justify-content:center;gap:4px;">
+          <i data-feather="zap" width="9" height="9"></i>Streak
+        </div>
+        <div style="font-family:'DM Mono',monospace;font-size:1.6rem;font-weight:700;color:<%= profileUser.streak >= 7 ? '#4ADE80' : 'var(--text-primary)' %>;"><%= profileUser.streak %><span style="font-size:0.8rem;color:var(--ash);">d</span></div>
+      </div>
+
+      <div style="background:var(--bg-card);border:1px solid var(--border);padding:18px;text-align:center;">
+        <div style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--ash);margin-bottom:6px;display:flex;align-items:center;justify-content:center;gap:4px;">
+          <i data-feather="check-circle" width="9" height="9"></i>Compliance
+        </div>
+        <div style="font-family:'DM Mono',monospace;font-size:1.6rem;font-weight:700;color:#4ADE80;"><%= profileUser.complianceRate %>%</div>
+      </div>
+
+      <div style="background:var(--bg-card);border:1px solid var(--border);padding:18px;text-align:center;">
+        <div style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--ash);margin-bottom:6px;display:flex;align-items:center;justify-content:center;gap:4px;">
+          <i data-feather="award" width="9" height="9"></i>Badges
+        </div>
+        <div style="font-family:'DM Mono',monospace;font-size:1.6rem;font-weight:700;color:var(--gold);"><%= profileUser.badges.length %></div>
+      </div>
+
+    </div>
+
+    <!-- RECENT ACTIVITY -->
+    <% if (recentActivity && recentActivity.length > 0) { %>
+    <div style="background:var(--bg-card);border:1px solid var(--border);padding:22px;margin-bottom:2px;">
+      <div style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--ash);margin-bottom:16px;display:flex;align-items:center;gap:6px;">
+        <i data-feather="activity" width="12" height="12" style="color:var(--gold);"></i>
+        Recent Activity
+      </div>
+
+      <!-- Activity bar chart -->
+      <div style="display:flex;align-items:flex-end;gap:5px;height:60px;margin-bottom:12px;">
+        <% recentActivity.forEach(function(session) { %>
+          <div title="<%= session.asset %> — <%= session.compliant ? 'Compliant' : 'Violated' %> — <%= session.score %>%" style="
+            flex:1;
+            height:<%= Math.max(12, (session.score || 50) * 0.6) %>px;
+            background:<%= session.compliant ? 'rgba(52,211,153,0.7)' : 'rgba(248,113,113,0.7)' %>;
+            border-radius:2px 2px 0 0;
+            min-height:12px;
+          "></div>
+        <% }); %>
+      </div>
+
+      <div style="display:flex;gap:16px;">
+        <div style="display:flex;align-items:center;gap:5px;">
+          <div style="width:8px;height:8px;background:rgba(52,211,153,0.7);border-radius:1px;"></div>
+          <span style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--ash);">Compliant</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:5px;">
+          <div style="width:8px;height:8px;background:rgba(248,113,113,0.7);border-radius:1px;"></div>
+          <span style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--ash);">Violated</span>
+        </div>
+      </div>
+    </div>
+    <% } %>
+
+    <!-- BADGES -->
+    <% if (profileUser.badges && profileUser.badges.length > 0) { %>
+    <div style="background:var(--bg-card);border:1px solid var(--border);padding:22px;margin-bottom:2px;">
+      <div style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--ash);margin-bottom:16px;display:flex;align-items:center;gap:6px;">
+        <i data-feather="award" width="12" height="12" style="color:var(--gold);"></i>
+        Achievements
+        <span style="color:var(--gold);border:1px solid rgba(201,168,76,0.2);padding:2px 7px;"><%= profileUser.badges.length %></span>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;">
+        <% profileUser.badges.forEach(function(badge) { %>
+          <div title="<%= badge.description %>" style="
+            background:var(--bg-surface);
+            border:1px solid rgba(201,168,76,0.12);
+            padding:6px 12px;
+            font-size:0.78rem;
+            color:var(--text-primary);
+            display:flex;align-items:center;gap:6px;
+          ">
+            <i data-feather="star" width="11" height="11" style="color:var(--gold);"></i>
+            <%= badge.name %>
+          </div>
+        <% }); %>
+      </div>
+    </div>
+    <% } %>
+
+    <!-- ON-CHAIN REPUTATION -->
+    <div style="background:var(--bg-card);border:1px solid rgba(59,130,246,0.15);padding:22px;margin-bottom:2px;">
+      <div style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--ash);margin-bottom:14px;display:flex;align-items:center;gap:6px;">
+        <i data-feather="link" width="12" height="12" style="color:var(--blue);"></i>
+        On-Chain Reputation
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:2px;">
+        <div style="background:var(--bg-surface);border:1px solid rgba(201,168,76,0.1);padding:14px;">
+          <div style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-bottom:6px;">ZA DAO · Stacks</div>
+          <% if (profileUser.zaUserId) { %>
+            <a href="https://zeroauthoritydao.com/profile/<%= profileUser.zaUserId %>" target="_blank" style="display:inline-flex;align-items:center;gap:5px;font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--gold);text-decoration:none;">
+              View Profile <i data-feather="external-link" width="10" height="10"></i>
+            </a>
+          <% } else { %>
+            <span style="font-size:0.75rem;color:var(--ash);">Not connected</span>
+          <% } %>
+        </div>
+        <div style="background:var(--bg-surface);border:1px solid rgba(59,130,246,0.1);padding:14px;">
+          <div style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-bottom:6px;">Mantle · AI Record</div>
+          <a href="https://explorer.sepolia.mantle.xyz" target="_blank" style="display:inline-flex;align-items:center;gap:5px;font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--blue);text-decoration:none;">
+            View Explorer <i data-feather="external-link" width="10" height="10"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- CTA — if viewing someone else's profile -->
+    <% if (!isOwnProfile) { %>
+    <div style="background:rgba(201,168,76,0.03);border:1px solid rgba(201,168,76,0.12);padding:24px;text-align:center;">
+      <p style="font-size:0.88rem;color:var(--ash);margin-bottom:16px;line-height:1.7;">
+        Want to build your own verifiable discipline record?
+      </p>
+      <a href="/auth/register" style="display:inline-flex;align-items:center;gap:6px;background:var(--gold);color:#000;font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;font-weight:700;padding:12px 28px;text-decoration:none;">
+        <i data-feather="arrow-right" width="13" height="13"></i>
+        Start Free on KAIZEN
+      </a>
+    </div>
+    <% } %>
+
+    <!-- If own profile — link to full dashboard -->
+    <% if (isOwnProfile) { %>
+    <div style="text-align:center;margin-top:16px;">
+      <a href="/dashboard" style="display:inline-flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);border:1px solid var(--border);padding:10px 20px;text-decoration:none;">
+        <i data-feather="arrow-left" width="12" height="12"></i>
+        Back to Dashboard
+      </a>
+    </div>
+    <% } %>
+
+  </main>
+
+  <%- include('partials/footer') %>
+  <script src="/js/app.js"></script>
+  <script>
+    feather.replace();
+
+    function copyProfile() {
+      const url = window.location.href;
+      navigator.clipboard.writeText(url).then(() => {
+        const btn = document.getElementById('share-btn');
+        btn.innerHTML = '<i data-feather="check" width="11" height="11"></i> Copied!';
+        btn.style.color = '#4ADE80';
+        btn.style.borderColor = 'rgba(52,211,153,0.3)';
+        feather.replace();
+        setTimeout(() => {
+          btn.innerHTML = '<i data-feather="share-2" width="11" height="11"></i> Share Profile';
+          btn.style.color = 'var(--ash)';
+          btn.style.borderColor = 'var(--border)';
+          feather.replace();
+        }, 2000);
+      });
+    }
+  </script>
+</body>
+</html>
+
