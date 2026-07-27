@@ -983,6 +983,60 @@ app.get('/admin/stats', async (req, res) => {
   }
 });
 
+// Public trader profile
+app.get('/trader/:username', async (req, res) => {
+  try {
+    const User = require('./models/User');
+    const Journal = require('./models/Journal');
+
+    const profileUser = await User.findOne({
+      username: { $regex: new RegExp('^' + req.params.username + '$', 'i') }
+    });
+
+    if (!profileUser) return res.redirect('/leaderboard');
+
+    const journals = await Journal.find({
+      userId: profileUser._id
+    }).sort({ createdAt: -1 }).limit(50);
+
+    const totalSessions = journals.length;
+    const compliantSessions = journals.filter(j => j.ruleCompliance).length;
+    const complianceRate = totalSessions > 0
+      ? Math.round((compliantSessions / totalSessions) * 100)
+      : 0;
+
+    const recentActivity = journals.slice(0, 10).map(j => ({
+      date: j.createdAt,
+      compliant: j.ruleCompliance,
+      score: j.sessionScore || 0,
+      asset: j.asset || 'N/A'
+    }));
+
+    const isOwnProfile = req.session.user &&
+      req.session.user.id === profileUser._id.toString();
+
+    res.render('public-profile', {
+      user: req.session.user || null,
+      profileUser: {
+        username: profileUser.username,
+        disciplineScore: profileUser.disciplineScore || 0,
+        totalSessions,
+        streak: profileUser.streak || 0,
+        badges: profileUser.badges || [],
+        memberSince: profileUser.createdAt,
+        zaUserId: profileUser.zaUserId || null,
+        complianceRate
+      },
+      recentActivity,
+      isOwnProfile
+    });
+
+  } catch (error) {
+    console.error('Public profile error:', error);
+    res.redirect('/leaderboard');
+  }
+});
+
 // Info pages
 app.get('/about', (req, res) => res.render('about', { user: req.session.user || null }));
 app.get('/services', (req, res) => res.render('services', { user: req.session.user || null }));
