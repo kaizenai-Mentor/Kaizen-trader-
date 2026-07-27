@@ -654,13 +654,14 @@
       gap:2px;
     ">
       <% [
-        ['/dashboard/journal','edit-3','Log Session','Record today\'s trading'],
-        ['/psychology','cpu','Psychology','Work on your mindset'],
-        ['/kaizen-ai','message-circle','KAIZEN AI','View latest feedback'],
-        ['/memories','clock','Memories','Review past sessions'],
-        ['/chart','trending-up','Live Chart','Analyze the market'],
-        ['/leaderboard','users','Leaderboard','See how you rank']
-      ].forEach(function(a) { %>
+  ['/dashboard/journal','edit-3','Log Session','Record today\'s trading'],
+  ['/psychology','cpu','Psychology','Work on your mindset'],
+  ['/kaizen-ai','message-circle','KAIZEN AI','View latest feedback'],
+  ['/memories','clock','Memories','Review past sessions'],
+  ['/chart','trending-up','Live Chart','Analyze the market'],
+  ['/leaderboard','users','Leaderboard','See how you rank'],
+  ['/trader/' + user.username,'user','My Profile','Share your discipline record']
+].forEach(function(a) { %>
         <a href="<%= a[0] %>" style="
           background:var(--bg-card);
           border:1px solid var(--border);
