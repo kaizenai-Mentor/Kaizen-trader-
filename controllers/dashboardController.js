@@ -250,18 +250,39 @@ for future sessions.` : ''}
 DISCIPLINE SCORE: [X]%
 OVERALL SCORE: ${overallScore}%`;
 
-        const userMessage = `Session type: ${direction || 'Live Trade'}
+        // Build message content — supports optional chart image
+const messageContent = [];
+
+// Add chart image if uploaded
+if (req.file) {
+  messageContent.push({
+    type: 'image',
+    source: {
+      type: 'base64',
+      media_type: req.file.mimetype,
+      data: req.file.buffer.toString('base64')
+    }
+  });
+  console.log('Chart image attached to AI request:', req.file.originalname);
+}
+
+// Add text
+messageContent.push({
+  type: 'text',
+  text: `Session type: ${direction || 'Live Trade'}
 Followed all rules: ${ruleCompliance === 'true' ? 'Yes' : 'No'}
+${req.file ? 'Chart image: attached above — analyze it alongside the journal entry' : ''}
 
-Full journal entry: 
-${notes}`;
+Full journal entry:
+${notes}`
+});
 
-        const payload = JSON.stringify({
-          model: 'claude-haiku-4-5',
-          max_tokens: 500,
-          system: systemPrompt,
-          messages: [{ role: 'user', content: userMessage }]
-        });
+const payload = JSON.stringify({
+  model: 'claude-haiku-4-5',
+  max_tokens: 500,
+  system: systemPrompt,
+  messages: [{ role: 'user', content: messageContent }]
+});
 
         console.log('Calling Anthropic API...');
 
