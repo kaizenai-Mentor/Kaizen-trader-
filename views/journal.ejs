@@ -60,7 +60,7 @@
         <span style="font-family:'DM Mono',monospace;font-size:0.52rem;letter-spacing:0.12em;text-transform:uppercase;color:rgba(201,168,76,0.4);border:1px solid rgba(201,168,76,0.12);padding:3px 8px;">Write Freely</span>
       </div>
 
-      <form action="/dashboard/journal" method="POST" id="journal-form">
+      <form action="/dashboard/journal" method="POST" id="journal-form" enctype="multipart/form-data">
 
         <div style="margin-bottom:14px;">
           <label style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);display:block;margin-bottom:8px;">Session Notes</label>
@@ -113,6 +113,38 @@ What would you do differently?"></textarea>
         <input type="hidden" name="emotion" value="Logged">
         <input type="hidden" name="sessionScore" value="50">
         <input type="hidden" name="direction" value="Live Trade">
+
+        <div style="margin-bottom:14px;">
+  <label style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);display:block;margin-bottom:8px;">
+    <i data-feather="image" width="11" height="11" style="display:inline;margin-right:4px;"></i>
+    Chart Screenshot — Optional
+  </label>
+  <div id="image-drop-zone" style="
+    border:1px dashed var(--border);
+    background:var(--bg-surface);
+    padding:20px;text-align:center;
+    cursor:pointer;transition:border-color 0.2s;
+  " onclick="document.getElementById('chartImage').click()"
+     onmouseover="this.style.borderColor='rgba(201,168,76,0.4)'"
+     onmouseout="this.style.borderColor='var(--border)'">
+    <i data-feather="upload" width="18" height="18" style="color:var(--ash);margin-bottom:6px;"></i>
+    <div style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);">
+      Tap to upload chart image
+    </div>
+    <div style="font-size:0.7rem;color:rgba(168,160,154,0.4);margin-top:4px;">
+      KAIZEN AI will analyze your setup alongside your journal entry
+    </div>
+    <div id="image-name" style="display:none;margin-top:8px;font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--gold);"></div>
+  </div>
+  <input type="file" name="chartImage" id="chartImage" accept="image/*" style="display:none;"
+    onchange="
+      if(this.files[0]){
+        document.getElementById('image-name').textContent=this.files[0].name;
+        document.getElementById('image-name').style.display='block';
+        document.getElementById('image-drop-zone').style.borderColor='rgba(201,168,76,0.4)';
+      }
+    ">
+</div>
 
         <button type="submit" id="journal-submit-btn" style="
           width:100%;
