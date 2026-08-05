@@ -119,31 +119,78 @@ What would you do differently?"></textarea>
     <i data-feather="image" width="11" height="11" style="display:inline;margin-right:4px;"></i>
     Chart Screenshot — Optional
   </label>
+
+  <!-- Drop zone — hidden when image is selected -->
   <div id="image-drop-zone" style="
     border:1px dashed var(--border);
     background:var(--bg-surface);
-    padding:20px;text-align:center;
+    padding:24px;text-align:center;
     cursor:pointer;transition:border-color 0.2s;
   " onclick="document.getElementById('chartImage').click()"
      onmouseover="this.style.borderColor='rgba(201,168,76,0.4)'"
      onmouseout="this.style.borderColor='var(--border)'">
-    <i data-feather="upload" width="18" height="18" style="color:var(--ash);margin-bottom:6px;"></i>
+    <i data-feather="upload" width="20" height="20" style="color:var(--ash);margin-bottom:8px;display:block;margin-left:auto;margin-right:auto;"></i>
     <div style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);">
       Tap to upload chart image
     </div>
-    <div style="font-size:0.7rem;color:rgba(168,160,154,0.4);margin-top:4px;">
-      KAIZEN AI will analyze your setup alongside your journal entry
+    <div style="font-size:0.72rem;color:rgba(168,160,154,0.4);margin-top:6px;">
+      KAIZEN AI will analyze your chart alongside your journal entry
     </div>
-    <div id="image-name" style="display:none;margin-top:8px;font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--gold);"></div>
   </div>
-  <input type="file" name="chartImage" id="chartImage" accept="image/*" style="display:none;"
-    onchange="
-      if(this.files[0]){
-        document.getElementById('image-name').textContent=this.files[0].name;
-        document.getElementById('image-name').style.display='block';
-        document.getElementById('image-drop-zone').style.borderColor='rgba(201,168,76,0.4)';
-      }
+
+  <!-- Image preview — shown after selection -->
+  <div id="image-preview-container" style="display:none;position:relative;">
+    <img id="image-preview-thumb" src="" alt="Chart preview" style="
+      width:100%;
+      max-height:280px;
+      object-fit:contain;
+      background:var(--bg-surface);
+      border:1px solid rgba(201,168,76,0.3);
+      display:block;
     ">
+    <!-- Overlay badge -->
+    <div style="
+      position:absolute;top:8px;left:8px;
+      background:rgba(0,0,0,0.7);
+      border:1px solid rgba(201,168,76,0.3);
+      padding:4px 10px;
+      display:flex;align-items:center;gap:6px;
+    ">
+      <i data-feather="check-circle" width="11" height="11" style="color:#4ADE80;"></i>
+      <span style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:#4ADE80;">Chart Ready</span>
+    </div>
+    <!-- Remove button -->
+    <button type="button" onclick="removeImage()" style="
+      position:absolute;top:8px;right:8px;
+      background:rgba(0,0,0,0.7);
+      border:1px solid rgba(248,113,113,0.4);
+      color:#F87171;
+      font-family:'DM Mono',monospace;
+      font-size:0.55rem;letter-spacing:0.1em;
+      text-transform:uppercase;
+      padding:4px 10px;
+      cursor:pointer;
+      display:flex;align-items:center;gap:4px;
+    ">
+      <i data-feather="x" width="10" height="10"></i>
+      Remove
+    </button>
+    <!-- File info bar -->
+    <div style="
+      background:rgba(201,168,76,0.06);
+      border:1px solid rgba(201,168,76,0.15);
+      border-top:none;
+      padding:8px 12px;
+      display:flex;align-items:center;gap:8px;
+    ">
+      <i data-feather="image" width="11" height="11" style="color:var(--gold);"></i>
+      <span id="image-file-name" style="font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--gold);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></span>
+      <span style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--ash);">KAIZEN AI will analyze this</span>
+    </div>
+  </div>
+
+  <input type="file" name="chartImage" id="chartImage" accept="image/*" style="display:none;"
+    onchange="handleImageSelect(this)">
 </div>
 
         <button type="submit" id="journal-submit-btn" style="
