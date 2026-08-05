@@ -81,13 +81,15 @@ const addJournal = async (req, res) => {
 
   try {
     const {
-      notes,
-      ruleCompliance,
-      direction,
-      timeframe,
-      outcome,
-      sessionScore
-    } = req.body;
+  notes,
+  ruleCompliance,
+  direction,
+  timeframe,
+  outcome,
+  sessionScore,
+  rrAchieved,
+  pipsGained
+} = req.body;
 
     if (!notes || notes.trim() === '') {
       return res.redirect('/dashboard/journal');
@@ -109,16 +111,18 @@ const addJournal = async (req, res) => {
     const asset = req.body.asset || detectedAsset;
 
     const journal = await Journal.create({
-      userId: req.session.user.id,
-      asset,
-      timeframe: timeframe || 'N/A',
-      notes: notes.trim(),
-      emotion: 'Logged',
-      ruleCompliance: ruleCompliance === 'true',
-      direction: direction || 'Live Trade',
-      outcome: outcome || 'Pending',
-      sessionScore: parseInt(sessionScore) || 50
-    });
+  userId: req.session.user.id,
+  asset,
+  timeframe: timeframe || 'N/A',
+  notes: notes.trim(),
+  emotion: 'Logged',
+  ruleCompliance: ruleCompliance === 'true',
+  direction: direction || 'Live Trade',
+  outcome: outcome || 'No Trade',
+  sessionScore: parseInt(sessionScore) || 50,
+  rrAchieved: rrAchieved || null,
+  pipsGained: pipsGained || null
+});
 
     console.log('Journal created:', journal._id);
 
