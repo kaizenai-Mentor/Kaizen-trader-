@@ -42,7 +42,20 @@ const JournalSchema = new mongoose.Schema({
   },
   outcome: {
     type: String,
-    default: 'Pending'
+    default: 'No Trade',
+    enum: ['Win', 'Loss', 'Breakeven', 'No Trade', 'Pending']
+  },
+  rrAchieved: {
+    type: String,
+    default: null
+  },
+  pipsGained: {
+    type: String,
+    default: null
+  },
+  hasChartImage: {
+    type: Boolean,
+    default: false
   },
   aiAnalysis: {
     type: String,
