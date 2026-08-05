@@ -295,6 +295,29 @@ What would you do differently?"></textarea>
         if (textEl) { textEl.style.opacity = visible ? '0.2' : '1'; visible = !visible; }
       }, 600);
     });
+
+function handleImageSelect(input) {
+  if (!input.files || !input.files[0]) return;
+  const file = input.files[0];
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    // Show preview
+    document.getElementById('image-preview-thumb').src = e.target.result;
+    document.getElementById('image-file-name').textContent = file.name;
+    document.getElementById('image-drop-zone').style.display = 'none';
+    document.getElementById('image-preview-container').style.display = 'block';
+    feather.replace();
+  };
+  reader.readAsDataURL(file);
+}
+
+function removeImage() {
+  document.getElementById('chartImage').value = '';
+  document.getElementById('image-preview-thumb').src = '';
+  document.getElementById('image-preview-container').style.display = 'none';
+  document.getElementById('image-drop-zone').style.display = 'block';
+  feather.replace();
+}
   </script>
   <style>
     @keyframes pulse {
