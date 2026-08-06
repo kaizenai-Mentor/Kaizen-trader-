@@ -352,16 +352,35 @@ const payload = JSON.stringify({
     }
 
     // Extract session score from AI response
-    let extractedScore = parseInt(sessionScore) || 50;
-    const scoreMatch = aiResponse.match(/DISCIPLINE SCORE:\s*(\d+)%/i);
-    if (scoreMatch && scoreMatch[1]) {
-      extractedScore = parseInt(scoreMatch[1]);
-    }
+let extractedScore = parseInt(sessionScore) || 50;
+const scoreMatch = aiResponse.match(/DISCIPLINE SCORE:\s*(\d+)%/i);
+if (scoreMatch && scoreMatch[1]) {
+  extractedScore = parseInt(scoreMatch[1]);
+}
 
-    await Journal.findByIdAndUpdate(journal._id, {
-      aiAnalysis: aiResponse,
-      sessionScore: extractedScore
-    });
+// Extract outcome, RR, and pips from AI response
+const extractMatch = aiResponse.match(
+  /EXTRACTED:\s*outcome=(\S+)\s+rr=(\S+)\s+pips=(\S+)/i
+);
+let extractedOutcome = outcome || 'No Trade';
+let extractedRR = null;
+let extractedPips = null;
+
+if (extractMatch) {
+  extractedOutcome = extractMatch[1];
+  extractedRR = extractMatch[2] !== 'N/A' ? extractMatch[2] : null;
+  extractedPips = extractMatch[3] !== 'N/A' ? extractMatch[3] : null;
+  // Remove EXTRACTED line from displayed response
+  aiResponse = aiResponse.replace(/EXTRACTED:.*$/m, '').trim();
+}
+
+await Journal.findByIdAndUpdate(journal._id, {
+  aiAnalysis: aiResponse,
+  sessionScore: extractedScore,
+  outcome: extractedOutcome,
+  rrAchieved: extractedRR,
+  pipsGained: extractedPips
+});
 
     // Save to Memory
     try {
