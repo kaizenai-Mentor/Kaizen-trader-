@@ -1,4 +1,4 @@
-const checkBadges = require('../config/checkBadges');
+to toconst checkBadges = require('../config/checkBadges');
 const User = require('../models/User');
 const Journal = require('../models/Journal');
 
@@ -252,7 +252,11 @@ This makes the first session feel valuable and sets up anticipation
 for future sessions.` : ''}
 
 DISCIPLINE SCORE: [X]%
-OVERALL SCORE: ${overallScore}%`;
+OVERALL SCORE: ${overallScore}%
+
+Also extract these from the journal entry if mentioned.
+Add this line at the very end of your response:
+EXTRACTED: outcome=[Win/Loss/Breakeven/No Trade] rr=[e.g. 1:2.5 or N/A] pips=[e.g. +45 or N/A]`;
 
         // Build message content — supports optional chart image
 const messageContent = [];
