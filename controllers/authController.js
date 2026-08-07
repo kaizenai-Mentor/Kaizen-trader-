@@ -3,7 +3,11 @@ const User = require('../models/User');
 // GET /auth/register
 const getRegister = (req, res) => {
   if (req.session.user) return res.redirect('/dashboard');
-  res.render('register', { error: null, step: 'form' });
+  res.render('register', {
+    error: null,
+    step: 'form',
+    query: req.query
+  });
 };
 
 // POST /auth/register
@@ -31,6 +35,35 @@ const postRegister = async (req, res) => {
         step: 'form'
       });
     }
+
+    const referredBy = req.body.ref || null;
+
+const user = await User.create({
+  username,
+  email,
+  password,
+  isVerified: true,
+  authMethod: 'password',
+  referredBy: referredBy || null,
+  referralCode: username.toLowerCase().replace(/\s+/g, '-')
+});
+
+// Credit the referrer
+if (referredBy) {
+  try {
+    const referrer = await User.findOne({
+      username: { $regex: new RegExp('^' + referredBy + '$', 'i') }
+    });
+    if (referrer) {
+      await User.findByIdAndUpdate(referrer._id, {
+        $inc: { referralCount: 1 }
+      });
+      console.log('Referral credited to:', referrer.username);
+    }
+  } catch(e) {
+    console.error('Referral credit error:', e.message);
+  }
+}
 
     const existingUser = await User.findOne({
       $or: [{ email }, { username }]
