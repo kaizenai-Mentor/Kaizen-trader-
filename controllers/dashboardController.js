@@ -1,4 +1,4 @@
-to toconst checkBadges = require('../config/checkBadges');
+const checkBadges = require('../config/checkBadges');
 const User = require('../models/User');
 const Journal = require('../models/Journal');
 
