@@ -36,8 +36,6 @@ const postRegister = async (req, res) => {
       });
     }
 
-    const referredBy = req.body.ref || null;
-
 const user = await User.create({
   username,
   email,
@@ -49,6 +47,7 @@ const user = await User.create({
 });
 
 // Credit the referrer
+const referredBy = req.body.ref || null;
 if (referredBy) {
   try {
     const referrer = await User.findOne({
