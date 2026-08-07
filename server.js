@@ -217,6 +217,13 @@ app.use('/za', zaRoutes);
 const chartRoutes = require('./routes/chart');
 app.use('/chart', chartRoutes);
 
+// Referral link handler
+app.get('/join/:username', (req, res) => {
+  res.redirect(
+    `/auth/register?ref=${encodeURIComponent(req.params.username)}`
+  );
+});
+
 app.get('/', (req, res) => {
   if (req.session.user) return res.redirect('/dashboard');
   res.render('welcome', {
