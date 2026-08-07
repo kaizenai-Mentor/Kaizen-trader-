@@ -74,6 +74,18 @@ const UserSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   }
+  referredBy: {
+  type: String,
+  default: null
+},
+referralCount: {
+  type: Number,
+  default: 0
+},
+referralCode: {
+  type: String,
+  default: null
+},
 });
 badges: [{
   id: { type: String },
