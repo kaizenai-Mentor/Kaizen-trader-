@@ -36,34 +36,6 @@ const postRegister = async (req, res) => {
       });
     }
 
-const user = await User.create({
-  username,
-  email,
-  password,
-  isVerified: true,
-  authMethod: 'password',
-  referredBy: referredBy || null,
-  referralCode: username.toLowerCase().replace(/\s+/g, '-')
-});
-
-// Credit the referrer
-const referredBy = req.body.ref || null;
-if (referredBy) {
-  try {
-    const referrer = await User.findOne({
-      username: { $regex: new RegExp('^' + referredBy + '$', 'i') }
-    });
-    if (referrer) {
-      await User.findByIdAndUpdate(referrer._id, {
-        $inc: { referralCount: 1 }
-      });
-      console.log('Referral credited to:', referrer.username);
-    }
-  } catch(e) {
-    console.error('Referral credit error:', e.message);
-  }
-}
-
     const existingUser = await User.findOne({
       $or: [{ email }, { username }]
     });
@@ -75,6 +47,47 @@ if (referredBy) {
       });
     }
 
+    const referredBy = req.body.ref || null;
+
+    const user = await User.create({
+      username,
+      email,
+      password,
+      isVerified: true,
+      authMethod: 'password',
+      referredBy: referredBy || null,
+      referralCode: username.toLowerCase().replace(/\s+/g, '-')
+    });
+
+    if (referredBy) {
+      try {
+        const referrer = await User.findOne({
+          username: { $regex: new RegExp('^' + referredBy + '$', 'i') }
+        });
+        if (referrer) {
+          await User.findByIdAndUpdate(referrer._id, {
+            $inc: { : 1 }
+          });
+        }
+      } catch(e) {
+        console.error('Referral error:', e.message);
+      }
+    }
+
+    req.session.user = {
+      id: user._id,
+      username: user.username,
+      email: user.email,
+      disciplineScore: user.disciplineScore,
+      streak: user.streak
+    };
+
+    return res.render('register', {
+      error: null,
+      step: 'questions',
+      questionNum: 1
+    });
+    
     const user = await User.create({
       username,
       email,
