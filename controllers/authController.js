@@ -66,7 +66,7 @@ const postRegister = async (req, res) => {
         });
         if (referrer) {
           await User.findByIdAndUpdate(referrer._id, {
-            $inc: { : 1 }
+            $inc: { referralCount: 1 }
           });
         }
       } catch(e) {
