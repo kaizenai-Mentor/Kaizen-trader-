@@ -66,6 +66,18 @@ const UserSchema = new mongoose.Schema({
     type: Number,
     default: 0
   },
+  streak: {
+    type: Number,
+    default: 0
+  },
+  streakFreezeAvailable: {
+    type: Boolean,
+    default: true
+  },
+  streakFreezeUsedAt: {
+    type: Date,
+    default: null
+  },
   zaUserId: {
     type: String,
     default: ''
