@@ -703,25 +703,6 @@
       </button>
     </div>
 
-<script>
-function copyReferral() {
-  const url = 'https://kaizen-trader.onrender.com/join/<%= user.username %>';
-  navigator.clipboard.writeText(url).then(() => {
-    const btn = document.getElementById('ref-btn');
-    btn.innerHTML = '<i data-feather="check" width="11" height="11"></i> Copied!';
-    btn.style.color = '#4ADE80';
-    btn.style.borderColor = 'rgba(52,211,153,0.3)';
-    feather.replace();
-    setTimeout(() => {
-      btn.innerHTML = '<i data-feather="copy" width="11" height="11"></i> Copy Invite Link';
-      btn.style.color = 'var(--gold)';
-      btn.style.borderColor = 'rgba(201,168,76,0.25)';
-      feather.replace();
-    }, 2000);
-  });
-}
-</script>
-
  <!-- QUICK ACTIONS -->
     <div style="
       display:grid;
@@ -852,6 +833,23 @@ function copyReferral() {
         responseEl.textContent = '改 Could not reach KAIZEN AI right now.';
       }
     }
+
+function copyReferral() {
+  const url = 'https://kaizen-trader.onrender.com/join/<%= user.username %>';
+  navigator.clipboard.writeText(url).then(() => {
+    const btn = document.getElementById('ref-btn');
+    btn.innerHTML = '<i data-feather="copy" width="11" height="11"></i> Copied!';
+    btn.style.color = '#4ADE80';
+    btn.style.borderColor = 'rgba(52,211,153,0.3)';
+    feather.replace();
+    setTimeout(() => {
+      btn.innerHTML = '<i data-feather="copy" width="11" height="11"></i> Copy Invite Link';
+      btn.style.color = 'var(--gold)';
+      btn.style.borderColor = 'rgba(201,168,76,0.25)';
+      feather.replace();
+    }, 2000);
+  });
+}
   </script>
 
   <style>
