@@ -66,7 +66,7 @@ const getDashboard = async (req, res) => {
       journals,
       disciplineScore: score,
       totalSessions: allJournals.length,
-      predictiveWarning
+      predictiveWarning,
       newBadges,
       streak: userWithBadges.streak || 0,
       referralCount: userWithBadges.referralCount || 0
