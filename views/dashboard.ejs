@@ -657,53 +657,51 @@
       </div>
     </div>
     <% } %>
-
-      <div style="
-  background:var(--bg-card);
-  border:1px solid rgba(201,168,76,0.15);
-  padding:16px 20px;
-  margin-bottom:16px;
-  display:flex;align-items:center;
-  justify-content:space-between;
-  flex-wrap:wrap;gap:12px;
-">
-  <div style="display:flex;align-items:center;gap:10px;">
+<!-- INVITE TRADERS -->
     <div style="
-      width:28px;height:28px;
-      border:1px solid rgba(201,168,76,0.2);
-      background:rgba(201,168,76,0.05);
-      display:flex;align-items:center;justify-content:center;
-      color:var(--gold);
+      background:var(--bg-card);
+      border:1px solid rgba(201,168,76,0.15);
+      padding:16px 20px;
+      margin-bottom:16px;
+      display:flex;align-items:center;
+      justify-content:space-between;
+      flex-wrap:wrap;gap:12px;
     ">
-      <i data-feather="users" width="13" height="13"></i>
-    </div>
-    <div>
-      <div style="font-weight:700;font-size:0.85rem;
-        color:var(--text-primary);">
-        Invite Traders
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div style="
+          width:28px;height:28px;
+          border:1px solid rgba(201,168,76,0.2);
+          background:rgba(201,168,76,0.05);
+          display:flex;align-items:center;justify-content:center;
+          color:var(--gold);
+        ">
+          <i data-feather="users" width="13" height="13"></i>
+        </div>
+        <div>
+          <div style="font-weight:700;font-size:0.85rem;color:var(--text-primary);">
+            Invite Traders
+          </div>
+          <div style="font-family:'DM Mono',monospace;font-size:0.58rem;color:var(--ash);margin-top:2px;">
+            <%= referralCount || 0 %> trader<%= (referralCount || 0) !== 1 ? 's' : '' %> joined via your link
+          </div>
+        </div>
       </div>
-      <div style="font-family:'DM Mono',monospace;
-        font-size:0.58rem;color:var(--ash);margin-top:2px;">
-        <%= referralCount || 0 %> trader<%= (referralCount || 0) !== 1 ? 's' : '' %> joined via your link
-      </div>
+      <button onclick="copyReferral()" id="ref-btn" style="
+        background:rgba(201,168,76,0.06);
+        border:1px solid rgba(201,168,76,0.25);
+        color:var(--gold);
+        font-family:'DM Mono',monospace;
+        font-size:0.6rem;letter-spacing:0.1em;
+        text-transform:uppercase;padding:8px 16px;
+        cursor:pointer;
+        display:flex;align-items:center;gap:6px;
+        transition:all 0.2s;
+      " onmouseover="this.style.background='rgba(201,168,76,0.12)'"
+         onmouseout="this.style.background='rgba(201,168,76,0.06)'">
+        <i data-feather="copy" width="11" height="11"></i>
+        Copy Invite Link
+      </button>
     </div>
-  </div>
-  <button onclick="copyReferral()" id="ref-btn" style="
-    background:rgba(201,168,76,0.06);
-    border:1px solid rgba(201,168,76,0.25);
-    color:var(--gold);
-    font-family:'DM Mono',monospace;
-    font-size:0.6rem;letter-spacing:0.1em;
-    text-transform:uppercase;padding:8px 16px;
-    cursor:pointer;
-    display:flex;align-items:center;gap:6px;
-    transition:all 0.2s;
-  " onmouseover="this.style.background='rgba(201,168,76,0.12)'"
-     onmouseout="this.style.background='rgba(201,168,76,0.06)'">
-    <i data-feather="copy" width="11" height="11"></i>
-    Copy Invite Link
-  </button>
-</div>
 
 <script>
 function copyReferral() {
