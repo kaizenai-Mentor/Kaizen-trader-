@@ -170,10 +170,27 @@ const addJournal = async (req, res) => {
         await User.findByIdAndUpdate(req.session.user.id, { streak: 1 });
         req.session.user.streak = 1;
       }
+      // Reset freeze every Monday
+      if (new Date().getDay() === 1) {
+        await User.findByIdAndUpdate(req.session.user.id, {
+          streakFreezeAvailable: true
+        });
+      }
     } else {
-      await User.findByIdAndUpdate(req.session.user.id, { streak: 0 });
-      req.session.user.streak = 0;
-    }
+      // Non-compliant — apply freeze if available
+      const freshUser = await User.findById(req.session.user.id);
+      if (freshUser.streakFreezeAvailable && freshUser.streak > 0) {
+        await User.findByIdAndUpdate(req.session.user.id, {
+          streakFreezeAvailable: false,
+          streakFreezeUsedAt: new Date()
+        });
+        console.log('Streak freeze used for:', req.session.user.username);
+        // Keep streak intact — don't reset
+      } else {
+        await User.findByIdAndUpdate(req.session.user.id, { streak: 0 });
+        req.session.user.streak = 0;
+      }
+      }
 
     // Build session history for AI context
     const totalSessions = allJournals.length;
