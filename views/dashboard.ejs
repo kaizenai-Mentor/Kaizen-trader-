@@ -211,6 +211,17 @@
         ">
           <%= (user.streak || 0) >= 7 ? 'On fire — protect this' : (user.streak || 0) >= 3 ? 'Building momentum' : 'Keep going' %>
         </div>
+        <% if (user.streakFreezeAvailable) { %>
+          <div style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;color:#4ADE80;margin-top:4px;display:flex;align-items:center;gap:4px;">
+            <i data-feather="shield" width="9" height="9"></i>
+            Freeze ready
+          </div>
+        <% } else if (user.streakFreezeUsedAt) { %>
+          <div style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-top:4px;">
+            Freeze used this week
+          </div>
+        <% } %>
+        <div style="display:none;">
       </div>
 
       <!-- Total Sessions -->
