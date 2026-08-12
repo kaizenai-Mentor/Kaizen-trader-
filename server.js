@@ -634,6 +634,8 @@ app.get('/cron/weekly-email', async (req, res) => {
     console.error('Weekly cron error:', err.message);
     res.status(500).json({ error: err.message });
   }
+  });
+
   app.get('/cron/weekly-email', async (req, res) => {
   if (req.query.key !== process.env.CRON_KEY) {
     return res.status(401).send('Unauthorized');
