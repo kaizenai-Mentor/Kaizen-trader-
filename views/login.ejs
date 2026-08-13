@@ -148,21 +148,7 @@
 
   <script>feather.replace();</script>
 <script src="/js/app.js"></script>
-<script>
-  feather.replace();
-  function toggleTheme() {
-    document.body.classList.toggle('light-mode');
-    const icon = document.getElementById('theme-icon');
-    const isLight = document.body.classList.contains('light-mode');
-    icon.setAttribute('data-feather', isLight ? 'moon' : 'sun');
-    feather.replace();
-    localStorage.setItem('theme', isLight ? 'light' : 'dark');
-  }
-  // Apply saved theme
-  if (localStorage.getItem('theme') === 'light') {
-    document.body.classList.add('light-mode');
-    document.getElementById('theme-icon').setAttribute('data-feather', 'moon');
-  }
+
 </script>
 </body>
 </html>
