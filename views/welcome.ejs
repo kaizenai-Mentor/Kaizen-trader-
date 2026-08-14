@@ -6,8 +6,7 @@
   <!-- Feather Icons lightweight outline icon set -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.29.0/feather.min.js"></script>
 </head>
-<body class="welcome-page" style="background:#080808;color:#F5F3EF;">
-
+<body class="welcome-page" style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;background:var(--bg-base);color:var(--text-primary);">
   <%- include('partials/navbar') %>
 
   <% if (typeof deleted !== 'undefined' && deleted) { %>
