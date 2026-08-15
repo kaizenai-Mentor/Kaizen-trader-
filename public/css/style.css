@@ -56,6 +56,10 @@
   background: var(--bg-base);
 }
 
+[data-theme="light"] .welcome-page {
+  background: var(--bg-base);
+}
+
 [data-theme="light"] input,
 [data-theme="light"] textarea,
 [data-theme="light"] select {
