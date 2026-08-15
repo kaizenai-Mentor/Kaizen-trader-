@@ -35,19 +35,33 @@
 }
 
 [data-theme="light"] {
-  --bg: #F0EDE8;
+  --bg-base: #F5F3EF;
   --bg-card: #FFFFFF;
-  --bg-surface: #F7F4EF;
-  --text-primary: #1A1A1A;
-  --text-secondary: #6B6560;
-  --border: rgba(0, 0, 0, 0.08);
-  --nav-bg: rgba(240, 237, 232, 0.95);
-  --popup-bg: #FFFFFF;
-  --input-bg: #F0EDE8;
-  --black-card: #FFFFFF;
-  --black-surface: #F0EDE8;
-  --ash: #6B6560;
-  --ash-light: #4A4540;
+  --bg-surface: #F0EDE8;
+  --text-primary: #1B1B1B;
+  --text-secondary: #5B5550;
+  --ash: #7A7470;
+  --ash-light: #5B5550;
+  --gold: #B8960C;
+  --border: rgba(0,0,0,0.1);
+  --blue: #2563EB;
+}
+
+[data-theme="light"] body {
+  background: var(--bg-base);
+  color: var(--text-primary);
+}
+
+[data-theme="light"] .app-page {
+  background: var(--bg-base);
+}
+
+[data-theme="light"] input,
+[data-theme="light"] textarea,
+[data-theme="light"] select {
+  background: var(--bg-surface) !important;
+  color: var(--text-primary) !important;
+  border-color: rgba(0,0,0,0.15) !important;
 }
 
 html { font-size: 16px; scroll-behavior: smooth; }
