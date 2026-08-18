@@ -25,6 +25,7 @@
   --font-body: 'Outfit', sans-serif;
   --font-mono: 'DM Mono', monospace;
   --bg: #080808;
+  --bg-base: #080808;     
   --bg-card: #111111;
   --bg-surface: #161616;
   --text-primary: #F5F3EF;
