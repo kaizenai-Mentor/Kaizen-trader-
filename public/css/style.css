@@ -35,6 +35,7 @@
 }
 
 [data-theme="light"] {
+  --bg: #F5F3EF;
   --bg-base: #F5F3EF;
   --bg-card: #FFFFFF;
   --bg-surface: #F0EDE8;
@@ -45,6 +46,9 @@
   --gold: #B8960C;
   --border: rgba(0,0,0,0.1);
   --blue: #2563EB;
+  --nav-bg: rgba(245, 243, 239, 0.92);
+  --popup-bg: #FFFFFF;
+  --input-bg: #FFFFFF;
 }
 
 [data-theme="light"] body {
