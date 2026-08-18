@@ -1,9 +1,16 @@
 // ── KAIZEN CLIENT JS ──
 
 // THEME
-const savedTheme = localStorage.getItem('kaizen-theme') ||
-  (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+function getSavedTheme() {
+  try {
+    const t = localStorage.getItem('kaizen-theme');
+    if (t === 'dark' || t === 'light') return t;
+  } catch (e) {}
+  return (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches)
+    ? 'light' : 'dark';
+}
 
+const savedTheme = getSavedTheme();
 document.documentElement.setAttribute('data-theme', savedTheme);
 updateThemeIcon(savedTheme);
 
@@ -11,13 +18,10 @@ function toggleTheme() {
   const current = document.documentElement.getAttribute('data-theme');
   const next = current === 'dark' ? 'light' : 'dark';
   document.documentElement.setAttribute('data-theme', next);
-  localStorage.setItem('kaizen-theme', next);
+  try { localStorage.setItem('kaizen-theme', next); } catch (e) {}
   updateThemeIcon(next);
-}
-
-function updateThemeIcon(theme) {
-  const icon = document.getElementById('themeIcon');
-  if (icon) icon.textContent = theme === 'dark' ? '◑' : '◐';
+  // Let pages re-render theme-aware widgets (e.g. TradingView chart)
+  if (window.__onThemeChange) window.__onThemeChange(next);
 }
 
 // POPUP MENU
