@@ -216,6 +216,8 @@ app.use('/dashboard', dashboardRoutes);
 app.use('/za', zaRoutes);
 const chartRoutes = require('./routes/chart');
 app.use('/chart', chartRoutes);
+const walletRoutes = require('./routes/wallet');
+app.use('/api/wallet', walletRoutes);
 
 // Referral link handler
 app.get('/join/:username', (req, res) => {
@@ -581,6 +583,42 @@ TOPICS YOU HANDLE IN PSYCHOLOGY SESSIONS:
     res.json({
       response: '改 KAIZEN AI is temporarily unavailable. Try again in a moment.'
     });
+  }
+});
+
+// Keeps on-chain activity fresh for every active, consented wallet.
+// Schedule e.g. every 6 hours. Polite pacing: sequential wallets, short pause.
+app.get('/cron/index-wallets', async (req, res) => {
+  if (req.query.key !== process.env.CRON_KEY) {
+    return res.status(403).json({ error: 'Forbidden' });
+  }
+
+  try {
+    const ConnectedWallet = require('./models/ConnectedWallet');
+    const { syncWallet } = require('./services/activityIndexer');
+
+    const wallets = await ConnectedWallet.find({
+      status: 'active',
+      'consent.activityAnalysis': true
+    });
+
+    let synced = 0;
+    let failed = 0;
+    for (const wallet of wallets) {
+      try {
+        await syncWallet(wallet);
+        synced++;
+      } catch (err) {
+        failed++;
+        console.error(`Cron index failed for wallet ${wallet._id}:`, err.message);
+      }
+      await new Promise(r => setTimeout(r, 1000)); // stay under public rate limits
+    }
+
+    res.json({ ok: true, wallets: wallets.length, synced, failed });
+  } catch (err) {
+    console.error('Cron index-wallets error:', err.message);
+    res.status(500).json({ error: 'Indexing cron failed' });
   }
 });
 

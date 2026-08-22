@@ -105,6 +105,162 @@
       </div>
     </div>
 
+    <!-- STACKS WALLET — Phase 1 -->
+    <div id="kz-wallet-card" style="background:var(--bg-card);border:1px solid rgba(201,168,76,0.25);padding:24px;margin-bottom:16px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="width:28px;height:28px;border:1px solid rgba(201,168,76,0.25);background:rgba(201,168,76,0.05);display:flex;align-items:center;justify-content:center;color:var(--gold);">
+            <i data-feather="key" width="13" height="13"></i>
+          </div>
+          <div>
+            <div style="font-weight:700;font-size:0.95rem;color:var(--text-primary);">Stacks Wallet</div>
+            <div style="font-size:0.72rem;color:var(--ash);">Ownership verified by signature · no private keys, ever</div>
+          </div>
+        </div>
+        <span style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(201,168,76,0.25);padding:4px 10px;">PHASE 1 · LIVE</span>
+      </div>
+
+      <!-- Not connected -->
+      <div id="kz-wallet-connect-view">
+        <p style="font-size:0.85rem;color:var(--text-secondary);line-height:1.8;margin-bottom:16px;">
+          Link your Stacks wallet to build an <strong style="color:var(--text-primary);">evidence-backed discipline record</strong>.
+          KAIZEN asks your wallet to sign a one-time verification message — that signature
+          cryptographically proves you control the address. Your wallet address is stored encrypted,
+          and nothing is published without your consent.
+        </p>
+
+        <div style="background:var(--bg-surface);border:1px solid var(--border);padding:14px 16px;margin-bottom:16px;">
+          <div style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--ash);margin-bottom:10px;">What this does &amp; does not do</div>
+          <div style="font-size:0.78rem;color:var(--text-secondary);line-height:1.9;">
+            <div><span style="color:#4ADE80;">✓</span>&nbsp; Proves wallet ownership with a one-time signed message</div>
+            <div><span style="color:#4ADE80;">✓</span>&nbsp; Stores your address encrypted (AES-256-GCM)</div>
+            <div><span style="color:#4ADE80;">✓</span>&nbsp; Records your consent with a versioned audit trail</div>
+            <div><span style="color:#F87171;">✗</span>&nbsp; Never sees or stores private keys or seed phrases</div>
+            <div><span style="color:#F87171;">✗</span>&nbsp; Never exposes your balance or P&amp;L publicly</div>
+          </div>
+        </div>
+
+        <label style="display:flex;gap:10px;align-items:flex-start;cursor:pointer;margin-bottom:16px;padding:12px;border:1px dashed rgba(201,168,76,0.25);background:rgba(201,168,76,0.02);">
+          <input type="checkbox" id="kz-wallet-consent" style="margin-top:2px;accent-color:var(--gold);">
+          <span style="font-size:0.76rem;color:var(--text-secondary);line-height:1.7;">
+            I confirm I control this wallet, and I consent to KAIZEN indexing and analyzing its
+            <em>public</em> on-chain activity (transaction timing, protocol interactions) to compute
+            behavioral discipline metrics. KAIZEN will never publish my balance, P&amp;L, journal entries,
+            or identifiable wallet history. Consent version 1.0 — revocable anytime by disconnecting.
+          </span>
+        </label>
+
+        <button id="kz-wallet-connect-btn" style="background:var(--gold);color:#000;border:none;font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;font-weight:700;padding:13px 26px;cursor:pointer;display:inline-flex;align-items:center;gap:8px;">
+          <i data-feather="link-2" width="12" height="12"></i>
+          Connect Stacks Wallet
+        </button>
+        <div style="font-family:'DM Mono',monospace;font-size:0.52rem;letter-spacing:0.08em;color:rgba(168,160,154,0.6);margin-top:10px;text-transform:uppercase;">
+          Works with Leather · Xverse · any SIP-018 compatible Stacks wallet
+        </div>
+      </div>
+
+      <!-- Connected -->
+      <div id="kz-wallet-connected-view" style="display:none;">
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:2px;margin-bottom:18px;">
+          <div style="background:var(--bg-surface);border:1px solid var(--border);padding:14px;">
+            <div style="font-family:'DM Mono',monospace;font-size:0.85rem;font-weight:700;color:var(--gold);word-break:break-all;" id="kz-wallet-addr">—</div>
+            <div style="font-family:'DM Mono',monospace;font-size:0.48rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-top:5px;">Verified Address</div>
+          </div>
+          <div style="background:var(--bg-surface);border:1px solid var(--border);padding:14px;text-align:center;">
+            <div style="font-family:'DM Mono',monospace;font-size:0.85rem;font-weight:700;color:var(--text-primary);" id="kz-wallet-network">—</div>
+            <div style="font-family:'DM Mono',monospace;font-size:0.48rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-top:5px;">Network</div>
+          </div>
+          <div style="background:var(--bg-surface);border:1px solid var(--border);padding:14px;text-align:center;">
+            <div style="font-family:'DM Mono',monospace;font-size:0.85rem;font-weight:700;color:var(--text-primary);" id="kz-wallet-verified-at">—</div>
+            <div style="font-family:'DM Mono',monospace;font-size:0.48rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-top:5px;">Verified</div>
+          </div>
+        </div>
+
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+          <div>
+            <span style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:#4ADE80;border:1px solid rgba(74,222,128,0.25);padding:5px 10px;">OWNERSHIP PROVEN</span>
+            <div id="kz-wallet-consent-state" style="font-family:'DM Mono',monospace;font-size:0.52rem;letter-spacing:0.08em;color:var(--ash);margin-top:8px;text-transform:uppercase;"></div>
+          </div>
+          <button id="kz-wallet-disconnect-btn" style="background:transparent;border:1px solid rgba(248,113,113,0.3);color:#F87171;font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;padding:10px 18px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;">
+            <i data-feather="x-circle" width="11" height="11"></i>
+            Disconnect
+          </button>
+        </div>
+
+      <!-- On-chain activity (Phase 1B) -->
+      <div id="kz-wallet-activity" style="margin-top:20px;padding-top:20px;border-top:1px solid var(--border);display:none;">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:14px;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <i data-feather="activity" width="13" height="13" style="color:var(--gold);"></i>
+            <span style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);">Verified On-Chain Activity</span>
+            <span style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-primary);border:1px solid rgba(201,168,76,0.25);padding:3px 8px;">L2 · WALLET-VERIFIED</span>
+          </div>
+          <button id="kz-wallet-sync-btn" style="background:transparent;border:1px solid rgba(201,168,76,0.3);color:var(--gold);font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;padding:8px 14px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;">
+            <i data-feather="refresh-cw" width="10" height="10"></i>
+            Sync Now
+          </button>
+        </div>
+
+        <div id="kz-wallet-activity-none" style="font-size:0.8rem;color:var(--ash);line-height:1.8;">
+          No activity indexed yet. Press <strong style="color:var(--gold);">Sync Now</strong> to pull your confirmed
+          on-chain activity via the Hiro API. Timing, cadence and protocol usage are analyzed —
+          <em>never amounts or balances</em>.
+        </div>
+
+        <div id="kz-wallet-activity-data" style="display:none;">
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(105px,1fr));gap:2px;margin-bottom:12px;">
+            <div style="background:var(--bg-surface);border:1px solid var(--border);padding:12px;text-align:center;">
+              <div style="font-family:'DM Mono',monospace;font-size:1.15rem;font-weight:700;color:var(--text-primary);" id="kz-m-txs">0</div>
+              <div style="font-family:'DM Mono',monospace;font-size:0.46rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-top:4px;">Tx · 30d</div>
+            </div>
+            <div style="background:var(--bg-surface);border:1px solid var(--border);padding:12px;text-align:center;">
+              <div style="font-family:'DM Mono',monospace;font-size:1.15rem;font-weight:700;color:var(--text-primary);" id="kz-m-days">0</div>
+              <div style="font-family:'DM Mono',monospace;font-size:0.46rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-top:4px;">Active Days</div>
+            </div>
+            <div style="background:var(--bg-surface);border:1px solid var(--border);padding:12px;text-align:center;">
+              <div style="font-family:'DM Mono',monospace;font-size:1.15rem;font-weight:700;color:var(--text-primary);" id="kz-m-gap">—</div>
+              <div style="font-family:'DM Mono',monospace;font-size:0.46rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-top:4px;">Median Gap (h)</div>
+            </div>
+            <div style="background:var(--bg-surface);border:1px solid var(--border);padding:12px;text-align:center;">
+              <div style="font-family:'DM Mono',monospace;font-size:1.15rem;font-weight:700;" id="kz-m-maxday">0</div>
+              <div style="font-family:'DM Mono',monospace;font-size:0.46rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-top:4px;">Max Tx / Day</div>
+            </div>
+            <div style="background:var(--bg-surface);border:1px solid var(--border);padding:12px;text-align:center;">
+              <div style="font-family:'DM Mono',monospace;font-size:1.15rem;font-weight:700;color:var(--text-primary);" id="kz-m-defi">0%</div>
+              <div style="font-family:'DM Mono',monospace;font-size:0.46rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-top:4px;">DeFi Protocol Tx</div>
+            </div>
+          </div>
+
+          <div id="kz-m-heavy" style="display:none;font-size:0.72rem;color:#F87171;border:1px solid rgba(248,113,113,0.25);background:rgba(248,113,113,0.05);padding:10px 12px;margin-bottom:12px;line-height:1.6;">
+            <i data-feather="alert-triangle" width="11" height="11" style="display:inline;margin-right:6px;"></i>
+            High-frequency days detected (10+ transactions in a day). This is a behavioral signal —
+            KAIZEN coaching will reference it in your next review.
+          </div>
+
+          <div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:12px;">
+            <div style="flex:1;min-width:200px;">
+              <div style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--ash);margin-bottom:8px;">Protocols Used</div>
+              <div id="kz-m-protocols" style="font-size:0.76rem;color:var(--text-secondary);line-height:1.9;"></div>
+            </div>
+            <div style="flex:1;min-width:200px;">
+              <div style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--ash);margin-bottom:8px;">Action Mix</div>
+              <div id="kz-m-actions" style="font-size:0.76rem;color:var(--text-secondary);line-height:1.9;"></div>
+            </div>
+          </div>
+
+          <div style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--ash);margin-bottom:8px;">Recent Confirmed Activity</div>
+          <div id="kz-m-recent" style="font-size:0.72rem;color:var(--text-secondary);"></div>
+
+          <div id="kz-m-lastsync" style="font-family:'DM Mono',monospace;font-size:0.52rem;letter-spacing:0.08em;color:rgba(168,160,154,0.6);margin-top:12px;text-transform:uppercase;"></div>
+        </div>
+
+        <div id="kz-wallet-sync-msg" style="font-size:0.75rem;margin-top:12px;min-height:1em;" aria-live="polite"></div>
+      </div>
+      </div>
+
+      <div id="kz-wallet-msg" style="font-size:0.75rem;margin-top:14px;min-height:1em;" aria-live="polite"></div>
+    </div>
+
     <!-- ZERO AUTHORITY DAO -->
     <div style="background:var(--bg-card);border:1px solid var(--border);padding:24px;margin-bottom:16px;">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px;">
@@ -210,6 +366,8 @@
 
   <%- include('partials/footer') %>
   <script src="/js/app.js"></script>
+  <script src="/vendor/stacks-connect.js"></script>
+  <script src="/js/kaizen-wallet.js"></script>
   <script>feather.replace();</script>
 </body>
 </html>
