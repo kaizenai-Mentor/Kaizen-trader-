@@ -2,8 +2,11 @@ const crypto = require('crypto');
 const WalletConnectNonce = require('../models/WalletConnectNonce');
 const ConnectedWallet = require('../models/ConnectedWallet');
 const ConsentRecord = require('../models/ConsentRecord');
+const BlockchainActivity = require('../models/BlockchainActivity');
 const { encrypt, decrypt, hmacAddress, sha256hex } = require('../utils/cryptoVault');
 const { verifyStacksMessageSignature } = require('../utils/stacksSignature');
+const { syncUserWallet } = require('../services/activityIndexer');
+const { computeMetrics } = require('../services/behaviorMetrics');
 
 const CONSENT_VERSION = '1.0';
 const NONCE_TTL_MS = 10 * 60 * 1000; // 10 minutes
@@ -25,6 +28,20 @@ function withinLimit(key, maxHits, windowMs) {
   bucket.push(now);
   rateBuckets.set(key, bucket);
   return true;
+}
+
+/** Check a limit without recording a hit (record later with recordHit). */
+function checkLimit(key, maxHits, windowMs) {
+  const now = Date.now();
+  const bucket = (rateBuckets.get(key) || []).filter(ts => now - ts < windowMs);
+  rateBuckets.set(key, bucket);
+  return bucket.length < maxHits;
+}
+
+function recordHit(key) {
+  const bucket = rateBuckets.get(key) || [];
+  bucket.push(Date.now());
+  rateBuckets.set(key, bucket);
 }
 
 // Periodic cleanup so the Map does not grow unbounded.
@@ -269,6 +286,79 @@ exports.getStatus = async (req, res) => {
   } catch (err) {
     console.error('Wallet status error:', err.message);
     res.status(500).json({ error: 'Could not load wallet status.' });
+  }
+};
+
+// ---------------------------------------------------------------------------
+// POST /api/wallet/sync
+// Pulls confirmed on-chain activity for the user's active, consented wallet.
+// ---------------------------------------------------------------------------
+exports.syncActivity = async (req, res) => {
+  try {
+    const userId = req.session.user.id;
+
+    // Manual syncs are expensive (external API pages) — rate limit them.
+    const limitKey = `sync:${userId}`;
+    if (!checkLimit(limitKey, 1, 5 * 60 * 1000)) {
+      return res.status(429).json({ error: 'You just synced. Please wait a few minutes before syncing again.' });
+    }
+
+    const result = await syncUserWallet(userId);
+    recordHit(limitKey); // only counts after a successful sync
+    res.json({ ok: true, ...result });
+  } catch (err) {
+    console.error('Wallet sync error:', err.message);
+    const status = err.code === 'NO_CONSENT' || err.code === 'NOT_CONNECTED' ? 400 : 502;
+    res.status(status).json({ error: err.message || 'Activity sync failed. Please try again.' });
+  }
+};
+
+// ---------------------------------------------------------------------------
+// GET /api/wallet/activity
+// Deterministic behavioral metrics + recent activity (never amounts).
+// ---------------------------------------------------------------------------
+exports.getActivity = async (req, res) => {
+  try {
+    const userId = req.session.user.id;
+
+    const wallet = await ConnectedWallet.findOne({ userId, status: 'active' });
+    if (!wallet) return res.json({ connected: false });
+
+    const windowDays = 30;
+    const since = new Date(Date.now() - windowDays * 24 * 60 * 60 * 1000);
+
+    const activities = await BlockchainActivity.find({
+      walletId: wallet._id,
+      occurredAt: { $gte: since }
+    })
+      .sort({ occurredAt: 1 })
+      .limit(500)
+      .lean();
+
+    const metrics = computeMetrics(activities, { windowDays });
+
+    const recent = [...activities]
+      .sort((a, b) => new Date(b.occurredAt) - new Date(a.occurredAt))
+      .slice(0, 12)
+      .map(a => ({
+        occurredAt: a.occurredAt,
+        txType: a.txType,
+        action: a.action,
+        protocolName: a.protocolName,
+        functionName: a.functionName,
+        blockHeight: a.blockHeight
+      }));
+
+    res.json({
+      connected: true,
+      consent: wallet.consent,
+      cursor: wallet.indexCursor,
+      metrics,
+      recent
+    });
+  } catch (err) {
+    console.error('Wallet activity error:', err.message);
+    res.status(500).json({ error: 'Could not load activity metrics.' });
   }
 };
 

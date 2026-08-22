@@ -187,10 +187,75 @@
           </button>
         </div>
 
-        <p style="font-size:0.72rem;color:var(--ash);line-height:1.7;margin-top:16px;font-style:italic;">
-          Phase 1B next: on-chain activity ingestion via the Hiro API and deterministic discipline
-          metrics computed from your verified activity — labeled distinctly from self-reported journals.
-        </p>
+      <!-- On-chain activity (Phase 1B) -->
+      <div id="kz-wallet-activity" style="margin-top:20px;padding-top:20px;border-top:1px solid var(--border);display:none;">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:14px;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <i data-feather="activity" width="13" height="13" style="color:var(--gold);"></i>
+            <span style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);">Verified On-Chain Activity</span>
+            <span style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-primary);border:1px solid rgba(201,168,76,0.25);padding:3px 8px;">L2 · WALLET-VERIFIED</span>
+          </div>
+          <button id="kz-wallet-sync-btn" style="background:transparent;border:1px solid rgba(201,168,76,0.3);color:var(--gold);font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;padding:8px 14px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;">
+            <i data-feather="refresh-cw" width="10" height="10"></i>
+            Sync Now
+          </button>
+        </div>
+
+        <div id="kz-wallet-activity-none" style="font-size:0.8rem;color:var(--ash);line-height:1.8;">
+          No activity indexed yet. Press <strong style="color:var(--gold);">Sync Now</strong> to pull your confirmed
+          on-chain activity via the Hiro API. Timing, cadence and protocol usage are analyzed —
+          <em>never amounts or balances</em>.
+        </div>
+
+        <div id="kz-wallet-activity-data" style="display:none;">
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(105px,1fr));gap:2px;margin-bottom:12px;">
+            <div style="background:var(--bg-surface);border:1px solid var(--border);padding:12px;text-align:center;">
+              <div style="font-family:'DM Mono',monospace;font-size:1.15rem;font-weight:700;color:var(--text-primary);" id="kz-m-txs">0</div>
+              <div style="font-family:'DM Mono',monospace;font-size:0.46rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-top:4px;">Tx · 30d</div>
+            </div>
+            <div style="background:var(--bg-surface);border:1px solid var(--border);padding:12px;text-align:center;">
+              <div style="font-family:'DM Mono',monospace;font-size:1.15rem;font-weight:700;color:var(--text-primary);" id="kz-m-days">0</div>
+              <div style="font-family:'DM Mono',monospace;font-size:0.46rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-top:4px;">Active Days</div>
+            </div>
+            <div style="background:var(--bg-surface);border:1px solid var(--border);padding:12px;text-align:center;">
+              <div style="font-family:'DM Mono',monospace;font-size:1.15rem;font-weight:700;color:var(--text-primary);" id="kz-m-gap">—</div>
+              <div style="font-family:'DM Mono',monospace;font-size:0.46rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-top:4px;">Median Gap (h)</div>
+            </div>
+            <div style="background:var(--bg-surface);border:1px solid var(--border);padding:12px;text-align:center;">
+              <div style="font-family:'DM Mono',monospace;font-size:1.15rem;font-weight:700;" id="kz-m-maxday">0</div>
+              <div style="font-family:'DM Mono',monospace;font-size:0.46rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-top:4px;">Max Tx / Day</div>
+            </div>
+            <div style="background:var(--bg-surface);border:1px solid var(--border);padding:12px;text-align:center;">
+              <div style="font-family:'DM Mono',monospace;font-size:1.15rem;font-weight:700;color:var(--text-primary);" id="kz-m-defi">0%</div>
+              <div style="font-family:'DM Mono',monospace;font-size:0.46rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-top:4px;">DeFi Protocol Tx</div>
+            </div>
+          </div>
+
+          <div id="kz-m-heavy" style="display:none;font-size:0.72rem;color:#F87171;border:1px solid rgba(248,113,113,0.25);background:rgba(248,113,113,0.05);padding:10px 12px;margin-bottom:12px;line-height:1.6;">
+            <i data-feather="alert-triangle" width="11" height="11" style="display:inline;margin-right:6px;"></i>
+            High-frequency days detected (10+ transactions in a day). This is a behavioral signal —
+            KAIZEN coaching will reference it in your next review.
+          </div>
+
+          <div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:12px;">
+            <div style="flex:1;min-width:200px;">
+              <div style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--ash);margin-bottom:8px;">Protocols Used</div>
+              <div id="kz-m-protocols" style="font-size:0.76rem;color:var(--text-secondary);line-height:1.9;"></div>
+            </div>
+            <div style="flex:1;min-width:200px;">
+              <div style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--ash);margin-bottom:8px;">Action Mix</div>
+              <div id="kz-m-actions" style="font-size:0.76rem;color:var(--text-secondary);line-height:1.9;"></div>
+            </div>
+          </div>
+
+          <div style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--ash);margin-bottom:8px;">Recent Confirmed Activity</div>
+          <div id="kz-m-recent" style="font-size:0.72rem;color:var(--text-secondary);"></div>
+
+          <div id="kz-m-lastsync" style="font-family:'DM Mono',monospace;font-size:0.52rem;letter-spacing:0.08em;color:rgba(168,160,154,0.6);margin-top:12px;text-transform:uppercase;"></div>
+        </div>
+
+        <div id="kz-wallet-sync-msg" style="font-size:0.75rem;margin-top:12px;min-height:1em;" aria-live="polite"></div>
+      </div>
       </div>
 
       <div id="kz-wallet-msg" style="font-size:0.75rem;margin-top:14px;min-height:1em;" aria-live="polite"></div>

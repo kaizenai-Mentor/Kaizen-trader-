@@ -26,7 +26,22 @@
     addr: $('kz-wallet-addr'),
     network: $('kz-wallet-network'),
     verifiedAt: $('kz-wallet-verified-at'),
-    consentState: $('kz-wallet-consent-state')
+    consentState: $('kz-wallet-consent-state'),
+    activity: $('kz-wallet-activity'),
+    activityNone: $('kz-wallet-activity-none'),
+    activityData: $('kz-wallet-activity-data'),
+    syncBtn: $('kz-wallet-sync-btn'),
+    syncMsg: $('kz-wallet-sync-msg'),
+    mTxs: $('kz-m-txs'),
+    mDays: $('kz-m-days'),
+    mGap: $('kz-m-gap'),
+    mMaxDay: $('kz-m-maxday'),
+    mDefi: $('kz-m-defi'),
+    mHeavy: $('kz-m-heavy'),
+    mProtocols: $('kz-m-protocols'),
+    mActions: $('kz-m-actions'),
+    mRecent: $('kz-m-recent'),
+    mLastSync: $('kz-m-lastsync')
   };
 
   if (!els.card) return; // not on this page
@@ -48,6 +63,7 @@
     if (!status || !status.connected) {
       els.connectView.style.display = 'block';
       els.connectedView.style.display = 'none';
+      if (els.activity) els.activity.style.display = 'none';
       return;
     }
     var w = status.wallet || {};
@@ -63,6 +79,92 @@
       els.consentState.textContent = w.consent && w.consent.activityAnalysis
         ? 'On-chain analysis: CONSENTED'
         : 'On-chain analysis: not consented';
+    }
+    if (els.activity) {
+      els.activity.style.display = 'block';
+      if (window.feather) window.feather.replace();
+      loadActivity();
+    }
+  }
+
+  function setSyncMsg(text, kind) {
+    if (!els.syncMsg) return;
+    els.syncMsg.textContent = text || '';
+    els.syncMsg.style.color = kind === 'error' ? '#F87171' : kind === 'ok' ? '#4ADE80' : 'var(--ash)';
+  }
+
+  function formatMix(obj) {
+    var entries = Object.entries(obj || {}).sort(function (a, b) { return b[1] - a[1]; });
+    if (!entries.length) return '<span style="color:var(--ash);">—</span>';
+    return entries.map(function (e) {
+      return '<div>' + e[0] + ' <span style="color:var(--gold);font-family:\'DM Mono\',monospace;">×' + e[1] + '</span></div>';
+    }).join('');
+  }
+
+  function loadActivity() {
+    fetch('/api/wallet/activity', { headers: { Accept: 'application/json' } })
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        if (!data || !data.connected) return;
+        var m = data.metrics || {};
+        var hasData = (data.cursor && data.cursor.txCount > 0) || (m.totals && m.totals.transactions > 0);
+
+        if (!hasData) {
+          els.activityNone.style.display = 'block';
+          els.activityData.style.display = 'none';
+          return;
+        }
+        els.activityNone.style.display = 'none';
+        els.activityData.style.display = 'block';
+
+        els.mTxs.textContent = m.totals.transactions;
+        els.mDays.textContent = m.totals.activeDays;
+        els.mGap.textContent = m.cadence.medianGapHours === null ? '—' : m.cadence.medianGapHours;
+        els.mMaxDay.textContent = m.cadence.maxTxInOneDay;
+        els.mMaxDay.style.color = m.cadence.maxTxInOneDay >= 10 ? '#F87171' : 'var(--text-primary)';
+        els.mDefi.textContent = m.engagement.defiEngagementPct + '%';
+        els.mHeavy.style.display = m.cadence.heavyTradingFlag ? 'block' : 'none';
+        els.mProtocols.innerHTML = formatMix(m.engagement.protocolMix);
+        els.mActions.innerHTML = formatMix(m.engagement.actionMix);
+
+        var recentHtml = (data.recent || []).map(function (tx) {
+          var d = new Date(tx.occurredAt);
+          var label = (tx.protocolName && tx.protocolName !== 'Other')
+            ? tx.protocolName
+            : (tx.txType === 'token_transfer' ? 'STX transfer' : tx.txType.replace('_', ' '));
+          return '<div style="display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-bottom:1px solid var(--border);">'
+            + '<span>' + label + ' · <span style="color:var(--gold);">' + tx.action + '</span>'
+            + (tx.functionName ? ' <span style="color:var(--ash);">(' + tx.functionName + ')</span>' : '') + '</span>'
+            + '<span style="color:var(--ash);font-family:\'DM Mono\',monospace;font-size:0.62rem;">'
+            + d.toLocaleDateString() + ' · block ' + tx.blockHeight + '</span></div>';
+        }).join('');
+        els.mRecent.innerHTML = recentHtml || '<div style="color:var(--ash);">—</div>';
+
+        if (data.cursor && data.cursor.lastSyncedAt) {
+          els.mLastSync.textContent = 'Last synced ' + new Date(data.cursor.lastSyncedAt).toLocaleString()
+            + ' · ' + data.cursor.txCount + ' confirmed transactions indexed';
+        }
+        if (window.feather) window.feather.replace();
+      })
+      .catch(function () { /* leave panel as-is */ });
+  }
+
+  async function syncNow() {
+    setSyncMsg('');
+    if (!els.syncBtn) return;
+    els.syncBtn.disabled = true;
+    els.syncBtn.style.opacity = '0.6';
+    try {
+      var res = await fetch('/api/wallet/sync', { method: 'POST', headers: { Accept: 'application/json' } });
+      var data = await res.json();
+      if (!res.ok || !data.ok) throw new Error(data.error || 'Sync failed.');
+      setSyncMsg('Sync complete — scanned ' + data.scanned + ' transactions, ' + data.ingested + ' new. Total indexed: ' + data.total + '.', 'ok');
+      loadActivity();
+    } catch (err) {
+      setSyncMsg(err && err.message ? err.message : 'Sync failed. Please try again.', 'error');
+    } finally {
+      els.syncBtn.disabled = false;
+      els.syncBtn.style.opacity = '1';
     }
   }
 
@@ -158,6 +260,7 @@
 
   if (els.connectBtn) els.connectBtn.addEventListener('click', connect);
   if (els.disconnectBtn) els.disconnectBtn.addEventListener('click', disconnect);
+  if (els.syncBtn) els.syncBtn.addEventListener('click', syncNow);
 
   refreshStatus();
 })();
