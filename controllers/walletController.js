@@ -7,6 +7,8 @@ const { encrypt, decrypt, hmacAddress, sha256hex } = require('../utils/cryptoVau
 const { verifyStacksMessageSignature } = require('../utils/stacksSignature');
 const { syncUserWallet } = require('../services/activityIndexer');
 const { computeMetrics } = require('../services/behaviorMetrics');
+const credentialService = require('../services/credentialService');
+const DisciplineCredential = require('../models/DisciplineCredential');
 
 const CONSENT_VERSION = '1.0';
 const NONCE_TTL_MS = 10 * 60 * 1000; // 10 minutes
@@ -390,5 +392,43 @@ exports.disconnectWallet = async (req, res) => {
   } catch (err) {
     console.error('Wallet disconnect error:', err.message);
     res.status(500).json({ error: 'Could not disconnect wallet. Please try again.' });
+  }
+};
+
+// ---------------------------------------------------------------------------
+// GET /api/wallet/credentials
+// Returns the user's verified discipline credentials.
+// ---------------------------------------------------------------------------
+exports.getCredentials = async (req, res) => {
+  try {
+    const userId = req.session.user.id;
+    const credentials = await DisciplineCredential.find({ userId })
+      .sort({ issuedAt: -1 });
+
+    res.json({ credentials });
+  } catch (err) {
+    console.error('Get credentials error:', err.message);
+    res.status(500).json({ error: 'Could not load discipline credentials.' });
+  }
+};
+
+// ---------------------------------------------------------------------------
+// POST /api/wallet/credentials/refresh
+// Re-evaluates rules and updates credentials.
+// ---------------------------------------------------------------------------
+exports.refreshCredentials = async (req, res) => {
+  try {
+    const userId = req.session.user.id;
+    
+    // Rate limit: every 2 minutes
+    if (!withinLimit(`creds-refresh:${userId}`, 1, 2 * 60 * 1000)) {
+      return res.status(429).json({ error: 'Please wait a moment before refreshing credentials again.' });
+    }
+
+    const result = await credentialService.refreshCredentials(userId);
+    res.json(result);
+  } catch (err) {
+    console.error('Refresh credentials error:', err.message);
+    res.status(500).json({ error: 'Credential evaluation failed.' });
   }
 };
