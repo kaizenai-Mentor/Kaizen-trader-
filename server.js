@@ -216,6 +216,8 @@ app.use('/dashboard', dashboardRoutes);
 app.use('/za', zaRoutes);
 const chartRoutes = require('./routes/chart');
 app.use('/chart', chartRoutes);
+const walletRoutes = require('./routes/wallet');
+app.use('/api/wallet', walletRoutes);
 
 // Referral link handler
 app.get('/join/:username', (req, res) => {
