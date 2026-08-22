@@ -298,14 +298,19 @@
       var nonceData = await nonceRes.json();
       if (!nonceRes.ok || !nonceData.nonce) throw new Error(nonceData.error || 'Could not start verification.');
 
-      setBusy(true, 'Confirm in your wallet…');
+            setBusy(true, 'Confirm in your wallet…');
       var sig;
       try {
+        // We log the message so you can see it in the mobile dev tools if possible
+        console.log('KAIZEN: Nonce received, starting wallet signature...');
         sig = await signWithWallet(nonceData.message, nonceData.network);
       } catch (signErr) {
+        console.error('KAIZEN: Wallet error:', signErr);
         var msg = String(signErr && signErr.message ? signErr.message : signErr);
+        
+        // Better error message for mobile users
         if (/no wallet|provider|not found|not installed|no provider/i.test(msg)) {
-          msg = 'No Stacks wallet detected. Install the Leather or Xverse browser extension, then try again.';
+          msg = 'No Stacks wallet detected. Please use the browser inside your Xverse or Leather mobile app.';
         }
         throw new Error(msg);
       }
