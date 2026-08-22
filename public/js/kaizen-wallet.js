@@ -253,12 +253,16 @@
       .catch(function () { /* leave default view */ });
   }
 
-  function signWithWallet(message, network) {
+    function signWithWallet(message, network) {
     return new Promise(function (resolve, reject) {
+      // Check if the Stacks Connect library is loaded
       if (!window.StacksConnect || typeof window.StacksConnect.openSignatureRequestPopup !== 'function') {
         return reject(new Error('Wallet bridge failed to load. Refresh the page and try again.'));
       }
+      
       try {
+        console.log('KAIZEN: Requesting signature via StacksConnect...');
+        
         window.StacksConnect.openSignatureRequestPopup({
           message: message,
           network: network || 'mainnet',
@@ -266,12 +270,17 @@
             name: 'KAIZEN',
             icon: window.location.origin + '/images/kaizen-icon.png'
           },
-          onFinish: function (data) { resolve(data); },
+          onFinish: function (data) { 
+            console.log('KAIZEN: Signature received successfully');
+            resolve(data); 
+          },
           onCancel: function (err) {
+            console.warn('KAIZEN: User cancelled signature request');
             reject(new Error((err && err.message) || 'Signature request was cancelled.'));
           }
         });
       } catch (e) {
+        console.error('KAIZEN: Signature popup failed to open:', e);
         reject(e);
       }
     });
