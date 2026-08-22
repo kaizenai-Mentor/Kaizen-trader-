@@ -41,7 +41,12 @@
     mProtocols: $('kz-m-protocols'),
     mActions: $('kz-m-actions'),
     mRecent: $('kz-m-recent'),
-    mLastSync: $('kz-m-lastsync')
+    mLastSync: $('kz-m-lastsync'),
+    credsCard: $('kz-credentials-card'),
+    credsList: $('kz-creds-list'),
+    credsNone: $('kz-creds-none'),
+    credsRefreshBtn: $('kz-creds-refresh-btn'),
+    credsMsg: $('kz-creds-msg')
   };
 
   if (!els.card) return; // not on this page
@@ -84,6 +89,79 @@
       els.activity.style.display = 'block';
       if (window.feather) window.feather.replace();
       loadActivity();
+      loadCredentials();
+    }
+  }
+
+  function setCredsMsg(text, kind) {
+    if (!els.credsMsg) return;
+    els.credsMsg.textContent = text || '';
+    els.credsMsg.style.color = kind === 'error' ? '#F87171' : kind === 'ok' ? '#4ADE80' : 'var(--ash)';
+  }
+
+  function loadCredentials() {
+    fetch('/api/wallet/credentials', { headers: { Accept: 'application/json' } })
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        if (!data || !data.credentials) return;
+        renderCredentials(data.credentials);
+      })
+      .catch(function () { /* ignore */ });
+  }
+
+  function renderCredentials(creds) {
+    if (!els.credsCard) return;
+    els.credsCard.style.display = 'block';
+    
+    if (!creds || creds.length === 0) {
+      els.credsList.style.display = 'none';
+      els.credsNone.style.display = 'block';
+      return;
+    }
+
+    els.credsList.style.display = 'grid';
+    els.credsNone.style.display = 'none';
+
+    var html = creds.map(function (c) {
+      var date = new Date(c.issuedAt).toLocaleDateString();
+      return '<div style="background:var(--bg-surface);border:1px solid rgba(201,168,76,0.15);padding:16px;position:relative;overflow:hidden;">'
+        + '<div style="position:absolute;top:-10px;right:-10px;opacity:0.05;transform:rotate(15deg);"><i data-feather="award" width="60" height="60"></i></div>'
+        + '<div style="font-family:\'DM Mono\',monospace;font-size:0.5rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:8px;">' + c.credentialType.replace('_', ' ') + '</div>'
+        + '<div style="font-weight:700;font-size:0.9rem;color:var(--text-primary);margin-bottom:6px;">' + c.name + '</div>'
+        + '<div style="font-size:0.72rem;color:var(--text-secondary);line-height:1.5;margin-bottom:12px;">' + c.description + '</div>'
+        + '<div style="display:flex;justify-content:space-between;align-items:flex-end;margin-top:auto;">'
+        + '  <div>'
+        + '    <div style="font-family:\'DM Mono\',monospace;font-size:0.5rem;color:var(--ash);text-transform:uppercase;">Evidence</div>'
+        + '    <div style="font-family:\'DM Mono\',monospace;font-size:0.65rem;color:var(--gold);">' + c.evidence.metricValue + '</div>'
+        + '  </div>'
+        + '  <div style="font-family:\'DM Mono\',monospace;font-size:0.5rem;color:rgba(168,160,154,0.5);text-transform:uppercase;">Issued ' + date + '</div>'
+        + '</div>'
+        + '</div>';
+    }).join('');
+    
+    els.credsList.innerHTML = html;
+    if (window.feather) window.feather.replace();
+  }
+
+  async function refreshCredentials() {
+    setCredsMsg('Evaluating rules…');
+    if (els.credsRefreshBtn) {
+      els.credsRefreshBtn.disabled = true;
+      els.credsRefreshBtn.style.opacity = '0.6';
+    }
+    try {
+      var res = await fetch('/api/wallet/credentials/refresh', { method: 'POST', headers: { Accept: 'application/json' } });
+      var data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Evaluation failed.');
+      setCredsMsg('Evaluation complete. ' + (data.evaluatedCount || 0) + ' credentials verified.', 'ok');
+      renderCredentials(data.credentials);
+    } catch (err) {
+      setCredsMsg(err && err.message ? err.message : 'Evaluation failed.', 'error');
+    } finally {
+      if (els.credsRefreshBtn) {
+        els.credsRefreshBtn.disabled = false;
+        els.credsRefreshBtn.style.opacity = '1';
+      }
     }
   }
 
@@ -261,6 +339,7 @@
   if (els.connectBtn) els.connectBtn.addEventListener('click', connect);
   if (els.disconnectBtn) els.disconnectBtn.addEventListener('click', disconnect);
   if (els.syncBtn) els.syncBtn.addEventListener('click', syncNow);
+  if (els.credsRefreshBtn) els.credsRefreshBtn.addEventListener('click', refreshCredentials);
 
   refreshStatus();
 })();

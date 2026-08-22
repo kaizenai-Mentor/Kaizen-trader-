@@ -256,9 +256,35 @@
 
         <div id="kz-wallet-sync-msg" style="font-size:0.75rem;margin-top:12px;min-height:1em;" aria-live="polite"></div>
       </div>
+    </div>
+
+    <!-- DISCIPLINE CREDENTIALS -->
+    <div id="kz-credentials-card" style="background:var(--bg-card);border:1px solid rgba(201,168,76,0.2);padding:24px;margin-bottom:16px;display:none;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="width:28px;height:28px;border:1px solid rgba(201,168,76,0.25);background:rgba(201,168,76,0.05);display:flex;align-items:center;justify-content:center;color:var(--gold);">
+            <i data-feather="check-circle" width="13" height="13"></i>
+          </div>
+          <div>
+            <div style="font-weight:700;font-size:0.95rem;color:var(--text-primary);">Discipline Credentials</div>
+            <div style="font-size:0.72rem;color:var(--ash);">Verified behavioral records based on Stacks activity</div>
+          </div>
+        </div>
+        <button id="kz-creds-refresh-btn" style="background:transparent;border:1px solid var(--border);color:var(--ash);font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;padding:6px 12px;cursor:pointer;display:flex;align-items:center;gap:6px;transition:all 0.2s;" onmouseover="this.style.color='var(--gold)';this.style.borderColor='rgba(201,168,76,0.3)'" onmouseout="this.style.color='var(--ash)';this.style.borderColor='var(--border)'">
+          <i data-feather="refresh-cw" width="10" height="10"></i>
+          Re-evaluate
+        </button>
       </div>
 
-      <div id="kz-wallet-msg" style="font-size:0.75rem;margin-top:14px;min-height:1em;" aria-live="polite"></div>
+      <div id="kz-creds-list" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;">
+        <!-- Credentials injected here -->
+      </div>
+      
+      <div id="kz-creds-none" style="text-align:center;padding:20px;border:1px dashed var(--border);display:none;">
+        <p style="font-size:0.8rem;color:var(--ash);">No discipline credentials earned yet. Sync your wallet activity to evaluate.</p>
+      </div>
+
+      <div id="kz-creds-msg" style="font-size:0.7rem;margin-top:12px;min-height:1em;text-align:right;" aria-live="polite"></div>
     </div>
 
     <!-- ZERO AUTHORITY DAO -->
