@@ -314,7 +314,7 @@
     });
   }
 
-  async function signWithWallet(message, network) {
+ async function signWithWallet(message, network) {
     if (
       !window.StacksConnect ||
       typeof window.StacksConnect.connect !== 'function' ||
@@ -323,9 +323,6 @@
       throw new Error('Wallet bridge failed to load. Refresh the page and try again.');
     }
 
-    // Xverse requires the Stacks public key when signing a message. Connect
-    // first to obtain it and persist the selected provider; Stacks Connect
-    // strips the non-standard publicKey parameter for wallets such as Leather.
     var connected = await window.StacksConnect.connect({
       network: network || 'mainnet'
     });
@@ -335,11 +332,25 @@
       throw new Error('The selected wallet did not return a Stacks account.');
     }
 
-    return window.StacksConnect.request('stx_signMessage', {
-      message: message,
-      publicKey: stxAccount.publicKey
-    });
-  }
+    // Try with publicKey first, then without if it fails
+    try {
+      var result = await window.StacksConnect.request('stx_signMessage', {
+        message: message,
+        publicKey: stxAccount.publicKey
+      });
+      if (!result || !result.signature) throw new Error('No signature');
+      if (!result.publicKey) result.publicKey = stxAccount.publicKey;
+      return result;
+    } catch (e) {
+      // Retry without publicKey for Xverse mobile compatibility
+      var result = await window.StacksConnect.request('stx_signMessage', {
+        message: message
+      });
+      if (!result || !result.signature) throw new Error('No signature');
+      result.publicKey = stxAccount.publicKey;
+      return result;
+    }
+ }
 
   async function connect() {
     setMsg('');
