@@ -4,7 +4,8 @@
  * Built with:  npm run build:wallet-bundle
  * Output:      public/vendor/stacks-connect.js  (exposes window.StacksConnect)
  *
- * Only the functions the UI actually uses are exported, which keeps the
- * committed bundle as small as possible.
+ * Use the current SIP-030 request API rather than the deprecated popup API.
+ * The request API discovers Xverse's injected provider (including its mobile
+ * in-app browser) and applies the wallet-specific compatibility overrides.
  */
-export { openSignatureRequestPopup } from '@stacks/connect';
+export { connect, request } from '@stacks/connect';

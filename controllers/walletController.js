@@ -110,7 +110,7 @@ exports.requestNonce = async (req, res) => {
 
 // ---------------------------------------------------------------------------
 // POST /api/wallet/verify
-// Consumes the nonce, verifies the SIP-018 signature, links the wallet.
+// Consumes the nonce, verifies the Stacks signed-message proof, links the wallet.
 // ---------------------------------------------------------------------------
 exports.verifyWallet = async (req, res) => {
   try {
@@ -121,8 +121,8 @@ exports.verifyWallet = async (req, res) => {
       return res.status(429).json({ error: 'Too many verification attempts. Please try again later.' });
     }
 
-    if (!nonce || !signature) {
-      return res.status(400).json({ error: 'Missing nonce or signature.' });
+    if (!nonce || !signature || !publicKey) {
+      return res.status(400).json({ error: 'Missing nonce, signature, or public key.' });
     }
 
     // Atomically consume the nonce: must exist, belong to this user,
@@ -172,6 +172,7 @@ exports.verifyWallet = async (req, res) => {
       wallet.verifiedAt = new Date();
       wallet.nonceHash = nonceDoc.nonceHash;
       wallet.publicKeyHex = result.publicKeyHex;
+      wallet.verificationMethod = 'stx-sign-message';
       wallet.consentVersion = CONSENT_VERSION;
       wallet.consent = { ownershipConfirmed: true, activityAnalysis: activityConsent };
       await wallet.save();
@@ -191,6 +192,7 @@ exports.verifyWallet = async (req, res) => {
       wallet.verifiedAt = new Date();
       wallet.nonceHash = nonceDoc.nonceHash;
       wallet.publicKeyHex = result.publicKeyHex;
+      wallet.verificationMethod = 'stx-sign-message';
       wallet.consentVersion = CONSENT_VERSION;
       wallet.consent = { ownershipConfirmed: true, activityAnalysis: activityConsent };
       await wallet.save();
@@ -209,6 +211,7 @@ exports.verifyWallet = async (req, res) => {
         addressHmac: fingerprint,
         addressEncrypted: encrypt(address),
         publicKeyHex: result.publicKeyHex,
+        verificationMethod: 'stx-sign-message',
         status: 'active',
         verifiedAt: new Date(),
         nonceHash: nonceDoc.nonceHash,

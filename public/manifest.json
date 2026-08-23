@@ -1,0 +1,20 @@
+{
+  "id": "/",
+  "name": "KAIZEN — Trading Discipline & Behavioral Reputation",
+  "short_name": "KAIZEN",
+  "description": "AI trading discipline, coaching, and wallet-verified behavioral reputation.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#080808",
+  "theme_color": "#C9A84C",
+  "icons": [
+    {
+      "src": "/images/kaizen-icon.png",
+      "sizes": "1024x1024",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "categories": ["finance", "productivity"]
+}
