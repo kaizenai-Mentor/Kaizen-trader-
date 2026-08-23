@@ -48,7 +48,7 @@ const connectedWalletSchema = new mongoose.Schema(
     },
     verificationMethod: {
       type: String,
-      default: 'sip018-personal-sign'
+      default: 'stx-sign-message'
     },
     // Hash of the nonce consumed during verification (audit trail).
     nonceHash: {

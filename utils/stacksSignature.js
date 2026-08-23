@@ -1,10 +1,10 @@
 /**
- * KAIZEN Stacks signature verification (SIP-018 personal message signing).
+ * KAIZEN Stacks signed-message verification.
  *
  * Flow:
  *   1. Server issues a one-time nonce + exact message to sign.
  *   2. The user's Stacks wallet (Leather, Xverse, etc.) signs that exact
- *      message via @stacks/connect `openSignatureRequestPopup`.
+ *      message through the @stacks/connect `stx_signMessage` request.
  *   3. Server recovers the public key from the signature, derives the Stacks
  *      address from the RECOVERED key, and links that address to the account.
  *
@@ -13,22 +13,21 @@
  * address it does not control, even if it lies about `publicKey`.
  */
 
-const crypto = require('crypto');
+const { hashMessage: hashStacksMessage } = require('@stacks/encryption');
 const {
+  compressPublicKey,
   publicKeyFromSignatureRsv,
   getAddressFromPublicKey,
   validateStacksAddress
 } = require('@stacks/transactions');
 
-// SIP-018 magic bytes prepended before hashing the message.
-const SIP018_PREFIX = 'SIP018';
+// Standard prefix used by stx_signMessage. The encoded payload also contains
+// the message's Bitcoin-style variable-length integer before the UTF-8 bytes.
+const STACKS_MESSAGE_PREFIX = '\x17Stacks Signed Message:\n';
 
-/** Compute the SIP-018 message hash: sha256(utf8("SIP018") + message). */
+/** Compute the standard Stacks signed-message hash as lowercase hex. */
 function hashMessage(message) {
-  return crypto
-    .createHash('sha256')
-    .update(Buffer.concat([Buffer.from(SIP018_PREFIX), Buffer.from(message, 'utf8')]))
-    .digest('hex');
+  return Buffer.from(hashStacksMessage(String(message))).toString('hex');
 }
 
 function normalizeHex(value) {
@@ -37,8 +36,14 @@ function normalizeHex(value) {
   return hex.toLowerCase();
 }
 
+function normalizePublicKey(value) {
+  const key = normalizeHex(value);
+  if (!key) return '';
+  return normalizeHex(compressPublicKey(key));
+}
+
 /**
- * Verify a SIP-018 signature and return the signer's Stacks address.
+ * Verify a standard Stacks message signature and return the signer's address.
  *
  * @param {object} opts
  * @param {string} opts.message   The exact message the server asked to be signed.
@@ -62,13 +67,12 @@ function verifyStacksMessageSignature({ message, signature, publicKey, network =
 
     // Recover the signer's public key from (messageHash, signature).
     const recovered = publicKeyFromSignatureRsv(msgHash, sig);
-    const recoveredHex =
-      typeof recovered === 'string'
-        ? recovered.toLowerCase()
-        : Buffer.from(recovered).toString('hex').toLowerCase();
+    const recoveredHex = normalizePublicKey(
+      typeof recovered === 'string' ? recovered : Buffer.from(recovered).toString('hex')
+    );
 
     // If the wallet also reported its public key, it must match the recovery.
-    if (publicKey && normalizeHex(publicKey) !== recoveredHex) {
+    if (publicKey && normalizePublicKey(publicKey) !== recoveredHex) {
       return { valid: false, reason: 'Signature does not match the reported public key' };
     }
 
@@ -83,4 +87,8 @@ function verifyStacksMessageSignature({ message, signature, publicKey, network =
   }
 }
 
-module.exports = { hashMessage, verifyStacksMessageSignature, SIP018_PREFIX };
+module.exports = {
+  hashMessage,
+  verifyStacksMessageSignature,
+  STACKS_MESSAGE_PREFIX
+};

@@ -4,8 +4,8 @@
  * Flow:
  *   1. Ask KAIZEN server for a one-time nonce + exact message to sign.
  *   2. Open the user's Stacks wallet (Leather, Xverse, …) via Stacks Connect
- *      and ask it to sign that exact message (SIP-018). No keys ever leave
- *      the wallet; KAIZEN never sees a private key.
+ *      and ask it to sign that exact message with `stx_signMessage`. No keys
+ *      ever leave the wallet; KAIZEN never sees a private key.
  *   3. Send nonce + signature back. The server recovers the signer's address
  *      from the signature — proving ownership cryptographically — and links
  *      the wallet with the user's recorded consent.
@@ -253,36 +253,91 @@
       .catch(function () { /* leave default view */ });
   }
 
-    function signWithWallet(message, network) {
-    return new Promise(function (resolve, reject) {
-      // Check if the Stacks Connect library is loaded
-      if (!window.StacksConnect || typeof window.StacksConnect.openSignatureRequestPopup !== 'function') {
-        return reject(new Error('Wallet bridge failed to load. Refresh the page and try again.'));
-      }
-      
-      try {
-        console.log('KAIZEN: Requesting signature via StacksConnect...');
-        
-        window.StacksConnect.openSignatureRequestPopup({
-          message: message,
-          network: network || 'mainnet',
-          appDetails: {
-            name: 'KAIZEN',
-            icon: window.location.origin + '/images/kaizen-icon.png'
-          },
-          onFinish: function (data) { 
-            console.log('KAIZEN: Signature received successfully');
-            resolve(data); 
-          },
-          onCancel: function (err) {
-            console.warn('KAIZEN: User cancelled signature request');
-            reject(new Error((err && err.message) || 'Signature request was cancelled.'));
-          }
-        });
-      } catch (e) {
-        console.error('KAIZEN: Signature popup failed to open:', e);
-        reject(e);
-      }
+  function providerFromId(id) {
+    if (!id) return null;
+    try {
+      return id.split('.').reduce(function (provider, part) {
+        return provider && provider[part];
+      }, window);
+    } catch (err) {
+      return null;
+    }
+  }
+
+  function hasInjectedWallet() {
+    // Xverse injects this object in both its extension and mobile in-app
+    // browser. Keep the legacy globals for Leather and older Stacks wallets.
+    if (
+      (window.XverseProviders && window.XverseProviders.BitcoinProvider) ||
+      window.LeatherProvider ||
+      window.StacksProvider ||
+      window.BlockstackProvider
+    ) {
+      return true;
+    }
+
+    var registries = [
+      window.wbip_providers,
+      window.webbtc_stx_providers,
+      window.webbtc_providers,
+      window.btc_providers
+    ];
+    return registries.some(function (registry) {
+      return Array.isArray(registry) && registry.some(function (entry) {
+        return entry && providerFromId(entry.id);
+      });
+    });
+  }
+
+  function isMobileDevice() {
+    return !!(
+      (navigator.userAgentData && navigator.userAgentData.mobile) ||
+      /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent || '') ||
+      (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
+    );
+  }
+
+  function openInXverseMobile() {
+    var target = new URL(window.location.href);
+    target.searchParams.set('wallet', 'xverse');
+
+    setMsg('Opening KAIZEN in the Xverse wallet browser…');
+    setBusy(true, 'Opening Xverse…');
+    window.location.assign(
+      'https://connect.xverse.app/browser?url=' + encodeURIComponent(target.toString())
+    );
+  }
+
+  function getStacksAddress(addresses) {
+    return (addresses || []).find(function (entry) {
+      return entry && typeof entry.address === 'string' && entry.address.charAt(0) === 'S';
+    });
+  }
+
+  async function signWithWallet(message, network) {
+    if (
+      !window.StacksConnect ||
+      typeof window.StacksConnect.connect !== 'function' ||
+      typeof window.StacksConnect.request !== 'function'
+    ) {
+      throw new Error('Wallet bridge failed to load. Refresh the page and try again.');
+    }
+
+    // Xverse requires the Stacks public key when signing a message. Connect
+    // first to obtain it and persist the selected provider; Stacks Connect
+    // strips the non-standard publicKey parameter for wallets such as Leather.
+    var connected = await window.StacksConnect.connect({
+      network: network || 'mainnet'
+    });
+    var stxAccount = getStacksAddress(connected && connected.addresses);
+
+    if (!stxAccount || !stxAccount.publicKey) {
+      throw new Error('The selected wallet did not return a Stacks account.');
+    }
+
+    return window.StacksConnect.request('stx_signMessage', {
+      message: message,
+      publicKey: stxAccount.publicKey
     });
   }
 
@@ -292,25 +347,32 @@
       setMsg('Please confirm the ownership statement before connecting.', 'error');
       return;
     }
+
+    // Mobile Safari/Chrome cannot access Xverse's injected provider. Send the
+    // user into Xverse's in-app browser through its universal/app link. The
+    // marker prevents a redirect loop if provider injection is unavailable.
+    var openedFromXverseLink = new URL(window.location.href).searchParams.get('wallet') === 'xverse';
+    if (isMobileDevice() && !hasInjectedWallet() && !openedFromXverseLink) {
+      openInXverseMobile();
+      return;
+    }
+
     setBusy(true, 'Requesting challenge…');
     try {
       var nonceRes = await fetch('/api/wallet/nonce', { method: 'POST', headers: { Accept: 'application/json' } });
       var nonceData = await nonceRes.json();
       if (!nonceRes.ok || !nonceData.nonce) throw new Error(nonceData.error || 'Could not start verification.');
 
-            setBusy(true, 'Confirm in your wallet…');
+      setBusy(true, 'Confirm in your wallet…');
       var sig;
       try {
-        // We log the message so you can see it in the mobile dev tools if possible
-        console.log('KAIZEN: Nonce received, starting wallet signature...');
         sig = await signWithWallet(nonceData.message, nonceData.network);
       } catch (signErr) {
-        console.error('KAIZEN: Wallet error:', signErr);
         var msg = String(signErr && signErr.message ? signErr.message : signErr);
-        
-        // Better error message for mobile users
         if (/no wallet|provider|not found|not installed|no provider/i.test(msg)) {
-          msg = 'No Stacks wallet detected. Please use the browser inside your Xverse or Leather mobile app.';
+          msg = isMobileDevice()
+            ? 'No Stacks wallet detected. Open this page in the Xverse mobile app and try again.'
+            : 'No Stacks wallet detected. Install Leather or Xverse, then try again.';
         }
         throw new Error(msg);
       }

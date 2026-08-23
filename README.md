@@ -18,8 +18,11 @@ translated into evidence-backed discipline credentials.
 - Achievement badges and community leaderboard
 
 ## Stacks Phase 1 — Wallet Verification (live in this repo)
-- Server-issued one-time nonce, signed via SIP-018 message signing
-  (Leather, Xverse, any compatible wallet)
+- Server-issued one-time nonce, signed through the Stacks
+  `stx_signMessage` method (Leather, Xverse, any compatible wallet)
+- Uses the current Stacks Connect request API; Xverse receives its required
+  public key and mobile users are handed off to the Xverse in-app browser
+- Installable web-app metadata is served from `/manifest.json`
 - Server-side signature recovery proves address ownership —
   a client can never link an address it does not control
 - Wallet addresses stored AES-256-GCM encrypted; lookups use keyed
