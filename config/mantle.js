@@ -121,9 +121,46 @@ async function recordMilestone(userId, milestoneType, score) {
   }
 }
 
+async function getTotalEvents() {
+  const contract = getContract();
+  if (!contract) return { scores: 0, patterns: 0, milestones: 0, total: 0 };
+  try {
+    const [scores, patterns, milestones] = await contract.getTotalEvents();
+    const total = Number(scores) + Number(patterns) + Number(milestones);
+    return {
+      scores: Number(scores),
+      patterns: Number(patterns),
+      milestones: Number(milestones),
+      total
+    };
+  } catch(err) {
+    console.error('Mantle getTotalEvents error:', err.message);
+    return { scores: 0, patterns: 0, milestones: 0, total: 0 };
+  }
+}
+
+async function getUserStats(userId) {
+  const contract = getContract();
+  if (!contract) return { currentScore: 0, sessionCount: 0, milestoneCount: 0 };
+  try {
+    const userHash = hashUserId(userId);
+    const stats = await contract.getUserStats(userHash);
+    return {
+      currentScore: Number(stats.currentScore || stats[0] || 0),
+      sessionCount: Number(stats.sessionCount || stats[1] || 0),
+      milestoneCount: Number(stats.milestoneCount || stats[2] || 0)
+    };
+  } catch(err) {
+    console.error('Mantle getUserStats error:', err.message);
+    return { currentScore: 0, sessionCount: 0, milestoneCount: 0 };
+  }
+}
+
 module.exports = {
   recordScoreChange,
   recordPattern,
   recordMilestone,
+  getTotalEvents,
+  getUserStats,
   hashUserId
 };
