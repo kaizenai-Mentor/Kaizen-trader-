@@ -144,3 +144,50 @@ test('Xverse receives its public key in the stx_signMessage request', async () =
   assert.equal(calls[1][2].message, 'message');
   assert.equal(calls[1][2].publicKey, publicKey);
 });
+
+test('Xverse fallback still returns the connected public key', async () => {
+  const calls = [];
+  const publicKey = `02${'ef'.repeat(32)}`;
+  const signature = '12'.repeat(65);
+  const stacksConnect = {
+    async connect() {
+      calls.push(['connect']);
+      return { addresses: [{ address: 'SP456', publicKey }] };
+    },
+    async request(method, params) {
+      calls.push(['request', method, params]);
+      if (calls.length === 2) throw new Error('publicKey parameter unsupported');
+      return { signature };
+    }
+  };
+
+  const ui = await loadWalletUi({
+    mobile: false,
+    provider: {},
+    stacksConnect,
+    fetchImpl: async (url, options) => {
+      if (url === '/api/wallet/status') {
+        return { json: async () => ({ connected: false }) };
+      }
+      if (url === '/api/wallet/nonce') {
+        return {
+          ok: true,
+          json: async () => ({ nonce: 'nonce', message: 'message', network: 'mainnet' })
+        };
+      }
+      if (url === '/api/wallet/verify') {
+        const body = JSON.parse(options.body);
+        assert.equal(body.publicKey, publicKey);
+        assert.equal(body.signature, signature);
+        return { ok: true, json: async () => ({ connected: true, wallet: {} }) };
+      }
+      throw new Error(`Unexpected fetch: ${url}`);
+    }
+  });
+
+  await ui.elements['kz-wallet-connect-btn'].listeners.click();
+
+  assert.equal(calls.length, 3);
+  assert.equal(calls[2][1], 'stx_signMessage');
+  assert.equal(calls[2][2].publicKey, undefined);
+});

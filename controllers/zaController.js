@@ -1,50 +1,96 @@
 const zaClient = require('../config/za');
 
+const BOUNTIES_ENDPOINT = '/bounties';
+const USERS_ENDPOINT = '/users';
+
+function logZaError(label, error) {
+  const status = error && error.response ? error.response.status : undefined;
+  const url = error && error.config
+    ? `${error.config.baseURL || ''}${error.config.url || ''}`
+    : undefined;
+
+  console.error(`${label}:`, {
+    status: status || 'network',
+    url,
+    message: error && error.message ? error.message : String(error)
+  });
+}
+
+function renderBounties(res, req, bounties, error) {
+  return res.render('bounties', {
+    user: req.session.user,
+    bounties: Array.isArray(bounties) ? bounties : [],
+    error: error || null
+  });
+}
+
 // GET /za/bounties
 const getBounties = async (req, res) => {
   try {
-    const response = await zaClient.get('/bounties');
-    const data = response.data;
+    // The current ZA API is the JSON route /api/bounties. config/za.js
+    // normalizes ZA_BASE_URL so this remains correct when only the host is
+    // supplied in the environment.
+    const response = await zaClient.get(BOUNTIES_ENDPOINT);
+    const bounties = zaClient.extractCollection(response.data, ['data', 'bounties']);
 
-    const bounties = Array.isArray(data)
-      ? data
-      : data.data || data.bounties || [];
-
-    res.render('bounties', {
-      user: req.session.user,
-      bounties,
-      error: null
-    });
-
+    return renderBounties(res, req, bounties, null);
   } catch (error) {
-    console.error('ZA Bounties error:', error.message);
-    res.render('bounties', {
-      user: req.session.user,
-      bounties: [],
-      error: 'Unable to load bounties right now. Please try again later.'
-    });
+    logZaError('ZA Bounties error', error);
+    return renderBounties(
+      res,
+      req,
+      [],
+      error && error.response && error.response.status === 404
+        ? 'Zero Authority’s bounties API is temporarily unavailable. Please try again later.'
+        : 'Unable to load bounties right now. Please try again later.'
+    );
   }
 };
 
 // GET /za/bounties/:id
 const getBountyById = async (req, res) => {
   try {
-    const response = await zaClient.get(`/bounties/${req.params.id}`);
-    const bounty = response.data;
+    const bountyId = encodeURIComponent(req.params.id);
+    const response = await zaClient.get(`${BOUNTIES_ENDPOINT}/${bountyId}`);
+    const bounty = zaClient.extractEntity(response.data, ['data', 'bounty']);
 
-    res.render('bounty-detail', {
+    return res.render('bounty-detail', {
       user: req.session.user,
       bounty: bounty || {}
     });
-
   } catch (error) {
-    console.error('ZA Bounty detail error:', error.message);
-    res.render('bounty-detail', {
+    logZaError('ZA Bounty detail error', error);
+    return res.render('bounty-detail', {
       user: req.session.user,
       bounty: {}
     });
   }
 };
+
+function normalizeUsername(value) {
+  return String(value || '')
+    .trim()
+    .replace(/[\s_-]/g, '')
+    .toLowerCase();
+}
+
+function selectZaUser(results, user) {
+  if (!Array.isArray(results) || !results.length) return null;
+  user = user || {};
+
+  if (user.zaUserId) {
+    const byId = results.find(candidate => candidate && candidate.id === user.zaUserId);
+    if (byId) return byId;
+  }
+
+  // The API applies the search filter. Prefer an exact normalized username
+  // when it is present, but retain the first result for older API responses
+  // that only return a ranked match.
+  const normalizedUsername = normalizeUsername(user.username);
+  return results.find(candidate => {
+    return normalizeUsername(candidate && candidate.username) === normalizedUsername;
+  }) || results[0];
+}
 
 // GET /za/reputation/:userId
 const getReputation = async (req, res) => {
@@ -55,50 +101,31 @@ const getReputation = async (req, res) => {
     if (!user) return res.redirect('/dashboard');
 
     let zaData = null;
+    const searchName = normalizeUsername(user.username);
 
-    const searchName = user.username
-      ? user.username.replace(/-/g, '').toLowerCase()
-      : '';
-
-    // Try /users list endpoint first
-    try {
-      const listRes = await zaClient.get('/users', {
-        params: { search: searchName, limit: 5, includeStats: true }
-      });
-      const listResults = listRes.data?.data;
-      if (listResults && listResults.length > 0) {
-        zaData = user.zaUserId
-          ? listResults.find(u => u.id === user.zaUserId) || listResults[0]
-          : listResults[0];
-        console.log('ZA found via list:', zaData.username);
-      }
-    } catch (e) {
-      console.log('ZA list search failed:', e.message);
-    }
-
-    // If not found, try /search/users endpoint
-    if (!zaData) {
+    if (searchName) {
       try {
-        const searchRes = await zaClient.get('/search/users', {
-          params: { q: searchName, type: 'username', limit: 5 }
+        // The live API exposes /api/users and returns { users: [...] }.
+        // /api/search/users is not a route and consistently returns 404, so
+        // do not call it as a fallback.
+        const response = await zaClient.get(USERS_ENDPOINT, {
+          params: { search: searchName, limit: 5, includeStats: true }
         });
-        const searchResults = searchRes.data?.data;
-        if (searchResults && searchResults.length > 0) {
-          zaData = user.zaUserId
-            ? searchResults.find(u => u.id === user.zaUserId) || searchResults[0]
-            : searchResults[0];
-          console.log('ZA found via search:', zaData.username);
+        const results = zaClient.extractCollection(response.data, ['users', 'data']);
+        zaData = selectZaUser(results, user);
+
+        if (zaData) {
+          console.log('ZA found via users endpoint:', zaData.username || zaData.id);
+        } else {
+          console.log('ZA: no profile found for:', searchName);
         }
-      } catch (e) {
-        console.log('ZA search endpoint failed:', e.message);
+      } catch (error) {
+        // Reputation is supplementary; keep the page usable when ZA is down.
+        logZaError('ZA user lookup error', error);
       }
     }
 
-    if (!zaData) {
-      console.log('ZA: no profile found for:', searchName);
-    }
-
-    res.render('reputation', {
+    return res.render('reputation', {
       user: req.session.user,
       profileUser: user,
       disciplineScore: user.disciplineScore || 0,
@@ -108,15 +135,15 @@ const getReputation = async (req, res) => {
       reputation: zaData,
       error: null
     });
-
   } catch (error) {
-    console.error('Reputation page error:', error.message);
-    res.redirect('/dashboard');
+    logZaError('Reputation page error', error);
+    return res.redirect('/dashboard');
   }
 };
 
 module.exports = {
   getBounties,
   getBountyById,
-  getReputation
+  getReputation,
+  selectZaUser
 };
