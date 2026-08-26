@@ -96,9 +96,23 @@ function selectZaUser(results, user) {
 const getReputation = async (req, res) => {
   try {
     const User = require('../models/User');
+    const Journal = require('../models/Journal');
+    const mantle = require('../config/mantle');
     const user = await User.findById(req.params.userId);
 
     if (!user) return res.redirect('/dashboard');
+
+    const totalSessions = await Journal.countDocuments({ user: user._id });
+
+    let mantleEvents = 0;
+    let mantleUserStats = { currentScore: 0, sessionCount: 0, milestoneCount: 0 };
+    try {
+      const totals = await mantle.getTotalEvents();
+      mantleEvents = totals.total || 0;
+      mantleUserStats = await mantle.getUserStats(user._id);
+    } catch (mErr) {
+      console.error('Mantle fetch error on reputation:', mErr.message);
+    }
 
     let zaData = null;
     const searchName = normalizeUsername(user.username);
@@ -129,8 +143,10 @@ const getReputation = async (req, res) => {
       user: req.session.user,
       profileUser: user,
       disciplineScore: user.disciplineScore || 0,
-      totalSessions: user.totalSessions || 0,
+      totalSessions,
       streak: user.streak || 0,
+      mantleEvents,
+      mantleUserStats,
       zaData,
       reputation: zaData,
       error: null
