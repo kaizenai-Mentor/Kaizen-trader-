@@ -6,5 +6,7 @@ const { protect } = require('../middleware/auth');
 router.get('/bounties', protect, zaController.getBounties);
 router.get('/bounties/:id', protect, zaController.getBountyById);
 router.get('/reputation/:userId', protect, zaController.getReputation);
+router.post('/link', protect, zaController.linkZaAccount);
+router.post('/unlink', protect, zaController.unlinkZaAccount);
 
 module.exports = router;

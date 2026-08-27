@@ -303,16 +303,34 @@
         <span style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(201,168,76,0.2);padding:4px 10px;">ON-CHAIN</span>
       </div>
 
-      <% if (reputation && reputation.activityScore !== undefined) { %>
+      <% if (linkSuccess) { %>
+        <div style="background:rgba(74,222,128,0.06);border:1px solid rgba(74,222,128,0.25);color:#4ADE80;padding:12px 14px;font-size:0.78rem;margin-bottom:18px;display:flex;align-items:center;gap:8px;">
+          <i data-feather="check-circle" width="14" height="14"></i>
+          Zero Authority account linked successfully.
+        </div>
+      <% } %>
+      <% if (linkError) { %>
+        <div style="background:rgba(248,113,113,0.06);border:1px solid rgba(248,113,113,0.25);color:#F87171;padding:12px 14px;font-size:0.78rem;margin-bottom:18px;display:flex;align-items:center;gap:8px;">
+          <i data-feather="alert-triangle" width="14" height="14"></i>
+          <%= linkError %>
+        </div>
+      <% } %>
+
+      <% if (reputation && (reputation.id || reputation.activityScore !== undefined)) { %>
         <div style="text-align:center;padding:10px 0 20px;">
           <div style="font-family:'DM Mono',monospace;font-size:2.8rem;font-weight:700;color:var(--blue);line-height:1;margin-bottom:5px;"><%= reputation.activityScore || 0 %></div>
-          <div style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--ash);margin-bottom:20px;">Activity Score</div>
+          <div style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--ash);margin-bottom:6px;">Activity Score</div>
+          <% if (reputation.username) { %>
+            <div style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--gold);margin-bottom:20px;">@<%= reputation.username %></div>
+          <% } else { %>
+            <div style="margin-bottom:20px;"></div>
+          <% } %>
 
           <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:2px;margin-bottom:20px;">
             <% [
-              [reputation._count?.wonBounties || 0, 'Bounties Won', 'award'],
-              [reputation._count?.receivedEndorsements || 0, 'Endorsements', 'user-check'],
-              [reputation._count?.bountySubmissions || 0, 'Submissions', 'file-text'],
+              [reputation._count && reputation._count.wonBounties || reputation.wonBounties || 0, 'Bounties Won', 'award'],
+              [reputation._count && reputation._count.receivedEndorsements || reputation.receivedEndorsements || 0, 'Endorsements', 'user-check'],
+              [reputation._count && reputation._count.bountySubmissions || reputation.bountySubmissions || 0, 'Submissions', 'file-text'],
               [reputation.profileCompleteness || 0, 'Profile %', 'percent']
             ].forEach(function(s) { %>
               <div style="background:var(--bg-surface);border:1px solid var(--border);padding:12px 8px;text-align:center;">
@@ -324,23 +342,53 @@
             <% }); %>
           </div>
 
-          <a href="https://zeroauthoritydao.com/profile/<%= user.zaUserId || '' %>" target="_blank" style="display:inline-flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(201,168,76,0.25);background:rgba(201,168,76,0.04);padding:10px 18px;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.background='rgba(201,168,76,0.1)'" onmouseout="this.style.background='rgba(201,168,76,0.04)'">
-            View ZA Profile
-            <i data-feather="external-link" width="11" height="11"></i>
-          </a>
+          <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+            <a href="https://zeroauthoritydao.com/profile/<%= encodeURIComponent(reputation.username || user.zaUserId || '') %>" target="_blank" style="display:inline-flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(201,168,76,0.25);background:rgba(201,168,76,0.04);padding:10px 18px;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.background='rgba(201,168,76,0.1)'" onmouseout="this.style.background='rgba(201,168,76,0.04)'">
+              View ZA Profile
+              <i data-feather="external-link" width="11" height="11"></i>
+            </a>
+            <% if (String(user._id) === String(profileUser._id)) { %>
+              <form method="POST" action="/za/unlink" style="display:inline;" onsubmit="return confirm('Unlink your Zero Authority account from KAIZEN?');">
+                <button type="submit" style="background:transparent;border:1px solid rgba(248,113,113,0.3);color:#F87171;font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;padding:10px 18px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;">
+                  <i data-feather="unlink" width="11" height="11"></i>
+                  Unlink
+                </button>
+              </form>
+            <% } %>
+          </div>
         </div>
       <% } else { %>
-        <div style="text-align:center;padding:28px 0;">
-          <p style="font-size:0.85rem;color:var(--ash);line-height:1.75;max-width:420px;margin:0 auto 16px;">
-            Connect your Zero Authority DAO account to display your on-chain trading credentials here alongside your KAIZEN discipline score.
+        <div style="padding:4px 0 8px;">
+          <p style="font-size:0.85rem;color:var(--ash);line-height:1.75;max-width:480px;margin:0 auto 16px;text-align:center;">
+            Link your Zero Authority DAO account to display your on-chain trading credentials here alongside your KAIZEN discipline score. Paste your ZA user ID, <span style="color:var(--gold);font-family:'DM Mono',monospace;">@username</span>, or full profile URL below.
           </p>
-          <a href="https://zeroauthoritydao.com" target="_blank" style="display:inline-flex;align-items:center;gap:6px;background:var(--gold);color:#000;font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;font-weight:700;padding:12px 24px;text-decoration:none;">
-            <i data-feather="external-link" width="12" height="12"></i>
-            Visit Zero Authority
-          </a>
-          <p style="font-family:'DM Mono',monospace;font-size:0.55rem;color:rgba(168,160,154,0.4);margin-top:12px;letter-spacing:0.08em;">
-            Contact @kaizenaibot on X after creating your ZA account to link it here
-          </p>
+
+          <% if (String(user._id) === String(profileUser._id)) { %>
+            <form method="POST" action="/za/link" style="max-width:480px;margin:0 auto 16px;">
+              <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                <input
+                  type="text"
+                  name="zaInput"
+                  placeholder="e.g. 12345, @satoshi, or https://zeroauthoritydao.com/profile/satoshi"
+                  required
+                  style="flex:1;min-width:220px;background:var(--bg-surface);border:1px solid var(--border);color:var(--text-primary);padding:12px 14px;font-family:'DM Mono',monospace;font-size:0.72rem;outline:none;"
+                  onfocus="this.style.borderColor='rgba(201,168,76,0.4)'"
+                  onblur="this.style.borderColor='var(--border)'"
+                >
+                <button type="submit" style="background:var(--gold);color:#000;border:none;font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;font-weight:700;padding:12px 20px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;white-space:nowrap;">
+                  <i data-feather="link-2" width="12" height="12"></i>
+                  Link Account
+                </button>
+              </div>
+            </form>
+          <% } %>
+
+          <div style="text-align:center;">
+            <a href="https://zeroauthoritydao.com" target="_blank" style="display:inline-flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);border:1px solid var(--border);padding:9px 16px;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.color='var(--gold)';this.style.borderColor='rgba(201,168,76,0.3)'" onmouseout="this.style.color='var(--ash)';this.style.borderColor='var(--border)'">
+              <i data-feather="external-link" width="11" height="11"></i>
+              Visit Zero Authority
+            </a>
+          </div>
         </div>
       <% } %>
     </div>
@@ -366,16 +414,20 @@
 
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:2px;margin-bottom:20px;">
         <div style="background:var(--bg-surface);border:1px solid rgba(59,130,246,0.1);padding:16px;text-align:center;">
-          <div style="font-family:'DM Mono',monospace;font-size:1.4rem;font-weight:700;color:var(--gold);"><%= disciplineScore %>%</div>
-          <div style="font-family:'DM Mono',monospace;font-size:0.48rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-top:4px;">Current Score</div>
+          <div style="font-family:'DM Mono',monospace;font-size:1.4rem;font-weight:700;color:var(--gold);"><%= mantleUserStats.currentScore %>%</div>
+          <div style="font-family:'DM Mono',monospace;font-size:0.48rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-top:4px;">On-Chain Score</div>
         </div>
         <div style="background:var(--bg-surface);border:1px solid rgba(59,130,246,0.1);padding:16px;text-align:center;">
-          <div style="font-family:'DM Mono',monospace;font-size:1.4rem;font-weight:700;color:var(--blue);"><%= mantleEvents || 0 %></div>
-          <div style="font-family:'DM Mono',monospace;font-size:0.48rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-top:4px;">On-Chain Events</div>
+          <div style="font-family:'DM Mono',monospace;font-size:1.4rem;font-weight:700;color:var(--blue);"><%= mantleUserStats.sessionCount || 0 %></div>
+          <div style="font-family:'DM Mono',monospace;font-size:0.48rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-top:4px;">Sessions Logged</div>
         </div>
         <div style="background:var(--bg-surface);border:1px solid rgba(59,130,246,0.1);padding:16px;text-align:center;">
-          <div style="font-family:'DM Mono',monospace;font-size:1.4rem;font-weight:700;color:<%= (streak||0) >= 7 ? '#4ADE80' : 'var(--text-primary)' %>;"><%= streak || 0 %></div>
-          <div style="font-family:'DM Mono',monospace;font-size:0.48rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-top:4px;">Day Streak</div>
+          <div style="font-family:'DM Mono',monospace;font-size:1.4rem;font-weight:700;color:var(--text-primary);"><%= mantleUserStats.milestoneCount || 0 %></div>
+          <div style="font-family:'DM Mono',monospace;font-size:0.48rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-top:4px;">Milestones</div>
+        </div>
+        <div style="background:var(--bg-surface);border:1px solid rgba(59,130,246,0.1);padding:16px;text-align:center;">
+          <div style="font-family:'DM Mono',monospace;font-size:1.4rem;font-weight:700;color:<%= (streak||0) >= 7 ? '#4ADE80' : 'var(--text-primary)' %>;"><%= mantleEvents || 0 %></div>
+          <div style="font-family:'DM Mono',monospace;font-size:0.48rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-top:4px;">Total Network Events</div>
         </div>
       </div>
 
