@@ -66,10 +66,6 @@ const UserSchema = new mongoose.Schema({
     type: Number,
     default: 0
   },
-  streak: {
-    type: Number,
-    default: 0
-  },
   streakFreezeAvailable: {
     type: Boolean,
     default: true

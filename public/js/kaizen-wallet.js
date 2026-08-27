@@ -264,11 +264,13 @@
     }
   }
 
-  function hasInjectedWallet() {
-    // Xverse injects this object in both its extension and mobile in-app
-    // browser. Keep the legacy globals for Leather and older Stacks wallets.
+  function hasInjectedStacksProvider() {
+    // Xverse injects both BitcoinProvider and StacksProvider under
+    // window.XverseProviders in its extension AND mobile in-app browser.
+    // Leather uses window.LeatherProvider / window.StacksProvider.
     if (
-      (window.XverseProviders && window.XverseProviders.BitcoinProvider) ||
+      (window.XverseProviders &&
+        (window.XverseProviders.StacksProvider || window.XverseProviders.BitcoinProvider)) ||
       window.LeatherProvider ||
       window.StacksProvider ||
       window.BlockstackProvider
@@ -297,6 +299,26 @@
     );
   }
 
+  function isXverseMobileBrowser() {
+    // When we hand off into the Xverse in-app browser via
+    // https://connect.xverse.app/browser?url=… we set ?wallet=xverse on the
+    // return URL. Xverse also exposes itself in the UA string on mobile.
+    var fromLink = new URL(window.location.href).searchParams.get('wallet') === 'xverse';
+    var ua = navigator.userAgent || '';
+    var inXverseWebview = /Xverse/i.test(ua);
+    return fromLink || inXverseWebview;
+  }
+
+  function stripWalletParam() {
+    try {
+      var url = new URL(window.location.href);
+      if (url.searchParams.has('wallet')) {
+        url.searchParams.delete('wallet');
+        window.history.replaceState({}, document.title, url.toString());
+      }
+    } catch (e) { /* ignore */ }
+  }
+
   function openInXverseMobile() {
     var target = new URL(window.location.href);
     target.searchParams.set('wallet', 'xverse');
@@ -314,7 +336,13 @@
     });
   }
 
- async function signWithWallet(message, network) {
+  function extractPublicKey(account) {
+    // Wallets are inconsistent about where they put the public key.
+    if (!account) return '';
+    return account.publicKey || account.stxPublicKey || account.pubKey || '';
+  }
+
+  async function signWithWallet(message, network) {
     if (
       !window.StacksConnect ||
       typeof window.StacksConnect.connect !== 'function' ||
@@ -323,34 +351,60 @@
       throw new Error('Wallet bridge failed to load. Refresh the page and try again.');
     }
 
-    var connected = await window.StacksConnect.connect({
-      network: network || 'mainnet'
-    });
-    var stxAccount = getStacksAddress(connected && connected.addresses);
-
-    if (!stxAccount || !stxAccount.publicKey) {
-      throw new Error('The selected wallet did not return a Stacks account.');
-    }
-
-    // Try with publicKey first, then without if it fails
+    var connected;
     try {
-      var result = await window.StacksConnect.request('stx_signMessage', {
-        message: message,
-        publicKey: stxAccount.publicKey
+      connected = await window.StacksConnect.connect({
+        network: network || 'mainnet'
       });
-      if (!result || !result.signature) throw new Error('No signature');
-      if (!result.publicKey) result.publicKey = stxAccount.publicKey;
-      return result;
-    } catch (e) {
-      // Retry without publicKey for Xverse mobile compatibility
-      var result = await window.StacksConnect.request('stx_signMessage', {
-        message: message
-      });
-      if (!result || !result.signature) throw new Error('No signature');
-      result.publicKey = stxAccount.publicKey;
-      return result;
+    } catch (connectErr) {
+      // Xverse mobile in-app browser sometimes throws on connect() but the
+      // provider is already injected and stx_signMessage still works. Fall
+      // through to try the request directly using the injected provider.
+      if (!isXverseMobileBrowser() || !window.StacksProvider) throw connectErr;
+      connected = { addresses: [] };
     }
- }
+
+    var stxAccount = getStacksAddress(connected && connected.addresses);
+    var publicKey = extractPublicKey(stxAccount);
+
+    // In Xverse mobile's in-app browser connect() may not return addresses,
+    // but the signed message response itself carries the publicKey. Let the
+    // signing request run without a pre-known publicKey in that case.
+    var hasPublicKey = !!publicKey;
+
+    // Build the parameter permutations that different wallet builds expect.
+    // Order: (1) explicit publicKey, (2) no publicKey (Xverse mobile),
+    // (3) stxPublicKey alias (older Xverse builds).
+    var attempts = [];
+    if (hasPublicKey) {
+      attempts.push({ message: message, publicKey: publicKey });
+      attempts.push({ message: message, stxPublicKey: publicKey });
+    }
+    attempts.push({ message: message });
+
+    var lastErr = null;
+    for (var i = 0; i < attempts.length; i++) {
+      try {
+        var result = await window.StacksConnect.request('stx_signMessage', attempts[i]);
+        if (!result || !result.signature) {
+          lastErr = new Error('Wallet returned an empty signature.');
+          continue;
+        }
+        // Normalize the returned public key — Xverse mobile returns it on the
+        // response; Leather returns it via the account object.
+        if (!result.publicKey && publicKey) result.publicKey = publicKey;
+        if (!result.publicKey && result.stxPublicKey) result.publicKey = result.stxPublicKey;
+        if (!result.publicKey) {
+          lastErr = new Error('Wallet did not return a public key with the signature.');
+          continue;
+        }
+        return result;
+      } catch (e) {
+        lastErr = e;
+      }
+    }
+    throw lastErr || new Error('Unable to sign message with wallet.');
+  }
 
   async function connect() {
     setMsg('');
@@ -359,14 +413,19 @@
       return;
     }
 
-    // Mobile Safari/Chrome cannot access Xverse's injected provider. Send the
-    // user into Xverse's in-app browser through its universal/app link. The
-    // marker prevents a redirect loop if provider injection is unavailable.
-    var openedFromXverseLink = new URL(window.location.href).searchParams.get('wallet') === 'xverse';
-    if (isMobileDevice() && !hasInjectedWallet() && !openedFromXverseLink) {
+    // Mobile Safari/Chrome cannot access Xverse's injected provider from the
+    // regular browser. Send the user into Xverse's in-app browser through its
+    // universal/app link. When we land back inside the Xverse webview an
+    // injected provider is present and we proceed normally.
+    if (isMobileDevice() && !hasInjectedStacksProvider() && !isXverseMobileBrowser()) {
       openInXverseMobile();
       return;
     }
+
+    // We're inside the Xverse in-app browser (or another wallet webview).
+    // Strip the ?wallet=xverse marker so refreshing doesn't look like a new
+    // deep-link handoff.
+    stripWalletParam();
 
     setBusy(true, 'Requesting challenge…');
     try {

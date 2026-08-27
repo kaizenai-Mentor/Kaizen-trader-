@@ -11,7 +11,8 @@ const CONTRACT_ABI = [
   "function recordScoreChange(bytes32 userId, uint8 previousScore, uint8 newScore, string memory reason) external",
   "function recordPattern(bytes32 userId, string memory patternType, string memory severity) external",
   "function recordMilestone(bytes32 userId, string memory milestoneType, uint8 score) external",
-  "function getTotalEvents() external view returns (uint256 scores, uint256 patterns, uint256 milestones)"
+  "function getTotalEvents() external view returns (uint256 scores, uint256 patterns, uint256 milestones)",
+  "function getUserStats(bytes32 userId) external view returns (uint8 currentScore, uint256 sessionCount, uint256 milestoneCount)"
 ];
 
 function hashUserId(userId) {
@@ -140,19 +141,27 @@ async function getTotalEvents() {
 }
 
 async function getUserStats(userId) {
+  const defaults = { currentScore: 0, sessionCount: 0, milestoneCount: 0 };
   const contract = getContract();
-  if (!contract) return { currentScore: 0, sessionCount: 0, milestoneCount: 0 };
+  if (!contract) return defaults;
   try {
     const userHash = hashUserId(userId);
-    const stats = await contract.getUserStats(userHash);
-    return {
-      currentScore: Number(stats.currentScore || stats[0] || 0),
-      sessionCount: Number(stats.sessionCount || stats[1] || 0),
-      milestoneCount: Number(stats.milestoneCount || stats[2] || 0)
-    };
+    const raw = await contract.getUserStats(userHash);
+    // ethers v6 returns a Result object; be defensive about tuple vs named access.
+    if (!raw) return defaults;
+    const currentScore = Number(
+      raw.currentScore ?? raw[0] ?? 0
+    );
+    const sessionCount = Number(
+      raw.sessionCount ?? raw[1] ?? 0
+    );
+    const milestoneCount = Number(
+      raw.milestoneCount ?? raw[2] ?? 0
+    );
+    return { currentScore, sessionCount, milestoneCount };
   } catch(err) {
     console.error('Mantle getUserStats error:', err.message);
-    return { currentScore: 0, sessionCount: 0, milestoneCount: 0 };
+    return defaults;
   }
 }
 
