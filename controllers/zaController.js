@@ -285,20 +285,6 @@ const getReputation = async (req, res) => {
     let zaData = null;
     const searchName = normalizeUsername(user.username);
 
-    if (user.zaUserId) {
-      // Prefer a direct lookup by stored id so the displayed profile is always
-      // the one the user explicitly linked (not a fuzzy username match).
-      try {
-        const direct = await zaClient.get(`${USERS_ENDPOINT}/${encodeURIComponent(user.zaUserId)}`);
-        const entity = zaClient.extractEntity(direct.data, ['data', 'user']);
-        if (entity && (entity.id || entity.username)) {
-          zaData = entity;
-        }
-      } catch (err) {
-        logZaError('ZA user-by-id lookup failed (falling back to search)', err);
-      }
-    }
-
     if (!zaData && searchName) {
       try {
         // The live API exposes /api/users and returns { users: [...] }.
