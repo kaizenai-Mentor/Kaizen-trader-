@@ -342,65 +342,61 @@
     return account.publicKey || account.stxPublicKey || account.pubKey || '';
   }
 
-  async function signWithWallet(message, network) {
-    if (
-      !window.StacksConnect ||
-      typeof window.StacksConnect.connect !== 'function' ||
-      typeof window.StacksConnect.request !== 'function'
-    ) {
+async function signWithWallet(message, network) {
+    await loadStacksBridge();
+    if (!window.StacksConnect || typeof window.StacksConnect.request !== 'function') {
       throw new Error('Wallet bridge failed to load. Refresh the page and try again.');
     }
 
-    var connected;
-    try {
-      connected = await window.StacksConnect.connect({
-        network: network || 'mainnet'
-      });
-    } catch (connectErr) {
-      // Xverse mobile in-app browser sometimes throws on connect() but the
-      // provider is already injected and stx_signMessage still works. Fall
-      // through to try the request directly using the injected provider.
-      if (!isXverseMobileBrowser() || !window.StacksProvider) throw connectErr;
-      connected = { addresses: [] };
+    // Detect already-injected provider (Xverse / Leather in-app webview). When
+    // present, skip StacksConnect.connect() — it tries to open a wallet-select
+    // modal that doesn't exist inside the webview and hangs forever.
+    var directProvider =
+      (window.XverseProviders && (window.XverseProviders.StacksProvider || window.XverseProviders.BitcoinProvider && window.StacksProvider)) ||
+      window.LeatherProvider ||
+      window.StacksProvider ||
+      window.BlockstackProvider;
+
+    var publicKey = '';
+
+    // Only call connect() in a regular browser (no injected provider). In
+    // webviews we get addresses / publicKey from the signing response itself.
+    if (!directProvider) {
+      try {
+        var connected = await window.StacksConnect.connect({ network: network || 'mainnet' });
+        var stxAccount = getStacksAddress(connected && connected.addresses);
+        publicKey = extractPublicKey(stxAccount);
+      } catch (e) {
+        // If connect() fails (e.g. in a misdetected webview), proceed key-less
+        // and rely on the response publicKey.
+      }
     }
 
-    var stxAccount = getStacksAddress(connected && connected.addresses);
-    var publicKey = extractPublicKey(stxAccount);
-
-    // In Xverse mobile's in-app browser connect() may not return addresses,
-    // but the signed message response itself carries the publicKey. Let the
-    // signing request run without a pre-known publicKey in that case.
-    var hasPublicKey = !!publicKey;
-
-    // Build the parameter permutations that different wallet builds expect.
-    // Order: (1) explicit publicKey, (2) no publicKey (Xverse mobile),
-    // (3) stxPublicKey alias (older Xverse builds).
     var attempts = [];
-    if (hasPublicKey) {
+    if (publicKey) {
       attempts.push({ message: message, publicKey: publicKey });
       attempts.push({ message: message, stxPublicKey: publicKey });
     }
     attempts.push({ message: message });
 
+    // Choose the request function: use the injected provider directly in
+    // webviews, otherwise use StacksConnect.request which handles the
+    // popup/modal flow for extension/desktop wallets.
+    function doSign(payload) {
+      if (directProvider && typeof directProvider.request === 'function') {
+        return directProvider.request('stx_signMessage', payload);
+      }
+      return window.StacksConnect.request('stx_signMessage', payload);
+    }
+
     var lastErr = null;
     for (var i = 0; i < attempts.length; i++) {
       try {
-                // In injected-provider webviews (Xverse mobile), call the provider's
-        // request directly — StacksConnect.request can fail to find the
-        // provider when connect() was skipped.
-        var $provider =
-          (window.XverseProviders && window.XverseProviders.StacksProvider) ||
-          window.LeatherProvider ||
-          window.StacksProvider;
-        var result = await ($provider && typeof $provider.request === 'function'
-          ? $provider.request('stx_signMessage', attempts[i])
-          : window.StacksConnect.request('stx_signMessage', attempts[i]));
+        var result = await doSign(attempts[i]);
         if (!result || !result.signature) {
           lastErr = new Error('Wallet returned an empty signature.');
           continue;
         }
-        // Normalize the returned public key — Xverse mobile returns it on the
-        // response; Leather returns it via the account object.
         if (!result.publicKey && publicKey) result.publicKey = publicKey;
         if (!result.publicKey && result.stxPublicKey) result.publicKey = result.stxPublicKey;
         if (!result.publicKey) {
@@ -413,8 +409,8 @@
       }
     }
     throw lastErr || new Error('Unable to sign message with wallet.');
-  }
-
+}
+  
   async function connect() {
     setMsg('');
     if (els.consent && !els.consent.checked) {
