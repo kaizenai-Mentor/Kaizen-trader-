@@ -282,6 +282,15 @@ const getReputation = async (req, res) => {
       console.error('Mantle fetch error on reputation:', mErr.message);
     }
 
+        // Award any newly-earned badges before rendering so badges stay in sync
+    // with the score number.
+    try {
+      const checkBadges = require('../config/checkBadges');
+      await checkBadges(user._id);
+      const fresh = await User.findById(user._id);
+      if (fresh) { user.badges = fresh.badges; user.disciplineScore = fresh.disciplineScore; user.streak = fresh.streak; }
+    } catch (bErr) { console.error('Badge check error on reputation:', bErr.message); }
+
     let zaData = null;
     const searchName = normalizeUsername(user.username);
 
