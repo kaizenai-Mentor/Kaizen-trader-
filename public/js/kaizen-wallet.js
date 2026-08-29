@@ -385,7 +385,16 @@
     var lastErr = null;
     for (var i = 0; i < attempts.length; i++) {
       try {
-        var result = await window.StacksConnect.request('stx_signMessage', attempts[i]);
+                // In injected-provider webviews (Xverse mobile), call the provider's
+        // request directly — StacksConnect.request can fail to find the
+        // provider when connect() was skipped.
+        var $provider =
+          (window.XverseProviders && window.XverseProviders.StacksProvider) ||
+          window.LeatherProvider ||
+          window.StacksProvider;
+        var result = await ($provider && typeof $provider.request === 'function'
+          ? $provider.request('stx_signMessage', attempts[i])
+          : window.StacksConnect.request('stx_signMessage', attempts[i]));
         if (!result || !result.signature) {
           lastErr = new Error('Wallet returned an empty signature.');
           continue;
