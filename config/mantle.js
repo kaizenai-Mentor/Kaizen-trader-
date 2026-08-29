@@ -22,28 +22,24 @@ function hashUserId(userId) {
     .digest('hex');
 }
 
+let contractAvailable = null;
 function getContract() {
-  if (!ethers) return null;
-  if (!process.env.MANTLE_PRIVATE_KEY) return null;
-  if (!process.env.MANTLE_CONTRACT_ADDRESS) return null;
-
-  try {
-    const provider = new ethers.JsonRpcProvider(
-      process.env.MANTLE_RPC_URL || 'https://rpc.sepolia.mantle.xyz'
-    );
-    const wallet = new ethers.Wallet(
-      process.env.MANTLE_PRIVATE_KEY, provider
-    );
-    return new ethers.Contract(
-      process.env.MANTLE_CONTRACT_ADDRESS,
-      CONTRACT_ABI,
-      wallet
-    );
-  } catch(e) {
-    console.error('Mantle contract init error:', e.message);
-    return null;
+  if (!ethers || !process.env.MANTLE_PRIVATE_KEY || !process.env.MANTLE_CONTRACT_ADDRESS) return null;
+  if (contractAvailable === false) return null;
+  // Async-ready version via promise memoization
+  if (contractAvailable && typeof contractAvailable.then === 'function') return contractAvailable;
+  contractAvailable = (async () => {
+    try {
+      const provider = new ethers.JsonRpcProvider(process.env.MANTLE_RPC_URL || 'https://rpc.sepolia.mantle.xyz');
+      const address = ethers.getAddress(process.env.MANTLE_CONTRACT_ADDRESS);
+      const code = await provider.getCode(address);
+      if (!code || code === '0x') { console.log('Mantle: no contract deployed at', address, '— reads/writes no-op'); return null; }
+      const wallet = new ethers.Wallet(process.env.MANTLE_PRIVATE_KEY, provider);
+      return new ethers.Contract(address, CONTRACT_ABI, wallet);
+    } catch (e) { console.error('Mantle init error:', e.message); return null; }
+  })();
+  return contractAvailable;
   }
-}
 
 async function recordScoreChange(userId, previousScore, newScore, reason) {
   const contract = getContract();
