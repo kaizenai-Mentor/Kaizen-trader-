@@ -343,7 +343,6 @@
   }
 
 async function signWithWallet(message, network) {
-    await loadStacksBridge();
     if (!window.StacksConnect || typeof window.StacksConnect.request !== 'function') {
       throw new Error('Wallet bridge failed to load. Refresh the page and try again.');
     }
@@ -352,9 +351,7 @@ async function signWithWallet(message, network) {
     // present, skip StacksConnect.connect() — it tries to open a wallet-select
     // modal that doesn't exist inside the webview and hangs forever.
     var directProvider =
-      (window.XverseProviders && (window.XverseProviders.StacksProvider || window.XverseProviders.BitcoinProvider && window.StacksProvider)) ||
-      window.LeatherProvider ||
-      window.StacksProvider ||
+            (window.XverseProviders && (window.XverseProviders.StacksProvider || window.XverseProviders.BitcoinProvider)) ||
       window.BlockstackProvider;
 
     var publicKey = '';
