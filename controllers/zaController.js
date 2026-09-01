@@ -305,6 +305,8 @@ const getReputation = async (req, res) => {
         const results = zaClient.extractCollection(response.data, ['users', 'data']);
         zaData = selectZaUser(results, user);
 
+        if (zaData && typeof zaData.username === 'string') zaData.username = zaData.username.trim();
+
         if (zaData) {
           console.log('ZA found via users endpoint:', zaData.username || zaData.id);
         } else {
