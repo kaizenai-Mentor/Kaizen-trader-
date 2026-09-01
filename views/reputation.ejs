@@ -74,7 +74,7 @@
         </div>
         <div style="background:var(--bg-surface);border:1px solid var(--border);padding:12px;text-align:center;">
           <div style="font-family:'DM Mono',monospace;font-size:1.2rem;font-weight:700;color:var(--text-primary);">
-            <%= user && user.badges ? user.badges.length : 0 %>
+                        <%= (profileUser && profileUser.badges ? profileUser.badges.length : (user && user.badges ? user.badges.length : 0)) %>
           </div>
           <div style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-top:3px;">Badges</div>
         </div>
