@@ -22,14 +22,18 @@ function hashUserId(userId) {
 function getContract() {
   if (!ethers) return null;
   if (!process.env.MANTLE_PRIVATE_KEY || !process.env.MANTLE_CONTRACT_ADDRESS) {
-    console.log('Mantle getContract: missing env var — addr set?', !!process.env.MANTLE_CONTRACT_ADDRESS, 'pk set?', !!process.env.MANTLE_PRIVATE_KEY);
     return null;
   }
   try {
-    const provider = new ethers.JsonRpcProvider(process.env.MANTLE_RPC_URL || 'https://rpc.sepolia.mantle.xyz');
+    const provider = new ethers.JsonRpcProvider(
+      process.env.MANTLE_RPC_URL || 'https://rpc.sepolia.mantle.xyz'
+    );
     const wallet = new ethers.Wallet(process.env.MANTLE_PRIVATE_KEY, provider);
-    console.log('Mantle: using wallet address', wallet.address, 'contract', process.env.MANTLE_CONTRACT_ADDRESS);
-    return new ethers.Contract(process.env.MANTLE_CONTRACT_ADDRESS, CONTRACT_ABI, wallet);
+    return new ethers.Contract(
+      process.env.MANTLE_CONTRACT_ADDRESS,
+      CONTRACT_ABI,
+      wallet
+    );
   } catch (e) {
     console.error('Mantle contract init error:', e.message);
     return null;
@@ -37,59 +41,96 @@ function getContract() {
 }
 
 async function recordScoreChange(userId, previousScore, newScore, reason) {
-  const c = await getContract();
+  const c = getContract();
   if (!c) return null;
   try {
-    const tx = await c.recordScoreChange(hashUserId(userId), Math.min(Math.max(previousScore,0),100), Math.min(Math.max(newScore,0),100), reason, {gasLimit:200000});
+    const tx = await c.recordScoreChange(
+      hashUserId(userId),
+      Math.min(Math.max(previousScore, 0), 100),
+      Math.min(Math.max(newScore, 0), 100),
+      reason,
+      { gasLimit: 200000 }
+    );
     console.log('Mantle score change tx:', tx.hash);
     await tx.wait();
     return tx.hash;
-    } catch(err) { console.error('Mantle recordScoreChange error:', err.message); return null; }
+  } catch (err) {
+    console.error('Mantle recordScoreChange error:', err.message);
+    return null;
+  }
 }
 
-
 async function recordPattern(userId, patternType, severity) {
-  const c = await getContract();
+  const c = getContract();
   if (!c) return null;
   try {
-    const tx = await c.recordPattern(hashUserId(userId), patternType, severity, {gasLimit:200000});
+    const tx = await c.recordPattern(
+      hashUserId(userId), patternType, severity,
+      { gasLimit: 200000 }
+    );
     console.log('Mantle pattern tx:', tx.hash);
     await tx.wait();
     return tx.hash;
-    } catch(err) { console.error('Mantle recordPattern error:', err.message); return null; }
+  } catch (err) {
+    console.error('Mantle recordPattern error:', err.message);
+    return null;
+  }
 }
 
 async function recordMilestone(userId, milestoneType, score) {
-  const c = await getContract();
+  const c = getContract();
   if (!c) return null;
   try {
-    const tx = await c.recordMilestone(hashUserId(userId), milestoneType, Math.min(Math.max(score,0),100), {gasLimit:200000});
+    const tx = await c.recordMilestone(
+      hashUserId(userId), milestoneType,
+      Math.min(Math.max(score, 0), 100),
+      { gasLimit: 200000 }
+    );
     console.log('Mantle milestone tx:', tx.hash);
     await tx.wait();
     return tx.hash;
-    } catch(err) { console.error('Mantle recordMilestone error:', err.message); return null; }
+  } catch (err) {
+    console.error('Mantle recordMilestone error:', err.message);
+    return null;
+  }
 }
 
 async function getTotalEvents() {
-  const d = {scores:0,patterns:0,milestones:0,total:0};
-  const c = await getContract(); if (!c) return d;
+  const d = { scores: 0, patterns: 0, milestones: 0, total: 0 };
+  const c = getContract();
+  if (!c) return d;
   try {
-  const r = await c.getTotalEvents();
+    const r = await c.getTotalEvents();
     const s = Number(r[0]), p = Number(r[1]), m = Number(r[2]);
-    return {scores:s,patterns:p,milestones:m,total:s+p+m}; }
+    return { scores: s, patterns: p, milestones: m, total: s + p + m };
+  } catch (err) {
+    console.error('Mantle getTotalEvents error:', err.message);
+    return d;
+  }
 }
 
 async function getUserStats(userId) {
-  const d = {currentScore:0,sessionCount:0,milestoneCount:0};
-  const c = await getContract(); if (!c) return d;
+  const d = { currentScore: 0, sessionCount: 0, milestoneCount: 0 };
+  const c = getContract();
+  if (!c) return d;
   try {
-        const r = await c.getUserStats(hashUserId(userId));
+    const r = await c.getUserStats(hashUserId(userId));
     return {
       currentScore: Number(r[0] ?? 0),
       sessionCount: Number(r[1] ?? 0),
       milestoneCount: Number(r[2] ?? 0)
     };
-    } catch(err) { console.error('Mantle getUserStats error:', err.message); return d; }
+  } catch (err) {
+    console.error('Mantle getUserStats error:', err.message);
+    return d;
+  }
 }
 
-module.exports = { recordScoreChange, recordPattern, recordMilestone, getTotalEvents, getUserStats, hashUserId };
+module.exports = {
+  recordScoreChange,
+  recordPattern,
+  recordMilestone,
+  getTotalEvents,
+  getUserStats,
+  hashUserId
+};
