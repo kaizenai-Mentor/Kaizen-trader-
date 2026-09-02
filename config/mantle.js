@@ -40,8 +40,9 @@ async function recordScoreChange(userId, previousScore, newScore, reason) {
     console.log('Mantle score change tx:', tx.hash);
     await tx.wait();
     return tx.hash;
-  } catch(err) { return null; }
+    } catch(err) { console.error('Mantle recordScoreChange error:', err.message); return null; }
 }
+
 
 async function recordPattern(userId, patternType, severity) {
   const c = getContract();
