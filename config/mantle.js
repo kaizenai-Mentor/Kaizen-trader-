@@ -52,7 +52,7 @@ async function recordPattern(userId, patternType, severity) {
     console.log('Mantle pattern tx:', tx.hash);
     await tx.wait();
     return tx.hash;
-  } catch(err) { return null; }
+    } catch(err) { console.error('Mantle recordPattern error:', err.message); return null; }
 }
 
 async function recordMilestone(userId, milestoneType, score) {
@@ -63,7 +63,7 @@ async function recordMilestone(userId, milestoneType, score) {
     console.log('Mantle milestone tx:', tx.hash);
     await tx.wait();
     return tx.hash;
-  } catch(err) { return null; }
+    } catch(err) { console.error('Mantle recordMilestone error:', err.message); return null; }
 }
 
 async function getTotalEvents() {
@@ -72,7 +72,7 @@ async function getTotalEvents() {
   try {
     const [s,p,m] = await c.getTotalEvents();
     return {scores:Number(s),patterns:Number(p),milestones:Number(m),total:Number(s)+Number(p)+Number(m)};
-  } catch(err) { return d; }
+    } catch(err) { console.error('Mantle getTotalEvents error:', err.message); return d; }
 }
 
 async function getUserStats(userId) {
