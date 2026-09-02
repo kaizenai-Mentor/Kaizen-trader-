@@ -28,6 +28,7 @@ function getContract() {
   try {
     const provider = new ethers.JsonRpcProvider(process.env.MANTLE_RPC_URL || 'https://rpc.sepolia.mantle.xyz');
     const wallet = new ethers.Wallet(process.env.MANTLE_PRIVATE_KEY, provider);
+    console.log('Mantle: using wallet address', wallet.address, 'contract', process.env.MANTLE_CONTRACT_ADDRESS);
     return new ethers.Contract(process.env.MANTLE_CONTRACT_ADDRESS, CONTRACT_ABI, wallet);
   } catch (e) {
     console.error('Mantle contract init error:', e.message);
