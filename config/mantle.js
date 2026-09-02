@@ -8,11 +8,11 @@ try {
 }
 
 const CONTRACT_ABI = [
-  "function recordScoreChange(bytes32 userId, uint8 previousScore, uint8 newScore, string memory reason) external",
-  "function recordPattern(bytes32 userId, string memory patternType, string memory severity) external",
-  "function recordMilestone(bytes32 userId, string memory milestoneType, uint8 score) external",
-  "function getTotalEvents() external view returns (uint256 scores, uint256 patterns, uint256 milestones)",
-  "function getUserStats(bytes32 userId) external view returns (uint8 currentScore, uint256 sessionCount, uint256 milestoneCount)"
+  "function recordScoreChange(bytes32,uint8,uint8,string)",
+  "function recordPattern(bytes32,string,string)",
+  "function recordMilestone(bytes32,string,uint8)",
+  "function getTotalEvents() view returns (uint256,uint256,uint256)",
+  "function getUserStats(bytes32) view returns (uint8,uint256,uint256)"
 ];
 
 function hashUserId(userId) {
