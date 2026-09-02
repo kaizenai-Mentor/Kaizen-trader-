@@ -37,7 +37,7 @@ function getContract() {
 }
 
 async function recordScoreChange(userId, previousScore, newScore, reason) {
-  const c = getContract();
+  const c = await getContract();
   if (!c) return null;
   try {
     const tx = await c.recordScoreChange(hashUserId(userId), Math.min(Math.max(previousScore,0),100), Math.min(Math.max(newScore,0),100), reason, {gasLimit:200000});
@@ -49,7 +49,7 @@ async function recordScoreChange(userId, previousScore, newScore, reason) {
 
 
 async function recordPattern(userId, patternType, severity) {
-  const c = getContract();
+  const c = await getContract();
   if (!c) return null;
   try {
     const tx = await c.recordPattern(hashUserId(userId), patternType, severity, {gasLimit:200000});
@@ -60,7 +60,7 @@ async function recordPattern(userId, patternType, severity) {
 }
 
 async function recordMilestone(userId, milestoneType, score) {
-  const c = getContract();
+  const c = await getContract();
   if (!c) return null;
   try {
     const tx = await c.recordMilestone(hashUserId(userId), milestoneType, Math.min(Math.max(score,0),100), {gasLimit:200000});
@@ -72,16 +72,16 @@ async function recordMilestone(userId, milestoneType, score) {
 
 async function getTotalEvents() {
   const d = {scores:0,patterns:0,milestones:0,total:0};
-  const c = getContract(); if (!c) return d;
+  const c = await getContract(); if (!c) return d;
   try {
-    const [s,p,m] = await c.getTotalEvents();
-    return {scores:Number(s),patterns:Number(p),milestones:Number(m),total:Number(s)+Number(p)+Number(m)};
-    } catch(err) { console.error('Mantle getTotalEvents error:', err.message); return d; }
+  const r = await c.getTotalEvents();
+    const s = Number(r[0]), p = Number(r[1]), m = Number(r[2]);
+    return {scores:s,patterns:p,milestones:m,total:s+p+m}; }
 }
 
 async function getUserStats(userId) {
   const d = {currentScore:0,sessionCount:0,milestoneCount:0};
-  const c = getContract(); if (!c) return d;
+  const c = await getContract(); if (!c) return d;
   try {
     const raw = await c.getUserStats(hashUserId(userId));
     if (!raw) return d;
