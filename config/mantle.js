@@ -83,12 +83,11 @@ async function getUserStats(userId) {
   const d = {currentScore:0,sessionCount:0,milestoneCount:0};
   const c = await getContract(); if (!c) return d;
   try {
-    const raw = await c.getUserStats(hashUserId(userId));
-    if (!raw) return d;
+        const r = await c.getUserStats(hashUserId(userId));
     return {
-      currentScore: Number(raw.currentScore ?? raw[0] ?? 0),
-      sessionCount: Number(raw.sessionCount ?? raw[1] ?? 0),
-      milestoneCount: Number(raw.milestoneCount ?? raw[2] ?? 0)
+      currentScore: Number(r[0] ?? 0),
+      sessionCount: Number(r[1] ?? 0),
+      milestoneCount: Number(r[2] ?? 0)
     };
     } catch(err) { console.error('Mantle getUserStats error:', err.message); return d; }
 }
