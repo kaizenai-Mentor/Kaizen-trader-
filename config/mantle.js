@@ -21,7 +21,10 @@ function hashUserId(userId) {
 
 function getContract() {
   if (!ethers) return null;
-  if (!process.env.MANTLE_PRIVATE_KEY || !process.env.MANTLE_CONTRACT_ADDRESS) return null;
+  if (!process.env.MANTLE_PRIVATE_KEY || !process.env.MANTLE_CONTRACT_ADDRESS) {
+    console.log('Mantle getContract: missing env var — addr set?', !!process.env.MANTLE_CONTRACT_ADDRESS, 'pk set?', !!process.env.MANTLE_PRIVATE_KEY);
+    return null;
+  }
   try {
     const provider = new ethers.JsonRpcProvider(process.env.MANTLE_RPC_URL || 'https://rpc.sepolia.mantle.xyz');
     const wallet = new ethers.Wallet(process.env.MANTLE_PRIVATE_KEY, provider);
@@ -86,7 +89,7 @@ async function getUserStats(userId) {
       sessionCount: Number(raw.sessionCount ?? raw[1] ?? 0),
       milestoneCount: Number(raw.milestoneCount ?? raw[2] ?? 0)
     };
-  } catch(err) { return d; }
+    } catch(err) { console.error('Mantle getUserStats error:', err.message); return d; }
 }
 
 module.exports = { recordScoreChange, recordPattern, recordMilestone, getTotalEvents, getUserStats, hashUserId };
