@@ -15,17 +15,15 @@ function compileContract() {
         content: source
       }
     },
-    settings: {
-      optimizer: {
-        enabled: true,
-        runs: 200
-      },
+        settings: {
+      optimizer: { enabled: false },
+      evmVersion: 'london',
       outputSelection: {
         '*': {
           '*': ['abi', 'evm.bytecode.object']
         }
       }
-    }
+        }
   };
 
   const output = JSON.parse(solc.compile(JSON.stringify(input)));
