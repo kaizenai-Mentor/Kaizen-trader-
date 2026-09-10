@@ -83,6 +83,8 @@ CHANGES (the upgrades):
 - Eyebrow style standardized: gold tick + tracked-out mono uppercase
 - Inline-style pages (about/services) migrate to shared classes
 - Legal pages get a readable two-column structure (§8.5)
+- Generic AI iconography (cpu/brain/sparkle) replaced by the 改 kanji
+  mark everywhere the engine is referenced (§7.9)
 
 
 ================================================================================
@@ -242,10 +244,12 @@ wayfinding signature.
 
 7.6 STEP CARDS (How It Works)
 Five cards, hairline borders, ghost numbers (01–05, 3rem, 8% white),
-feather icon, title, two-line description, connected by a 1px gold line
-with small chevron nodes. Featured step (03 KAIZEN AI Responds) carries
-the gold border. Desktop: single row of five; tablet: 3+2; mobile:
-vertical stack with a left connector line. (Mockup 03.)
+title, two-line description, connected by a 1px gold line with small
+chevron nodes. Icons: steps 01/02/04/05 use feather line icons; the
+featured step 03 (KAIZEN AI Responds) carries the gold border and its
+icon is the 改 KANJI BADGE (§7.9) — never a generic AI symbol.
+Desktop: single row of five; tablet: 3+2; mobile: vertical stack with a
+left connector line. (Mockup 03, corrected: 改 on the featured card.)
 
 7.7 BUTTONS
 .btn-primary  gold fill, #080808 text, hover: gold-light + glow, active
@@ -263,6 +267,24 @@ One pattern page-wide:
   SUB (body-large, max-width 560px, centered or left)
   [LOOP STRIP where relevant]
 
+7.9 THE KANJI MARK (改) — THE ENGINE'S SIGNATURE
+The 改 glyph is KAIZEN's brand mark — and specifically the mark of the
+KAIZEN engine itself. Wherever the product references its AI/analysis
+(the How-It-Works step, the AI response card, "KAIZEN AI Responds"
+features), the icon is the kanji: gold glyph, serif CJK font, inside a
+hairline-bordered square badge.
+
+NEVER use generic AI iconography — no chips, brains, sparkles, or
+"circuit" marks. Those read as every other AI product. The kanji says
+something no other product can: you are not talking to a generic AI,
+you are talking to KAIZEN.
+
+RULES:
+- One kanji badge per card/component. It is a signature, not wallpaper.
+- The kanji is gold on dark themes (vermillion only if the card itself
+  is a verification context, which an AI card never is).
+- Rendered as text (font-family with CJK fallbacks) — crisp at any size.
+
 
 ================================================================================
 8. PAGE STRUCTURES (WIREFRAME ORDER — matches approved copy)
@@ -275,7 +297,8 @@ One pattern page-wide:
      instrument panel is NEW — replaces nothing, adds the signature.
      Trust row beneath, 4 items, mono labels.
   3  PRODUCT PREVIEW — three cards (Score dial sm, AI response, pattern
-     chips) on L2 surfaces. AI response card is the featured L3.
+     chips) on L2 surfaces. AI response card is the featured L3 and
+     carries the 改 kanji badge (§7.9), not a cpu/brain icon.
   4  HOW IT WORKS — loop strip + five step cards (mockup 03).
   5  WHAT KAIZEN TRACKS — two-column: left statement+CTA, right list of
      four track items. (Fifth blockchain item removed per audit.)
