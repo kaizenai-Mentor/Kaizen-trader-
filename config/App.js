@@ -125,6 +125,12 @@ Backward compatible: old journal entries remain valid Sessions with the
 plan stage empty. The engine treats "no plan" as reduced Process evidence
 (a prompt to plan, not a punishment).
 
+STAGE SPLIT (owner, 13 Sep 2026): the plan is a STRUCTURED DECLARATION,
+not a journal — dropdowns, chips, a slider, under a minute. The freeform
+writing + quick checks belong to the RECORD stage alone; that is where
+"what changed during and after the trade" gets captured, and the delta
+between plan and record is what Process/Execution measure.
+
 B6. THE KAIZEN SCORE ENGINE
 - Five dimensions, weighted, 0–100 overall. Complex internally, simple
   externally: the trader sees five numbers and plain-language reasons.
@@ -143,21 +149,25 @@ B6. THE KAIZEN SCORE ENGINE
 - Versioned: formula changes are logged; every user's score history keeps
   the formula version it was computed with.
 
-TRANSITION MECHANICS (locked with D7, 13 Sep 2026):
-- At cutover, the V1 score FREEZES at its last computed value. It is
-  never recalculated again. During the 10-day dual window it displays
-  labeled "V1 era"; on day 11 it retires into history.
-- The V2 engine does NOT compute dimensions from V1 sessions. V1 journal
-  entries lack the data the dimensions require (no pre-trade plans, no
-  risk records, no structured reflection fields). Inventing dimension
-  values from that thin data would fake precision — forbidden by the
-  honesty rules.
-- V2 dimensions build exclusively from sessions logged after cutover
-  (plan → record → quick checks → reflection). Until enough V2 sessions
-  exist, dimensions show "building baseline" rather than fake numbers.
-- Old journals remain fully alive as HISTORY and AI CONTEXT: KAIZEN AI
-  still reads them for patterns and coaching ("you've documented this
-  sequence three times"); they simply never feed dimension math.
+TRANSITION MECHANICS — REVISED (owner, 13 Sep 2026, supersedes the 10-day
+dual window): V1 EVIDENCE EXTRACTION + ONE-TIME CUTOVER EXPLAINER.
+- ADOPTED: one-time AI extraction at cutover. The AI reads each V1
+  journal and extracts explicitly-stated structured facts ("moved my
+  invalidation twice" → execution deviation; "sized in at 1%" → risk
+  respected). Extends the existing auto-detect precedent (asset,
+  timeframe, outcome are already extracted from notes today).
+- Guardrails: extraction runs ONCE on entries as they exist at cutover
+  (no retroactive-edit gaming); only explicitly-stated facts — silence
+  is "unknown," never counted for or against; evidence is tagged
+  "extracted" and weighted below V2 declared data; dimensions show a
+  "partial data" state while most evidence is extracted.
+- CONSEQUENCE (owner's call): the 10-day dual-score window is RETIRED.
+  With extraction, V2 is populated from day one — there is no gap to
+  bridge. At cutover, users get a one-time explainer: the score is now
+  five dimensions, calculated from their entire written history; the V1
+  score is preserved in the progress timeline as "V1 era."
+- Old journals additionally remain AI context for patterns, coaching,
+  memories, and psychology — that was always true and stays true.
 
 B7. PAGE-BY-PAGE FROZEN DEFINITIONS (one line each)
 
