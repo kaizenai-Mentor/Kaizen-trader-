@@ -143,6 +143,22 @@ B6. THE KAIZEN SCORE ENGINE
 - Versioned: formula changes are logged; every user's score history keeps
   the formula version it was computed with.
 
+TRANSITION MECHANICS (locked with D7, 13 Sep 2026):
+- At cutover, the V1 score FREEZES at its last computed value. It is
+  never recalculated again. During the 10-day dual window it displays
+  labeled "V1 era"; on day 11 it retires into history.
+- The V2 engine does NOT compute dimensions from V1 sessions. V1 journal
+  entries lack the data the dimensions require (no pre-trade plans, no
+  risk records, no structured reflection fields). Inventing dimension
+  values from that thin data would fake precision — forbidden by the
+  honesty rules.
+- V2 dimensions build exclusively from sessions logged after cutover
+  (plan → record → quick checks → reflection). Until enough V2 sessions
+  exist, dimensions show "building baseline" rather than fake numbers.
+- Old journals remain fully alive as HISTORY and AI CONTEXT: KAIZEN AI
+  still reads them for patterns and coaching ("you've documented this
+  sequence three times"); they simply never feed dimension math.
+
 B7. PAGE-BY-PAGE FROZEN DEFINITIONS (one line each)
 
 DASHBOARD — the cockpit. Greets, answers "How am I improving?", shows the
