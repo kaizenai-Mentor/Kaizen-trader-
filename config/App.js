@@ -189,27 +189,23 @@ B8. EXPLICITLY NOT IN THIS PHASE
 C. DECISIONS NEEDED BEFORE STEP 2
 ================================================================================
 
-D7. SCORE CONTINUITY — existing users have disciplineScore history from the
-    V1 formula (compliant/total ratio). When the five-dimension engine
-    ships, what happens to their score?
-    (a) Honest re-baseline: new engine, new meaning; everyone starts
-        building a V2 baseline (old score kept in history as "V1 era")
-    (b) Seed from history: estimate starting dimensions from V1 data
-    (c) Transition: show both for 30 days
+D7. SCORE CONTINUITY — LOCKED (owner, 13 Sep 2026): DUAL TRANSITION, 10 DAYS.
+    The V1 score and the V2 KAIZEN Score are shown side by side for 10
+    days, then the V1 score retires into history. Existing users see the
+    five dimensions begin building immediately; the V1 number is labeled
+    "V1 era" throughout and disappears from the UI on day 11.
 
-D8. PRE-TRADE PLAN DEPTH — how heavy is the plan stage in this first
-    rebuild?
-    (a) Lightweight: setup, entry condition, invalidation, risk, emotional
-        state — under a minute to fill (recommended; complexity later)
-    (b) Full: complete checklist generated from every Trading System
-        section
-    (c) Defer structured plans; keep freeform journal only for now
+D8. PRE-TRADE PLAN DEPTH — DIRECTION LOCKED, LAYOUT PENDING MOCKUP:
+    The Session is FREEFORM-FIRST. The journal entry (free writing) is
+    the heart of the record stage; a few smart quick-checks capture the
+    structured facts a trader might not mention in their writing (followed
+    plan? within entry criteria? respected risk? outcome?). KAIZEN reads
+    both. Mockup: design/mockups/d8c-freeform-journal.jpg — awaiting
+    owner approval.
 
-D9. NAVIGATION — restructure the app menu to the V2 IA (B3) in this phase,
-    or rename strings only and restructure later?
+D9. NAVIGATION — LOCKED (owner, 13 Sep 2026): V2 GROUPED IA.
+    The app menu restructures to the B3 groups in this phase.
 
-D10. REBUILD ORDER — which do we take through Steps 2–5 first?
-    (a) The core loop as one phase: Score Engine + Dashboard + Sessions
-        (recommended — they are one system; the rest follows)
-    (b) Dashboard first, then others page by page
-    (c) Sessions/journal first, then dashboard
+D10. REBUILD ORDER — LOCKED (owner, 13 Sep 2026): THE CORE LOOP AS ONE
+    PHASE. Score Engine + Dashboard + Sessions go through Steps 2–5
+    together, then the remaining pages follow.
