@@ -169,6 +169,39 @@ dual window): V1 EVIDENCE EXTRACTION + ONE-TIME CUTOVER EXPLAINER.
 - Old journals additionally remain AI context for patterns, coaching,
   memories, and psychology — that was always true and stays true.
 
+B6b. SESSION INTEGRITY LAYER (owner, 14 Sep 2026) — anti-gaming layer 2.
+    The frozen multi-signal/contradiction rules (B6) make ONE lie weak.
+    This layer makes FARMING weak — users logging filler or "sweet"
+    entries to inflate session counts, streaks, and reputation:
+    - CADENCE GUARD: sessions beyond the Trading System's maxDailyTrades
+      are still saved but marked "beyond system cadence" — reduced
+      milestone credit. And the excess IS the data: logging 6 sessions
+      when your system allows 3 is itself the overtrading pattern the
+      Behavior dimension catches. The farming attempt becomes evidence.
+    - NOVELTY GUARD: near-duplicate consecutive entries earn reduced
+      reflection-quality credit (deterministic text-similarity check).
+      Copy-paste farming scores itself down.
+    - LEARNING REQUIRES MISTAKES: the Learning dimension structurally
+      grows from named-mistake → correction evidence across windows. An
+      "all perfect" logger caps their own Learning score. To grow it, a
+      farmer must fabricate mistakes — and then fabricate their
+      correction arcs, consistently, across every timespan, without
+      contradicting their own records. The cost of coherent fabrication
+      exceeds the cost of honest trading.
+    - VARIANCE CHECK: zero-variance patterns (identical compliance,
+      emotion, outcome across 10–20 sessions) flag "low signal
+      diversity" — dimensions display reduced confidence. Not a
+      punishment; a visible honesty state.
+    - COMPLETION GATING: session-count milestones count COMPLETE
+      sessions (plan-or-honest-skip + record + reflect), never raw
+      entries.
+    - NOTHING IS EVER DELETED: fabrications cost score/milestone
+      weight, never data. Expensive to farm, cheap to use honestly.
+    - REPUTATION HONESTY: profiles and credentials label exactly what
+      is verified — practice consistency (verifiable in-system) is
+      never presented as trading performance (future broker
+      integrations, frozen FUTURE list).
+
 B7. PAGE-BY-PAGE FROZEN DEFINITIONS (one line each)
 
 DASHBOARD — the cockpit. Greets, answers "How am I improving?", shows the

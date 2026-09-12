@@ -72,6 +72,11 @@ KAIZEN DOES: Marks the session complete-as-a-lesson and captures
              reflection quality.
 FEEDS:       Learning & Consistency directly · Behavior (self-awareness
              signals).
+WHO WRITES IT: THE USER. The reflection is the trader's own words —
+             that is the point (their lesson, their voice). KAIZEN AI
+             responds to it afterward, in the ANALYZE stage. The engine
+             reads only structural signals: answered? substantive?
+             consistent with the record?
 WHY A SEPARATE STAGE: A record without reflection is a diary.
              Reflection is where the kaizen happens — the same mistake,
              seen twice, becomes a decision. V1 had nowhere for this.
@@ -202,16 +207,18 @@ news-style: announcement text scrolls continuously; a megaphone badge
 marks where the text enters. Purpose: pre/post information about what's
 being built — starting with the V2 update, shown for ~20–30 days.
 
-SPEC (pending direction confirmation mockups):
-- Placement: top of pages, directly below the navbar. Slim (~34px),
-  hairline borders, subtle gold tint. Never sticky-obstructive: scrolls
-  away with the page (app pages) — final placement confirmed with owner.
-- Motion: text enters at the megaphone side and travels across;
-  pauses are NOT needed; continuous scroll. Owner described: text moves
-  right→left, megaphone at the entry side (right). Classic-anchor
-  variant (megaphone left) also mocked for comparison.
-- Dismiss: an × to close for the session; auto-expires after the
-  configured window (20–30 days per announcement).
+SPEC (LOCKED, owner 14 Sep 2026):
+- Placement: ABOVE the navbar, at the very top of the page (pushes the
+  navbar down). Renders ONLY while an announcement is active — no bar,
+  no space, when there is nothing to say.
+- Motion: text enters at the megaphone and travels right→left
+  (confirmed option A): megaphone badge fixed at the RIGHT end with the
+  "UPDATE" mono label; announcement text emerges beside it and exits at
+  the left edge. Continuous scroll, slim (~34px), never blocks content.
+- Duration: each announcement carries its own window; the V2
+  announcement runs 20–25 days.
+- Dismiss: × closes for the session; the bar returns next visit until
+  the window expires.
 - Content: managed as a simple list of announcements with start/end
   dates; one visible at a time; first two entries:
     PRE:  "KAIZEN V2 IS COMING — the score gets five dimensions ·
@@ -225,5 +232,6 @@ SPEC (pending direction confirmation mockups):
 - First use: can ship on the current site BEFORE V2 lands (it is
   independent of the core loop build).
 
-MOCKUPS: design/mockups/ticker-dark.jpg (primary, both themes:
-ticker-light.jpg; variants: ticker-variants.jpg)
+MOCKUPS: design/mockups/ticker-dark.jpg / ticker-light.jpg (primary);
+ticker-variants.jpg (alternatives, superseded); ticker-above-nav-dark.jpg /
+ticker-above-nav-light.jpg (locked placement).
