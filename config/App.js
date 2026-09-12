@@ -252,6 +252,15 @@ with "you can refine later") → log your first session. The journey steps
 JOIN → PROFILE → RULES → PLAN → LOG made real.
 
 B8. EXPLICITLY NOT IN THIS PHASE
+- The KAIZEN CHART ENGINE (owner's strategic project, 15 Sep 2026): a
+  proprietary TradingView-class engine is a separate infrastructure
+  initiative — FUTURE phase, its own scoped effort after the core loop,
+  auth pages, functional spec, and merge. The loop does not depend on
+  it (the TradingView integration continues to serve). ALL chart-related
+  data (drawings, annotations, session chart images) is stored
+  chart-agnostically so the engine slots in later without migration.
+  A backtest/replay mode is the engine's natural first milestone — it
+  directly serves BACKTEST sessions.
 - XP and the seven levels (Observer → Kaizen Trader) — designed for, built
   after the score engine proves itself.
 - Challenges/seasons engine (arrives in My Progress later).
