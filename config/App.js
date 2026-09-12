@@ -211,13 +211,16 @@ D7. SCORE CONTINUITY — LOCKED (owner, 13 Sep 2026): DUAL TRANSITION, 10 DAYS.
     five dimensions begin building immediately; the V1 number is labeled
     "V1 era" throughout and disappears from the UI on day 11.
 
-D8. PRE-TRADE PLAN DEPTH — DIRECTION LOCKED, LAYOUT PENDING MOCKUP:
-    The Session is FREEFORM-FIRST. The journal entry (free writing) is
-    the heart of the record stage; a few smart quick-checks capture the
-    structured facts a trader might not mention in their writing (followed
-    plan? within entry criteria? respected risk? outcome?). KAIZEN reads
-    both. Mockup: design/mockups/d8c-freeform-journal.jpg — awaiting
-    owner approval.
+D8. SESSION STRUCTURE — LOCKED (owner, 13 Sep 2026): PLAN + FREEFORM RECORD.
+    The full flow ships in V1: a quick pre-trade plan (under a minute:
+    setup, entry condition, invalidation, risk, emotional state +
+    confidence) written BEFORE the trade; then the freeform record with
+    quick checks AFTER it. The freeform journal is the heart of the
+    record; the quick checks capture only what the notes don't mention
+    (followed plan? within entry criteria? respected risk? outcome?).
+    The plan is the reference "followed plan?" is measured against.
+    Approved mockups: d8a-lightweight-plan.jpg (plan stage),
+    d8c-freeform-journal.jpg (record stage).
 
 D9. NAVIGATION — LOCKED (owner, 13 Sep 2026): V2 GROUPED IA.
     The app menu restructures to the B3 groups in this phase.
