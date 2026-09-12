@@ -6,11 +6,15 @@ after the frozen story and structure. Per the protocol:
 Story first → structure second → visual design third → code last.
 
 Direction concept mockups (AI-generated, for DIRECTION only — not pixel
-mockups; final UI is built in code):
-  design/mockups/01-welcome-hero.jpg   — hero with score dial
-  design/mockups/02-score-dial.jpg     — the signature score component
-  design/mockups/03-improvement-loop.jpg — the five-step loop section
-  design/mockups/04-verification.jpg   — Identity & Verification section
+mockups; final UI is built in code). EVERY MOCKUP EXISTS IN BOTH THEMES
+(dark default + light) — a design is not approved until it has been seen
+in both, because the product ships with a theme toggle (frozen 14 Sep
+2026). Contact sheets: dark in the files below, light in
+all-light-theme.jpg.
+  design/mockups/01-welcome-hero.jpg / -light.jpg   — hero with score dial
+  design/mockups/02-score-dial.jpg / -light.jpg     — the signature score component
+  design/mockups/03-improvement-loop.jpg / -light.jpg — the five-step loop section
+  design/mockups/04-verification.jpg / -light.jpg   — Identity & Verification section
 
 
 ================================================================================

@@ -536,6 +536,30 @@ D6. THE 80–90% STAT: Keep the number or soften to "Most retail traders
 
 
 ================================================================================
+CORRECTION — LIGHT THEME COVERAGE (owner, 14 Sep 2026)
+================================================================================
+
+The original audit missed a coverage dimension: KAIZEN ships with a theme
+toggle (dark default, light parity), yet every direction mockup in this
+reset was presented in dark mode only, and this audit never flagged it.
+
+Resolved:
+- Light-mode versions of all mockups now exist alongside the dark ones:
+  01-welcome-hero-light.jpg, 02-score-dial-light.jpg,
+  03-improvement-loop-light.jpg, 04-verification-light.jpg,
+  d8a-lightweight-plan-light.jpg, d8c-freeform-journal-light.jpg,
+  d9a-v2-nav-light.jpg (contact sheet: all-light-theme.jpg).
+- Rule going forward (frozen in config/Design.js): every mockup is
+  produced in BOTH themes. A design approved in one theme is not approved
+  until it is seen in the other.
+- Verified in code: the V2 component CSS is token-driven and light-parity
+  — [data-theme="light"] flips every token; the only component-specific
+  light overrides needed (grid texture, elevated shadow, hover shadow)
+  exist. The live preview can be toggled to light to verify the shipped
+  pages in both themes.
+
+
+================================================================================
 NEXT STEP
 ================================================================================
 
