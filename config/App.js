@@ -181,17 +181,34 @@ B6b. SESSION INTEGRITY LAYER (owner, 14 Sep 2026) — anti-gaming layer 2.
     - NOVELTY GUARD: near-duplicate consecutive entries earn reduced
       reflection-quality credit (deterministic text-similarity check).
       Copy-paste farming scores itself down.
-    - LEARNING REQUIRES MISTAKES: the Learning dimension structurally
-      grows from named-mistake → correction evidence across windows. An
-      "all perfect" logger caps their own Learning score. To grow it, a
-      farmer must fabricate mistakes — and then fabricate their
-      correction arcs, consistently, across every timespan, without
-      contradicting their own records. The cost of coherent fabrication
-      exceeds the cost of honest trading.
-    - VARIANCE CHECK: zero-variance patterns (identical compliance,
-      emotion, outcome across 10–20 sessions) flag "low signal
-      diversity" — dimensions display reduced confidence. Not a
-      punishment; a visible honesty state.
+    - LEARNING & CONSISTENCY — THREE STATES (recalibrated, owner 15 Sep
+      2026): Learning measures GROWTH EVIDENCE with multiple legitimate
+      paths, not just mistakes:
+        (1) CORRECTING — a named mistake, later corrected (strongest)
+        (2) PRACTICING — substantive reflections, maintained planning,
+            and Trading System refinements (a version bump IS learning
+            made visible)
+        (3) MAINTAINING — sustained high adherence across long windows
+      A perfect streak is never suspicious behavior; it is the
+      MAINTAINING state — a good state, fully scoreable. Nobody is ever
+      required to make mistakes. What remains hard for a farmer: growth
+      evidence of any kind requires rich, coherent, evolving records —
+      fabricating correction arcs OR fabricated "practice depth" both
+      require sustained coherent writing across every timespan.
+    - VARIANCE CHECK — RECALIBRATED (owner 15 Sep 2026): guards key on
+      FABRICATION SIGNATURES only: near-duplicate text, cadence
+      violations, impossible uniformity of DATA (identical notes,
+      emotions, lengths, setups), and plan/record contradictions.
+      HIGH COMPLIANCE IS NEVER A FLAG. Genuine data uniformity (rare,
+      not impossible) yields a temporary "verifying — keep logging"
+      state on MILESTONE/REPUTATION credit only — never lower dimension
+      scores — and clears as the record regains texture.
+    - EXCELLENCE IS THE PRODUCT: weeks or months of disciplined sessions
+      produce exactly what the system exists to celebrate — strong
+      Process/Risk/Execution dimensions and milestone/credential
+      material (e.g. the Process Credential, ≥90% adherence over a
+      defined period). Streaks, milestones, and the Maintaining state
+      are how the platform says so.
     - COMPLETION GATING: session-count milestones count COMPLETE
       sessions (plan-or-honest-skip + record + reflect), never raw
       entries.

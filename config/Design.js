@@ -156,6 +156,28 @@ RULES OF USE:
 - Green/Red: only as data deltas (e.g. "Friday compliance −18%").
 - Never two accent colors in the same component unless one is semantic data.
 
+GOLD TEXT RULE (owner, 15 Sep 2026 — both themes, frozen):
+Gold text belongs to the BRAND and to DATA. Everything else speaks in
+the page's reading color.
+
+GOLD TEXT (dark: #C9A84C · light: #B8960C):
+- The logo mark and wordmark (改 KAIZEN — navbar, footer, anywhere)
+- The word "KAIZEN" inside titles ("About KAIZEN") — one accent word max
+- Eyebrows / section kickers / group labels (mono, tracked)
+- The kanji 改 badge and 改-prefixed engine labels
+- Instrument values: dial numbers, meter fills, metric figures
+- Active nav item, hover accents, links on hover
+
+READING COLOR (dark: #F5F3EF · light: near-black #1B1B1B):
+- Headlines (except the single accent word), all body copy,
+  descriptions, form inputs, table text, legal text
+
+NEVER GOLD: paragraphs, full sentences, buttons' body labels except
+primary actions. If a sentence is gold, it is wrong.
+Rationale: gold = brand + data + accent; black/white = language.
+The existing pages and mockups already follow this; it is now a frozen
+rule so it can never drift.
+
 
 ================================================================================
 5. DEPTH & TEXTURE SYSTEM
