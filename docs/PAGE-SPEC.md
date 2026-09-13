@@ -43,6 +43,14 @@ treatment specified here) · 🔨 REBUILD (page must be rebuilt to the spec belo
    key on fabrication signatures only (duplicate text, cadence violations, data
    uniformity), and uniformity gates milestone/reputation credit — never scores.
 8. **prefers-reduced-motion**: all animations degrade to static/instant.
+9. **The armor is invisible** (owner decision, 13 Sep 2026): user-facing copy
+   NEVER describes the integrity layer's detection mechanics — no anti-gaming
+   talk, no mention of novelty/cadence/uniformity checks, no "this can't be
+   gamed" claims in onboarding, explainers, or marketing. Honest users don't
+   need the warning; would-be farmers don't get a roadmap. The layer is visible
+   only in its effects — honest labels on the user's own flagged content. The
+   Terms of Service keeps only the legal prohibition and consequence, without
+   the signal list.
 
 ---
 
@@ -116,6 +124,12 @@ Cockpit" from the Trading System editor; nav → Improve → Cockpit.
 - Cutover explainer — first visit after engine ships (`user.scoreCutoverShownAt`
   null): modal "Your Discipline Score is now your KAIZEN Score" — five dimensions,
   WHY, Building honesty, the loop. Sets the flag server-side on render.
+- New-user intro (D1 — PENDING BUILD): one-time "How your KAIZEN Score works"
+  modal for accounts created after V2 (no V1 history): five dimensions, WHY,
+  Building honesty. **No anti-gaming mention** (global rule 9).
+- Pending build item: `/about#kaizen-score` — the "How is this scored?" section
+  does not exist yet (the Cockpit links to it). Add it in the same pass as D1,
+  rule 9 compliant.
 
 **Rules.** Gold: score, meter fills, dimension labels, streak number, links.
 Everything else reading color. Light-theme parity via CSS variables. Meters
@@ -374,7 +388,9 @@ Nothing about the user's mind is inferred silently and kept from them.
 2. **No psychology score.** The V1 "psychology score contribution" is retired.
 3. **Psych threads never count as sessions** — no streak, no session milestones,
    no reputation, nothing to farm. There is nothing to win here; that's the point.
-   *(First-conversation milestone: see open question Q3.)*
+   Zero gamification (owner decision D3): the V1 `psych_first` badge and the
+   `psychSessions` stat are removed in this rebuild — no badge, no count, no
+   scoreboard anywhere in the psychology space.
 4. **Privacy.** Psych threads + MindState are the most sensitive data in the
    product: private by default; never on public profiles, leaderboard,
    reputation, or any shared surface; excluded from exports unless the user
@@ -591,23 +607,31 @@ V2. `/about#kaizen-score` carries the public "How is this scored?" explanation
 
 ---
 
-# 9. OPEN QUESTIONS FOR THE OWNER
+# 9. OWNER DECISIONS
 
-- **Q1 — cutover modal for brand-new users:** currently the modal explains the
-  Discipline→KAIZEN transition (only meaningful to users with V1 history). Fresh
-  accounts never see it. Confirm: correct, or should fresh users get a one-time
-  "how the score works" intro instead?
-- **Q2 — MindState reset:** user can correct entries; should they also be able to
-  wipe the whole profile (KAIZEN "forgets" everything psychological)? Given
-  never-delete applies to trading evidence, psychology may ethically differ.
-- **Q3 — psychology milestone:** keep `psych_first` (first conversation) as a
-  practice milestone, or remove all gamification from the psychology surface?
-- **Q4 — build order for the rebuilds:** Psychology is the flagship of this
-  vision. Proposed order: Psychology rebuild → KAIZEN AI (shares the chat
-  infrastructure) → My Progress → Weekly Report rewire. Confirm or reorder.
+- **D1 — New-user intro: YES, without the armor** *(decided 13 Sep 2026)*.
+  Brand-new users (no V1 history) get a one-time "How your KAIZEN Score works"
+  intro: the five dimensions, WHY, the Building honesty. It does NOT mention
+  that the system can't be gamed — the owner's call, and the right one:
+  advertising the armor teaches attackers what to avoid, and reads as an
+  accusation to honest users. See global rule 9. Pending build (Cockpit modal
+  + the `/about#kaizen-score` section).
+- **D2 — MindState reset: OPEN.** Options elaborated for the owner: correct-only
+  / reset / full delete / both controls + export. Awaiting the decision — it
+  shapes the Psychology data model (the forget/export controls are part of the
+  page), so the Psychology rebuild starts after this is settled.
+- **D3 — Psychology gamification: ZERO** *(decided 13 Sep 2026)*. No badges, no
+  counts, no scoreboard in the psychology space — the one room with nothing to
+  earn. The V1 `psych_first` badge and `psychSessions` stat are removed in the
+  Psychology rebuild.
+- **D4 — Build order** *(decided 13 Sep 2026)*: **Psychology → KAIZEN AI →
+  My Progress → Weekly Report.** Psychology is next (flagship vision); KAIZEN AI
+  follows immediately (shares the chat machinery); then My Progress; then the
+  Weekly Report rewire.
 
 ---
 
 *Spec status: complete for all surfaces. Psychology §3.1 is the owner's 13 Sep
-2026 vision, specced for build. Nothing merges to `main` until the owner's final
-review.*
+2026 vision, specced for build. D1/D3/D4 decided (above); D2 open. Terms of
+Service signal-list trimmed per rule 9. Nothing merges to `main` until the
+owner's final review.*
