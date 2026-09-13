@@ -366,9 +366,12 @@ After each exchange, KAIZEN updates one compact, private profile per user:
 - `helps[]` — what has actually worked in past conversations.
 
 **Transparency (non-negotiable):** the profile is user-visible — a "What KAIZEN
-understands about me" surface on the page. The user can correct any entry.
-Nothing about the user's mind is inferred silently and kept from them.
-*(Reset policy: see open question Q2.)*
+understands about me" surface on the page, read-only. Nothing about the user's
+mind is inferred silently and kept from them. Corrections happen through
+conversation: the user says "that's not me anymore" and KAIZEN updates its own
+understanding (D2 — the memory is permanent and self-maintaining; nothing is
+deletable, by design, so the reference survives for when patterns repeat months
+later).
 
 ### 3.1.4 Connection to the loop — the payoff
 
@@ -402,13 +405,21 @@ Nothing about the user's mind is inferred silently and kept from them.
 
 ### 3.1.6 Data model
 
-- `PsychThread { userId, title, createdAt, lastMessageAt, archived, messages:
+- `PsychThread { userId, title, createdAt, lastMessageAt, messages:
   [{ role: 'user'|'kaizen', text, createdAt }] }` — embedded messages to start
-  (split to `PsychMessage` collection only if scale demands).
-- `MindState { userId, updatedAt, summary, themes[], triggers[], helps[] }` —
-  one per user, private, user-correctable.
-- **Migration:** existing `Memory{type:'psychology'}` docs seed one "early
-  conversations" thread per user (read-only archive), so no history is lost.
+  (split to `PsychMessage` collection only if scale demands). **Never deletable**
+  (D2) — no delete routes exist.
+- `MindState { userId, updatedAt, summary, themes[], triggers[], helps[],
+  summaryHistory[] }` — one per user, private, **read-only to the user and
+  self-maintaining** (D2): themes carry `{ name, note, status:
+  active|improving|resolved, firstSeen, lastSeen, occurrences }` so improvement
+  is recorded as it happens and the before-picture survives as reference.
+  KAIZEN updates it after every exchange (parsed from the response contract,
+  mirroring aiCoach's EXTRACTED-tail pattern); a deterministic updater serves
+  fallback mode.
+- **Migration:** existing `Memory{type:'psychology'}` docs seed one "Early
+  conversations" thread per user (continuable — everything remains, per D2), so
+  no history is lost.
 
 ### 3.1.7 Routes
 
@@ -616,10 +627,14 @@ V2. `/about#kaizen-score` carries the public "How is this scored?" explanation
   advertising the armor teaches attackers what to avoid, and reads as an
   accusation to honest users. See global rule 9. Pending build (Cockpit modal
   + the `/about#kaizen-score` section).
-- **D2 — MindState reset: OPEN.** Options elaborated for the owner: correct-only
-  / reset / full delete / both controls + export. Awaiting the decision — it
-  shapes the Psychology data model (the forget/export controls are part of the
-  page), so the Psychology rebuild starts after this is settled.
+- **D2 — KAIZEN's memory is permanent and self-maintaining** *(decided 13 Sep
+  2026)*. Nothing psychological is deletable — conversations and the MindState
+  stay forever as longitudinal reference, so when a pattern repeats months later
+  KAIZEN recognizes it. The user never edits or updates the profile: KAIZEN
+  updates its own understanding after every exchange, recording improvement as
+  it happens (themes evolve active → improving → resolved, with first/last
+  seen). Correction happens through conversation, not an edit UI. The profile
+  remains user-visible (read-only) — transparency is the product's soul.
 - **D3 — Psychology gamification: ZERO** *(decided 13 Sep 2026)*. No badges, no
   counts, no scoreboard in the psychology space — the one room with nothing to
   earn. The V1 `psych_first` badge and `psychSessions` stat are removed in the
@@ -632,6 +647,6 @@ V2. `/about#kaizen-score` carries the public "How is this scored?" explanation
 ---
 
 *Spec status: complete for all surfaces. Psychology §3.1 is the owner's 13 Sep
-2026 vision, specced for build. D1/D3/D4 decided (above); D2 open. Terms of
-Service signal-list trimmed per rule 9. Nothing merges to `main` until the
-owner's final review.*
+2026 vision, specced for build. All four owner decisions locked (D1–D4 above).
+Terms of Service signal-list trimmed per rule 9. Nothing merges to `main` until
+the owner's final review.*
