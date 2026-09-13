@@ -1,59 +1,41 @@
-/* KAIZEN V2 reveal system — config/Design.js §9.
-   No libraries. One IntersectionObserver + CSS transitions.
-   - Adds .k-anim to <html> (enables hidden reveal states; no-JS users
-     see everything immediately).
-   - [data-reveal] elements fade up once when scrolled into view.
-   - .k-dial arcs and .k-meter fills animate to their data-value when
-     their container reveals.
-   Honors prefers-reduced-motion: instruments render final state,
-     transitions are disabled in CSS. */
+/**
+ * KAIZEN V2 — reveal animations.
+ * Animates instrument fills (k-meter, k-milestone-fill) from their
+ * data-meter attributes once they scroll into view. Respects
+ * prefers-reduced-motion: fills render instantly, no animation.
+ */
 (function () {
   'use strict';
 
-  var reduce = window.matchMedia &&
-    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var reduced = window.matchMedia
+    && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  function setDial(d) {
-    var v = parseFloat(d.getAttribute('data-dial'));
+  function fill(el) {
+    var v = parseFloat(el.getAttribute('data-meter'));
     if (isNaN(v)) v = 0;
-    v = Math.max(0, Math.min(100, v));
-    var arc = d.querySelector('.k-dial-arc');
-    if (arc) arc.style.strokeDashoffset = (339.292 * (1 - v / 100)).toFixed(2);
+    el.style.width = Math.max(0, Math.min(100, v)) + '%';
   }
 
-  function setMeter(m) {
-    var v = parseFloat(m.getAttribute('data-meter'));
-    if (isNaN(v)) v = 0;
-    v = Math.max(0, Math.min(100, v));
-    var fill = m.querySelector('.k-meter-fill');
-    if (fill) fill.style.width = v + '%';
+  function reveal() {
+    var els = document.querySelectorAll('.k-meter[data-meter], .k-milestone-fill[data-meter]');
+    if (reduced || !('IntersectionObserver' in window)) {
+      els.forEach(fill);
+      return;
+    }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) {
+          fill(e.target);
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.4 });
+    els.forEach(function (el) { io.observe(el); });
   }
 
-  function arm(scope) {
-    scope.querySelectorAll('.k-dial').forEach(setDial);
-    scope.querySelectorAll('.k-meter').forEach(setMeter);
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', reveal);
+  } else {
+    reveal();
   }
-
-  document.documentElement.classList.add('k-anim');
-
-  if (reduce || !('IntersectionObserver' in window)) {
-    document.querySelectorAll('[data-reveal]').forEach(function (el) {
-      el.classList.add('is-in');
-    });
-    arm(document);
-    return;
-  }
-
-  var io = new IntersectionObserver(function (entries) {
-    entries.forEach(function (e) {
-      if (!e.isIntersecting) return;
-      e.target.classList.add('is-in');
-      arm(e.target);
-      io.unobserve(e.target);
-    });
-  }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
-
-  document.querySelectorAll('[data-reveal]').forEach(function (el) {
-    io.observe(el);
-  });
 })();

@@ -11,30 +11,46 @@
   </div>
 
   <% if (user) { %>
-    <!-- NAVIGATION SECTION -->
+    <!-- IMPROVE -->
     <div class="popup-section">
-      <div class="popup-section-label">Navigation</div>
-      <a href="/dashboard" class="popup-item">▪ Dashboard</a>
-      <a href="/chart" class="popup-item">▪ Chart</a>
+      <div class="popup-section-label">Improve</div>
+      <a href="/dashboard" class="popup-item">▪ Cockpit</a>
       <a href="/dashboard/sessions" class="popup-item">▪ Sessions</a>
-      <a href="/kaizen-ai" class="popup-item">▪ Kaizen AI</a>
-      <a href="/psychology" class="popup-item">▪ Psychology Session</a>
-      <a href="/memories" class="popup-item">▪ Memories</a>
-      <a href="/za/bounties" class="popup-item">▪ Bounties</a>
-      <a href="/za/reputation/<%= user.id %>" class="popup-item">▪ Reputation</a>
-      <a href="/news" class="popup-item">▪ Market News</a>
-      <a href="/weekly-summary" class="popup-item">▪ Weekly Report</a>
-      <a href="/leaderboard" class="popup-item">▪ Leaderboard</a>
+      <a href="/leaderboard" class="popup-item">▪ My Progress</a>
     </div>
 
-    <!-- SETTINGS SECTION -->
+    <!-- COACH -->
+    <div class="popup-section">
+      <div class="popup-section-label">Coach</div>
+      <a href="/kaizen-ai" class="popup-item">▪ KAIZEN AI</a>
+      <a href="/psychology" class="popup-item">▪ Psychology</a>
+      <a href="/memories" class="popup-item">▪ Memories</a>
+    </div>
+
+    <!-- TOOLS -->
+    <div class="popup-section">
+      <div class="popup-section-label">Tools</div>
+      <a href="/chart" class="popup-item">▪ Chart</a>
+      <a href="/weekly-summary" class="popup-item">▪ Weekly Report</a>
+      <a href="/news" class="popup-item">▪ Market News</a>
+    </div>
+
+    <!-- IDENTITY -->
+    <div class="popup-section">
+      <div class="popup-section-label">Identity</div>
+      <a href="/za/reputation/<%= user.id %>" class="popup-item">▪ Wallets &amp; Verification</a>
+    </div>
+
+    <!-- SETTINGS -->
     <div class="popup-section">
       <div class="popup-section-label">Settings</div>
-<a href="/settings/trading-style" class="popup-item">▪ Update Trading Style</a>
-      
+      <a href="/settings/trading-system" class="popup-item">▪ My Trading System</a>
+      <button class="popup-item" onclick="toggleTheme()">
+        <span class="popup-item-icon">▪</span> Dark / Light Mode
+      </button>
     </div>
 
-    <!-- INFO SECTION -->
+    <!-- INFO -->
     <div class="popup-section">
       <div class="popup-section-label">Info</div>
       <a href="/support" class="popup-item">
@@ -46,11 +62,10 @@
       <a href="/services" class="popup-item">
         <span class="popup-item-icon">▪</span> Services
       </a>
+      <a href="/help" class="popup-item">
+        <span class="popup-item-icon">▪</span> Help Center
+      </a>
     </div>
-
-    <a href="/help" class="popup-item">
-      <span class="popup-item-icon">▪</span> Help Center
-    </a>
 
     <div class="popup-section">
       <a href="/auth/logout" class="popup-item" style="color:var(--red);">
@@ -90,7 +105,6 @@
     </div>
     <div class="popup-section">
      <div class="popup-section-label">Settings</div>
-     
      <button class="popup-item" onclick="toggleTheme()">
        <span class="popup-item-icon">▪</span> Dark / Light Mode
      </button>
@@ -104,32 +118,16 @@
       <a href="/services" class="popup-item">
         <span class="popup-item-icon">▪</span> Services
       </a>
-
       <a href="/help" class="popup-item">
         <span class="popup-item-icon">▪</span> Help Center
       </a>
-
-      <a href="/support" class="popup-item">
-        <span class="popup-item-icon">▪</span> Support
-      </a>
-    </div>
-
-    <div class="popup-footer">
-      <div class="popup-socials">
-        <a href="https://x.com/kaizenaibot"
-          target="_blank" class="popup-social-link" title="X (Twitter)">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
-          </svg>
-        </a>
-      </div>
     </div>
   <% } %>
 </div>
 
 <!-- MAIN NAVBAR -->
 <nav class="navbar">
-  <a href="/" class="nav-logo">改 KAIZEN</a>
+  <a href="/dashboard" class="nav-logo">改 KAIZEN</a>
   <div class="nav-right">
     <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
       <span id="themeIcon">◐</span>
@@ -139,7 +137,6 @@
     </button>
   </div>
 </nav>
-<!-- The popup menu selections - update navigation links -->
 
 <!-- SECURITY MODAL -->
 <div class="modal-overlay" id="securityModal">
@@ -156,17 +153,17 @@
           <div class="form-group">
             <label class="form-label">Current Password</label>
             <input type="password" name="currentPassword"
-              class="form-input" placeholder="Enter current password">
+              class="form-input" placeholder="Enter current Password">
           </div>
           <div class="form-group">
             <label class="form-label">New Password</label>
             <input type="password" name="newPassword"
-              class="form-input" placeholder="Enter new password">
+              class="form-input" placeholder="Enter New Password">
           </div>
           <div class="form-group">
-            <label class="form-label">Confirm New Password</label>
+            <label class="form-label">Confirm Password</label>
             <input type="password" name="confirmPassword"
-              class="form-input" placeholder="Confirm new password">
+              class="form-input" placeholder="Confirm New Password">
           </div>
           <button type="submit" class="btn-primary">Update Password</button>
         </form>

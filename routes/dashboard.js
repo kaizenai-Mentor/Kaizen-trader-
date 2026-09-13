@@ -15,6 +15,7 @@ const upload = multer({
 });
 
 router.get('/', protect, dashboardController.getDashboard);
+router.post('/cutover-ack', protect, dashboardController.ackCutover);
 
 // ── V2 SESSIONS (core loop): plan → record → reflect → detail ──
 router.get('/sessions', protect, sessionsController.getSessions);

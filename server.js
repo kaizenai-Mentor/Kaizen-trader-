@@ -174,48 +174,20 @@ app.get('/auth/google/callback',
   }
 );
 
-// Trading style update
-app.get('/settings/trading-style', (req, res) => {
+// Trading system (V2) — versioned rules editor
+const systemController = require('./controllers/systemController');
+app.get('/settings/trading-system', (req, res) => {
   if (!req.session.user) return res.redirect('/auth/login');
-  res.render('trading-style', { user: req.session.user, success: null });
+  systemController.getSystem(req, res);
+});
+app.post('/settings/trading-system', (req, res) => {
+  if (!req.session.user) return res.redirect('/auth/login');
+  systemController.postSystem(req, res);
 });
 
-app.post('/settings/trading-style', async (req, res) => {
-  if (!req.session.user) return res.redirect('/auth/login');
-  try {
-    const User = require('./models/User');
-    const {
-      riskPerTrade, dailyDrawdown, tradingEdge,
-      entryRule, stopLossRule, takeProfitRule,
-      emotionalTriggers, maxDailyTrades,
-      markets, maxPositionSize
-    } = req.body;
-
-    // Save old style as history
-    const user = await User.findById(req.session.user.id);
-    const oldStyle = { ...user.tradingStyle, savedAt: new Date() };
-
-    await User.findByIdAndUpdate(req.session.user.id, {
-      tradingStyle: {
-        riskPerTrade, dailyDrawdown, tradingEdge,
-        entryRule, stopLossRule, takeProfitRule,
-        emotionalTriggers, maxDailyTrades,
-        markets, maxPositionSize
-      },
-      $push: {
-        tradingStyleHistory: oldStyle
-      }
-    });
-
-    res.render('trading-style', {
-      user: { ...req.session.user },
-      success: 'Trading style updated. KAIZEN AI will use your new rules from the next session.'
-    });
-  } catch(err) {
-    console.error('Trading style update error:', err.message);
-    res.redirect('/dashboard');
-  }
-});
+// Legacy V1 route → V2 editor
+app.get('/settings/trading-style', (req, res) => res.redirect('/settings/trading-system'));
+app.post('/settings/trading-style', (req, res) => res.redirect(307, '/settings/trading-system'));
 
 // Routes
 const authRoutes = require('./routes/auth');
