@@ -2780,3 +2780,88 @@ html.k-anim [data-reveal].is-in {
 @media (prefers-reduced-motion: reduce) {
   .k-ticker-text { animation: none; padding-left: 24px; }
 }
+
+/* ══════════════════════════════════════════════════════════════
+   V2 SESSION FLOW (sessions / plan / record / reflect / detail)
+   Promoted from the preview companions (config/AppDesign.js).
+   ══════════════════════════════════════════════════════════════ */
+.k-flow { max-width: 680px; margin: 0 auto; padding: 36px 24px 80px; }
+.k-stepstrip {
+  display: flex; align-items: center; gap: 10px;
+  font-family: var(--font-mono); font-size: 0.62rem;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--text-faint); margin-bottom: 28px;
+}
+.k-stepstrip .is-active { color: var(--gold); }
+.k-stepstrip .is-done { color: var(--gold); opacity: 0.75; }
+.k-stepstrip b { color: var(--text-faint); font-weight: 400; }
+.k-formcard { padding: 24px; margin-bottom: 0; }
+.k-prompt { margin-bottom: 14px; }
+.k-field { margin-bottom: 16px; }
+.k-field:last-child { margin-bottom: 0; }
+.k-fieldlabel {
+  display: block; font-family: var(--font-mono); font-size: 0.58rem;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--text-secondary); margin-bottom: 8px;
+}
+.k-input {
+  width: 100%; background: var(--input-bg); border: 1px solid var(--border);
+  color: var(--text-primary); font-family: var(--font-body);
+  font-size: 0.9rem; line-height: 1.7; padding: 12px; resize: vertical;
+}
+.k-input:focus { outline: none; border-color: var(--gold-border); }
+select.k-input { cursor: pointer; }
+.k-fieldhint { font-size: 0.72rem; color: var(--ash); line-height: 1.6; margin-top: 6px; }
+.k-actions { display: flex; align-items: center; gap: 16px; margin-top: 22px; flex-wrap: wrap; }
+.k-chiprow { display: flex; gap: 8px; flex-wrap: wrap; }
+.k-emochip input { display: none; }
+.k-emochip span {
+  display: inline-block; padding: 8px 14px; border: 1px solid var(--border);
+  font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.1em;
+  color: var(--text-secondary); cursor: pointer; transition: all 150ms ease-out;
+}
+.k-emochip input:checked + span {
+  border-color: var(--gold-border); color: var(--gold); background: var(--gold-pale);
+}
+.k-slider { width: 100%; accent-color: var(--gold); }
+.k-checkrow {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.k-checkrow:last-of-type { border-bottom: none; }
+.k-checklabel { font-size: 0.88rem; color: var(--text-primary); }
+.k-checkopts { display: flex; gap: 6px; flex-wrap: wrap; }
+.k-opt input { display: none; }
+.k-opt span {
+  display: inline-block; padding: 7px 13px; border: 1px solid var(--border);
+  font-family: var(--font-mono); font-size: 0.58rem; letter-spacing: 0.12em;
+  color: var(--text-secondary); cursor: pointer; transition: all 150ms ease-out;
+}
+.k-opt input:checked + span {
+  border-color: var(--gold-border); color: var(--gold); background: var(--gold-pale);
+}
+.k-typecard {
+  display: block; border: 1px solid var(--border); padding: 16px;
+  text-decoration: none; transition: all 150ms ease-out; background: var(--bg-card);
+}
+.k-typecard:hover { border-color: var(--border-strong); }
+.k-typecard.is-active { border-color: var(--gold-border); background: var(--gold-pale); }
+.k-typecard-name {
+  font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.16em;
+  color: var(--text-primary); margin-bottom: 6px;
+}
+.k-typecard.is-active .k-typecard-name { color: var(--gold); }
+.k-typecard-desc { font-size: 0.72rem; color: var(--text-secondary); line-height: 1.5; }
+.k-type-tag {
+  font-family: var(--font-mono); font-size: 0.5rem; letter-spacing: 0.12em;
+  padding: 3px 7px; border: 1px solid var(--border); color: var(--ash);
+}
+.k-type-tag--live { border-color: var(--gold-border); color: var(--gold); }
+.k-type-tag--backtest { border-color: var(--blue-border); color: var(--blue); }
+.k-type-tag--study { border-color: var(--border-strong); color: var(--text-secondary); }
+.k-detail-grid { display: grid; grid-template-columns: 1.25fr 0.75fr; gap: 14px; align-items: start; }
+@media (max-width: 800px) {
+  .k-detail-grid { grid-template-columns: 1fr; }
+  .k-flow { padding: 24px 16px 60px; }
+}

@@ -83,6 +83,10 @@ const UserSchema = new mongoose.Schema({
     type: Date,
     default: null
   },
+  v1Evidence: {
+    type: mongoose.Schema.Types.Mixed,
+    default: null
+  },
   scoreCutoverShownAt: {
     type: Date,
     default: null
