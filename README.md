@@ -70,6 +70,10 @@ The V2 rebuild is specified in-repo, in order:
 - `config/App.js` / `config/AppAudit.js` / `config/AppCopy.js` /
   `config/AppDesign.js` / `config/CoreLoop.js` — the in-app core loop:
   frozen definition, audit, copy, design, walkthrough
+- `docs/PAGE-SPEC.md` — the detailed per-page functional spec (every
+  surface: purpose, states, logic, rules, acceptance criteria; includes
+  the Psychology rebuild vision — the ChatGPT-style conversation surface
+  where KAIZEN learns the trader's psychological state)
 - `design/mockups/` — direction mockups (every design in both themes)
 
 ## Tech Stack
