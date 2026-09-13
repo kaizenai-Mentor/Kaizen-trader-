@@ -74,6 +74,19 @@ const UserSchema = new mongoose.Schema({
     type: Date,
     default: null
   },
+  // ── V2 fields (additive; config/App.js B6 transition mechanics) ──
+  v1CutoverAt: {
+    type: Date,
+    default: null
+  },
+  v1ExtractedAt: {
+    type: Date,
+    default: null
+  },
+  scoreCutoverShownAt: {
+    type: Date,
+    default: null
+  },
   zaUserId: {
     type: String,
     default: ''

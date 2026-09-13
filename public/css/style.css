@@ -2703,3 +2703,80 @@ html.k-anim [data-reveal].is-in {
   .k-final-cta { padding: 48px 24px; }
   .k-feat-card { flex-direction: column; }
 }
+
+/* ══════════════════════════════════════════════════════════════
+   SITE-WIDE ANNOUNCEMENT TICKER (config/CoreLoop.js Part 3)
+   Above the navbar. Renders only when an announcement is active.
+   Megaphone right = the side text enters from; text travels R→L.
+   ══════════════════════════════════════════════════════════════ */
+.k-ticker {
+  display: flex;
+  align-items: stretch;
+  border-bottom: 1px solid var(--gold-border);
+  background: var(--gold-pale);
+  height: 34px;
+  font-family: var(--font-mono);
+  position: relative;
+  z-index: 200;
+}
+.k-ticker-close {
+  width: 34px;
+  min-width: 34px;
+  border: none;
+  border-right: 1px solid var(--border);
+  background: transparent;
+  color: var(--ash);
+  cursor: pointer;
+  font-size: 0.9rem;
+  line-height: 1;
+}
+.k-ticker-close:hover { color: var(--gold); }
+.k-ticker-track {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  mask-image: linear-gradient(90deg, transparent 0, black 4%, black 88%, transparent 100%);
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, black 4%, black 88%, transparent 100%);
+}
+.k-ticker-text {
+  display: inline-block;
+  white-space: nowrap;
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  padding-left: 100%;
+  animation: k-ticker-scroll 38s linear infinite;
+}
+.k-ticker-text b { color: var(--gold); font-weight: 500; }
+@keyframes k-ticker-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-100%); }
+}
+.k-ticker-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 14px;
+  border-left: 1px solid var(--gold-border);
+  color: var(--gold);
+  background: var(--gold-pale);
+}
+.k-ticker-megaphone {
+  width: 20px;
+  height: 20px;
+  border: 1px solid var(--gold-border);
+  background: var(--bg-card);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.k-ticker-badge span {
+  font-size: 0.55rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+@media (prefers-reduced-motion: reduce) {
+  .k-ticker-text { animation: none; padding-left: 24px; }
+}

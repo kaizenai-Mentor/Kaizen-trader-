@@ -123,6 +123,17 @@ app.use((req, res, next) => {
   next();
 });
 
+// Site-wide announcement ticker (V2): one cached lookup, never blocks
+// a page — silently absent when there is no announcement or no DB.
+app.use(async (req, res, next) => {
+  try {
+    res.locals.announcement = await require('./services/announcements').getActiveAnnouncement();
+  } catch (e) {
+    res.locals.announcement = null;
+  }
+  next();
+});
+
 // Google Auth Routes
 app.get('/auth/google',
   passport.authenticate('google', { scope: ['profile', 'email'] })
