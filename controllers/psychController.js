@@ -49,7 +49,7 @@ function openersFor(sessions, mindState) {
 async function seedFromMemories(userId) {
   try {
     const Memory = require('../models/Memory');
-    const existing = await PsychThread.countDocuments({ userId });
+    const existing = await PsychThread.countDocuments({ userId, kind: 'psychology' });
     if (existing > 0) return;
     const docs = await Memory.find({
       userId,
@@ -81,7 +81,7 @@ async function getIndex(req, res) {
     const userId = req.session.user.id;
     await seedFromMemories(userId);
     const [threads, mindState] = await Promise.all([
-      PsychThread.find({ userId }).sort({ lastMessageAt: -1 }).limit(30).lean(),
+      PsychThread.find({ userId, kind: 'psychology' }).sort({ lastMessageAt: -1 }).limit(30).lean(),
       MindState.ensureForUser(userId)
     ]);
     const { sessions } = await loadContext(userId);
@@ -105,7 +105,7 @@ async function getIndex(req, res) {
 async function getThread(req, res) {
   try {
     const thread = await PsychThread.findOne({
-      _id: req.params.id, userId: req.session.user.id
+      _id: req.params.id, userId: req.session.user.id, kind: 'psychology'
     }).lean();
     if (!thread) return res.redirect('/psychology');
     const mindState = await MindState.ensureForUser(req.session.user.id);
@@ -133,11 +133,11 @@ async function postAsk(req, res) {
     // Find or create the thread
     let thread = null;
     if (req.body.threadId) {
-      thread = await PsychThread.findOne({ _id: req.body.threadId, userId });
+      thread = await PsychThread.findOne({ _id: req.body.threadId, userId, kind: 'psychology' });
       if (!thread) return res.status(404).json({ error: 'Conversation not found.' });
     } else {
       thread = await PsychThread.create({
-        userId,
+        userId, kind: 'psychology',
         title: message.split(/\s+/).slice(0, 7).join(' ').slice(0, 60) || 'Conversation',
         messages: [], messageCount: 0
       });
@@ -162,6 +162,18 @@ async function postAsk(req, res) {
     if (psychState) {
       psychCoach.applyPsychState(mindState, psychState);
       await mindState.save();
+    }
+
+    // Archive write-through so Memories stays the complete record.
+    try {
+      const Memory = require('../models/Memory');
+      await Memory.create({
+        userId, type: 'psychology',
+        sessionData: message.substring(0, 300),
+        response: reply, asset: 'Psychology', sessionScore: 0
+      });
+    } catch (memErr) {
+      console.error('Psychology archive error:', memErr.message);
     }
 
     res.json({

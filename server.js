@@ -317,17 +317,19 @@ app.get('/trader/:username', async (req, res) => {
 });
 
 // Kaizen AI page
+// KAIZEN AI — the trading-side conversation (V2, spec §3.2)
+const kaizenAiController = require('./controllers/kaizenAiController');
 app.get('/kaizen-ai', (req, res) => {
   if (!req.session.user) return res.redirect('/auth/login');
-  const aiResponse = req.session.aiResponse || null;
-  // Clear after reading
-  if (req.session.aiResponse) {
-    delete req.session.aiResponse;
-  }
-  res.render('kaizen-ai', {
-    user: req.session.user,
-    aiResponse: aiResponse
-  });
+  kaizenAiController.getIndex(req, res);
+});
+app.get('/kaizen-ai/t/:id', (req, res) => {
+  if (!req.session.user) return res.redirect('/auth/login');
+  kaizenAiController.getThread(req, res);
+});
+app.post('/kaizen-ai/ask', (req, res) => {
+  if (!req.session.user) return res.status(401).json({ error: 'Not logged in.' });
+  kaizenAiController.postAsk(req, res);
 });
 
 // Psychology — the conversation surface (V2, spec §3.1)

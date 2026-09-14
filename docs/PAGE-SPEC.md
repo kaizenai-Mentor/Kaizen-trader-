@@ -64,8 +64,8 @@ treatment specified here) · 🔨 REBUILD (page must be rebuilt to the spec belo
 | My Trading System | `/settings/trading-system` | ✅ LIVE | M3 (`91663e0`) |
 | Login | `/auth/login` | ✅ LIVE (restyle) | Auth (`67569df`) |
 | Register / Onboarding | `/auth/register` | ✅ LIVE (rebuild) | Auth (`67569df`) |
-| **Psychology** | `/psychology` | 🔨 **REBUILD** | new vision, this doc §3.1 |
-| KAIZEN AI | `/kaizen-ai` | 🔨 REBUILD (threaded) | this doc §3.2 |
+| **Psychology** | `/psychology` | ✅ LIVE (rebuilt) | `69a732d` |
+| KAIZEN AI | `/kaizen-ai` | ✅ LIVE (rebuilt) | see git log (§3.2) |
 | Memories | `/memories` | 🔁 CARRIED → restyle | this doc §3.3 |
 | My Progress | `/leaderboard` | 🔁 CARRIED → rebuild | this doc §2.8 |
 | Weekly Report | `/weekly-summary` | 🔁 CARRIED → rewire | this doc §4.2 |
@@ -302,7 +302,7 @@ users); region separation visually unmistakable; mobile single column.
 
 # 3. COACH PILLAR
 
-## 3.1 PSYCHOLOGY — `/psychology` 🔨 REBUILD (the conversation surface)
+## 3.1 PSYCHOLOGY — `/psychology` ✅ LIVE (rebuilt as specced)
 
 > **The vision (owner, 13 Sep 2026):** the Psychology page is meant to be just
 > like ChatGPT — in the sense that users interact with KAIZEN psychologically.
@@ -444,7 +444,7 @@ later).
 
 ---
 
-## 3.2 KAIZEN AI — `/kaizen-ai` 🔨 REBUILD (the trading-side chat)
+## 3.2 KAIZEN AI — `/kaizen-ai` ✅ LIVE (rebuilt as specced)
 
 **Purpose.** The same conversational quality as Psychology, aimed at the TRADES:
 "was this entry valid per my system?", "review this chart screenshot", "what

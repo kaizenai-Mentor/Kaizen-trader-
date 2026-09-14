@@ -1,6 +1,9 @@
 /**
- * PsychThread — a psychology conversation with KAIZEN (V2, owner vision
- * 13 Sep 2026: the ChatGPT-style surface where the trader works on their mind).
+ * PsychThread — a coach conversation thread (V2).
+ *
+ * Two kinds share this store (one chat infrastructure, two lanes):
+ *   kind 'psychology' — the mind room (spec §3.1)
+ *   kind 'trading'    — the trades room, KAIZEN AI (spec §3.2)
  *
  * NEVER DELETABLE (owner decision D2): the memory is the reference — when a
  * pattern repeats months later, KAIZEN looks back and recognizes it. There
@@ -11,6 +14,7 @@ const mongoose = require('mongoose');
 const MessageSchema = new mongoose.Schema({
   role: { type: String, enum: ['user', 'kaizen'], required: true },
   text: { type: String, required: true },
+  hasImage: { type: Boolean, default: false },
   createdAt: { type: Date, default: Date.now }
 }, { _id: false });
 
@@ -21,6 +25,7 @@ const PsychThreadSchema = new mongoose.Schema({
     required: true,
     index: true
   },
+  kind: { type: String, enum: ['psychology', 'trading'], default: 'psychology' },
   title: { type: String, default: 'Conversation', trim: true, maxlength: 80 },
   imported: { type: Boolean, default: false }, // seeded from V1 Memory docs
   messages: [MessageSchema],
@@ -28,6 +33,6 @@ const PsychThreadSchema = new mongoose.Schema({
   messageCount: { type: Number, default: 0 }
 }, { timestamps: true });
 
-PsychThreadSchema.index({ userId: 1, lastMessageAt: -1 });
+PsychThreadSchema.index({ userId: 1, kind: 1, lastMessageAt: -1 });
 
 module.exports = mongoose.model('PsychThread', PsychThreadSchema);

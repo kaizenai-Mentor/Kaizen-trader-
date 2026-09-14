@@ -3253,3 +3253,31 @@ select.k-input { cursor: pointer; }
 @media (prefers-reduced-motion: reduce) {
   .k-typingdots span { animation: none; opacity: 0.6; }
 }
+
+/* ══════════════════════════════════════════════════════════════
+   V2 KAIZEN AI — trading-side chat additions (spec §3.2)
+   ══════════════════════════════════════════════════════════════ */
+.k-attachbtn {
+  display: flex; align-items: center; justify-content: center;
+  width: 46px; height: 46px; flex-shrink: 0; cursor: pointer;
+  border: 1px solid var(--border); background: var(--input-bg);
+  font-size: 1rem; user-select: none;
+}
+.k-attachbtn:hover { border-color: var(--gold-border); }
+.k-attachmeta {
+  font-family: var(--font-mono); font-size: 0.58rem; letter-spacing: 0.08em;
+  color: var(--gold); padding-top: 8px;
+}
+.k-attachtag {
+  font-family: var(--font-mono); font-size: 0.58rem; color: var(--gold);
+  margin-right: 6px;
+}
+.k-legacyai {
+  font-size: 0.88rem; color: var(--text-primary); line-height: 1.8;
+  white-space: pre-wrap; margin-bottom: 12px;
+}
+.k-quizchip {
+  font-family: var(--font-mono); font-size: 0.55rem; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--gold); border: 1px solid var(--gold-border);
+  padding: 4px 10px; margin-bottom: 12px; display: inline-block;
+}

@@ -3,6 +3,14 @@
 > KAIZEN is a trader improvement and reputation platform that turns
 > trading behavior into measurable progress and verifiable credentials.
 
+**North star:** KAIZEN is being built to be the best AI for trading the
+way Claude is the best AI for coding — not by predicting markets, but
+by knowing the trader: their rules, their record, their mind. Every
+session, every conversation, every spec teaches it. The near future is
+a mentor that can teach trading from scratch; autonomous execution is
+a far-future phase that will only be earned after the mentor proves
+itself.
+
 **Core loop:** PLAN → TRADE → REFLECT → ANALYZE → IMPROVE → REPEAT
 
 The blockchain components support the reputation layer. They aren't
@@ -46,6 +54,31 @@ Process · Risk · Execution · Behavior · Learning & Consistency
 Versioned on every save (`models/TradingSystem.js`); each session is
 measured against the version the trader had at the time. Existing
 users migrate lazily from the legacy trading style — nothing is lost.
+
+### The Coach — two conversation rooms (改)
+KAIZEN talks with traders the way the best AI assistants do — freeform,
+threaded, in context — with two clean lanes:
+
+- **Psychology** (`/psychology`) — the room with no scoreboard. Most
+  rule breaks are symptoms; the trader's state is the cause. Threads
+  like a chat app, openers drawn from the trader's real situation, and
+  a **self-maintaining memory**: KAIZEN's understanding (themes,
+  triggers, what helps) updates itself after every exchange, evolves
+  active → improving → resolved, and never deletes — so when a pattern
+  repeats months later, KAIZEN recognizes it. The picture is visible to
+  the trader (read-only; corrections happen in conversation). Psychology
+  never feeds the score, has zero gamification, and crisis language
+  gets a caring response pointing to real human help — KAIZEN is a
+  coach, not a therapist.
+- **KAIZEN AI** (`/kaizen-ai`) — the trading-side chat: review an entry
+  against your own rules, attach a chart, pressure-test a new system
+  version, get quizzed on your own rules. Knows your Trading System,
+  your recent sessions, and your reflections. Never gives signals or
+  predictions — it teaches process, in your system's language.
+
+Both rooms share one chat infrastructure (threads, composer, openers,
+deterministic fallbacks without an API key). Conversations are private,
+never counted as sessions, and archived in Memories.
 
 ### Identity & Verification (optional)
 - Stacks wallet connection with cryptographic ownership proof

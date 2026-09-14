@@ -23,7 +23,7 @@
 const https = require('https');
 
 // ── Crisis language (checked before anything else) ───────────────
-const CRISIS_RE = /suicid|kill(ing)? myself|end(ing)? (it all|my life)|self.?harm|hurt(ing)? myself|don'?t want to (be here|live|go on)|do not want to (be here|live|go on)|no reason to (live|go on)|better off dead/i;
+const CRISIS_RE = /suicid|kill(ing)? myself|end(ing)? (it all|my life)|self.?harm|harm(ing)? myself|hurt(ing)? myself|don'?t want to (be here|live|go on)|do not want to (be here|live|go on)|no reason to (live|go on)|better off dead/i;
 
 const CRISIS_RESPONSE = [
   'What you just shared matters more than anything about trading, and I want to answer it honestly.',
@@ -324,5 +324,6 @@ module.exports = {
   stripPsychState,
   applyPsychState,
   buildFallback,
-  CRISIS_RESPONSE
+  CRISIS_RESPONSE,
+  CRISIS_RE
 };
