@@ -3281,3 +3281,81 @@ select.k-input { cursor: pointer; }
   text-transform: uppercase; color: var(--gold); border: 1px solid var(--gold-border);
   padding: 4px 10px; margin-bottom: 12px; display: inline-block;
 }
+
+/* ══════════════════════════════════════════════════════════════
+   V2 MY PROGRESS (spec §2.8) — timeline, movement, practice-vs-
+   performance, milestones, carried community ranking.
+   ══════════════════════════════════════════════════════════════ */
+.k-scorerow { display: flex; align-items: baseline; gap: 14px; margin-bottom: 14px; }
+.k-deltachip {
+  font-family: var(--font-mono); font-size: 0.58rem; letter-spacing: 0.1em;
+  text-transform: uppercase; padding: 4px 10px; border: 1px solid var(--border);
+}
+.k-deltachip.is-up { color: var(--green); border-color: var(--green); }
+.k-deltachip.is-down { color: var(--red); border-color: var(--red); }
+.k-deltachip.is-flat { color: var(--text-faint); }
+.k-spark { width: 100%; height: 64px; display: block; }
+.k-spark-base { stroke: var(--border); stroke-width: 1; }
+.k-spark-line { fill: none; stroke: var(--gold); stroke-width: 2; }
+.k-spark-dot { fill: var(--gold); }
+.k-spark-meta {
+  display: flex; justify-content: space-between;
+  font-family: var(--font-mono); font-size: 0.56rem; color: var(--text-faint);
+  margin-top: 4px;
+}
+.k-dimrows { display: flex; flex-direction: column; }
+.k-dimrow {
+  display: flex; align-items: center; gap: 12px; padding: 11px 0;
+  border-bottom: 1px solid var(--border);
+}
+.k-dimrow:last-child { border-bottom: none; }
+.k-dimlabel { font-size: 0.84rem; color: var(--text-primary); font-weight: 600; }
+.k-dimval { font-family: var(--font-mono); font-size: 0.9rem; color: var(--gold); margin-left: auto; }
+.k-dimdelta { font-family: var(--font-mono); font-size: 0.62rem; min-width: 64px; text-align: right; }
+.k-dimdelta.is-up { color: var(--green); }
+.k-dimdelta.is-down { color: var(--red); }
+.k-dimdelta.is-flat { color: var(--text-faint); }
+.k-typerow { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 14px 0; }
+.k-typecard-stat {
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  border: 1px solid var(--border); padding: 14px 8px; text-align: center; min-width: 0;
+}
+.k-typecard-num { font-family: var(--font-mono); font-size: 1.5rem; color: var(--gold); line-height: 1.2; }
+.k-typecard-cap { font-family: var(--font-mono); font-size: 0.52rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-faint); }
+.k-typecard-rate { font-size: 0.68rem; color: var(--text-secondary); margin-top: 4px; }
+.k-insight {
+  display: flex; gap: 12px; align-items: flex-start; border-left: 3px solid var(--gold);
+  padding: 12px 14px; background: var(--gold-pale);
+}
+.k-insight p { font-size: 0.84rem; color: var(--text-primary); line-height: 1.7; margin: 0; }
+.k-badgegrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; margin-top: 14px; }
+.k-badgecell {
+  display: flex; flex-direction: column; gap: 3px; border: 1px solid var(--border);
+  padding: 10px 12px; min-width: 0;
+}
+.k-badgename { font-size: 0.8rem; font-weight: 600; color: var(--text-primary); }
+.k-badgedate { font-family: var(--font-mono); font-size: 0.55rem; color: var(--text-faint); }
+.k-ranktabs { display: flex; gap: 8px; margin: 10px 0; }
+.k-ranktab {
+  font-family: var(--font-mono); font-size: 0.58rem; letter-spacing: 0.12em;
+  text-transform: uppercase; padding: 6px 12px; border: 1px solid var(--gold-border); color: var(--gold);
+}
+.k-ranktable { display: flex; flex-direction: column; }
+.k-rankrow {
+  display: flex; align-items: center; gap: 12px; padding: 10px 0;
+  border-bottom: 1px solid var(--border); flex-wrap: wrap;
+}
+.k-rankrow:last-child { border-bottom: none; }
+.k-rankrow.is-me { border-left: 3px solid var(--gold); padding-left: 10px; }
+.k-rankpos { font-family: var(--font-mono); font-size: 0.68rem; color: var(--text-faint); width: 24px; }
+.k-rankname { font-size: 0.84rem; font-weight: 600; color: var(--text-primary); }
+.k-rankyou {
+  font-family: var(--font-mono); font-size: 0.5rem; letter-spacing: 0.1em;
+  color: var(--gold); text-transform: uppercase; border: 1px solid var(--gold-border); padding: 2px 6px;
+}
+.k-rankscore { font-family: var(--font-mono); font-size: 0.9rem; color: var(--gold); margin-left: auto; }
+.k-rankmeta { font-family: var(--font-mono); font-size: 0.56rem; color: var(--text-faint); }
+@media (max-width: 700px) {
+  .k-typerow { grid-template-columns: 1fr; }
+  .k-dimdelta { min-width: 56px; }
+}

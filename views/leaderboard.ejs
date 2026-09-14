@@ -7,203 +7,164 @@
 <body class="app-page">
   <%- include('partials/navbar') %>
 
-  <main class="app-main">
+  <main class="k-flow k-flow--wide">
 
-    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:24px;flex-wrap:wrap;">
+    <div class="k-cockpit-head">
       <div>
-        <div style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:6px;display:flex;align-items:center;gap:8px;">
-          <span style="width:16px;height:1px;background:var(--gold);display:inline-block;"></span>
-          Community Rankings
-        </div>
-        <h1 style="font-size:1.6rem;font-weight:700;color:var(--text-primary);margin-bottom:4px;">My Progress</h1>
-        <p style="font-size:0.82rem;color:var(--ash);font-style:italic;">Ranked by discipline — not profit.</p>
+        <div class="k-eyebrow">IMPROVE · 改</div>
+        <h1 class="k-page-title">My Progress</h1>
+        <p class="k-page-sub">Progress, not performance. What the record says changed.</p>
       </div>
-      <a href="/dashboard" style="display:inline-flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);border:1px solid var(--border);padding:10px 16px;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.color='var(--gold)';this.style.borderColor='rgba(201,168,76,0.3)'" onmouseout="this.style.color='var(--ash)';this.style.borderColor='var(--border)'">
-        <i data-feather="arrow-left" width="12" height="12"></i>
-        Dashboard
-      </a>
+      <div class="k-streakchip" title="Practice consistency — never trading performance">
+        <span class="k-streak-flame">◆</span>
+        <span class="k-streak-num"><%= streak %></span>
+        <span class="k-streak-label">day streak</span>
+      </div>
     </div>
 
-    <!-- TABS -->
-    <div style="display:flex;gap:2px;margin-bottom:16px;">
-      <button onclick="showTab('weekly')" id="tab-weekly" style="
-        flex:1;padding:12px;
-        background:var(--gold);color:#000;
-        border:1px solid var(--gold);
-        font-family:'DM Mono',monospace;font-size:0.65rem;
-        letter-spacing:0.12em;text-transform:uppercase;font-weight:700;
-        cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;
-      ">
-        <i data-feather="calendar" width="12" height="12"></i>
-        Weekly
-      </button>
-      <button onclick="showTab('alltime')" id="tab-alltime" style="
-        flex:1;padding:12px;
-        background:var(--bg-card);color:var(--ash);
-        border:1px solid var(--border);
-        font-family:'DM Mono',monospace;font-size:0.65rem;
-        letter-spacing:0.12em;text-transform:uppercase;
-        cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;
-        transition:all 0.2s;
-      " onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">
-        <i data-feather="award" width="12" height="12"></i>
-        All Time
-      </button>
-    </div>
+    <!-- ═══ REGION A: MY PROGRESS (private, primary) ═══ -->
 
-    <!-- WEEKLY TAB -->
-    <div id="tab-weekly-content">
-      <% if (typeof weeklyLeaders !== 'undefined' && weeklyLeaders && weeklyLeaders.length > 0) { %>
-        <div style="display:flex;flex-direction:column;gap:2px;">
-          <% weeklyLeaders.forEach(function(leader, i) { %>
-            <div style="
-              background:<%= i === 0 ? 'linear-gradient(135deg,rgba(201,168,76,0.08),rgba(201,168,76,0.03))' : 'var(--bg-card)' %>;
-              border:1px solid <%= i === 0 ? 'rgba(201,168,76,0.3)' : i === 1 ? 'rgba(168,160,154,0.2)' : 'var(--border)' %>;
-              padding:16px 20px;
-              display:flex;align-items:center;gap:16px;
-            ">
-              <!-- Rank -->
-              <div style="
-                width:36px;height:36px;min-width:36px;
-                border:1px solid <%= i === 0 ? 'rgba(201,168,76,0.4)' : i === 1 ? 'rgba(192,192,192,0.3)' : i === 2 ? 'rgba(205,127,50,0.3)' : 'var(--border)' %>;
-                background:<%= i === 0 ? 'rgba(201,168,76,0.1)' : i === 1 ? 'rgba(192,192,192,0.06)' : i === 2 ? 'rgba(205,127,50,0.06)' : 'var(--bg-surface)' %>;
-                display:flex;align-items:center;justify-content:center;
-                font-family:'DM Mono',monospace;font-size:0.8rem;font-weight:700;
-                color:<%= i === 0 ? 'var(--gold)' : i === 1 ? '#C0C0C0' : i === 2 ? '#CD7F32' : 'var(--ash)' %>;
-              ">
-                <%= i + 1 %>
-              </div>
-              <!-- User info -->
-              <div style="flex:1;">
-                <div style="font-weight:700;font-size:0.9rem;color:var(--text-primary);margin-bottom:3px;">
-                  <%= leader.username %>
-                  <% if (leader.username === user.username) { %>
-                    <span style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(201,168,76,0.25);padding:2px 6px;margin-left:6px;">You</span>
-                  <% } %>
-                </div>
-                <div style="font-size:0.72rem;color:var(--ash);display:flex;align-items:center;gap:8px;">
-                  <span><%= leader.sessionCount || 0 %> sessions</span>
-                  <% if (leader.streak > 0) { %>
-                    <span style="display:flex;align-items:center;gap:3px;color:<%= leader.streak >= 7 ? '#4ADE80' : 'var(--ash)' %>;">
-                      <i data-feather="zap" width="10" height="10"></i>
-                      <%= leader.streak %>d streak
-                    </span>
-                  <% } %>
-                </div>
-              </div>
-              <!-- Score -->
-              <div style="text-align:right;">
-                <div style="font-family:'DM Mono',monospace;font-size:1.4rem;font-weight:700;color:<%= i === 0 ? 'var(--gold)' : 'var(--text-primary)' %>;">
-                  <%= leader.disciplineScore || leader.sessionScore || 0 %>%
-                </div>
-                <div style="height:3px;background:rgba(201,168,76,0.1);margin-top:4px;width:60px;margin-left:auto;">
-                  <div style="height:100%;background:<%= i === 0 ? 'var(--gold)' : 'rgba(201,168,76,0.4)' %>;width:<%= leader.disciplineScore || leader.sessionScore || 0 %>%;"></div>
-                </div>
-              </div>
-            </div>
-          <% }); %>
+    <% if (move) { %>
+    <section class="k-card k-card--elevated">
+      <div class="k-panel-title">SCORE TIMELINE — <span class="k-gold">KAIZEN SCORE</span></div>
+      <div class="k-scorerow">
+        <span class="k-scorenum"><%= move.overall.now %></span>
+        <div class="k-scoremeta">
+          <% if (move.overall.same) { %>
+            <span class="k-deltachip is-flat">first reading</span>
+          <% } else if (move.overall.delta > 0) { %>
+            <span class="k-deltachip is-up">▲ +<%= move.overall.delta %> in 30 days</span>
+          <% } else if (move.overall.delta < 0) { %>
+            <span class="k-deltachip is-down">▼ <%= move.overall.delta %> in 30 days</span>
+          <% } else { %>
+            <span class="k-deltachip is-flat">± 0 in 30 days</span>
+          <% } %>
+          <span class="k-scoresub"><%= points.length %> computed score<%= points.length === 1 ? '' : 's' %> on record · <a class="k-link" href="/about#kaizen-score">How is this scored?</a></span>
+        </div>
+      </div>
+      <% if (points.length >= 2) { %>
+        <svg class="k-spark" viewBox="0 0 300 64" preserveAspectRatio="none" role="img" aria-label="Score timeline">
+          <line x1="0" y1="63" x2="300" y2="63" class="k-spark-base"></line>
+          <polyline class="k-spark-line" points="<%= sparkPoints %>"></polyline>
+          <% var lastPt = points[points.length-1]; %>
+          <circle class="k-spark-dot" cx="300" cy="<%= 64 - (lastPt.v / 100) * 64 %>" r="2.5"></circle>
+        </svg>
+        <div class="k-spark-meta">
+          <span><%= new Date(points[0].t).toLocaleDateString('en-US',{month:'short',day:'numeric'}) %></span>
+          <span><%= new Date(lastPt.t).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) %></span>
         </div>
       <% } else { %>
-        <div style="background:var(--bg-card);border:1px solid var(--border);padding:60px 32px;text-align:center;">
-          <div style="width:40px;height:40px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--ash);margin:0 auto 12px;">
-            <i data-feather="users" width="16" height="16"></i>
+        <div class="k-fieldhint">One reading so far — the line starts drawing with your next sessions.</div>
+      <% } %>
+    </section>
+
+    <section class="k-card">
+      <div class="k-panel-title">DIMENSION MOVEMENT — LAST 30 DAYS</div>
+      <div class="k-dimrows">
+        <% ['process','risk','execution','behavior','learning'].forEach(function(k){ %>
+          <% var d = move.dimensions[k]; %>
+          <div class="k-dimrow">
+            <span class="k-dimlabel"><%= dimensionLabels[k] %></span>
+            <span class="k-dimval"><%= d.now != null ? d.now : '—' %></span>
+            <% if (d.delta == null) { %>
+              <span class="k-dimdelta is-flat">building</span>
+            <% } else if (d.delta > 0) { %>
+              <span class="k-dimdelta is-up">▲ +<%= d.delta %></span>
+            <% } else if (d.delta < 0) { %>
+              <span class="k-dimdelta is-down">▼ <%= d.delta %></span>
+            <% } else { %>
+              <span class="k-dimdelta is-flat">± 0</span>
+            <% } %>
           </div>
-          <p style="font-size:0.88rem;color:var(--ash);margin-bottom:16px;">No weekly data yet. Log sessions to appear on the leaderboard.</p>
-          <a href="/dashboard/journal" style="display:inline-flex;align-items:center;gap:6px;background:var(--gold);color:#000;font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;font-weight:700;padding:10px 20px;text-decoration:none;">
-            Log a Session
-          </a>
+        <% }); %>
+      </div>
+    </section>
+    <% } else { %>
+    <section class="k-card">
+      <div class="k-panel-title">SCORE TIMELINE</div>
+      <div class="k-building">
+        <span class="k-buildnum">改</span>
+        <div>
+          <div class="k-buildtitle">The timeline starts with your first computed score</div>
+          <p class="k-buildtext">No scores on record yet — that's honest, not broken. Finish a session through plan → record → reflect and the engine will take its first reading.</p>
         </div>
-      <% } %>
-    </div>
+      </div>
+    </section>
+    <% } %>
 
-    <!-- ALL TIME TAB -->
-    <div id="tab-alltime-content" style="display:none;">
-      <% if (typeof allTimeLeaders !== 'undefined' && allTimeLeaders && allTimeLeaders.length > 0) { %>
-        <div style="display:flex;flex-direction:column;gap:2px;">
-          <% allTimeLeaders.forEach(function(leader, i) { %>
-            <div style="
-              background:<%= i === 0 ? 'linear-gradient(135deg,rgba(201,168,76,0.08),rgba(201,168,76,0.03))' : 'var(--bg-card)' %>;
-              border:1px solid <%= i === 0 ? 'rgba(201,168,76,0.3)' : 'var(--border)' %>;
-              padding:16px 20px;
-              display:flex;align-items:center;gap:16px;
-            ">
-              <div style="
-                width:36px;height:36px;min-width:36px;
-                border:1px solid <%= i === 0 ? 'rgba(201,168,76,0.4)' : i === 1 ? 'rgba(192,192,192,0.3)' : i === 2 ? 'rgba(205,127,50,0.3)' : 'var(--border)' %>;
-                background:<%= i === 0 ? 'rgba(201,168,76,0.1)' : 'var(--bg-surface)' %>;
-                display:flex;align-items:center;justify-content:center;
-                font-family:'DM Mono',monospace;font-size:0.8rem;font-weight:700;
-                color:<%= i === 0 ? 'var(--gold)' : i === 1 ? '#C0C0C0' : i === 2 ? '#CD7F32' : 'var(--ash)' %>;
-              "><%= i + 1 %></div>
-              <div style="flex:1;">
-                <div style="font-weight:700;font-size:0.9rem;color:var(--text-primary);margin-bottom:3px;">
-                  <%= leader.username %>
-                  <% if (leader.username === user.username) { %>
-                    <span style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(201,168,76,0.25);padding:2px 6px;margin-left:6px;">You</span>
-                  <% } %>
-                </div>
-                <div style="font-size:0.72rem;color:var(--ash);">
-                  <%= leader.totalSessions || 0 %> total sessions
-                </div>
-              </div>
-              <div style="text-align:right;">
-                <div style="font-family:'DM Mono',monospace;font-size:1.4rem;font-weight:700;color:<%= i === 0 ? 'var(--gold)' : 'var(--text-primary)' %>;">
-                  <%= leader.disciplineScore || 0 %>%
-                </div>
-              </div>
+    <section class="k-card">
+      <div class="k-panel-title">PRACTICE VS PERFORMANCE</div>
+      <p class="k-cardsub">How your discipline holds across session types. Practice consistency — never presented as trading results.</p>
+      <div class="k-typerow">
+        <% ['LIVE','BACKTEST','STUDY'].forEach(function(t){ %>
+          <% var tp = typePerf.types[t]; %>
+          <div class="k-typecard-stat">
+            <span class="k-type-tag k-type-<%= t.toLowerCase() %>"><%= t %></span>
+            <span class="k-typecard-num"><%= tp.count %></span>
+            <span class="k-typecard-cap">session<%= tp.count === 1 ? '' : 's' %></span>
+            <span class="k-typecard-rate"><%= tp.rate != null ? tp.rate + '% inside rules' : 'no data yet' %></span>
+          </div>
+        <% }); %>
+      </div>
+      <% if (typePerf.insight) { %>
+        <div class="k-insight">
+          <span class="k-kanji k-kanji--sm">改</span>
+          <p><%= typePerf.insight.message %></p>
+        </div>
+      <% } else if (typePerf.types.LIVE.count + typePerf.types.BACKTEST.count > 0) { %>
+        <div class="k-fieldhint">Not enough on both sides yet to compare practice with performance — three of each opens the comparison.</div>
+      <% } else { %>
+        <div class="k-fieldhint">No sessions yet. Log LIVE, BACKTEST and STUDY sessions and the comparison builds itself.</div>
+      <% } %>
+    </section>
+
+    <section class="k-card">
+      <div class="k-panel-title" style="display:flex;align-items:center;justify-content:space-between;">
+        <span>MILESTONES</span>
+        <span class="k-milestone-meta"><%= totalSessions %> session<%= totalSessions === 1 ? '' : 's' %> total</span>
+      </div>
+      <div class="k-milestone-label"><%= nextMilestone.label %></div>
+      <div class="k-milestone-track"><span class="k-milestone-fill" data-meter="<%= nextMilestone.progress %>"></span></div>
+      <div class="k-milestone-meta"><% if (nextMilestone.remaining > 0) { %><%= nextMilestone.remaining %> to go<% } else { %>Reached<% } %></div>
+      <% if (badges.length) { %>
+        <div class="k-badgegrid">
+          <% badges.forEach(function(b){ %>
+            <div class="k-badgecell">
+              <span class="k-badgename"><%= b.name %></span>
+              <span class="k-badgedate"><%= b.earnedAt ? new Date(b.earnedAt).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '' %></span>
             </div>
           <% }); %>
         </div>
       <% } else { %>
-        <div style="background:var(--bg-card);border:1px solid var(--border);padding:60px 32px;text-align:center;">
-          <p style="font-size:0.88rem;color:var(--ash);">No all-time data yet.</p>
-        </div>
+        <div class="k-fieldhint">No milestones yet — your first arrives at 5 sessions.</div>
       <% } %>
-    </div>
+    </section>
 
-    <!-- YOUR POSITION -->
-    <div style="margin-top:16px;background:var(--bg-card);border:1px solid rgba(201,168,76,0.15);padding:18px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
-      <div style="display:flex;align-items:center;gap:10px;">
-        <i data-feather="user" width="14" height="14" style="color:var(--gold);"></i>
-        <span style="font-size:0.85rem;color:var(--text-primary);">Your score: <strong style="color:var(--gold);"><%= disciplineScore %>%</strong></span>
+    <!-- ═══ REGION B: COMMUNITY (carried, honest) ═══ -->
+
+    <section class="k-card">
+      <div class="k-panel-title">COMMUNITY RANKINGS</div>
+      <p class="k-cardsub">Ranked by discipline — not profit. Verification marks identity, never skill. These are V1-era scores, frozen at cutover; the ranking moves to the KAIZEN Score as histories build.</p>
+
+      <div class="k-ranktabs">
+        <span class="k-ranktab is-active">All time</span>
       </div>
-      <a href="/dashboard/journal" style="display:inline-flex;align-items:center;gap:6px;background:var(--gold);color:#000;font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;font-weight:700;padding:10px 18px;text-decoration:none;">
-        <i data-feather="plus" width="11" height="11"></i>
-        Log Session to Climb
-      </a>
-    </div>
+      <div class="k-ranktable">
+        <% allTimeLeaders.forEach(function(u, i){ %>
+          <div class="k-rankrow <%= u._id == user.id ? 'is-me' : '' %>">
+            <span class="k-rankpos"><%= i + 1 %></span>
+            <span class="k-rankname"><%= u.username %><% if (u._id == user.id) { %> <span class="k-rankyou">you</span><% } %></span>
+            <span class="k-rankscore"><%= u.disciplineScore || 0 %></span>
+            <span class="k-rankmeta"><%= u.totalSessions || 0 %> sessions · <%= u.streak || 0 %>◆</span>
+          </div>
+        <% }); %>
+      </div>
+      <div class="k-fieldhint" style="margin-top:12px;">This week's active traders: <%= weeklyLeaders.length %>. Rankings never imply trading ability — only logged practice.</div>
+    </section>
 
   </main>
 
   <%- include('partials/footer') %>
-  <script src="/js/app.js"></script>
-  <script>
-    feather.replace();
-    function showTab(tab) {
-      const weekly = document.getElementById('tab-weekly-content');
-      const alltime = document.getElementById('tab-alltime-content');
-      const btnWeekly = document.getElementById('tab-weekly');
-      const btnAlltime = document.getElementById('tab-alltime');
-      if (tab === 'weekly') {
-        weekly.style.display = 'block';
-        alltime.style.display = 'none';
-        btnWeekly.style.background = 'var(--gold)';
-        btnWeekly.style.color = '#000';
-        btnWeekly.style.borderColor = 'var(--gold)';
-        btnAlltime.style.background = 'var(--bg-card)';
-        btnAlltime.style.color = 'var(--ash)';
-        btnAlltime.style.borderColor = 'var(--border)';
-      } else {
-        weekly.style.display = 'none';
-        alltime.style.display = 'block';
-        btnAlltime.style.background = 'var(--gold)';
-        btnAlltime.style.color = '#000';
-        btnAlltime.style.borderColor = 'var(--gold)';
-        btnWeekly.style.background = 'var(--bg-card)';
-        btnWeekly.style.color = 'var(--ash)';
-        btnWeekly.style.borderColor = 'var(--border)';
-      }
-    }
-  </script>
+  <script src="/js/v2-reveal.js"></script>
 </body>
 </html>

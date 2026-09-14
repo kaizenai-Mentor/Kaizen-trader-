@@ -11,7 +11,7 @@ const DIMENSION_LABELS = {
   behavior: 'Behavior', learning: 'Learning & Consistency'
 };
 
-const SESSION_MILESTONES = [5, 10, 25, 50, 100, 250, 500];
+const { SESSION_MILESTONES } = require('../services/progress');
 
 // ── THE COCKPIT (config/App.js D-sections, Step 5 M3) ───────────
 // The honest answer to "How am I improving?" — no P&L, no on-chain

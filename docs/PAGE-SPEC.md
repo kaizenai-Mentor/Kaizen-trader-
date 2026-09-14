@@ -67,7 +67,7 @@ treatment specified here) · 🔨 REBUILD (page must be rebuilt to the spec belo
 | **Psychology** | `/psychology` | ✅ LIVE (rebuilt) | `69a732d` |
 | KAIZEN AI | `/kaizen-ai` | ✅ LIVE (rebuilt) | see git log (§3.2) |
 | Memories | `/memories` | 🔁 CARRIED → restyle | this doc §3.3 |
-| My Progress | `/leaderboard` | 🔁 CARRIED → rebuild | this doc §2.8 |
+| My Progress | `/leaderboard` | ✅ LIVE (rebuilt) | see git log (§2.8) |
 | Weekly Report | `/weekly-summary` | 🔁 CARRIED → rewire | this doc §4.2 |
 | Chart | `/chart` | 🔁 CARRIED (kept) | this doc §4.1 |
 | Market News | `/news` | 🔁 CARRIED (kept) | this doc §4.3 |
@@ -272,7 +272,7 @@ coach-over-engine (the human word before the machine number).
 
 ## 2.7 (reserved — pattern detail surfaces, later phase)
 
-## 2.8 MY PROGRESS — `/leaderboard` 🔁 CARRIED → REBUILD
+## 2.8 MY PROGRESS — `/leaderboard` ✅ LIVE (rebuilt as specced)
 
 **Purpose.** Progress, not competition-as-performance. Two clearly separated
 regions:

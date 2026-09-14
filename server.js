@@ -218,38 +218,11 @@ app.get('/', (req, res) => {
 
 const Memory = require('./models/Memory');
 
-app.get('/leaderboard', async (req, res) => {
+// My Progress (V2, spec §2.8) — progress regions + carried community ranking
+const progressController = require('./controllers/progressController');
+app.get('/leaderboard', (req, res) => {
   if (!req.session.user) return res.redirect('/auth/login');
-  try {
-    const User = require('./models/User');
-
-    const allTimeLeaders = await User.find({})
-      .sort({ disciplineScore: -1 })
-      .limit(20)
-      .select('username disciplineScore totalSessions streak');
-
-    const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-    const weeklyLeaders = await User.find({
-      updatedAt: { $gte: weekAgo }
-    })
-      .sort({ disciplineScore: -1 })
-      .limit(20)
-      .select('username disciplineScore totalSessions streak');
-
-    const currentUser = await User.findById(req.session.user.id);
-
-    res.render('leaderboard', {
-      user: req.session.user,
-      allTimeLeaders,
-      weeklyLeaders,
-      disciplineScore: currentUser ? currentUser.disciplineScore || 0 : 0,
-      totalSessions: currentUser ? currentUser.totalSessions || 0 : 0,
-      streak: currentUser ? currentUser.streak || 0 : 0
-    });
-  } catch (error) {
-    console.error('Leaderboard error:', error);
-    res.redirect('/dashboard');
-  }
+  progressController.getProgress(req, res);
 });
 
 app.get('/trader/:username', async (req, res) => {
