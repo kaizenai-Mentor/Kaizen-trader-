@@ -5,6 +5,8 @@
  *   - Who OWNS the contract?          (the deployer — onlyOwner guards writes)
  *   - What address does my server key control?   (if MANTLE_PRIVATE_KEY is set)
  *   - Do they MATCH?                  (if not, every record write reverts)
+ *   - Does the contract run the CURRENT code?    (old builds revert every
+ *     write too — the app's functions don't exist on them)
  *   - Does the contract hold any records?
  *
  * Usage (Termux or Render shell, from the contracts/ folder):
@@ -58,6 +60,32 @@ async function main() {
   }
   console.log('Contract code: present ✓');
 
+  // Code freshness — the fingerprint test.
+  // The current KaizenBenchmark.sol build MUST contain these function
+  // selectors in its bytecode: recordScoreChange (42c4aa4c) and
+  // getTotalEvents (61606940). The old 1,970-byte build that caused the
+  // zero-records bug contains NEITHER — its functions have different names
+  // and signatures, so the app's calls simply don't exist on it and every
+  // write reverts, no matter which key sends it.
+  const codeLower = code.toLowerCase();
+  const isCurrentBuild =
+    codeLower.includes('42c4aa4c') && codeLower.includes('61606940');
+  if (isCurrentBuild) {
+    console.log('Contract code: CURRENT KaizenBenchmark build ✓');
+  } else {
+    console.error('\n✗ OLD CONTRACT CODE detected.');
+    console.error('  This contract does NOT contain the current');
+    console.error('  KaizenBenchmark.sol functions — recordScoreChange and');
+    console.error('  getTotalEvents are missing from its bytecode. The app\'s');
+    console.error('  writes will revert ("execution reverted") no matter which');
+    console.error('  key you use, because the functions don\'t exist on it.');
+    console.error('  This is what kept the reputation page at zero.');
+    console.error('  FIX: git pull the current repo on Termux, then redeploy');
+    console.error('  with contracts/deploy.js (or deploy-quick.js — both now');
+    console.error('  compile the current source), and point Render\'s');
+    console.error('  MANTLE_CONTRACT_ADDRESS at the new address.');
+  }
+
   const c = new ethers.Contract(ADDRESS, ABI, provider);
 
   // Owner (the deployer — constructor sets owner = msg.sender)
@@ -104,10 +132,15 @@ async function main() {
     console.log(`\nRecords on-chain: ${s} score, ${p} pattern, ${m} milestone (total ${s + p + m})`);
     if (s + p + m === 0) {
       console.log('  Zero records — consistent with every past write having reverted');
-      console.log('  (owner mismatch), or nothing recorded yet.');
+      console.log('  (old contract code, or an owner/key mismatch), or nothing');
+      console.log('  recorded yet.');
     }
   } catch (e) {
     console.error('Could not read totals:', e.message);
+    if (!isCurrentBuild) {
+      console.error('  → Expected on an OLD build: getTotalEvents() does not exist');
+      console.error('    on it. Redeploy the current source (see above).');
+    }
   }
 }
 
