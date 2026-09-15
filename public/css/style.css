@@ -3359,3 +3359,10 @@ select.k-input { cursor: pointer; }
   .k-typerow { grid-template-columns: 1fr; }
   .k-dimdelta { min-width: 56px; }
 }
+
+/* ── Weekly report ── */
+.k-weekmeta {
+  display: flex; gap: 8px; align-items: center; flex-wrap: wrap;
+  font-size: 0.74rem; color: var(--text-secondary);
+  border-top: 1px solid var(--border); margin-top: 12px; padding-top: 12px;
+}

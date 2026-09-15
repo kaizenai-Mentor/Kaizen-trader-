@@ -91,6 +91,11 @@ const UserSchema = new mongoose.Schema({
     type: Date,
     default: null
   },
+  // D1: one-time "How your KAIZEN Score works" intro for V2-era accounts
+  scoreIntroShownAt: {
+    type: Date,
+    default: null
+  },
   zaUserId: {
     type: String,
     default: ''

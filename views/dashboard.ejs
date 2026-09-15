@@ -155,6 +155,23 @@
     </div>
   <% } %>
 
+  <!-- ═══ NEW-USER INTRO (D1 — shown once, V2-era accounts) ═══ -->
+  <% if (showIntro) { %>
+    <div class="k-modalwrap" id="scoreIntroModal">
+      <div class="k-modal">
+        <span class="k-kanji k-kanji--lg">改</span>
+        <h2 class="k-modaltitle">How your KAIZEN Score works</h2>
+        <p class="k-modaltext">Every session you finish through <b>Plan → Record → Reflect</b> feeds one score across five dimensions — <b>Process, Risk, Execution, Behavior, Learning &amp; Consistency</b>. It measures how you traded, not what you made.</p>
+        <p class="k-modaltext">Every number shows its <b>WHY</b> — you will always see the reason behind it, in plain words.</p>
+        <p class="k-modaltext">When there isn't enough evidence yet, a dimension says <b>Building</b> instead of guessing. That's not a lower score — it's an honest one. It fills in as you work.</p>
+        <div class="k-modalactions">
+          <a class="k-btn k-btn-primary" href="/dashboard/sessions/new">Plan a session</a>
+          <button class="k-btn k-btn-ghost" type="button" onclick="document.getElementById('scoreIntroModal').remove()">Got it</button>
+        </div>
+      </div>
+    </div>
+  <% } %>
+
   <!-- ═══ CUTOVER EXPLAINER (shown once) ═══ -->
   <% if (showCutover) { %>
     <div class="k-modalwrap" id="cutoverModal">

@@ -192,4 +192,100 @@ async function analyzeSession({ session, user, system, recentSessions }) {
   return callClaude(systemPrompt, messageContent);
 }
 
-module.exports = { analyzeSession, parseExtracted, stripExtracted, buildFallback };
+/**
+ * The weekly letter (spec §4.2) — the coach's short summary of the week.
+ * Same contract as session analysis: NEVER a score line, no performance
+ * claims, no integrity mechanics (rule 9). MindState context is the psych
+ * integration: the letter may acknowledge what the trader has been working
+ * on — in their own interest, privately.
+ */
+function buildWeeklyLetterPrompt({ user, system, weekSessions, movement, mindState }) {
+  const stats = require('./weekly').weekStats(weekSessions);
+  const dimLines = DIMENSION_ORDER.map(k => {
+    const d = movement && movement.dimensions[k];
+    if (!d) return null;
+    const delta = d.delta == null ? 'building' : (d.delta > 0 ? `+${d.delta}` : String(d.delta));
+    return `${k}: now ${d.now != null ? d.now : 'building'} (${delta} vs pre-week)`;
+  }).filter(Boolean).join('\n');
+
+  const themes = mindState && mindState.themes && mindState.themes.length
+    ? mindState.themes.filter(t => t.status !== 'resolved').slice(0, 3).map(t =>
+        `- ${t.name} [${t.status}]${t.note ? ` — ${t.note}` : ''}`).join('\n')
+    : '';
+
+  const sessionsLines = (weekSessions || []).slice(0, 10).map(s =>
+    `- ${s.asset || '?'} (${s.sessionType || 'LIVE'}, ${s.outcome || '?'}, ${s.state}, ${s.ruleCompliance === true ? 'inside rules' : s.ruleCompliance === false ? 'broke rules' : 'rules not recorded'})`
+  ).join('\n');
+
+  return `You are KAIZEN (改), writing the weekly letter for ${user.username}. This is a private letter about their week of trading practice. It is read on one page, on a phone, with a cup of coffee.
+
+HARD RULES:
+- NEVER include a score line, percentage-as-judgment, or rank. Movement facts may be referenced plainly ("risk held steady"), but this letter is words, not numbers.
+- No profit promises, no performance claims. Practice consistency is never trading performance.
+- One page. Four short sections max. Warm, direct, zero flattery.
+
+THE WEEK:
+Sessions: ${stats.total} (${stats.byType.LIVE} live, ${stats.byType.BACKTEST} backtest, ${stats.byType.STUDY} study)
+Loop: ${stats.loopCompleted} fully analyzed, ${stats.loopOpen} still open
+Inside rules: ${stats.complianceRate == null ? 'not recorded this week' : stats.compliant + ' of ' + stats.checked}
+Dimension movement (background — reference at most one, in words):
+${dimLines || 'no computed movement yet'}
+Sessions this week:
+${sessionsLines || 'none'}
+${themes ? `What they have been working on psychologically (from private conversations — acknowledge only if the week's sessions reflect it, and gently):\n${themes}` : ''}
+${system && system.name ? `Their system: "${system.name}" (v${system.version}).` : ''}
+
+WRITE THE LETTER with exactly these sections, no headers needed:
+1. Two-three sentences: the week in plain words.
+2. The strongest moment — something specific they did.
+3. The one pattern most worth attention next week — direct, not harsh.
+4. One focus for next week, phrased as a process, not an outcome.`;
+}
+
+const DIMENSION_ORDER = ['process', 'risk', 'execution', 'behavior', 'learning'];
+
+async function writeWeeklyLetter({ user, system, weekSessions, movement, mindState }) {
+  if (process.env.ANTHROPIC_API_KEY) {
+    try {
+      const raw = await callClaude(
+        buildWeeklyLetterPrompt({ user, system, weekSessions, movement, mindState }),
+        'Write this week\'s letter.'
+      );
+      return raw.trim();
+    } catch (err) {
+      console.error('Weekly letter API error:', err.message);
+      // fall through to deterministic
+    }
+  }
+  return buildWeeklyFallback({ weekSessions, movement, mindState });
+}
+
+/** Deterministic weekly letter (no API key) — honest, specific, never scored. */
+function buildWeeklyFallback({ weekSessions, movement, mindState }) {
+  const stats = require('./weekly').weekStats(weekSessions);
+  const parts = [];
+
+  parts.push(`This week: ${stats.total} session${stats.total === 1 ? '' : 's'} — ${stats.byType.LIVE} live, ${stats.byType.BACKTEST} backtest, ${stats.byType.STUDY} study. ${stats.loopCompleted} made it all the way through the loop${stats.loopOpen ? `, ${stats.loopOpen} still waiting to be finished` : ''}.`);
+
+  if (stats.complianceRate != null) {
+    parts.push(stats.compliant === stats.checked
+      ? 'Every recorded session stayed inside your rules. Protect whatever conditions made that possible — they are the real edge.'
+      : `${stats.compliant} of ${stats.checked} recorded sessions stayed inside your rules. The misses are the curriculum — each one has a reason underneath it.`);
+  }
+
+  const activeTheme = mindState && mindState.themes &&
+    mindState.themes.find(t => t.status === 'active');
+  if (activeTheme) {
+    parts.push(`You have been working on ${activeTheme.name.toLowerCase()} in your conversations — watch whether next week's sessions show it too. The chart is where the inner work becomes visible.`);
+  }
+
+  const focusDim = movement && movement.dimensions &&
+    ['risk', 'process', 'execution', 'behavior', 'learning'].find(k => movement.dimensions[k].delta != null && movement.dimensions[k].delta < 0);
+  parts.push(focusDim
+    ? `Next week, one focus: ${focusDim === 'learning' ? 'write the reflection before the day ends — even three lines' : focusDim + ', one rule at a time'}. Process, not outcome.`
+    : 'Next week, one focus: finish what you start — every session that gets planned deserves its reflection. Process, not outcome.');
+
+  return parts.join('\n\n');
+}
+
+module.exports = { analyzeSession, parseExtracted, stripExtracted, buildFallback, writeWeeklyLetter, buildWeeklyFallback };

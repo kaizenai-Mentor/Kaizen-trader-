@@ -47,10 +47,21 @@ const getDashboard = async (req, res) => {
       score = score.toObject();
     }
 
-    // One-time cutover explainer
-    const showCutover = !user.scoreCutoverShownAt;
+    // One-time explainer modals:
+    // - V1-era accounts → cutover modal (Discipline → KAIZEN Score).
+    // - V2-era accounts (D1) → "How your KAIZEN Score works" intro.
+    //   Never anti-gaming talk (frozen rule 9).
+    const V2_LAUNCH = new Date('2026-09-13T00:00:00Z');
+    const isV2Account = user.createdAt && user.createdAt >= V2_LAUNCH;
+    const showCutover = !isV2Account && !user.scoreCutoverShownAt;
     if (showCutover) {
       user.scoreCutoverShownAt = new Date();
+      await user.save();
+    }
+    let showIntro = false;
+    if (isV2Account && !user.scoreIntroShownAt) {
+      showIntro = true;
+      user.scoreIntroShownAt = new Date();
       await user.save();
     }
 
@@ -166,6 +177,7 @@ const getDashboard = async (req, res) => {
       streak: userWithBadges.streak || 0,
       badgeCount: (userWithBadges.badges || []).length,
       showCutover,
+      showIntro,
       systemVersion: system.version,
       title: 'Cockpit'
     });

@@ -69,7 +69,7 @@ treatment specified here) · 🔨 REBUILD (page must be rebuilt to the spec belo
 | KAIZEN AI | `/kaizen-ai` | ✅ LIVE (rebuilt) | see git log (§3.2) |
 | Memories | `/memories` | 🔁 CARRIED → restyle | this doc §3.3 |
 | My Progress | `/leaderboard` | ✅ LIVE (rebuilt) | see git log (§2.8) |
-| Weekly Report | `/weekly-summary` | 🔁 CARRIED → rewire | this doc §4.2 |
+| Weekly Report | `/weekly-summary` | ✅ LIVE (rewired) | see git log (§4.2) |
 | Chart | `/chart` | 🔁 CARRIED (kept) | this doc §4.1 |
 | Market News | `/news` | 🔁 CARRIED (kept) | this doc §4.3 |
 | Wallets & Verification | `/za/reputation/:id` | 🔁 CARRIED | this doc §5 |
@@ -125,12 +125,11 @@ Cockpit" from the Trading System editor; nav → Improve → Cockpit.
 - Cutover explainer — first visit after engine ships (`user.scoreCutoverShownAt`
   null): modal "Your Discipline Score is now your KAIZEN Score" — five dimensions,
   WHY, Building honesty, the loop. Sets the flag server-side on render.
-- New-user intro (D1 — PENDING BUILD): one-time "How your KAIZEN Score works"
-  modal for accounts created after V2 (no V1 history): five dimensions, WHY,
-  Building honesty. **No anti-gaming mention** (global rule 9).
-- Pending build item: `/about#kaizen-score` — the "How is this scored?" section
-  does not exist yet (the Cockpit links to it). Add it in the same pass as D1,
-  rule 9 compliant.
+- New-user intro (D1 — ✅ BUILT): one-time "How your KAIZEN Score works"
+  modal for accounts created after V2 launch (five dimensions, WHY, Building
+  honesty; no anti-gaming mention — rule 9; User.scoreIntroShownAt).
+- `/about#kaizen-score` (✅ BUILT): "How is this scored?" section — fixed
+  formula, five dimension cards, WHY + Building honesty, rule-9 clean.
 
 **Rules.** Gold: score, meter fills, dimension labels, streak number, links.
 Everything else reading color. Light-theme parity via CSS variables. Meters
@@ -514,7 +513,7 @@ in without migration.
 Tools, session-linking: from a Record page "open chart for this asset" (asset
 pre-filled). No functional rebuild in this phase.
 
-## 4.2 WEEKLY REPORT — `/weekly-summary` 🔁 CARRIED → rewire
+## 4.2 WEEKLY REPORT — `/weekly-summary` ✅ LIVE (rewired as specced)
 
 **Purpose.** "Your week in one honest page" — the week's sessions, score
 movement, and a short coach's letter.
