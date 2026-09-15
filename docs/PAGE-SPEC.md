@@ -9,7 +9,8 @@ the "functions of each page" step of the locked sequence (core loop pages → au
 **How to read it.** Each page has: purpose → entry points → layout (mobile-first) →
 states → data & logic → rules (integrity / copy / theme) → acceptance criteria →
 build status. "Owner decision" marks a point that is genuinely yours to make;
-everything else is decided and consistent with the frozen specs.
+everything else is decided and consistent with the frozen specs and the locked
+master vision in `docs/VISION.md`.
 
 **Status legend.** ✅ LIVE (built in V2 code) · 🔁 CARRIED (V1 page still serving, V2
 treatment specified here) · 🔨 REBUILD (page must be rebuilt to the spec below).
@@ -295,6 +296,13 @@ regions:
 **Rules.** Region A is the page's primary content (top). Reputation honesty
 labels everywhere. No P&L comparisons ever.
 
+**Locked future scope (docs/VISION.md):** KAIZEN Challenges arrive here later —
+14-Day Process Challenge, Risk Discipline Challenge, No Rule-Breaking Challenge,
+Weekly Review Challenge — competition around process, never highest-score-wins.
+Progression identities (Observer → Journaler → Process Builder → Self-Aware →
+Consistent → Disciplined → KAIZEN Trader) land after the score engine proves
+itself; they are development identities, never profitability claims.
+
 **Acceptance.** Timeline renders from real snapshots (empty state for fresh
 users); region separation visually unmistakable; mobile single column.
 
@@ -532,7 +540,7 @@ NOT KAIZEN analysis — labeled "market data, not advice."
 
 ---
 
-# 5. IDENTITY PILLAR — WALLOTS & VERIFICATION — `/za/reputation/:id` 🔁 CARRIED
+# 5. IDENTITY PILLAR — WALLETS & VERIFICATION — `/za/reputation/:id` 🔁 CARRIED
 
 **Purpose.** One page (per App.js): connected wallets (private by default),
 credentials + Mantle records (testnet clearly labeled), optional ZA reputation
@@ -542,6 +550,19 @@ and its bounties. No blockchain jargon in the UI.
 (not top-level nav); reputation labeled as verification evidence — never skill,
 never trading performance. Carried V1 functionality otherwise; rebuild deferred
 with the Trader Profile phase.
+
+**Locked roadmap anchors (docs/VISION.md):**
+- The **evidence ladder** frames this page: L1 self-reported → L2
+  KAIZEN-observed → L3 externally verified → L4 real-capital history. The page
+  communicates which rungs a trader stands on; the score already separates
+  declared vs extracted evidence (evidenceMix).
+- **One universal wallet interface** over time — Stacks now, EVM and other
+  networks later; private by default always.
+- **Mantle records credentials; it never calculates anything.**
+- Stage 4 **credential names**: Process Discipline, Risk Management,
+  Consistency, Improvement, Rule Adherence, Long-Term Development — each states
+  what was demonstrated and the evidence behind it. Never a profitability claim.
+- Token ownership can never raise reputation (if a token ever exists).
 
 ---
 

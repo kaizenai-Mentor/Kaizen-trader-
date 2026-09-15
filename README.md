@@ -1,7 +1,11 @@
 # KAIZEN — Trader Improvement & Reputation Platform
 
-> KAIZEN is a trader improvement and reputation platform that turns
-> trading behavior into measurable progress and verifiable credentials.
+> KAIZEN is an operating system for trader development — helping traders
+> build better processes, understand their behavior, measure their
+> improvement, and turn their trading history into credible evidence and
+> reputation.
+>
+> **Improve. Prove. Build Reputation. Unlock Opportunity.**
 
 **North star:** KAIZEN is being built to be the best AI for trading the
 way Claude is the best AI for coding — not by predicting markets, but
@@ -9,7 +13,9 @@ by knowing the trader: their rules, their record, their mind. Every
 session, every conversation, every spec teaches it. The near future is
 a mentor that can teach trading from scratch; autonomous execution is
 a far-future phase that will only be earned after the mentor proves
-itself.
+itself. The full locked vision and eight-stage roadmap live in
+`docs/VISION.md` — Stage 1 (Trader Improvement) is now; the capital
+ecosystem is deliberately not.
 
 **Core loop:** PLAN → TRADE → REFLECT → ANALYZE → IMPROVE → REPEAT
 
@@ -103,6 +109,9 @@ The V2 rebuild is specified in-repo, in order:
 - `config/App.js` / `config/AppAudit.js` / `config/AppCopy.js` /
   `config/AppDesign.js` / `config/CoreLoop.js` — the in-app core loop:
   frozen definition, audit, copy, design, walkthrough
+- `docs/VISION.md` — the locked master vision & eight-stage roadmap
+  (why KAIZEN exists, the flywheel, the evidence ladder, what we
+  deliberately don't build yet)
 - `docs/PAGE-SPEC.md` — the detailed per-page functional spec (every
   surface: purpose, states, logic, rules, acceptance criteria; includes
   the Psychology rebuild vision — the ChatGPT-style conversation surface
