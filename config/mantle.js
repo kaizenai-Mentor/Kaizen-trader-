@@ -175,7 +175,7 @@ async function getStatus() {
         status.writerIsOwner = !!status.owner &&
           wallet.address.toLowerCase() === status.owner.toLowerCase();
         if (!status.writerIsOwner) {
-          status.issues.push(`Writer ${wallet.address} is NOT the contract owner${status.owner ? ' (' + status.owner + ')' : ''} — every record transaction will revert with "Not authorized". Use the deployer key as MANTLE_PRIVATE_KEY, or call transferOwnership on the contract.`);
+          status.issues.push(`Writer ${wallet.address} is NOT the contract owner${status.owner ? ' (' + status.owner + ')' : ''} — every record transaction will revert with "Not authorized". The deployed contract has no transferOwnership function: set MANTLE_PRIVATE_KEY to the deployer (Termux) key. Run contracts/check-owner.js to confirm.`);
         }
       } catch (e) {
         status.issues.push('MANTLE_PRIVATE_KEY is set but invalid: ' + e.message);
@@ -286,7 +286,7 @@ async function preflight(c, method, args) {
   } catch (e) {
     const msg = e && (e.shortMessage || e.reason || e.message) || String(e);
     const ownerNote = /not authorized/i.test(msg)
-      ? ' — the server wallet is not the contract owner. Use the deployer (Termux) key as MANTLE_PRIVATE_KEY, or transferOwnership to the server wallet.'
+      ? ' — the server wallet is not the contract owner. The deployed contract has NO transferOwnership function, so the only fix is to set MANTLE_PRIVATE_KEY to the deployer (Termux) key.'
       : '';
     console.error(`Mantle ${method} pre-flight revert: ${msg}${ownerNote}`);
     return new Error(`Mantle ${method} would revert: ${msg}${ownerNote}`);
