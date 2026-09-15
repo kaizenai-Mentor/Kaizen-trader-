@@ -81,12 +81,18 @@ key. No key change alone can fix that: the current `KaizenBenchmark.sol`
 must be deployed fresh. Nothing is lost — the old contracts hold zero
 successful records.
 
-1. On Termux, get the CURRENT repo (this matters — old local copies and the
-   old `deploy-quick.js` are what shipped the outdated code):
+1. On Termux, get the CURRENT code. If you already have a clean clone of
+   this repo, run `git pull` inside it. If your Termux copy is an older
+   folder — or you are not sure — make a FRESH clone instead (the repo is
+   public, so cloning needs no login and cannot trigger password prompts):
    ```bash
-   git pull
-   cd contracts && npm install
+   git clone --depth 1 -b arena/01a08895-kaizen-trader \
+     https://github.com/kaizenai-Mentor/Kaizen-trader-.git kaizen-deploy
+   cd kaizen-deploy/contracts
+   npm install
    ```
+   (Until the T2 work is merged, the current code lives on that working
+   branch; after the merge, a plain clone with no `-b` is enough.)
 2. Pick the key: your usual Termux wallet key (the app has used it before —
    its writes came from `0x5Cc4664b…`), or ONE new dedicated key:
    ```bash
