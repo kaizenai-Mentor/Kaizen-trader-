@@ -103,29 +103,6 @@ const BADGES = [
     check: (stats) => stats.streak >= 30
   },
 
-  // Psychology badges
-  {
-    id: 'psych_first',
-    name: 'Mind Matters',
-    emoji: '🧠',
-    description: 'Completed your first psychology session',
-    check: (stats) => stats.psychSessions >= 1
-  },
-  {
-    id: 'psych_5',
-    name: 'Inner Work',
-    emoji: '🔮',
-    description: 'Completed 5 psychology sessions',
-    check: (stats) => stats.psychSessions >= 5
-  },
-  {
-    id: 'psych_10',
-    name: 'Mental Edge',
-    emoji: '🎭',
-    description: 'Completed 10 psychology sessions',
-    check: (stats) => stats.psychSessions >= 10
-  },
-
   // Special badges
   {
     id: 'perfect_week',

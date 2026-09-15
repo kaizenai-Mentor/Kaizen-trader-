@@ -5,7 +5,7 @@ const getRegister = (req, res) => {
   if (req.session.user) return res.redirect('/dashboard');
   res.render('register', {
     error: null,
-    step: 'form',
+    step: 'join',
     query: req.query
   });
 };
@@ -18,21 +18,21 @@ const postRegister = async (req, res) => {
     if (!username || !email || !password || !confirmPassword) {
       return res.render('register', {
         error: 'All fields are required',
-        step: 'form'
+        step: 'join'
       });
     }
 
     if (password !== confirmPassword) {
       return res.render('register', {
         error: 'Passwords do not match',
-        step: 'form'
+        step: 'join'
       });
     }
 
     if (password.length < 6) {
       return res.render('register', {
         error: 'Password must be at least 6 characters',
-        step: 'form'
+        step: 'join'
       });
     }
 
@@ -43,7 +43,7 @@ const postRegister = async (req, res) => {
     if (existingUser) {
       return res.render('register', {
         error: 'Email or username already taken',
-        step: 'form'
+        step: 'join'
       });
     }
 
@@ -82,17 +82,14 @@ const postRegister = async (req, res) => {
       streak: user.streak
     };
 
-    return res.render('register', {
-      error: null,
-      step: 'questions',
-      questionNum: 1
-    });
+    // JOIN done → RULES next (PRG)
+    return res.redirect('/auth/onboarding/rules');
 
   } catch (error) {
     console.error('Register error:', error);
     res.render('register', {
       error: 'Something went wrong. Please try again.',
-      step: 'form'
+      step: 'join'
     });
   }
 };
@@ -102,68 +99,60 @@ const verifyOTP = (req, res) => {
   res.redirect('/auth/register');
 };
 
-// POST /auth/onboarding
-const handleOnboarding = async (req, res) => {
+// POST /auth/onboarding — legacy 5-question flow retired in V2;
+// send anyone still posting here to the guided system step.
+const handleOnboarding = (req, res) => {
+  if (!req.session.user) return res.redirect('/auth/register');
+  res.redirect('/auth/onboarding/rules');
+};
+
+// GET /auth/onboarding/rules — RULES: build your first Trading System
+const getOnboardingRules = (req, res) => {
+  if (!req.session.user) return res.redirect('/auth/register');
+  res.render('register', { error: null, step: 'rules', query: {} });
+};
+
+// POST /auth/onboarding/rules — save the guided first system, then PLAN
+const postOnboardingRules = async (req, res) => {
+  if (!req.session.user) return res.redirect('/auth/register');
   try {
-    const { questionNum } = req.body;
-    const currentQ = parseInt(questionNum);
+    const TradingSystem = require('../models/TradingSystem');
+    const user = await User.findById(req.session.user.id);
+    if (!user) return res.redirect('/auth/login');
+    const system = await TradingSystem.ensureForUser(user);
 
-    if (!req.session.onboarding) {
-      req.session.onboarding = {};
-    }
+    const b = req.body;
+    const lines = t => String(t || '').split('\n').map(s => s.trim()).filter(Boolean);
+    if (b.markets) system.marketConditions = b.markets.trim();
+    if (b.tradingHours) system.tradingHours = b.tradingHours.trim();
+    system.setups = lines(b.setups).map(name => ({ name }));
+    if (b.entryRules) system.entryRules = b.entryRules.trim();
+    system.riskRules = {
+      ...system.riskRules,
+      riskPerTrade: (b.riskPerTrade || '').trim(),
+      maxDailyTrades: (b.maxDailyTrades || '').trim(),
+      dailyDrawdown: (b.dailyDrawdown || '').trim()
+    };
 
-    if (currentQ === 1) {
-      req.session.onboarding.riskPerTrade = req.body.riskPerTrade;
-      req.session.onboarding.dailyDrawdown = req.body.dailyDrawdown;
-    } else if (currentQ === 2) {
-      req.session.onboarding.tradingEdge = req.body.tradingEdge;
-    } else if (currentQ === 3) {
-      req.session.onboarding.entryRule = req.body.entryRule;
-      req.session.onboarding.stopLossRule = req.body.stopLossRule;
-      req.session.onboarding.takeProfitRule = req.body.takeProfitRule;
-    } else if (currentQ === 4) {
-      const triggers = req.body.emotionalTriggers;
-      req.session.onboarding.emotionalTriggers = Array.isArray(triggers)
-        ? triggers.join(', ')
-        : triggers || '';
-    } else if (currentQ === 5) {
-      const markets = req.body.markets;
-      req.session.onboarding.maxDailyTrades = req.body.maxDailyTrades;
-      req.session.onboarding.markets = Array.isArray(markets)
-        ? markets.join(', ')
-        : markets || '';
-      req.session.onboarding.maxPositionSize = req.body.maxPositionSize;
-
-      await User.findByIdAndUpdate(req.session.user.id, {
-        tradingStyle: {
-          riskPerTrade: req.session.onboarding.riskPerTrade,
-          dailyDrawdown: req.session.onboarding.dailyDrawdown,
-          tradingEdge: req.session.onboarding.tradingEdge,
-          entryRule: req.session.onboarding.entryRule,
-          stopLossRule: req.session.onboarding.stopLossRule,
-          takeProfitRule: req.session.onboarding.takeProfitRule,
-          emotionalTriggers: req.session.onboarding.emotionalTriggers,
-          maxDailyTrades: req.session.onboarding.maxDailyTrades,
-          markets: req.session.onboarding.markets,
-          maxPositionSize: req.session.onboarding.maxPositionSize
-        }
-      });
-
-      delete req.session.onboarding;
-      return res.redirect('/dashboard');
-    }
-
-    const nextQ = currentQ + 1;
-    return res.render('register', {
-      error: null,
-      step: 'questions',
-      questionNum: nextQ
-    });
-
+    await system.saveAsNewVersion('First system — built during onboarding.');
+    return res.redirect('/dashboard/sessions/new');
   } catch (error) {
-    console.error('Onboarding error:', error);
-    res.redirect('/dashboard');
+    console.error('Onboarding rules error:', error.message);
+    res.redirect('/dashboard/sessions/new');
   }
+};
+
+// POST /auth/onboarding/skip — blank system v1, refine later
+const skipOnboardingRules = async (req, res) => {
+  if (!req.session.user) return res.redirect('/auth/register');
+  try {
+    const TradingSystem = require('../models/TradingSystem');
+    const user = await User.findById(req.session.user.id);
+    if (user) await TradingSystem.ensureForUser(user);
+  } catch (error) {
+    console.error('Onboarding skip error:', error.message);
+  }
+  res.redirect('/dashboard');
 };
 
 // GET /auth/login
@@ -265,6 +254,9 @@ module.exports = {
   postRegister,
   verifyOTP,
   handleOnboarding,
+  getOnboardingRules,
+  postOnboardingRules,
+  skipOnboardingRules,
   getLogin,
   postLogin,
   logout,

@@ -1,38 +1,129 @@
 const checkBadges = require('../config/checkBadges');
 const User = require('../models/User');
 const Journal = require('../models/Journal');
+const TradingSystem = require('../models/TradingSystem');
+const ScoreSnapshot = require('../models/ScoreSnapshot');
+const { computeScore } = require('../services/scoreEngine');
+const { runV1Extraction } = require('../services/extraction');
 
+const DIMENSION_LABELS = {
+  process: 'Process', risk: 'Risk', execution: 'Execution',
+  behavior: 'Behavior', learning: 'Learning & Consistency'
+};
+
+const { SESSION_MILESTONES } = require('../services/progress');
+
+// ── THE COCKPIT (config/App.js D-sections, Step 5 M3) ───────────
+// The honest answer to "How am I improving?" — no P&L, no on-chain
+// reputation on this surface. Score instrument + today's actions +
+// recent pattern + next milestone + essentials.
 const getDashboard = async (req, res) => {
   try {
     const user = await User.findById(req.session.user.id);
+    const system = await TradingSystem.ensureForUser(user);
 
-    const allJournals = await Journal.find({
-      userId: req.session.user.id
-    }).sort({ createdAt: -1 });
+    const recentSessions = await Journal.find({ userId: user._id })
+      .sort({ createdAt: -1 }).limit(60).lean();
 
-    const journals = allJournals.slice(0, 10);
-
-    let score = 0;
-    if (allJournals.length > 0) {
-      const compliant = allJournals.filter(j => j.ruleCompliance).length;
-      score = Math.round((compliant / allJournals.length) * 100);
-      await User.findByIdAndUpdate(req.session.user.id, {
-        disciplineScore: score
-      });
-      req.session.user.disciplineScore = score;
+    // One-time cutover: extract V1 history, compute the first V2 score.
+    let extracted = user.v1Evidence || null;
+    if (!user.v1ExtractedAt) {
+      extracted = await runV1Extraction(user, Journal) || null;
     }
 
+    let score = await ScoreSnapshot.findOne({ userId: user._id })
+      .sort({ computedAt: -1 }).lean();
+    if (!score) {
+      const computed = computeScore(recentSessions, system, extracted);
+      score = await ScoreSnapshot.create({
+        userId: user._id,
+        formulaVersion: computed.formulaVersion,
+        overall: computed.overall,
+        overallState: computed.overallState,
+        dimensions: computed.dimensions,
+        evidenceMix: computed.evidenceMix,
+        sessionsConsidered: computed.sessionsConsidered
+      });
+      score = score.toObject();
+    }
+
+    // One-time explainer modals:
+    // - V1-era accounts → cutover modal (Discipline → KAIZEN Score).
+    // - V2-era accounts (D1) → "How your KAIZEN Score works" intro.
+    //   Never anti-gaming talk (frozen rule 9).
+    const V2_LAUNCH = new Date('2026-09-13T00:00:00Z');
+    const isV2Account = user.createdAt && user.createdAt >= V2_LAUNCH;
+    const showCutover = !isV2Account && !user.scoreCutoverShownAt;
+    if (showCutover) {
+      user.scoreCutoverShownAt = new Date();
+      await user.save();
+    }
+    let showIntro = false;
+    if (isV2Account && !user.scoreIntroShownAt) {
+      showIntro = true;
+      user.scoreIntroShownAt = new Date();
+      await user.save();
+    }
+
+    // ── TODAY: what to do right now ──
+    const startOfDay = new Date(); startOfDay.setHours(0, 0, 0, 0);
+    const openPlan = recentSessions.find(s => s.state === 'PLANNED') || null;
+    const todaySession = recentSessions.find(
+      s => s.state !== 'PLANNED' && s.createdAt >= startOfDay
+    ) || null;
+    const lastAnalyzed = recentSessions.find(s => s.state === 'ANALYZED') || null;
+
+    const todayActions = [];
+    if (openPlan) {
+      todayActions.push({
+        title: 'Record your session',
+        body: `Your planned ${openPlan.sessionType || 'LIVE'} session is waiting — record what actually happened.`,
+        cta: 'Open record', href: `/dashboard/sessions/${openPlan._id}/record`
+      });
+    }
+    if (!todaySession) {
+      todayActions.push({
+        title: 'Plan today\'s session',
+        body: recentSessions.length
+          ? 'Decide what you\'re looking for before you look at a chart.'
+          : 'Log your first session — plan it before you trade. The score builds as you go, no instant judgment.',
+        cta: 'Start a plan', href: '/dashboard/sessions/new'
+      });
+    } else if (todaySession.state === 'RECORDED') {
+      todayActions.push({
+        title: 'Reflect on today\'s session',
+        body: 'Four prompts in your own words. KAIZEN AI responds after you write.',
+        cta: 'Write reflection', href: `/dashboard/sessions/${todaySession._id}/reflect`
+      });
+    } else if (todaySession.state === 'REFLECTED') {
+      todayActions.push({
+        title: 'Read your analysis',
+        body: 'Your reflection is in. See what the engine and the coach found.',
+        cta: 'Open analysis', href: `/dashboard/sessions/${todaySession._id}`
+      });
+    }
+    if (!openPlan && !todaySession && lastAnalyzed) {
+      todayActions.push({
+        title: 'Review your last lesson',
+        body: 'Re-read what your last session taught you before the next one.',
+        cta: 'Open session', href: `/dashboard/sessions/${lastAnalyzed._id}`
+      });
+    }
+
+    // ── RECENT PATTERN (deterministic, from the last 5 sessions) ──
     let predictiveWarning = null;
-    if (allJournals.length >= 5) {
-      const recentFive = allJournals.slice(0, 5);
+    if (recentSessions.length >= 5) {
+      const recentFive = recentSessions.slice(0, 5);
       const violations = recentFive.filter(j => !j.ruleCompliance).length;
-      const allText = recentFive.map(j => j.notes.toLowerCase()).join(' ');
+      const allText = recentFive.map(j =>
+        ((j.notes || '') + ' ' + ((j.reflection && (j.reflection.whatHappened + ' ' + (j.reflection.wouldChange || ''))) || '')).toLowerCase()
+      ).join(' ');
       const fomoCount = (allText.match(/fomo/gi) || []).length;
       const revengeCount = (allText.match(/revenge|frustrat/gi) || []).length;
 
       if (violations >= 3) {
         predictiveWarning = {
-          message: `You have violated rules in ${violations} of your last 5 sessions. Review your entry criteria before opening any chart today.`,
+          message: `You have broken your rules in ${violations} of your last 5 sessions. Review your entry criteria before opening any chart today.`,
           level: 'high'
         };
       } else if (fomoCount >= 2) {
@@ -42,16 +133,28 @@ const getDashboard = async (req, res) => {
         };
       } else if (revengeCount >= 1) {
         predictiveWarning = {
-          message: 'Signs of frustration detected in recent sessions. Only trade if your emotional state is neutral today.',
+          message: 'Signs of frustration in recent sessions. Only trade if your emotional state is neutral today.',
           level: 'medium'
         };
-      } else if (violations === 0 && recentFive.length === 5) {
+      } else if (violations === 0) {
         predictiveWarning = {
-          message: 'Five consecutive compliant sessions. Your discipline is building. Protect this streak today.',
+          message: 'Five consecutive sessions inside your rules. Your discipline is building — protect this streak today.',
           level: 'positive'
         };
       }
     }
+
+    // ── NEXT MILESTONE ──
+    const totalSessions = await Journal.countDocuments({ userId: user._id });
+    const nextThreshold = SESSION_MILESTONES.find(m => m > totalSessions);
+    const nextMilestone = nextThreshold ? {
+      label: `${nextThreshold} sessions logged`,
+      progress: Math.round((totalSessions / nextThreshold) * 100),
+      remaining: nextThreshold - totalSessions
+    } : {
+      label: `${SESSION_MILESTONES[SESSION_MILESTONES.length - 1]}+ sessions — legend territory`,
+      progress: 100, remaining: 0
+    };
 
     const userWithBadges = await User.findById(req.session.user.id);
 
@@ -63,19 +166,34 @@ const getDashboard = async (req, res) => {
 
     res.render('dashboard', {
       user: userWithBadges,
-      journals,
-      disciplineScore: score,
-      totalSessions: allJournals.length,
+      sessions: recentSessions.slice(0, 5),
+      score,
+      dimensionLabels: DIMENSION_LABELS,
+      todayActions,
       predictiveWarning,
+      nextMilestone,
+      totalSessions,
       newBadges,
       streak: userWithBadges.streak || 0,
-      referralCount: userWithBadges.referralCount || 0
+      badgeCount: (userWithBadges.badges || []).length,
+      showCutover,
+      showIntro,
+      systemVersion: system.version,
+      title: 'Cockpit'
     });
 
   } catch (error) {
     console.error('Dashboard error:', error.message);
     res.redirect('/auth/login');
   }
+};
+
+// Cutover explainer acknowledged (safety net — flag is normally set on render)
+const ackCutover = async (req, res) => {
+  try {
+    await User.findByIdAndUpdate(req.session.user.id, { scoreCutoverShownAt: new Date() });
+  } catch (_) { /* non-fatal */ }
+  res.redirect('/dashboard');
 };
 
 const addJournal = async (req, res) => {
@@ -572,6 +690,7 @@ const getJournals = async (req, res) => {
 
 module.exports = {
   getDashboard,
+  ackCutover,
   addJournal,
   getJournals
 };

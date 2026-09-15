@@ -164,7 +164,6 @@ const linkZaAccount = async (req, res) => {
   try {
     const User = require('../models/User');
     const Journal = require('../models/Journal');
-    const mantle = require('../config/mantle');
 
     const { zaInput } = req.body || {};
     const parsed = parseZaLinkInput(zaInput);
@@ -200,15 +199,7 @@ const linkZaAccount = async (req, res) => {
     const user = await User.findById(req.session.user.id);
     const totalSessions = await Journal.countDocuments({ user: user._id });
 
-    let mantleEvents = 0;
-    let mantleUserStats = { currentScore: 0, sessionCount: 0, milestoneCount: 0 };
-    try {
-      const totals = await mantle.getTotalEvents();
-      mantleEvents = totals.total || 0;
-      mantleUserStats = await mantle.getUserStats(user._id);
-    } catch (mErr) {
-      console.error('Mantle fetch error on ZA link:', mErr.message);
-    }
+    const mantleProfile = await fetchMantleProfile(user._id);
 
     if (!zaData && user.zaUserId && !linkError) {
       // If we already have a stored id (link succeeded above via matched, but
@@ -234,8 +225,12 @@ const linkZaAccount = async (req, res) => {
       disciplineScore: user.disciplineScore || 0,
       totalSessions,
       streak: user.streak || 0,
-      mantleEvents,
-      mantleUserStats,
+      mantleEvents: mantleProfile.events,
+      mantleUserStats: mantleProfile.userStats,
+      mantleRecent: mantleProfile.recent,
+      mantleNote: mantleProfile.note,
+      mantleNetwork: mantleProfile.network,
+      mantleExplorer: mantleProfile.explorer,
       zaData,
       reputation: zaData,
       linkError,
@@ -260,27 +255,65 @@ const unlinkZaAccount = async (req, res) => {
   }
 };
 
+/**
+ * Shared Mantle data for the reputation page (reads only — no private key
+ * needed). Includes recent on-chain records and an honest explanation when
+ * the numbers are zero, so the page never shows a bare unexplained 0 again.
+ */
+async function fetchMantleProfile(userId) {
+  const mantle = require('../config/mantle');
+  const profile = {
+    events: 0,
+    userStats: { currentScore: 0, sessionCount: 0, milestoneCount: 0 },
+    recent: [],
+    note: null,
+    network: null,
+    explorer: mantle.explorerBase()
+  };
+  try {
+    const [totals, userStats, recent, status] = await Promise.all([
+      mantle.getTotalEvents(),
+      mantle.getUserStats(userId),
+      mantle.getRecentEvents({ userId, limit: 8 }),
+      mantle.getStatus()
+    ]);
+    profile.events = totals.total || 0;
+    profile.userStats = userStats;
+    profile.recent = recent;
+    profile.network = status.network || 'Mantle Sepolia (testnet)';
+
+    if (profile.events === 0) {
+      // Explain the zero honestly (server-side issue strings stay in logs;
+      // the user-facing note stays plain, no blockchain jargon).
+      if (!status.contractAddress) {
+        profile.note = 'On-chain recording is not connected yet.';
+      } else if (status.contractHasCode === false) {
+        profile.note = 'On-chain recording points at a contract this network cannot find — the address and the network do not match.';
+      } else if (status.chainId === 5003 || status.chainId === 5000) {
+        profile.note = 'No records on-chain yet. Records appear here as they are earned and recorded.';
+      } else {
+        profile.note = 'On-chain recording is not connected right now.';
+      }
+    }
+  } catch (mErr) {
+    console.error('Mantle fetch error:', mErr.message);
+    profile.note = 'On-chain records could not be read right now.';
+  }
+  return profile;
+}
+
 // GET /za/reputation/:userId
 const getReputation = async (req, res) => {
   try {
     const User = require('../models/User');
     const Journal = require('../models/Journal');
-    const mantle = require('../config/mantle');
     const user = await User.findById(req.params.userId);
 
     if (!user) return res.redirect('/dashboard');
 
     const totalSessions = await Journal.countDocuments({ user: user._id });
 
-    let mantleEvents = 0;
-    let mantleUserStats = { currentScore: 0, sessionCount: 0, milestoneCount: 0 };
-    try {
-      const totals = await mantle.getTotalEvents();
-      mantleEvents = totals.total || 0;
-      mantleUserStats = await mantle.getUserStats(user._id);
-    } catch (mErr) {
-      console.error('Mantle fetch error on reputation:', mErr.message);
-    }
+    const mantleProfile = await fetchMantleProfile(user._id);
 
         // Award any newly-earned badges before rendering so badges stay in sync
     // with the score number.
@@ -324,8 +357,12 @@ const getReputation = async (req, res) => {
       disciplineScore: user.disciplineScore || 0,
       totalSessions,
       streak: user.streak || 0,
-      mantleEvents,
-      mantleUserStats,
+      mantleEvents: mantleProfile.events,
+      mantleUserStats: mantleProfile.userStats,
+      mantleRecent: mantleProfile.recent,
+      mantleNote: mantleProfile.note,
+      mantleNetwork: mantleProfile.network,
+      mantleExplorer: mantleProfile.explorer,
       zaData,
       reputation: zaData,
       linkError: null,
