@@ -25,7 +25,7 @@ const MemorySchema = new mongoose.Schema({
   type: {
     type: String,
     default: 'journal',
-    enum: ['journal', 'psychology', 'trading']
+    enum: ['journal', 'psychology']
   },
   createdAt: {
     type: Date,

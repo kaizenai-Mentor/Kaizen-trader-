@@ -4,10 +4,19 @@ async function checkAndAwardBadges(userId) {
   try {
     const User = require('../models/User');
     const Journal = require('../models/Journal');
+    const Memory = require('../models/Memory');
+
     const user = await User.findById(userId);
     if (!user) return [];
 
     const allJournals = await Journal.find({ userId });
+    const psychSessions = await Memory.find({
+      userId,
+      $or: [
+        { type: 'psychology' },
+        { asset: 'Psychology Session' }
+      ]
+    });
 
     // Check perfect week
     const sevenDaysAgo = new Date();
@@ -27,6 +36,7 @@ async function checkAndAwardBadges(userId) {
       totalSessions: allJournals.length,
       disciplineScore: user.disciplineScore || 0,
       streak: user.streak || 0,
+      psychSessions: psychSessions.length,
       perfectWeek,
       honestViolations,
       comeback: false // calculated below

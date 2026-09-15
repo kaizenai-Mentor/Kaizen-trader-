@@ -37,6 +37,22 @@ async function main() {
     console.error('  Set it to the address printed when you deployed (deploy-quick.js).');
     process.exit(1);
   }
+  // Validate BEFORE any RPC call: a private key or mangled string pasted
+  // here would otherwise be treated as an ENS name by ethers and die with
+  // a cryptic "network does not support ENS" error.
+  if (!ethers.isAddress(ADDRESS)) {
+    console.error('\n✗ MANTLE_CONTRACT_ADDRESS is not a valid contract address.');
+    console.error('  A contract address is 0x followed by 40 hex characters');
+    console.error('  (like 0x65fe9Ccd1701C680fb137dD9f0D571d9045c5A0E).');
+    console.error('  What was provided is ' + ADDRESS.length + ' characters long.');
+    if (ADDRESS.length === 64 || ADDRESS.length === 66) {
+      console.error('  That length matches a PRIVATE KEY, not a contract address.');
+      console.error('  If a key was pasted where the address belongs, run:');
+      console.error('    unset MANTLE_CONTRACT_ADDRESS');
+      console.error('  and start again with the address the deploy printed.');
+    }
+    process.exit(1);
+  }
   console.log('Contract:', ADDRESS);
 
   const provider = new ethers.JsonRpcProvider(RPC);

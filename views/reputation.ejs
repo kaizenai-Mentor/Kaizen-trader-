@@ -431,42 +431,13 @@
         </div>
       </div>
 
-      <% if (mantleRecent && mantleRecent.length) { %>
-        <div style="margin-bottom:20px;">
-          <div style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);margin-bottom:10px;">Recent On-Chain Records</div>
-          <% mantleRecent.forEach(function(ev){ %>
-            <div style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);flex-wrap:wrap;">
-              <span style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.1em;color:var(--blue);border:1px solid rgba(59,130,246,0.25);padding:2px 7px;"><%= ev.type %></span>
-              <span style="font-size:0.78rem;color:var(--text-primary);"><%= ev.label %></span>
-              <% if (ev.ts) { %>
-                <span style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--ash);margin-left:auto;">
-                  <%= new Date(ev.ts).toLocaleDateString('en-US',{month:'short',day:'numeric'}) %>
-                </span>
-              <% } %>
-              <% if (ev.txHash) { %>
-                <a href="<%= mantleExplorer %>/tx/<%= ev.txHash %>" target="_blank" style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--blue);text-decoration:none;">
-                  <%= ev.txHash.substring(0, 8) %>… ↗
-                </a>
-              <% } %>
-            </div>
-          <% }); %>
-          <div style="font-family:'DM Mono',monospace;font-size:0.52rem;letter-spacing:0.06em;color:var(--ash);margin-top:8px;line-height:1.6;">
-            Each record links to its immutable transaction — the same words are written on-chain, where they cannot be edited.
-          </div>
-        </div>
-      <% } else if (mantleNote) { %>
-        <p style="font-size:0.78rem;color:var(--ash);line-height:1.7;margin-bottom:20px;padding:12px 14px;border:1px dashed var(--border);">
-          <%= mantleNote %>
-        </p>
-      <% } %>
-
-      <a href="<%= mantleExplorer %>/address/<%= process.env.MANTLE_CONTRACT_ADDRESS || '' %>" target="_blank" style="display:inline-flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--blue);border:1px solid rgba(59,130,246,0.2);background:rgba(59,130,246,0.04);padding:10px 18px;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.background='rgba(59,130,246,0.1)'" onmouseout="this.style.background='rgba(59,130,246,0.04)'">
+      <a href="https://explorer.sepolia.mantle.xyz/address/<%= process.env.MANTLE_CONTRACT_ADDRESS || '' %>" target="_blank" style="display:inline-flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--blue);border:1px solid rgba(59,130,246,0.2);background:rgba(59,130,246,0.04);padding:10px 18px;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.background='rgba(59,130,246,0.1)'" onmouseout="this.style.background='rgba(59,130,246,0.04)'">
         View on Mantle Explorer
         <i data-feather="external-link" width="11" height="11"></i>
       </a>
 
       <p style="font-family:'DM Mono',monospace;font-size:0.52rem;letter-spacing:0.08em;color:rgba(201,168,76,0.3);margin-top:12px;text-transform:uppercase;">
-        Powered by KaizenBenchmark.sol · <%= mantleNetwork || 'Mantle Sepolia Testnet' %>
+        Powered by KaizenBenchmark.sol · Mantle Sepolia Testnet
       </p>
     </div>
 
