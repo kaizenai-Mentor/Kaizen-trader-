@@ -164,7 +164,42 @@ that's "KAIZEN records, Mantle proves."
 
 ---
 
-## Quick reference
+## PART E — Reading the explorer like a pro (lessons from the owner's addresses)
+
+### Contract vs wallet, at a glance
+- A **contract page** shows a *Contract Creator* line (who deployed it) and
+  Read/Write Contract sections. A **wallet page** shows neither.
+- In any transaction list, when the **To** column reads "Contract Creation"
+  and links an address — that transaction DEPLOYED the linked contract.
+- A contract's first activity is always its creation transaction.
+
+### A transaction appearing ≠ a transaction succeeding
+Every transaction pays gas and gets listed — even failed ones. Open the
+transaction page and read the **Status** field:
+- **Success** (green) — the record actually landed on-chain.
+- **Fail** (red, "execution reverted") — the record did NOT land, even though
+  the tx is visible in lists and links.
+On any address page, the **"View Failed Txns"** filter shows all failures at
+once. Always confirm Status before believing a record exists.
+
+### The owner's deployment map (found via the explorer, 15 Sep 2026)
+- **Termux wallet (the real working one):** `0x5Cc4664bFA670BB155671B15568835Afd463Be2C`
+- `0xE1145be6186D22FF92dc92192F1750E75F2813f1` — a CONTRACT created by that
+  wallet on Aug 26 (cheap deployment, only Transfer-style calls; looks like a
+  token/test, **not** KaizenBenchmark).
+- KaizenBenchmark deployments by the same wallet:
+  `0x47469b582cbe80d9Fa0253af3e139C1ca8cDCCD1` (Aug 23),
+  `0x79c840CC4B0E4d0e76D7337bE12e1D86962Eeb50` (Sep 2),
+  `0xd13169A27E8C1c3225Fe33df953a03A0Ae63988B` (Sep 2),
+  `0x45716a3F91ae2Db5281fe9d8c4ADd318690C366F` (Sep 3),
+  `0xeFdf3F3561352e95167Dfbd911458905F1748bb4` (Sep 3).
+- **Finding:** the journal-record transactions on the Sep 2 and Sep 3
+  contracts show **Status: Fail (execution reverted)** — the writes never
+  landed, which is why the reputation page showed zeros. The deployed
+  versions differ from the current `KaizenBenchmark.sol` (five deployments
+  over ten days); with unverified source the exact revert reason can't be
+  read, but the gas pattern matches an early `require` failure (the owner
+  check). Clean fix: redeploy the current source per Part B, Option 2.
 
 | Task | Command / place |
 |---|---|
