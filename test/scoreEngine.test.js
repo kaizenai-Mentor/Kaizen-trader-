@@ -92,6 +92,27 @@ test('cadence guard: the farming attempt becomes the data', () => {
   assert.ok(r.dimensions.behavior.reasons.some(x => /emotional pressure/i.test(x)));
 });
 
+test('honest emotion words in notes never count against behavior', () => {
+  // Regression for the owner's live complaint (16 Sep 2026): a compliant
+  // trader who writes "felt FOMO but waited" must not be flagged for it.
+  const sessions = Array.from({ length: 10 }, () => mk({
+    notes: 'Felt serious FOMO when price ran without me, but I waited for my setup and executed the plan. Frustrated I only caught half the move — but rules are rules.'
+  }));
+  const r = computeScore(sessions, null, null);
+  assert.strictEqual(r.dimensions.behavior.state, 'READY');
+  assert.ok(!r.dimensions.behavior.reasons.some(x => /emotional pressure/i.test(x)),
+    'honest emotion words in notes must not raise emotional pressure');
+});
+
+test('declared negative emotional state still counts (chips, not prose)', () => {
+  const sessions = Array.from({ length: 10 }, () => mk({
+    plan: { setup: '4H sweep', skipped: false, emotionalState: 'FOMO', confidence: 5 }
+  }));
+  const r = computeScore(sessions, null, null);
+  assert.ok(r.dimensions.behavior.reasons.some(x => /emotional pressure/i.test(x)),
+    'declared FOMO chips must still register');
+});
+
 test('duplicate-flagged reflections earn zero learning credit (novelty guard)', () => {
   const dup = mk({ evidenceFlags: { duplicateOf: '000000000000000000000000' } });
   const sessions = [dup, ...Array.from({ length: 5 }, () => mk())];

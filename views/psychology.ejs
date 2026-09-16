@@ -2,216 +2,284 @@
 <html lang="en">
 <head>
   <%- include('partials/head') %>
-  <title>KAIZEN — Psychology</title>
+  <title>KAIZEN — Psychology Session</title>
 </head>
-<body class="app-page k-chatbody">
+<body class="app-page">
   <%- include('partials/navbar') %>
 
-  <% if (mode === 'index') { %>
+  <main class="app-main">
 
-  <!-- ═══ CONVERSATIONS: list + mind state + start ═══ -->
-  <main class="k-flow k-flow--wide">
-    <div class="k-cockpit-head">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:24px;flex-wrap:wrap;">
       <div>
-        <div class="k-eyebrow">COACH · 改</div>
-        <h1 class="k-page-title">Psychology</h1>
-        <p class="k-page-sub">The room with no scoreboard. Most of the time it is not the rules — it is the state. Work on the state here.</p>
+        <div style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:6px;display:flex;align-items:center;gap:8px;">
+          <span style="width:16px;height:1px;background:var(--gold);display:inline-block;"></span>
+          Mindset Work
+        </div>
+        <h1 style="font-size:1.6rem;font-weight:700;color:var(--text-primary);margin-bottom:4px;">Psychology Session</h1>
+        <p style="font-size:0.82rem;color:var(--ash);font-style:italic;">Not about a trade. About the mind that takes them.</p>
+      </div>
+      <a href="/dashboard" style="display:inline-flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);border:1px solid var(--border);padding:10px 16px;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.color='var(--gold)';this.style.borderColor='rgba(201,168,76,0.3)'" onmouseout="this.style.color='var(--ash)';this.style.borderColor='var(--border)'">
+        <i data-feather="arrow-left" width="12" height="12"></i>
+        Dashboard
+      </a>
+    </div>
+
+    <!-- INFO CARD -->
+    <div style="background:linear-gradient(135deg,rgba(201,168,76,0.04),rgba(59,130,246,0.02));border:1px solid rgba(201,168,76,0.15);padding:20px;margin-bottom:16px;display:flex;gap:14px;align-items:flex-start;">
+      <div style="width:32px;height:32px;min-width:32px;border:1px solid rgba(201,168,76,0.25);background:rgba(201,168,76,0.06);display:flex;align-items:center;justify-content:center;color:var(--gold);">
+        <i data-feather="cpu" width="15" height="15"></i>
+      </div>
+      <div>
+        <div style="font-weight:700;font-size:0.9rem;color:var(--text-primary);margin-bottom:6px;">This is a safe space, not a trade log.</div>
+        <p style="font-size:0.82rem;color:var(--text-secondary);line-height:1.75;margin:0;">
+          Talk to KAIZEN AI about fear, confidence, financial pressure, anxiety, or self-doubt around trading.
+          Psychology sessions contribute <strong style="color:var(--gold);">30%</strong> to your overall Discipline Score — because mindset is discipline.
+        </p>
       </div>
     </div>
 
-    <% if (mindState && (mindState.summary || (mindState.themes && mindState.themes.length))) { %>
-    <section class="k-card k-mindcard">
-      <div class="k-panel-title">WHAT <span class="k-kanji k-kanji--sm">改</span> UNDERSTANDS ABOUT ME</div>
-      <% if (mindState.summary) { %>
-        <p class="k-mindsummary"><%= mindState.summary %></p>
-      <% } %>
-      <% if (mindState.themes && mindState.themes.length) { %>
-        <div class="k-mindthemes">
-          <% mindState.themes.forEach(function(t){ %>
-            <div class="k-mindtheme">
-              <span class="k-themechip is-<%= t.status %>"><%= t.status %></span>
-              <span class="k-themename"><%= t.name %></span>
-              <span class="k-thememeta"><%= t.occurrences %>× · since <%= new Date(t.firstSeen).toLocaleDateString('en-US',{month:'short',year:'numeric'}) %></span>
-            </div>
-          <% }); %>
-        </div>
-      <% } %>
-      <div class="k-fieldhint">KAIZEN updates this as you talk — nothing here is deletable. Memory is how a pattern gets recognized when it returns.</div>
-    </section>
-    <% } %>
+    <!-- CHAT INTERFACE -->
+    <div style="background:var(--bg-card);border:1px solid rgba(201,168,76,0.18);padding:20px;margin-bottom:16px;">
 
-    <section class="k-card">
-      <div class="k-panel-title" style="margin-bottom:14px;">START A CONVERSATION</div>
-      <% if (openers && openers.length) { %>
-        <div class="k-openerrow">
-          <% openers.forEach(function(o){ %>
-            <button type="button" class="k-opener" data-opener="<%= o %>"><%= o %></button>
-          <% }); %>
+      <!-- Conversation history -->
+      <div id="chat-history" style="min-height:200px;max-height:420px;overflow-y:auto;margin-bottom:16px;display:flex;flex-direction:column;gap:14px;">
+        <div id="empty-state" style="text-align:center;padding:48px 20px;display:flex;flex-direction:column;align-items:center;gap:12px;">
+          <div style="font-family:'DM Mono',monospace;font-size:3rem;color:rgba(201,168,76,0.1);line-height:1;">改</div>
+          <p style="font-size:0.85rem;color:var(--ash);line-height:1.75;max-width:300px;">
+            Tell KAIZEN how you're feeling about your trading right now.<br>There are no wrong answers here.
+          </p>
         </div>
-      <% } %>
-      <div class="k-composer">
-        <textarea id="psych-input" rows="2" placeholder="Tell KAIZEN what is going on…"></textarea>
-        <button type="button" id="psych-send" class="k-btn k-btn-primary">Send</button>
       </div>
-    </section>
 
-    <section class="k-card">
-      <div class="k-panel-title" style="margin-bottom:6px;">CONVERSATIONS</div>
-      <% if (threads && threads.length) { %>
-        <div class="k-threadlist">
-          <% threads.forEach(function(t){ %>
-            <a class="k-threadrow" href="/psychology/t/<%= t._id %>">
-              <div class="k-threadmain">
-                <span class="k-threadtitle"><%= t.title %></span>
-                <span class="k-threadmeta">
-                  <%= t.messageCount %> message<%= t.messageCount === 1 ? '' : 's' %>
-                  · <%= new Date(t.lastMessageAt).toLocaleDateString('en-US',{month:'short',day:'numeric'}) %>
-                  <% if (t.imported) { %> · imported<% } %>
+      <!-- Suggested prompts -->
+      <div id="suggestions" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;">
+        <% [
+          'I feel anxious every time I open my charts',
+          'I keep second-guessing valid setups',
+          'I trade better in backtesting than live',
+          'I feel pressure because I need this to work financially',
+          'After a loss I feel like giving up',
+          'I don\'t feel like I deserve to win trades'
+        ].forEach(function(prompt) { %>
+          <button onclick="usePrompt(this)" style="
+            background:var(--bg-surface);
+            border:1px solid var(--border);
+            color:var(--ash-light);
+            font-family:'Outfit',sans-serif;
+            font-size:0.75rem;
+            padding:7px 12px;
+            cursor:pointer;
+            transition:all 0.2s;
+            text-align:left;
+            line-height:1.4;
+          " onmouseover="this.style.borderColor='rgba(201,168,76,0.3)';this.style.color='var(--gold)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--ash-light)'">
+            <%= prompt %>
+          </button>
+        <% }); %>
+      </div>
+
+      <!-- Input -->
+      <div style="display:flex;gap:8px;align-items:flex-end;">
+        <textarea id="psych-input" rows="3" style="
+          flex:1;resize:none;
+          background:var(--bg-surface);
+          border:1px solid var(--border);
+          color:var(--text-primary);
+          font-family:'Outfit',sans-serif;
+          font-size:0.88rem;
+          padding:12px 14px;
+          outline:none;
+          line-height:1.6;
+        " placeholder="Tell KAIZEN how you're feeling about your trading today..."></textarea>
+        <button onclick="sendMessage()" id="send-btn" style="
+          background:var(--gold);
+          color:#000;
+          border:none;
+          font-family:'DM Mono',monospace;
+          font-size:0.62rem;
+          letter-spacing:0.1em;
+          text-transform:uppercase;
+          font-weight:700;
+          padding:0 20px;
+          cursor:pointer;
+          align-self:stretch;
+          display:flex;align-items:center;gap:6px;
+          transition:background 0.2s;
+          white-space:nowrap;
+        " onmouseover="this.style.background='#E2C46A'" onmouseout="this.style.background='var(--gold)'">
+          <i data-feather="send" width="12" height="12"></i>
+          Send
+        </button>
+      </div>
+
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:8px;flex-wrap:wrap;gap:4px;">
+        <p style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.08em;text-transform:uppercase;color:rgba(168,160,154,0.4);margin:0;" id="psych-score-line">
+          Psychology sessions contribute 30% to your discipline score
+        </p>
+        <p style="font-family:'DM Mono',monospace;font-size:0.52rem;color:rgba(168,160,154,0.35);margin:0;">
+          Press Enter to send · Shift+Enter for new line
+        </p>
+      </div>
+    </div>
+
+    <!-- PAST SESSIONS -->
+    <% if (sessions && sessions.length > 0) { %>
+      <div>
+        <div style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--ash);margin-bottom:12px;display:flex;align-items:center;gap:8px;">
+          <i data-feather="clock" width="12" height="12"></i>
+          Past Psychology Sessions
+        </div>
+        <div style="display:flex;flex-direction:column;gap:2px;">
+          <% sessions.forEach(function(s) { %>
+            <div style="
+              background:var(--bg-card);
+              border:1px solid rgba(59,130,246,0.12);
+              border-left:2px solid rgba(59,130,246,0.3);
+              padding:18px;
+              cursor:pointer;
+              transition:border-color 0.2s;
+            " onclick="this.querySelector('.psych-expand').style.display = this.querySelector('.psych-expand').style.display === 'none' ? 'block' : 'none'"
+               onmouseover="this.style.borderColor='rgba(59,130,246,0.3)'"
+               onmouseout="this.style.borderColor='rgba(59,130,246,0.12)'">
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;">
+                <div style="flex:1;">
+                  <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+                    <i data-feather="cpu" width="11" height="11" style="color:var(--blue);"></i>
+                    <span style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--blue);">
+                      Psychology · <%= new Date(s.createdAt).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) %>
+                    </span>
+                  </div>
+                  <p style="font-size:0.82rem;color:var(--ash-light);line-height:1.6;font-style:italic;margin:0;">
+                    "<%= s.sessionData.substring(0, 120) %>..."
+                  </p>
+                </div>
+                <span style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--ash);flex-shrink:0;display:flex;align-items:center;gap:4px;">
+                  <i data-feather="chevron-down" width="12" height="12"></i>
+                  Expand
                 </span>
               </div>
-              <span class="k-threadarrow">→</span>
-            </a>
+              <div class="psych-expand" style="display:none;margin-top:16px;padding-top:16px;border-top:1px solid var(--border);">
+                <div style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-bottom:8px;">You shared</div>
+                <p style="font-size:0.82rem;color:var(--ash);font-style:italic;padding:12px 14px;background:var(--bg-surface);border-left:2px solid rgba(201,168,76,0.2);margin:0 0 14px;">"<%= s.sessionData %>"</p>
+                <div style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);margin-bottom:8px;">改 KAIZEN responded</div>
+                <div style="font-size:0.88rem;color:var(--ash-light);line-height:1.9;white-space:pre-wrap;"><%= s.response %></div>
+              </div>
+            </div>
           <% }); %>
         </div>
-      <% } else { %>
-        <p class="k-emptyhint">No conversations yet. Start one above — it stays between you and KAIZEN.</p>
-      <% } %>
-    </section>
-  </main>
-
-  <% } else { %>
-
-  <!-- ═══ ONE CONVERSATION ═══ -->
-  <main class="k-flow k-flow--wide k-chatmain">
-    <div class="k-chathead">
-      <a class="k-backlink" href="/psychology">← Psychology</a>
-      <span class="k-chattitle"><%= thread.title %></span>
-    </div>
-
-    <div class="k-chatlog" id="chatlog">
-      <% if (thread.messages && thread.messages.length) { %>
-        <% thread.messages.forEach(function(m){ %>
-          <% if (m.role === 'user') { %>
-            <div class="k-msg k-msg-user"><div class="k-msg-bubble"><%= m.text %></div></div>
-          <% } else { %>
-            <div class="k-msg k-msg-kai">
-              <span class="k-kanji k-kanji--sm">改</span>
-              <div class="k-msg-text"><%= m.text %></div>
-            </div>
-          <% } %>
-        <% }); %>
-      <% } %>
-      <div class="k-typing" id="typing" hidden>
-        <span class="k-kanji k-kanji--sm">改</span>
-        <div class="k-msg-text k-typingdots"><span></span><span></span><span></span></div>
-      </div>
-    </div>
-
-    <% if (openers && openers.length) { %>
-      <div class="k-openerrow k-openerrow--inline">
-        <% openers.forEach(function(o){ %>
-          <button type="button" class="k-opener" data-opener="<%= o %>"><%= o %></button>
-        <% }); %>
       </div>
     <% } %>
 
-    <div class="k-composer k-composer--sticky">
-      <textarea id="psych-input" rows="2" placeholder="Reply to KAIZEN…"></textarea>
-      <button type="button" id="psych-send" class="k-btn k-btn-primary">Send</button>
-    </div>
   </main>
 
-  <% } %>
-
   <%- include('partials/footer') %>
+  <script src="/js/app.js"></script>
   <script>
-    (function () {
-      var input = document.getElementById('psych-input');
-      var send = document.getElementById('psych-send');
-      var typing = document.getElementById('typing');
-      var log = document.getElementById('chatlog');
-      var threadId = <%- (mode === 'thread' && thread && thread._id) ? JSON.stringify(String(thread._id)) : 'null' %>;
+    feather.replace();
+    const chatHistory = document.getElementById('chat-history');
+    const emptyState = document.getElementById('empty-state');
+    const suggestions = document.getElementById('suggestions');
+    const input = document.getElementById('psych-input');
+    const sendBtn = document.getElementById('send-btn');
 
-      function scrollBottom() {
-        if (log) log.scrollTop = log.scrollHeight;
-      }
-      scrollBottom();
+    function usePrompt(btn) {
+      input.value = btn.textContent.trim();
+      input.focus();
+      suggestions.style.display = 'none';
+    }
 
-      document.querySelectorAll('.k-opener').forEach(function (b) {
-        b.addEventListener('click', function () {
-          input.value = b.getAttribute('data-opener');
-          input.focus();
-        });
-      });
-
-      function addMsg(role, text) {
-        if (!log) return;
-        var wrap = document.createElement('div');
-        if (role === 'user') {
-          wrap.className = 'k-msg k-msg-user';
-          var b = document.createElement('div');
-          b.className = 'k-msg-bubble';
-          b.textContent = text;
-          wrap.appendChild(b);
-        } else {
-          wrap.className = 'k-msg k-msg-kai';
-          var k = document.createElement('span');
-          k.className = 'k-kanji k-kanji--sm';
-          k.textContent = '改';
-          var t = document.createElement('div');
-          t.className = 'k-msg-text';
-          t.textContent = text;
-          wrap.appendChild(k);
-          wrap.appendChild(t);
+    function addMessage(text, type) {
+      if (emptyState) emptyState.style.display = 'none';
+      const wrapper = document.createElement('div');
+      wrapper.style.cssText = 'display:flex;flex-direction:column;';
+      const label = document.createElement('div');
+      label.style.cssText = "font-family:'DM Mono',monospace;font-size:0.52rem;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:5px;";
+      const bubble = document.createElement('div');
+      if (type === 'user') {
+        wrapper.style.alignItems = 'flex-end';
+        label.textContent = 'You';
+        label.style.color = 'var(--ash)';
+        label.style.textAlign = 'right';
+        bubble.style.cssText = 'max-width:80%;background:rgba(201,168,76,0.06);border:1px solid rgba(201,168,76,0.15);padding:12px 16px;font-size:0.88rem;color:var(--text-primary);line-height:1.7;';
+        bubble.textContent = text;
+        wrapper.appendChild(label);
+        wrapper.appendChild(bubble);
+      } else {
+        wrapper.style.alignItems = 'flex-start';
+        label.innerHTML = '<i data-feather="cpu" width="11" height="11" style="display:inline;margin-right:4px;"></i>改 KAIZEN AI';
+        label.style.color = 'var(--gold)';
+        label.style.display = 'flex';
+        label.style.alignItems = 'center';
+        label.style.gap = '4px';
+        bubble.style.cssText = 'max-width:90%;background:var(--bg-surface);border:1px solid var(--border);border-left:2px solid var(--gold);padding:14px 16px;font-size:0.88rem;color:var(--ash-light);line-height:1.85;white-space:pre-wrap;';
+        bubble.textContent = '';
+        wrapper.appendChild(label);
+        wrapper.appendChild(bubble);
+        chatHistory.appendChild(wrapper);
+        chatHistory.scrollTop = chatHistory.scrollHeight;
+        feather.replace();
+        let i = 0;
+        function stream() {
+          if (i < text.length) {
+            bubble.textContent += text[i];
+            i++;
+            let delay = 10;
+            if (text[i] === '.' || text[i] === '\n') delay = 60;
+            else if (text[i] === ',') delay = 30;
+            chatHistory.scrollTop = chatHistory.scrollHeight;
+            setTimeout(stream, delay);
+          }
         }
-        log.appendChild(wrap);
-        scrollBottom();
+        stream();
+        return;
       }
+      chatHistory.appendChild(wrapper);
+      chatHistory.scrollTop = chatHistory.scrollHeight;
+    }
 
-      var busy = false;
-      function sendMsg() {
-        var text = input.value.trim();
-        if (!text || busy) return;
-        busy = true;
-        send.disabled = true;
-        if (threadId) addMsg('user', text);
-        input.value = '';
-        if (typing) typing.hidden = false;
-        scrollBottom();
-
-        fetch('/psychology/ask', {
+    async function sendMessage() {
+      const text = input.value.trim();
+      if (!text) return;
+      suggestions.style.display = 'none';
+      addMessage(text, 'user');
+      input.value = '';
+      sendBtn.disabled = true;
+      sendBtn.innerHTML = '<i data-feather="loader" width="12" height="12"></i>';
+      feather.replace();
+      const thinking = document.createElement('div');
+      thinking.style.cssText = "font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--ash);padding:8px;display:flex;align-items:center;gap:6px;";
+      thinking.innerHTML = '<i data-feather="cpu" width="12" height="12" style="color:var(--gold);"></i> 改 KAIZEN is thinking...';
+      chatHistory.appendChild(thinking);
+      feather.replace();
+      chatHistory.scrollTop = chatHistory.scrollHeight;
+      try {
+        const res = await fetch('/psychology/ask', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message: text, threadId: threadId })
-        })
-          .then(function (r) { return r.json(); })
-          .then(function (data) {
-            if (data.error) { addMsg('kaizen', data.error); return; }
-            if (!threadId) {
-              window.location = '/psychology/t/' + data.threadId;
-              return;
-            }
-            addMsg('kaizen', data.reply);
-          })
-          .catch(function () {
-            addMsg('kaizen', 'Connection dropped. Your message was sent — refresh in a moment.');
-          })
-          .finally(function () {
-            busy = false;
-            send.disabled = false;
-            if (typing) typing.hidden = true;
-            input.focus();
-          });
-      }
-
-      send.addEventListener('click', sendMsg);
-      input.addEventListener('keydown', function (e) {
-        if (e.key === 'Enter' && !e.shiftKey && window.innerWidth > 760) {
-          e.preventDefault();
-          sendMsg();
+          body: JSON.stringify({ message: text })
+        });
+        const data = await res.json();
+        thinking.remove();
+        addMessage(data.response, 'kaizen');
+        if (data.psychScore) {
+          const scoreLine = document.getElementById('psych-score-line');
+          if (scoreLine) {
+            scoreLine.textContent = `This session scored ${data.psychScore}% · Contributing to your discipline score`;
+            scoreLine.style.color = data.psychScore >= 70 ? 'rgba(52,211,153,0.5)' : data.psychScore >= 50 ? 'rgba(201,168,76,0.5)' : 'rgba(248,113,113,0.4)';
+          }
         }
-      });
-    })();
+      } catch(e) {
+        thinking.remove();
+        addMessage('改 KAIZEN AI is temporarily unavailable. Try again in a moment.', 'kaizen');
+      }
+      sendBtn.disabled = false;
+      sendBtn.innerHTML = '<i data-feather="send" width="12" height="12"></i> Send';
+      feather.replace();
+    }
+
+    input.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+    });
   </script>
 </body>
 </html>

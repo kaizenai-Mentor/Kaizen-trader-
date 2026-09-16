@@ -275,11 +275,14 @@ function computeExecution(recent, ex) {
 }
 
 // ── BEHAVIOR ─────────────────────────────────────────────────────
-// "What does your psychology make you do?" — declared emotional
-// states (plan chips), text signals (regex precedent from V1's
-// predictive warning), and the after-loss window, where discipline
-// usually breaks. Cadence violations from the Risk pass arrive as
-// negative evidence here too (B6b: the farming attempt IS the data).
+// "What does your psychology make you do?" — DECLARED emotional
+// states (the plan chips the trader ticks before the session), the
+// after-loss window where discipline usually breaks, and cadence
+// violations from the Risk pass (B6b: the farming attempt IS the
+// data). Free-text emotion words are deliberately NOT read here:
+// "felt FOMO but waited for my setup" is disciplined honesty, and
+// honest disclosure must never count against a trader (owner rule:
+// high compliance is never a flag).
 const NEGATIVE_EMOTIONS = ['FOMO', 'REVENGE', 'ANXIOUS'];
 function computeBehavior(recent, ex) {
   if (recent.length >= THRESHOLDS.behavior) {
@@ -289,11 +292,8 @@ function computeBehavior(recent, ex) {
     for (let i = 0; i < recent.length; i++) {
       const s = recent[i];
       const emotion = (s.plan && s.plan.emotionalState) || s.emotion || '';
-      const text = (s.notes || '').toLowerCase();
-      const fomo = /fomo|chasing|couldn'?t wait/.test(text);
-      const revenge = /revenge|frustrat|angry|tilt/.test(text);
       const negEmotion = NEGATIVE_EMOTIONS.includes(String(emotion).toUpperCase());
-      if (negEmotion || fomo || revenge) negatives++;
+      if (negEmotion) negatives++;
 
       if (s.evidenceFlags && s.evidenceFlags.beyondCadence) negatives++;
 

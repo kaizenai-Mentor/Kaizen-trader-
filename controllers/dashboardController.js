@@ -111,30 +111,18 @@ const getDashboard = async (req, res) => {
     }
 
     // ── RECENT PATTERN (deterministic, from the last 5 sessions) ──
+    // Structural signals only: what the trader DID, never emotion words
+    // in honest notes (owner rule: high compliance is never a flag).
+    // Rule breaks are measured facts; "felt FOMO but waited" is not.
     let predictiveWarning = null;
     if (recentSessions.length >= 5) {
       const recentFive = recentSessions.slice(0, 5);
       const violations = recentFive.filter(j => !j.ruleCompliance).length;
-      const allText = recentFive.map(j =>
-        ((j.notes || '') + ' ' + ((j.reflection && (j.reflection.whatHappened + ' ' + (j.reflection.wouldChange || ''))) || '')).toLowerCase()
-      ).join(' ');
-      const fomoCount = (allText.match(/fomo/gi) || []).length;
-      const revengeCount = (allText.match(/revenge|frustrat/gi) || []).length;
 
       if (violations >= 3) {
         predictiveWarning = {
           message: `You have broken your rules in ${violations} of your last 5 sessions. Review your entry criteria before opening any chart today.`,
           level: 'high'
-        };
-      } else if (fomoCount >= 2) {
-        predictiveWarning = {
-          message: 'FOMO has appeared repeatedly in your recent sessions. Stay off the charts until a valid setup forms.',
-          level: 'medium'
-        };
-      } else if (revengeCount >= 1) {
-        predictiveWarning = {
-          message: 'Signs of frustration in recent sessions. Only trade if your emotional state is neutral today.',
-          level: 'medium'
         };
       } else if (violations === 0) {
         predictiveWarning = {
@@ -320,10 +308,6 @@ const addJournal = async (req, res) => {
       ? 'declining'
       : 'inconsistent';
 
-    const allText = allJournals.map(j => j.notes.toLowerCase()).join(' ');
-    const fomoCount = (allText.match(/fomo/gi) || []).length;
-    const revengeCount = (allText.match(/revenge|frustrat/gi) || []).length;
-
     const sessionHistory = allJournals.slice(1, 6).map((j, i) => {
       return `Past session ${i + 1} (${new Date(j.createdAt).toLocaleDateString()}): ${j.asset} | Compliant: ${j.ruleCompliance ? 'Yes' : 'No'} | "${j.notes.substring(0, 150)}"`;
     }).join('\n');
@@ -341,8 +325,6 @@ Name: ${user.username}
 Sessions logged: ${totalSessions}
 Overall discipline: ${overallScore}%
 Recent trend (last 10): ${recentTrend}
-FOMO mentions all-time: ${fomoCount}
-Revenge trade mentions: ${revengeCount}
 Strategy: ${user.tradingStyle && user.tradingStyle.tradingEdge ? user.tradingStyle.tradingEdge : 'Not set'}
 Max risk per trade: ${user.tradingStyle && user.tradingStyle.riskPerTrade ? user.tradingStyle.riskPerTrade : 'Not set'}%
 Daily loss limit: ${user.tradingStyle && user.tradingStyle.dailyDrawdown ? user.tradingStyle.dailyDrawdown : 'Not set'}%
@@ -547,11 +529,9 @@ await Journal.findByIdAndUpdate(journal._id, {
         overallScore,
         ruleCompliance === 'true' ? 'Compliant session' : 'Rule violation'
       );
-      if (fomoCount >= 3) {
-        await mantle.recordPattern(
-          req.session.user.id, 'FOMO', 'high'
-        );
-      }
+      // No keyword-based pattern writes: the chain records measured
+      // facts (score changes, milestones), never regex counts over
+      // the trader's own words.
       if (totalSessions === 10) {
         await mantle.recordMilestone(
           req.session.user.id, '10_sessions', overallScore
@@ -626,9 +606,9 @@ function buildFallback(notes, compliant, asset, user, totalSessions, trend, over
   // PATTERN KAIZEN IS TRACKING
   let pattern = '';
   if (totalSessions >= 3) {
-    if (hasFOMO) {
+    if (!compliant && hasFOMO) {
       pattern = `\n\nPATTERN KAIZEN IS TRACKING\nFOMO has appeared in your recent sessions. This is becoming a documented behavioral pattern, not a one-time mistake. Kaizen is watching which pairs and which market conditions trigger it most frequently. Keep logging with this level of detail — the data is building.`;
-    } else if (hasRevenge) {
+    } else if (!compliant && hasRevenge) {
       pattern = `\n\nPATTERN KAIZEN IS TRACKING\nSigns of frustration have appeared across recent sessions. Trading from an agitated emotional state is one of the highest-risk behavioral patterns Kaizen monitors. Note the time of day and market conditions when this appears — there is likely a trigger condition worth identifying.`;
     } else if (!compliant && trend === 'declining') {
       pattern = `\n\nPATTERN KAIZEN IS TRACKING\nYour compliance rate has been declining across recent sessions. This is the early signal of a behavioral drift — where shortcuts become habits. Kaizen is flagging this now so you can course-correct before it compounds.`;
