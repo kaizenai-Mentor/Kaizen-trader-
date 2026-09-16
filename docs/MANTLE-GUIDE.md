@@ -247,6 +247,18 @@ deploy scripts don't use it — and it wouldn't help here anyway.)
   reproduce the old code, no matter what the `.sol` said. That script was
   rewritten on 15 Sep 2026 to compile the current source on every run.
 
+### THE CURRENT CONTRACT (deployed 16 Sep 2026 — the keeper)
+- **`0x65fe9Ccd1701C680fb137dD9f0D571d9045c5A0E`**
+- Deployed from Termux with the FIXED path (`deploy.js`, compiled from
+  source: `Bytecode size: 5942 bytes`, all 12 functions confirmed present
+  in the on-chain bytecode).
+- `check-owner.js` verdict: **CURRENT KaizenBenchmark build ✓** and
+  **✓ MATCH — the server key IS the owner** (owner and server key both
+  `0x5Cc4664b…Be2C`). Records start at 0 — the first real one lands with
+  the first journal session after Render points here.
+- All six contracts above are the old-build era and are retired; nothing
+  needs to be done with them. This contract supersedes them.
+
 | Task | Command / place |
 |---|---|
 | Full diagnostic (owner / key match / records) | `MANTLE_CONTRACT_ADDRESS=0x… MANTLE_PRIVATE_KEY=0x… node contracts/check-owner.js` |
