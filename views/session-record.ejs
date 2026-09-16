@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('partials/head') %>
+  <title>KAIZEN — The Record</title>
+</head>
+<body class="app-page">
+  <%- include('partials/navbar') %>
+
+  <main class="k-flow">
+
+    <div class="k-stepstrip">
+      <span class="is-done">Plan ✓</span><b>—</b>
+      <span class="is-active">Record</span><b>—</b>
+      <span>Reflect</span>
+    </div>
+
+    <div class="k-eyebrow" style="margin-bottom:10px;">The Record — <%= session.sessionType %></div>
+    <h1 style="font-size:clamp(1.5rem,3.5vw,2.1rem);font-weight:700;color:var(--text-primary);line-height:1.15;margin:0 0 8px;">
+      Write what actually happened.
+    </h1>
+    <p style="font-size:0.88rem;color:var(--text-secondary);line-height:1.75;margin:0 0 24px;">
+      The quick checks catch what your notes don't mention.
+    </p>
+
+    <% if (session.plan && !session.plan.skipped) { %>
+      <div class="k-card" style="margin-bottom:18px;border-color:var(--gold-border);">
+        <div class="k-metric-label" style="margin-bottom:10px;">YOUR DECLARED PLAN</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;font-size:0.8rem;color:var(--text-secondary);">
+          <div><span class="k-gold">Setup:</span> <%= session.plan.setup || '—' %></div>
+          <div><span class="k-gold">Entry:</span> <%= session.plan.entryCondition || '—' %></div>
+          <div><span class="k-gold">Invalidation:</span> <%= session.plan.invalidation || '—' %></div>
+          <div><span class="k-gold">Risk:</span> <%= session.plan.predefinedRisk || '—' %></div>
+        </div>
+      </div>
+    <% } %>
+
+    <form action="/dashboard/sessions/<%= session._id %>/record" method="POST" enctype="multipart/form-data">
+
+      <div class="k-card k-formcard" style="margin-bottom:14px;">
+        <div class="k-metric-label" style="margin-bottom:10px;">WHAT HAPPENED? — WHAT CHANGED DURING AND AFTER THE TRADE</div>
+        <textarea name="notes" id="notes" class="k-input" rows="7" required
+          placeholder="Took the EURUSD short off the 4H sweep. Entry was clean but I moved my invalidation twice when price squeezed — that was fear, not strategy. Sized in properly at 1%..."></textarea>
+        <div id="autodetect" class="k-fieldhint" style="margin-top:8px;"></div>
+        <input type="hidden" name="asset" id="asset" value="">
+        <input type="hidden" name="timeframe" id="timeframe" value="N/A">
+      </div>
+
+      <% if (session.sessionType !== 'STUDY') { %>
+        <div class="k-card k-formcard" style="margin-bottom:14px;">
+          <div class="k-metric-label" style="margin-bottom:14px;">QUICK CHECKS — ONLY WHAT YOUR NOTES DON'T MENTION</div>
+
+          <% if (session.plan && !session.plan.skipped) { %>
+            <div class="k-checkrow">
+              <span class="k-checklabel">Followed your plan?</span>
+              <div class="k-checkopts">
+                <label class="k-opt"><input type="radio" name="followedPlan" value="YES"><span>YES</span></label>
+                <label class="k-opt"><input type="radio" name="followedPlan" value="NO"><span>NO</span></label>
+              </div>
+            </div>
+            <div class="k-checkrow">
+              <span class="k-checklabel">Within your entry criteria?</span>
+              <div class="k-checkopts">
+                <label class="k-opt"><input type="radio" name="withinEntryCriteria" value="YES"><span>YES</span></label>
+                <label class="k-opt"><input type="radio" name="withinEntryCriteria" value="NO"><span>NO</span></label>
+              </div>
+            </div>
+          <% } %>
+
+          <div class="k-checkrow">
+            <span class="k-checklabel">Respected your risk?</span>
+            <div class="k-checkopts">
+              <label class="k-opt"><input type="radio" name="respectedRisk" value="YES"><span>YES</span></label>
+              <label class="k-opt"><input type="radio" name="respectedRisk" value="NO"><span>NO</span></label>
+            </div>
+          </div>
+
+          <div class="k-checkrow">
+            <span class="k-checklabel">Outcome</span>
+            <div class="k-checkopts">
+              <% ['WIN','LOSS','BREAKEVEN','NO TRADE'].forEach(function(o){ %>
+                <label class="k-opt"><input type="radio" name="outcome" value="<%= o === 'WIN' ? 'Win' : o === 'LOSS' ? 'Loss' : o === 'BREAKEVEN' ? 'Breakeven' : 'No Trade' %>"><span><%= o %></span></label>
+              <% }); %>
+            </div>
+          </div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px;">
+            <div class="k-field" style="margin:0;">
+              <label class="k-fieldlabel">RR ACHIEVED (OPTIONAL)</label>
+              <input type="text" name="rrAchieved" class="k-input" placeholder="e.g. 1:2.5">
+            </div>
+            <div class="k-field" style="margin:0;">
+              <label class="k-fieldlabel">PIPS / POINTS (OPTIONAL)</label>
+              <input type="text" name="pipsGained" class="k-input" placeholder="e.g. +45">
+            </div>
+          </div>
+        </div>
+      <% } %>
+
+      <div class="k-card k-formcard" style="margin-bottom:18px;">
+        <div class="k-metric-label" style="margin-bottom:10px;">CHART IMAGE (OPTIONAL)</div>
+        <input type="file" name="chartImage" accept="image/*" class="k-input" style="padding:10px;">
+      </div>
+
+      <div class="k-actions">
+        <button type="submit" class="btn-primary k-btn-lg">Save &amp; Reflect →</button>
+      </div>
+    </form>
+
+  </main>
+
+  <%- include('partials/footer') %>
+  <script src="/js/app.js"></script>
+  <script>
+    if (window.feather) feather.replace();
+    // Auto-detect asset/timeframe from notes (V1 precedent, kept)
+    (function () {
+      var notes = document.getElementById('notes');
+      var out = document.getElementById('autodetect');
+      var assetEl = document.getElementById('asset');
+      var tfEl = document.getElementById('timeframe');
+      var ASSETS = /\b(EURUSD|GBPUSD|USDJPY|AUDJPY|USDCAD|XAUUSD|NAS100|SPX500|BTCUSD|ETHUSD|XAU|DXY)\b/i;
+      var TFS = /\b(1m|5m|15m|30m|1h|4h|1d|1w|M1|M5|M15|M30|H1|H4|D1|W1)\b/i;
+      function detect() {
+        var t = notes.value || '';
+        var a = t.match(ASSETS), f = t.match(TFS);
+        var parts = [];
+        if (a) { assetEl.value = a[1].toUpperCase(); parts.push(a[1].toUpperCase()); }
+        if (f) { tfEl.value = f[1].toUpperCase(); parts.push(f[1].toUpperCase()); }
+        out.textContent = parts.length ? parts.join(' · ') + ' — detected from your notes ✓' : '';
+      }
+      notes.addEventListener('input', detect);
+      detect();
+    })();
+  </script>
+</body>
+</html>
