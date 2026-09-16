@@ -731,6 +731,7 @@ app.get('/support', (req, res) => res.render('support', { user: req.session.user
 app.get('/privacy', (req, res) => res.render('privacy', { user: req.session.user || null }));
 app.get('/terms', (req, res) => res.render('terms', { user: req.session.user || null }));
 app.get('/help', (req, res) => res.render('help', { user: req.session.user || null }));
+app.get('/whitepaper', (req, res) => res.render('whitepaper', { user: req.session.user || null }));
 
 // Support form submission
 app.post('/support/send', async (req, res) => {

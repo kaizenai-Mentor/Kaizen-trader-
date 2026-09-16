@@ -2,38 +2,40 @@
 <html lang="en">
 <head>
   <%- include('partials/head') %>
-  <title>KAIZEN — Join</title>
+  <title>KAIZEN — Create Account</title>
 </head>
-<body class="k-auth">
-  <div class="k-authglow"></div>
+<body class="welcome-page" style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;background:var(--bg-base);color:var(--text-primary);">
+  <div style="position:fixed;top:20%;left:50%;transform:translateX(-50%);width:600px;height:400px;background:radial-gradient(ellipse,rgba(201,168,76,0.05),transparent 70%);pointer-events:none;"></div>
 
-  <div class="k-authwrap">
+  <div style="width:100%;max-width:480px;position:relative;z-index:1;">
 
     <!-- Logo -->
-    <div class="k-authlogo">
-      <a href="/" class="k-authlogolink">
-        <span class="k-authkanji">改</span>
-        <span class="k-authword">KAIZEN</span>
+    <div style="text-align:center;margin-bottom:36px;">
+      <a href="/" style="text-decoration:none;display:inline-flex;flex-direction:column;align-items:center;gap:8px;">
+        <div style="font-family:'DM Mono',monospace;font-size:2.5rem;color:var(--gold);font-weight:700;line-height:1;">改</div>
+        <div style="font-family:'DM Mono',monospace;font-size:0.75rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--ash);">KAIZEN</div>
       </a>
     </div>
 
-    <% if (typeof step === 'undefined' || step !== 'rules') { %>
+    <% if (typeof step === 'undefined' || step !== 'questions') { %>
 
-    <!-- ═══ STEP: JOIN ═══ -->
-    <div class="k-card k-formcard k-authcard">
-      <div class="k-stepstrip" style="margin-bottom:22px;">
-        <span class="is-active">Join</span><b>—</b>
-        <span>Rules</span><b>—</b>
-        <span>Plan</span><b>—</b>
-        <span>Log</span>
+    <!-- REGISTRATION FORM -->
+    <div style="background:var(--bg-card);border:1px solid rgba(201,168,76,0.18);padding:36px;">
+
+      <div style="text-align:center;margin-bottom:28px;">
+        <h1 style="font-size:1.3rem;font-weight:700;color:var(--text-primary);margin-bottom:6px;">Start your discipline journey</h1>
+        <p style="font-size:0.82rem;color:var(--ash);">Trade Better. Everyday</p>
       </div>
 
-      <div class="k-authhead">
-        <h1 class="k-authtitle">Start your improvement record</h1>
-        <p class="k-authsub">KAIZEN measures how you improve — not how much you make.</p>
-      </div>
-
-      <a href="/auth/google" class="k-oauth">
+      <!-- Google -->
+      <a href="/auth/google" style="
+        display:flex;align-items:center;justify-content:center;gap:10px;
+        background:var(--bg-surface);border:1px solid var(--border);
+        color:var(--text-primary);font-family:'DM Mono',monospace;
+        font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;
+        padding:14px;text-decoration:none;margin-bottom:20px;
+        transition:all 0.2s;width:100%;box-sizing:border-box;
+      " onmouseover="this.style.borderColor='rgba(201,168,76,0.3)';this.style.color='var(--gold)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-primary)'">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
           <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
           <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
@@ -43,111 +45,178 @@
         Continue with Google
       </a>
 
-      <div class="k-oauthdiv"><span>or email</span></div>
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;">
+        <div style="flex:1;height:1px;background:var(--border);"></div>
+        <span style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);">or email</span>
+        <div style="flex:1;height:1px;background:var(--border);"></div>
+      </div>
 
-      <% if (error) { %><div class="k-autherror"><%= error %></div><% } %>
+      <% if (typeof error !== 'undefined' && error) { %>
+        <div style="padding:12px 14px;background:rgba(248,113,113,0.06);border:1px solid rgba(248,113,113,0.2);border-left:2px solid #F87171;margin-bottom:16px;display:flex;align-items:center;gap:8px;">
+          <i data-feather="alert-circle" width="13" height="13" style="color:#F87171;flex-shrink:0;"></i>
+          <span style="font-size:0.82rem;color:#F87171;"><%= error %></span>
+        </div>
+      <% } %>
 
-      <form action="/auth/register" method="POST" class="k-authform">
-        <div class="k-field">
-          <label class="k-fieldlabel" for="username">Username</label>
-          <input class="k-input" type="text" id="username" name="username" required placeholder="your_trader_name">
+      <form action="/auth/register" method="POST" style="display:flex;flex-direction:column;gap:14px;">
+        <input type="hidden" name="step" value="register">
+
+        <div>
+          <label style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);display:block;margin-bottom:6px;">Username</label>
+          <input type="text" name="username" required style="width:100%;background:var(--bg-surface);border:1px solid var(--border);color:var(--text-primary);font-family:'Outfit',sans-serif;font-size:0.9rem;padding:12px 14px;outline:none;box-sizing:border-box;transition:border-color 0.2s;" placeholder="your_trader_name" onfocus="this.style.borderColor='rgba(201,168,76,0.4)'" onblur="this.style.borderColor='var(--border)'">
         </div>
-        <div class="k-field">
-          <label class="k-fieldlabel" for="email">Email</label>
-          <input class="k-input" type="email" id="email" name="email" required placeholder="your@email.com">
+
+        <div>
+          <label style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);display:block;margin-bottom:6px;">Email</label>
+          <input type="email" name="email" required style="width:100%;background:var(--bg-surface);border:1px solid var(--border);color:var(--text-primary);font-family:'Outfit',sans-serif;font-size:0.9rem;padding:12px 14px;outline:none;box-sizing:border-box;transition:border-color 0.2s;" placeholder="your@email.com" onfocus="this.style.borderColor='rgba(201,168,76,0.4)'" onblur="this.style.borderColor='var(--border)'">
         </div>
-        <div class="k-field">
-          <label class="k-fieldlabel" for="password">Password</label>
-          <input class="k-input" type="password" id="password" name="password" required minlength="6" placeholder="At least 6 characters">
+
+        <div>
+          <label style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);display:block;margin-bottom:6px;">Password</label>
+          <input type="password" name="password" required minlength="6" style="width:100%;background:var(--bg-surface);border:1px solid var(--border);color:var(--text-primary);font-family:'Outfit',sans-serif;font-size:0.9rem;padding:12px 14px;outline:none;box-sizing:border-box;transition:border-color 0.2s;" placeholder="••••••••" onfocus="this.style.borderColor='rgba(201,168,76,0.4)'" onblur="this.style.borderColor='var(--border)'">
         </div>
-        <div class="k-field">
-          <label class="k-fieldlabel" for="confirmPassword">Confirm password</label>
-          <input class="k-input" type="password" id="confirmPassword" name="confirmPassword" required placeholder="Repeat your password">
-        </div>
-        <button type="submit" class="k-btn k-btn-primary k-btn-block">Create Account</button>
+
+        <button type="submit" style="width:100%;background:var(--gold);color:#000;border:none;font-family:'DM Mono',monospace;font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;font-weight:700;padding:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:background 0.2s;margin-top:4px;" onmouseover="this.style.background='#E2C46A'" onmouseout="this.style.background='var(--gold)'">
+          <i data-feather="arrow-right" width="13" height="13"></i>
+          Create Account
+        </button>
       </form>
 
-      <div class="k-authfoot">
-        <span>Already have an account?</span>
-        <a href="/auth/login">Sign in</a>
+      <div style="text-align:center;margin-top:20px;padding-top:20px;border-top:1px solid var(--border);">
+        <span style="font-size:0.82rem;color:var(--ash);">Already have an account? </span>
+        <a href="/auth/login" style="font-size:0.82rem;color:var(--gold);text-decoration:none;font-weight:600;">Sign in</a>
       </div>
+
     </div>
 
     <% } else { %>
 
-    <!-- ═══ STEP: RULES — build your first Trading System ═══ -->
-    <div class="k-card k-formcard k-authcard">
-      <div class="k-stepstrip" style="margin-bottom:22px;">
-        <span class="is-done">Join ✓</span><b>—</b>
-        <span class="is-active">Rules</span><b>—</b>
-        <span>Plan</span><b>—</b>
-        <span>Log</span>
+    <!-- ONBOARDING QUESTIONS -->
+    <div style="background:var(--bg-card);border:1px solid rgba(201,168,76,0.18);padding:36px;">
+
+      <div style="text-align:center;margin-bottom:28px;">
+        <div style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:10px;display:flex;align-items:center;justify-content:center;gap:8px;">
+          <i data-feather="settings" width="12" height="12"></i>
+          Trading Profile Setup
+        </div>
+        <h1 style="font-size:1.2rem;font-weight:700;color:var(--text-primary);margin-bottom:8px;">Tell KAIZEN about your trading</h1>
+        <p style="font-size:0.82rem;color:var(--ash);line-height:1.7;">
+          This is what KAIZEN AI uses to analyze your sessions.<br>Be specific — it makes all the difference.
+        </p>
       </div>
 
-      <div class="k-authhead">
-        <h1 class="k-authtitle">Build your first Trading System</h1>
-        <p class="k-authsub">The rules every session will be measured against. Be honest, be specific — and don't worry, you can refine later. Every save is a new version.</p>
+      <!-- Progress indicator -->
+      <div style="display:flex;gap:4px;margin-bottom:28px;">
+        <% for(let i = 1; i <= 4; i++) { %>
+          <div style="flex:1;height:3px;background:<%= i === 1 ? 'var(--gold)' : 'rgba(201,168,76,0.15)' %>;border-radius:2px;"></div>
+        <% } %>
       </div>
 
-      <form action="/auth/onboarding/rules" method="POST" class="k-authform">
+      <form action="/auth/onboarding" method="POST" style="display:flex;flex-direction:column;gap:16px;">
 
-        <div class="k-fieldrow">
-          <div class="k-field">
-            <label class="k-fieldlabel" for="markets">What do you trade?</label>
-            <select class="k-input" id="markets" name="markets">
-              <option value="">Select your market</option>
-              <option value="Forex">Forex</option>
-              <option value="Crypto">Crypto</option>
-              <option value="Stocks">Stocks</option>
-              <option value="Indices">Indices</option>
-              <option value="Commodities">Commodities</option>
-              <option value="Multiple markets">Multiple markets</option>
-            </select>
+        <div>
+          <label style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);display:block;margin-bottom:6px;">Markets you trade</label>
+          <select name="markets" style="width:100%;background:var(--bg-surface);border:1px solid var(--border);color:var(--text-primary);font-family:'Outfit',sans-serif;font-size:0.9rem;padding:12px 14px;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='rgba(201,168,76,0.4)'" onblur="this.style.borderColor='var(--border)'">
+            <option value="">Select your market</option>
+            <option value="Forex">Forex</option>
+            <option value="Crypto">Crypto</option>
+            <option value="Stocks">Stocks</option>
+            <option value="Indices">Indices</option>
+            <option value="Commodities">Commodities</option>
+            <option value="Multiple">Multiple markets</option>
+          </select>
+        </div>
+
+        <div>
+          <label style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);display:block;margin-bottom:6px;">Your trading edge / strategy</label>
+          <input type="text" name="tradingEdge" style="width:100%;background:var(--bg-surface);border:1px solid var(--border);color:var(--text-primary);font-family:'Outfit',sans-serif;font-size:0.9rem;padding:12px 14px;outline:none;box-sizing:border-box;transition:border-color 0.2s;" placeholder="e.g. Smart Money Concepts, Price Action, ICT" onfocus="this.style.borderColor='rgba(201,168,76,0.4)'" onblur="this.style.borderColor='var(--border)'">
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div>
+            <label style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);display:block;margin-bottom:6px;">Risk per trade (%)</label>
+            <input type="text" name="riskPerTrade" style="width:100%;background:var(--bg-surface);border:1px solid var(--border);color:var(--text-primary);font-family:'Outfit',sans-serif;font-size:0.9rem;padding:12px 14px;outline:none;box-sizing:border-box;transition:border-color 0.2s;" placeholder="e.g. 1" onfocus="this.style.borderColor='rgba(201,168,76,0.4)'" onblur="this.style.borderColor='var(--border)'">
           </div>
-          <div class="k-field">
-            <label class="k-fieldlabel" for="tradingHours">When do you trade?</label>
-            <input class="k-input" type="text" id="tradingHours" name="tradingHours" placeholder="e.g. 08:00–12:00 London, weekdays">
+          <div>
+            <label style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);display:block;margin-bottom:6px;">Daily drawdown (%)</label>
+            <input type="text" name="dailyDrawdown" style="width:100%;background:var(--bg-surface);border:1px solid var(--border);color:var(--text-primary);font-family:'Outfit',sans-serif;font-size:0.9rem;padding:12px 14px;outline:none;box-sizing:border-box;transition:border-color 0.2s;" placeholder="e.g. 3" onfocus="this.style.borderColor='rgba(201,168,76,0.4)'" onblur="this.style.borderColor='var(--border)'">
           </div>
         </div>
 
-        <div class="k-field">
-          <label class="k-fieldlabel" for="setups">Your setups — one per line (optional)</label>
-          <textarea class="k-input" id="setups" name="setups" rows="3" placeholder="e.g.&#10;London open breakout&#10;Trend pullback to 20 EMA"></textarea>
-          <div class="k-fieldhint">These become the setups you pick from when planning a session.</div>
+        <div>
+          <label style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);display:block;margin-bottom:6px;">Your entry rule</label>
+          <textarea name="entryRule" rows="2" style="width:100%;background:var(--bg-surface);border:1px solid var(--border);color:var(--text-primary);font-family:'Outfit',sans-serif;font-size:0.88rem;padding:12px 14px;outline:none;box-sizing:border-box;resize:none;transition:border-color 0.2s;line-height:1.6;" placeholder="e.g. Daily sweep → 4H MSS → 30min MSS entry" onfocus="this.style.borderColor='rgba(201,168,76,0.4)'" onblur="this.style.borderColor='var(--border)'"></textarea>
         </div>
 
-        <div class="k-field">
-          <label class="k-fieldlabel" for="entryRules">One entry rule you actually follow (optional)</label>
-          <textarea class="k-input" id="entryRules" name="entryRules" rows="2" placeholder="What must be true before you enter?"></textarea>
+        <div>
+          <label style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);display:block;margin-bottom:6px;">Emotional triggers to watch</label>
+          <input type="text" name="emotionalTriggers" style="width:100%;background:var(--bg-surface);border:1px solid var(--border);color:var(--text-primary);font-family:'Outfit',sans-serif;font-size:0.9rem;padding:12px 14px;outline:none;box-sizing:border-box;transition:border-color 0.2s;" placeholder="e.g. FOMO, revenge trading, moving SL" onfocus="this.style.borderColor='rgba(201,168,76,0.4)'" onblur="this.style.borderColor='var(--border)'">
         </div>
 
-        <div class="k-fieldrow k-fieldrow--3">
-          <div class="k-field">
-            <label class="k-fieldlabel" for="riskPerTrade">Risk per trade</label>
-            <input class="k-input" type="text" id="riskPerTrade" name="riskPerTrade" placeholder="e.g. 1%">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div>
+            <label style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);display:block;margin-bottom:6px;">Stop loss rule</label>
+            <input type="text" name="stopLossRule" style="width:100%;background:var(--bg-surface);border:1px solid var(--border);color:var(--text-primary);font-family:'Outfit',sans-serif;font-size:0.9rem;padding:12px 14px;outline:none;box-sizing:border-box;transition:border-color 0.2s;" placeholder="e.g. Above swing high" onfocus="this.style.borderColor='rgba(201,168,76,0.4)'" onblur="this.style.borderColor='var(--border)'">
           </div>
-          <div class="k-field">
-            <label class="k-fieldlabel" for="maxDailyTrades">Max trades / day</label>
-            <input class="k-input" type="text" id="maxDailyTrades" name="maxDailyTrades" placeholder="e.g. 3">
-          </div>
-          <div class="k-field">
-            <label class="k-fieldlabel" for="dailyDrawdown">Daily stop</label>
-            <input class="k-input" type="text" id="dailyDrawdown" name="dailyDrawdown" placeholder="e.g. 3%">
+          <div>
+            <label style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);display:block;margin-bottom:6px;">Take profit rule</label>
+            <input type="text" name="takeProfitRule" style="width:100%;background:var(--bg-surface);border:1px solid var(--border);color:var(--text-primary);font-family:'Outfit',sans-serif;font-size:0.9rem;padding:12px 14px;outline:none;box-sizing:border-box;transition:border-color 0.2s;" placeholder="e.g. Min 1:2 RR" onfocus="this.style.borderColor='rgba(201,168,76,0.4)'" onblur="this.style.borderColor='var(--border)'">
           </div>
         </div>
-        <div class="k-fieldhint" style="margin-bottom:16px;">Hard numbers matter — the engine reads these to score your Risk dimension.</div>
 
-        <button type="submit" class="k-btn k-btn-primary k-btn-block">Save rules → plan my first session</button>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div>
+            <label style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);display:block;margin-bottom:6px;">Max daily trades</label>
+            <input type="text" name="maxDailyTrades" style="width:100%;background:var(--bg-surface);border:1px solid var(--border);color:var(--text-primary);font-family:'Outfit',sans-serif;font-size:0.9rem;padding:12px 14px;outline:none;box-sizing:border-box;" placeholder="e.g. 3" onfocus="this.style.borderColor='rgba(201,168,76,0.4)'" onblur="this.style.borderColor='var(--border)'">
+          </div>
+          <div>
+            <label style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);display:block;margin-bottom:6px;">Max position size (%)</label>
+            <input type="text" name="maxPositionSize" style="width:100%;background:var(--bg-surface);border:1px solid var(--border);color:var(--text-primary);font-family:'Outfit',sans-serif;font-size:0.9rem;padding:12px 14px;outline:none;box-sizing:border-box;" placeholder="e.g. 5" onfocus="this.style.borderColor='rgba(201,168,76,0.4)'" onblur="this.style.borderColor='var(--border)'">
+          </div>
+        </div>
+
+        <button type="submit" style="width:100%;background:var(--gold);color:#000;border:none;font-family:'DM Mono',monospace;font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;font-weight:700;padding:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:background 0.2s;margin-top:6px;" onmouseover="this.style.background='#E2C46A'" onmouseout="this.style.background='var(--gold)'">
+          <i data-feather="check" width="13" height="13"></i>
+          Complete Setup — Go to Dashboard
+        </button>
+
+        <p style="font-family:'DM Mono',monospace;font-size:0.55rem;text-align:center;color:rgba(168,160,154,0.4);margin:0;letter-spacing:0.06em;">
+          You can update these anytime from Settings
+        </p>
+
+        <input type="hidden" name="ref"
+  value="<%= typeof query !== 'undefined' && query.ref ? query.ref : '' %>">
+
       </form>
-
-      <form action="/auth/onboarding/skip" method="POST" class="k-authskipform">
-        <button type="submit" class="k-btn k-btn-ghost k-btn-block">Skip — start with a blank system</button>
-      </form>
-      <div class="k-fieldhint" style="text-align:center;">Skipping is fine. Your cockpit will nudge you to write your rules when it matters.</div>
     </div>
 
     <% } %>
 
+    <div style="text-align:center;margin-top:20px;">
+      <p style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:rgba(168,160,154,0.35);">
+        改善 · Discipline is the edge
+      </p>
+    </div>
+
+<!-- Theme toggle -->
+<div style="position:fixed;top:16px;right:16px;z-index:100;">
+  <button onclick="toggleTheme()" style="
+    background:rgba(201,168,76,0.08);
+    border:1px solid rgba(201,168,76,0.2);
+    color:var(--gold);
+    width:36px;height:36px;
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;
+  ">
+        <span id="themeIcon">◐</span>
+  </button>
+</div>
+
   </div>
+
+  <script>feather.replace();</script>
+  <script src="/js/app.js"></script>
+
+</script>
 </body>
 </html>

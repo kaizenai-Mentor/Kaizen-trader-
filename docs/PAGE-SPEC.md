@@ -636,6 +636,22 @@ Home, About, Services, Terms, Help, Support, Preview index. Terminology already
 V2. `/about#kaizen-score` carries the public "How is this scored?" explanation
 (the Cockpit links here). No changes in this phase.
 
+## 8.1 WHITEPAPER — `/whitepaper` ✅ LIVE (v1.0, 16 Sep 2026)
+
+The standard long-form project document, on-site (both themes, mobile-first).
+Eight sections: The Problem (knowledge is not the bottleneck) → The Method
+(the Improvement Loop; LIVE/BACKTEST/STUDY; your own rules are the ruler) →
+The KAIZEN Score (five dimensions; engine measures, AI explains; process
+never P&L; silence never counted; honesty never punished) → The Mind
+(psychology is the root, behavior is the symptom; permanent memory; **psychology
+never feeds the score** — privacy + measurability, stated openly) → Evidence
+(what is recorded on-chain vs never recorded; reputation as evidence) → Who
+KAIZEN Is For → What KAIZEN Is Not (no signals, no copy trading, no profit
+promise) → The Road Ahead (Improve. Prove. Build Reputation. Unlock
+Opportunity.). Linked from navbar (both states) + footer. D1-safe: no
+integrity mechanics, no "can't be gamed", no profitability promises, no
+eight-stage internals.
+
 ---
 
 # 9. OWNER DECISIONS
