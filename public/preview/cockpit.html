@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KAIZEN — Cockpit (V2 Preview)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/preview/preview.css">
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('kaizen-theme') ||
+          ((window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) ? 'light' : 'dark');
+        if (t !== 'dark' && t !== 'light') t = 'dark';
+        document.documentElement.setAttribute('data-theme', t);
+      } catch (e) { document.documentElement.setAttribute('data-theme', 'dark'); }
+    })();
+  </script>
+</head>
+<body class="app-page">
+
+  <!-- ANNOUNCEMENT TICKER (above navbar — renders only when active) -->
+  <div class="p-ticker" id="ticker">
+    <button class="p-ticker-close" onclick="document.getElementById('ticker').remove()" aria-label="Dismiss announcement">×</button>
+    <div class="p-ticker-track">
+      <span class="p-ticker-text"><b>KAIZEN V2 IS LIVE</b> — FIVE-DIMENSION SCORING · PLANNED SESSIONS · YOUR OWN TRADING SYSTEM · LOG YOUR FIRST PLANNED SESSION TODAY &nbsp;&nbsp;·&nbsp;&nbsp; <b>NEW</b> — BACKTEST AND STUDY SESSIONS NOW COUNT IN YOUR LOOP &nbsp;&nbsp;·&nbsp;&nbsp; </span>
+    </div>
+    <div class="p-ticker-badge">
+      <div class="p-megaphone"><i data-feather="megaphone" width="12" height="12"></i></div>
+      <span>Update</span>
+    </div>
+  </div>
+
+  <!-- NAVBAR (real structure) -->
+  <nav class="navbar">
+    <a href="#" class="nav-logo">改 KAIZEN</a>
+    <div class="nav-right">
+      <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme"><span id="themeIcon">◐</span></button>
+      <button class="three-dot-btn" title="Menu"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+
+  <main class="p-main">
+
+    <!-- GREETING -->
+    <div style="margin-bottom:28px;">
+      <div class="k-eyebrow">The Cockpit</div>
+      <h1 class="p-greeting-h1">Good morning, <span class="k-gold">Denji.</span></h1>
+      <div style="font-size:0.85rem;color:var(--text-secondary);">How are you improving? <span class="k-gold">改善</span></div>
+    </div>
+
+    <!-- INSTRUMENT CLUSTER + TODAY -->
+    <div class="p-cockpit-grid">
+
+      <!-- LEFT: score instrument -->
+      <div class="k-card k-card--featured k-grid-bg" data-reveal>
+        <div class="p-panel-head">
+          <span class="p-panel-title"><span class="k-kanji k-kanji--sm">改</span> KAIZEN SCORE</span>
+          <span class="k-tag">V2 ENGINE</span>
+        </div>
+        <div class="p-score-panel">
+          <div class="k-dial" data-dial="82" style="width:190px;" role="img" aria-label="KAIZEN Score 82 of 100">
+            <svg viewBox="0 0 120 120" aria-hidden="true"><circle class="k-dial-track" cx="60" cy="60" r="54"></circle><circle class="k-dial-arc" cx="60" cy="60" r="54"></circle></svg>
+            <div class="k-dial-center">
+              <div class="k-dial-value" style="font-size:46px;">82</div>
+              <div class="k-dial-label">KAIZEN Score</div>
+            </div>
+          </div>
+          <div class="k-meters">
+            <div class="k-meter" data-meter="88"><span class="k-meter-label">Process</span><span class="k-meter-track"><span class="k-meter-fill"></span></span><span class="k-meter-value">88</span></div>
+            <div class="k-meter" data-meter="84"><span class="k-meter-label">Risk</span><span class="k-meter-track"><span class="k-meter-fill"></span></span><span class="k-meter-value">84</span></div>
+            <div class="k-meter" data-meter="79"><span class="k-meter-label">Execution</span><span class="k-meter-track"><span class="k-meter-fill"></span></span><span class="k-meter-value">79</span></div>
+            <div class="k-meter" data-meter="74"><span class="k-meter-label">Behavior</span><span class="k-meter-track"><span class="k-meter-fill"></span></span><span class="k-meter-value">74</span></div>
+            <div class="k-meter" data-meter="86"><span class="k-meter-label">Learning</span><span class="k-meter-track"><span class="k-meter-fill"></span></span><span class="k-meter-value">86</span></div>
+          </div>
+        </div>
+        <div style="font-size:0.78rem;color:var(--ash);border-top:1px solid var(--border);margin-top:20px;padding-top:14px;">
+          How you traded — not what you made. <a href="#" class="k-gold" style="text-decoration:underline;">How is this scored?</a>
+        </div>
+      </div>
+
+      <!-- RIGHT: the day -->
+      <div class="p-col">
+        <div class="k-card k-card--elevated" data-reveal>
+          <div class="k-metric-label" style="margin-bottom:4px;">TODAY</div>
+          <div class="p-today-item is-done"><span class="p-check">✓</span> Make a plan</div>
+          <div class="p-today-item is-done"><span class="p-check">✓</span> Record your session</div>
+          <div class="p-today-item"><span class="p-check"></span> Review yesterday's lesson</div>
+        </div>
+
+        <div class="k-card" data-reveal>
+          <div class="k-metric-label">RECENT PATTERN</div>
+          <div class="k-chip k-chip--warn" style="margin-bottom:12px;"><i data-feather="alert-triangle" width="13" height="13"></i> Watch</div>
+          <p style="font-size:0.85rem;color:var(--text-primary);line-height:1.75;margin:0 0 14px;">
+            You tend to enter outside your planned setup after two losses in a row. It happened 3 times in your last 15 sessions.
+          </p>
+          <a href="#" class="btn-outline" style="display:inline-block;padding:9px 18px;font-size:0.72rem;">Review Pattern</a>
+        </div>
+
+        <div class="p-milestone-strip" data-reveal>
+          <i data-feather="award" width="14" height="14"></i>
+          Next milestone — 13 sessions → 100-session milestone
+        </div>
+      </div>
+    </div>
+
+    <!-- ESSENTIALS ROW -->
+    <div class="p-essentials">
+
+      <div class="k-card" data-reveal>
+        <div class="p-panel-head" style="margin-bottom:8px;">
+          <span class="p-panel-title">RECENT SESSIONS</span>
+          <a href="#" class="k-gold" style="font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;text-decoration:underline;">View all</a>
+        </div>
+        <div class="p-session-row"><span class="p-asset">EURUSD</span><span class="k-chip" style="padding:3px 8px;font-size:0.55rem;">ANALYZED</span><span class="p-type-tag p-type-tag--live">LIVE</span></div>
+        <div class="p-session-row"><span class="p-asset">AUDJPY</span><span class="k-chip" style="padding:3px 8px;font-size:0.55rem;">ANALYZED</span><span class="p-type-tag p-type-tag--live">LIVE</span></div>
+        <div class="p-session-row"><span class="p-asset">GBPUSD</span><span class="k-chip" style="padding:3px 8px;font-size:0.55rem;">REFLECTED</span><span class="p-type-tag p-type-tag--backtest">BACKTEST</span></div>
+        <div class="p-session-row"><span class="p-asset">XAUUSD</span><span class="k-chip" style="padding:3px 8px;font-size:0.55rem;">RECORDED</span><span class="p-type-tag p-type-tag--live">LIVE</span></div>
+        <div class="p-session-row"><span class="p-asset">NAS100</span><span class="k-chip" style="padding:3px 8px;font-size:0.55rem;">ANALYZED</span><span class="p-type-tag">STUDY</span></div>
+      </div>
+
+      <div class="k-card" data-reveal>
+        <div class="k-metric-label">STREAK</div>
+        <div class="p-stat-big">12 <span style="font-size:0.9rem;color:var(--ash);">days</span></div>
+        <div class="p-stat-sub" style="color:var(--green);display:flex;align-items:center;gap:5px;"><i data-feather="shield" width="11" height="11"></i> Freeze ready</div>
+      </div>
+
+      <div class="k-card" data-reveal>
+        <div class="k-metric-label">TOTAL SESSIONS</div>
+        <div class="p-stat-big">143</div>
+        <div class="p-stat-sub">127 live · 11 backtest · 5 study</div>
+      </div>
+
+    </div>
+  </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.29.0/feather.min.js"></script>
+  <script>feather.replace();</script>
+  <script src="/js/v2-reveal.js"></script>
+  <script>
+    function toggleTheme() {
+      var el = document.documentElement;
+      var next = el.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      el.setAttribute('data-theme', next);
+      try { localStorage.setItem('kaizen-theme', next); } catch (e) {}
+    }
+  </script>
+</body>
+</html>
