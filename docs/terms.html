@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#C9A84C">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="images/kaizen-icon.png" type="image/png">
+<link rel="apple-touch-icon" href="images/kaizen-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.29.0/feather.min.js"></script>
+<script>
+  // Apply saved theme BEFORE first paint to avoid a flash of the wrong theme
+  (function () {
+    try {
+      var t = localStorage.getItem('kaizen-theme');
+      if (!t) {
+        t = (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches)
+          ? 'light' : 'dark';
+      }
+      if (t !== 'dark' && t !== 'light') t = 'dark';
+      document.documentElement.setAttribute('data-theme', t);
+    } catch (e) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+  })();
+</script>
+
+<script>
+(function(){try{var u=new URL(window.location.href);if(u.searchParams.has('wallet')){u.searchParams.delete('wallet');window.history.replaceState({},document.title,u.toString());}}catch(e){}})();
+</script>
+
+  <title>KAIZEN — Terms of Service</title>
+</head>
+<body class="app-page">
+  
+
+
+
+<!-- POPUP OVERLAY -->
+<div class="popup-overlay" id="popupOverlay" onclick="closePopup()"></div>
+
+<!-- SIDE POPUP MENU -->
+<div class="nav-popup" id="navPopup">
+  <div class="popup-header">
+    <span class="popup-logo">改 KAIZEN</span>
+    <button class="popup-close" onclick="closePopup()">×</button>
+  </div>
+
+  
+    <!-- NOT LOGGED IN -->
+    <div class="popup-section">
+      <div class="popup-section-label">Get Started</div>
+    </div>
+    <div class="popup-auth-btns">
+      <a href="login.html" class="btn-primary btn-full">Log In</a>
+      <a href="register.html" class="btn-outline btn-full">Sign Up</a>
+    </div>
+    <div class="popup-section">
+     <div class="popup-section-label">Settings</div>
+     <button class="popup-item" onclick="toggleTheme()">
+       <span class="popup-item-icon">▪</span> Dark / Light Mode
+     </button>
+    </div>
+
+    <div class="popup-section">
+      <div class="popup-section-label">Info</div>
+      <a href="about.html" class="popup-item">
+        <span class="popup-item-icon">▪</span> About Kaizen
+      </a>
+      <a href="whitepaper.html" class="popup-item">
+        <span class="popup-item-icon">▪</span> Whitepaper
+      </a>
+      <a href="services.html" class="popup-item">
+        <span class="popup-item-icon">▪</span> Services
+      </a>
+      <a href="help.html" class="popup-item">
+        <span class="popup-item-icon">▪</span> Help Center
+      </a>
+    </div>
+  
+</div>
+
+<!-- MAIN NAVBAR -->
+<nav class="navbar">
+  <a href="/dashboard" class="nav-logo">改 KAIZEN</a>
+  <div class="nav-right">
+    <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
+      <span id="themeIcon">◐</span>
+    </button>
+    <button class="three-dot-btn" onclick="togglePopup()" title="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- SECURITY MODAL -->
+<div class="modal-overlay" id="securityModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Security</h3>
+      <button class="modal-close" onclick="closeModal('securityModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="security-section">
+        <h4>Change Password</h4>
+        <form action="/auth/change-password" method="POST"
+          style="display:flex;flex-direction:column;gap:12px;">
+          <div class="form-group">
+            <label class="form-label">Current Password</label>
+            <input type="password" name="currentPassword"
+              class="form-input" placeholder="Enter current Password">
+          </div>
+          <div class="form-group">
+            <label class="form-label">New Password</label>
+            <input type="password" name="newPassword"
+              class="form-input" placeholder="Enter New Password">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Confirm Password</label>
+            <input type="password" name="confirmPassword"
+              class="form-input" placeholder="Confirm New Password">
+          </div>
+          <button type="submit" class="btn-primary">Update Password</button>
+        </form>
+      </div>
+      <div class="security-section" style="margin-top:24px;padding-top:24px;border-top:1px solid var(--border);">
+        <h4>Two-Factor Authentication</h4>
+        <p style="font-size:0.85rem;color:var(--ash);margin-bottom:14px;">
+          Add an extra layer of security to your account.
+        </p>
+        <button class="btn-outline btn-full">Enable 2FA — Coming Soon</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+  <div class="legal-wrap">
+    <!-- Sticky TOC -->
+    <nav class="legal-toc" aria-label="Terms sections">
+      <div class="legal-toc-title">Contents</div>
+      <a href="#t1">1 · Acceptance</a>
+      <a href="#t2">2 · What KAIZEN Is</a>
+      <a href="#t3">3 · Not Financial Advice</a>
+      <a href="#t4">4 · Eligibility</a>
+      <a href="#t5">5 · Registration</a>
+      <a href="#t6">6 · Acceptable Use</a>
+      <a href="#t7">7 · Your Content</a>
+      <a href="#t8">8 · Score &amp; Verification</a>
+      <a href="#t9">9 · Subscriptions</a>
+      <a href="#t10">10 · IP</a>
+      <a href="#t11">11 · Third Parties</a>
+      <a href="#t12">12 · Warranties</a>
+      <a href="#t13">13 · Liability</a>
+      <a href="#t14">14 · Termination</a>
+      <a href="#t15">15 · Changes</a>
+      <a href="#t16">16 · Governing Law</a>
+      <a href="#t17">17 · Contact</a>
+    </nav>
+
+    <main class="legal-body">
+      <div class="page-header">
+        <div>
+          <h1 style="color:var(--gold);">Terms of Service</h1>
+          <p class="legal-updated">Last updated: September 2026</p>
+        </div>
+      </div>
+
+      <div class="legal-sec" id="t1">
+        <h3><span class="legal-n">01</span> Acceptance of Terms</h3>
+        <p>
+          By accessing or using KAIZEN ("the Platform," "we," "us," or "our"),
+          available at kaizen-trader.onrender.com, you agree to be bound by
+          these Terms of Service ("Terms"). If you do not agree to these
+          Terms, do not use the Platform.
+        </p>
+        <p>
+          KAIZEN is operated by Dennis (the "Founder") as an independent
+          software product currently in active development.
+        </p>
+      </div>
+
+      <div class="legal-sec" id="t2">
+        <h3><span class="legal-n">02</span> What KAIZEN Is</h3>
+        <p>KAIZEN is a trader improvement and reputation platform. The Platform allows users to:</p>
+        <ul>
+          <li>Define their trading system: rules, setups, risk limits, and no-trade conditions</li>
+          <li>Log trading journal entries describing their trading sessions</li>
+          <li>Receive AI-generated behavioral feedback on those entries</li>
+          <li>Track a "KAIZEN Score" based on five dimensions: Process, Risk, Execution, Behavior, and Learning &amp; Consistency</li>
+          <li>Engage in psychology sessions focused on trading mindset</li>
+          <li>Track their progress over time, including streaks and milestones</li>
+          <li>Optionally connect wallets to verify their identity, link an external Zero Authority DAO profile, and view credentials recorded on the Mantle blockchain</li>
+          <li>Access charting tools and market news</li>
+        </ul>
+      </div>
+
+      <div class="legal-sec" id="t3">
+        <h3><span class="legal-n">03</span> KAIZEN Is Not Financial Advice</h3>
+        <div class="legal-callout">
+          <p><strong>This is the most important section of these Terms. Please read it carefully.</strong></p>
+          <p>
+            KAIZEN provides AI-generated behavioral and psychological feedback
+            based on information you voluntarily submit. KAIZEN does not
+            provide financial advice, investment advice, trading signals, or
+            any recommendation to buy, sell, or hold any financial instrument.
+          </p>
+          <p>
+            Nothing produced by KAIZEN — including KAIZEN Scores, AI feedback,
+            pattern detection, or psychology session responses — should be
+            interpreted as a recommendation regarding any specific trade,
+            strategy, or financial decision.
+          </p>
+        </div>
+        <p>You acknowledge that:</p>
+        <ul>
+          <li>Trading financial instruments carries substantial risk of loss</li>
+          <li>Past performance, including any score improvement, does not guarantee future trading results</li>
+          <li>A high KAIZEN Score represents consistent process and behavior. It is not a promise, prediction, or guarantee of profitability</li>
+          <li>You are solely responsible for your own trading decisions</li>
+          <li>KAIZEN's AI feedback is generated based on patterns in the text you provide and may contain errors, omissions, or inaccuracies</li>
+          <li>You should consult a licensed financial advisor before making investment decisions</li>
+        </ul>
+      </div>
+
+      <div class="legal-sec" id="t4">
+        <h3><span class="legal-n">04</span> Eligibility</h3>
+        <p>
+          You must be at least 18 years old to use KAIZEN. By creating an
+          account, you represent that you meet this requirement.
+        </p>
+        <p>
+          KAIZEN is not directed at, and should not be used by, anyone under
+          the age of 18.
+        </p>
+      </div>
+
+      <div class="legal-sec" id="t5">
+        <h3><span class="legal-n">05</span> Account Registration</h3>
+        <p>To use KAIZEN, you must create an account using either email/password or Google OAuth authentication. You agree to:</p>
+        <ul>
+          <li>Provide accurate registration information</li>
+          <li>Maintain the security of your account credentials</li>
+          <li>Notify us promptly of any unauthorized access to your account</li>
+          <li>Take responsibility for all activity that occurs under your account</li>
+        </ul>
+        <p>
+          We reserve the right to suspend or terminate accounts that provide
+          false information or violate these Terms.
+        </p>
+      </div>
+
+      <div class="legal-sec" id="t6">
+        <h3><span class="legal-n">06</span> Acceptable Use</h3>
+        <p>You agree not to:</p>
+        <ul>
+          <li>Use KAIZEN for any unlawful purpose</li>
+          <li>Attempt to reverse-engineer, exploit, or abuse the AI systems powering KAIZEN</li>
+          <li>Submit content that is abusive, harassing, or contains personal information about third parties</li>
+          <li>Attempt to gain unauthorized access to other users' accounts or data</li>
+          <li>Use automated scripts or bots to interact with the Platform without our written permission</li>
+          <li>Misrepresent your trading history or identity to manipulate the KAIZEN Score, challenges, or any public progress feature</li>
+          <li>Attempt to manipulate the scoring system — for example, by logging fabricated sessions or false rule compliance. KAIZEN may adjust or invalidate scores where manipulation is detected</li>
+          <li>Resell, sublicense, or commercially exploit access to KAIZEN without written permission</li>
+        </ul>
+      </div>
+
+      <div class="legal-sec" id="t7">
+        <h3><span class="legal-n">07</span> Journal Entries, Psychology Sessions, and AI-Generated Content</h3>
+        <p>
+          When you submit a journal entry or psychology session message, you
+          grant KAIZEN a license to process that content through our AI
+          systems, including third-party AI providers (currently Anthropic),
+          for the purpose of generating feedback and calculating your KAIZEN
+          Score.
+        </p>
+        <p>
+          You retain ownership of the content you submit. KAIZEN does not
+          claim ownership of your journal entries or psychology session
+          content.
+        </p>
+        <p>
+          AI-generated responses are provided "as is." We do not guarantee
+          the accuracy, completeness, or appropriateness of any AI-generated
+          feedback.
+        </p>
+      </div>
+
+      <div class="legal-sec" id="t8">
+        <h3><span class="legal-n">08</span> KAIZEN Score and Verification</h3>
+        <div class="legal-callout">
+          <p>
+            <strong>Wallet ownership is not trading performance.</strong>
+            Verification confirms identity and record integrity — nothing
+            more.
+          </p>
+        </div>
+        <p>
+          Your KAIZEN Score is calculated in KAIZEN's own systems from your
+          journal entries, stated rules, and engagement over time, across
+          five dimensions. The formula may be adjusted over time as the
+          Platform evolves.
+        </p>
+        <p>
+          Wallet verification is optional. Connecting a wallet (Stacks,
+          Ethereum, or other supported networks) confirms that you control
+          that address — nothing more. It is not a verification of trading
+          performance, it is never required to use the Platform's core
+          features, and it can be disconnected at any time. Connected wallet
+          addresses are stored encrypted.
+        </p>
+        <p>
+          Milestones and credentials you earn may be recorded on the Mantle
+          blockchain in hashed, anonymized form so they can be independently
+          verified. These records currently run on a public testnet. Raw
+          journal content and psychology session text are never written to
+          any blockchain.
+        </p>
+        <p>
+          If you choose to link a Zero Authority DAO profile, your public ZA
+          reputation data will be displayed on your profile. This connection
+          is optional and can be removed at your request. ZA reputation
+          never affects your KAIZEN Score.
+        </p>
+      </div>
+
+      <div class="legal-sec" id="t9">
+        <h3><span class="legal-n">09</span> Subscription Plans</h3>
+        <p>
+          KAIZEN currently offers free access to all features. We reserve
+          the right to introduce paid subscription tiers ("KAIZEN Pro") in
+          the future. If introduced, separate terms regarding billing,
+          cancellation, and refunds will be presented and must be agreed to
+          before purchase.
+        </p>
+      </div>
+
+      <div class="legal-sec" id="t10">
+        <h3><span class="legal-n">10</span> Intellectual Property</h3>
+        <p>
+          KAIZEN, including its name, logo, design, source code, AI prompts,
+          and underlying architecture, is the intellectual property of the
+          Founder. You may not copy, modify, distribute, or create
+          derivative works based on KAIZEN without written permission.
+        </p>
+      </div>
+
+      <div class="legal-sec" id="t11">
+        <h3><span class="legal-n">11</span> Third-Party Services</h3>
+        <p>KAIZEN integrates with third-party services to function, including but not limited to:</p>
+        <ul>
+          <li>Anthropic (AI processing of journal and psychology content)</li>
+          <li>Google (OAuth authentication)</li>
+          <li>MongoDB Atlas (data storage)</li>
+          <li>Render (application hosting)</li>
+          <li>Resend (transactional email)</li>
+          <li>Wallet providers (client-side wallet signature verification; KAIZEN never receives or stores your seed phrase or private keys)</li>
+          <li>Zero Authority DAO (optional external Web3 reputation, Stacks ecosystem)</li>
+          <li>Mantle blockchain (credential records)</li>
+        </ul>
+        <p>
+          Your use of KAIZEN is also subject to the applicable terms of
+          these third-party providers where relevant.
+        </p>
+      </div>
+
+      <div class="legal-sec" id="t12">
+        <h3><span class="legal-n">12</span> Disclaimer Of Warranties</h3>
+        <p>
+          KAIZEN is provided "as is" and "as available" without warranties
+          of any kind, whether express or implied. We do not warrant that
+          the Platform will be uninterrupted, error-free, or secure at all
+          times.
+        </p>
+        <p>
+          KAIZEN is an actively developed product. Features may change, be
+          added, or be removed without prior notice.
+        </p>
+      </div>
+
+      <div class="legal-sec" id="t13">
+        <h3><span class="legal-n">13</span> Limitation Of Liability</h3>
+        <p>
+          To the fullest extent permitted by law, KAIZEN, its Founder, and
+          any affiliates shall not be liable for any indirect, incidental,
+          special, consequential, or punitive damages, including but not
+          limited to financial losses resulting from trading decisions made
+          with or without reliance on KAIZEN, arising from your use of the
+          Platform.
+        </p>
+      </div>
+
+      <div class="legal-sec" id="t14">
+        <h3><span class="legal-n">14</span> Account Termination</h3>
+        <p>
+          You may delete your account at any time using the Delete Account
+          feature in Settings. Upon deletion, your personal account data
+          will be removed in accordance with our Privacy Policy.
+        </p>
+        <p>
+          We reserve the right to suspend or terminate any account that
+          violates these Terms, at our sole discretion.
+        </p>
+      </div>
+
+      <div class="legal-sec" id="t15">
+        <h3><span class="legal-n">15</span> Changes To Terms</h3>
+        <p>
+          We may update these Terms from time to time. Continued use of
+          KAIZEN after changes are posted constitutes acceptance of the
+          revised Terms. Material changes will be communicated to users
+          where reasonably possible.
+        </p>
+      </div>
+
+      <div class="legal-sec" id="t16">
+        <h3><span class="legal-n">16</span> Governing Law</h3>
+        <p>
+          These Terms shall be governed by and construed in accordance with
+          the laws of the Federal Republic of Nigeria, without regard to
+          conflict of law principles.
+        </p>
+      </div>
+
+      <div class="legal-sec" id="t17">
+        <h3><span class="legal-n">17</span> Contact Us</h3>
+        <p>
+          For questions about these Terms, contact us via X at
+          <strong>@kaizenaibot</strong> or through the Support page on the
+          Platform.
+        </p>
+      </div>
+    </main>
+  </div>
+
+  <footer class="footer">
+  <div class="footer-inner">
+    <span class="footer-logo">改 KAIZEN</span>
+    <div style="display:flex;gap:20px;flex-wrap:wrap;align-items:center;">
+      <a href="privacy.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Privacy</a>
+      <a href="terms.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Terms</a>
+      <a href="about.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">About</a>
+      <a href="whitepaper.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Whitepaper</a>
+      <a href="help.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Help Center</a>
+      <a href="support.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Support</a>
+    </div>
+    <span class="footer-right">© 2026 KAIZEN</span>
+  </div>
+</footer>
+<script>if(window.feather) feather.replace();</script>
+
+  <script src="js/app.js"></script>
+  <script>if(window.feather) feather.replace();</script>
+</body>
+</html>

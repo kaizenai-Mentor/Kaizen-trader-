@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#C9A84C">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="images/kaizen-icon.png" type="image/png">
+<link rel="apple-touch-icon" href="images/kaizen-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.29.0/feather.min.js"></script>
+<script>
+  // Apply saved theme BEFORE first paint to avoid a flash of the wrong theme
+  (function () {
+    try {
+      var t = localStorage.getItem('kaizen-theme');
+      if (!t) {
+        t = (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches)
+          ? 'light' : 'dark';
+      }
+      if (t !== 'dark' && t !== 'light') t = 'dark';
+      document.documentElement.setAttribute('data-theme', t);
+    } catch (e) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+  })();
+</script>
+
+<script>
+(function(){try{var u=new URL(window.location.href);if(u.searchParams.has('wallet')){u.searchParams.delete('wallet');window.history.replaceState({},document.title,u.toString());}}catch(e){}})();
+</script>
+
+  <title>About KAIZEN — Why We Exist</title>
+</head>
+<body class="app-page">
+  
+
+
+
+<!-- POPUP OVERLAY -->
+<div class="popup-overlay" id="popupOverlay" onclick="closePopup()"></div>
+
+<!-- SIDE POPUP MENU -->
+<div class="nav-popup" id="navPopup">
+  <div class="popup-header">
+    <span class="popup-logo">改 KAIZEN</span>
+    <button class="popup-close" onclick="closePopup()">×</button>
+  </div>
+
+  
+    <!-- NOT LOGGED IN -->
+    <div class="popup-section">
+      <div class="popup-section-label">Get Started</div>
+    </div>
+    <div class="popup-auth-btns">
+      <a href="login.html" class="btn-primary btn-full">Log In</a>
+      <a href="register.html" class="btn-outline btn-full">Sign Up</a>
+    </div>
+    <div class="popup-section">
+     <div class="popup-section-label">Settings</div>
+     <button class="popup-item" onclick="toggleTheme()">
+       <span class="popup-item-icon">▪</span> Dark / Light Mode
+     </button>
+    </div>
+
+    <div class="popup-section">
+      <div class="popup-section-label">Info</div>
+      <a href="about.html" class="popup-item">
+        <span class="popup-item-icon">▪</span> About Kaizen
+      </a>
+      <a href="whitepaper.html" class="popup-item">
+        <span class="popup-item-icon">▪</span> Whitepaper
+      </a>
+      <a href="services.html" class="popup-item">
+        <span class="popup-item-icon">▪</span> Services
+      </a>
+      <a href="help.html" class="popup-item">
+        <span class="popup-item-icon">▪</span> Help Center
+      </a>
+    </div>
+  
+</div>
+
+<!-- MAIN NAVBAR -->
+<nav class="navbar">
+  <a href="/dashboard" class="nav-logo">改 KAIZEN</a>
+  <div class="nav-right">
+    <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
+      <span id="themeIcon">◐</span>
+    </button>
+    <button class="three-dot-btn" onclick="togglePopup()" title="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- SECURITY MODAL -->
+<div class="modal-overlay" id="securityModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Security</h3>
+      <button class="modal-close" onclick="closeModal('securityModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="security-section">
+        <h4>Change Password</h4>
+        <form action="/auth/change-password" method="POST"
+          style="display:flex;flex-direction:column;gap:12px;">
+          <div class="form-group">
+            <label class="form-label">Current Password</label>
+            <input type="password" name="currentPassword"
+              class="form-input" placeholder="Enter current Password">
+          </div>
+          <div class="form-group">
+            <label class="form-label">New Password</label>
+            <input type="password" name="newPassword"
+              class="form-input" placeholder="Enter New Password">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Confirm Password</label>
+            <input type="password" name="confirmPassword"
+              class="form-input" placeholder="Confirm New Password">
+          </div>
+          <button type="submit" class="btn-primary">Update Password</button>
+        </form>
+      </div>
+      <div class="security-section" style="margin-top:24px;padding-top:24px;border-top:1px solid var(--border);">
+        <h4>Two-Factor Authentication</h4>
+        <p style="font-size:0.85rem;color:var(--ash);margin-bottom:14px;">
+          Add an extra layer of security to your account.
+        </p>
+        <button class="btn-outline btn-full">Enable 2FA — Coming Soon</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+  <main class="k-page-main">
+
+    <!-- HEADER -->
+    <div class="k-page-header k-grid-bg" data-reveal>
+      <div class="k-eyebrow k-eyebrow--center">The Mission</div>
+      <h1 class="k-page-h1">About <span class="k-gold">KAIZEN</span></h1>
+      <p class="k-page-sub">
+        Built by a trader, for traders. KAIZEN exists because the gap
+        between knowing your rules and following them is where most
+        accounts go to die.
+      </p>
+    </div>
+
+    <!-- THE PROBLEM -->
+    <div class="k-problem" data-reveal>
+      <div class="k-problem-eyebrow">
+        <i data-feather="alert-triangle" width="14" height="14"></i>
+        The Problem
+      </div>
+      <div class="k-problem-h">Most retail traders lose money.</div>
+      <p>
+        Not because of bad strategies. Not because of the market. Because
+        of behavioral failures — FOMO entries, revenge trades, rule
+        violations under pressure, overconfidence after wins. The strategy
+        works. The execution does not.
+      </p>
+    </div>
+
+    <!-- THE SOLUTION -->
+    <div class="k-solution">
+      <div data-reveal>
+        <div class="k-eyebrow">The Solution</div>
+        <h2 class="k-solution-h">
+          Turn the invisible struggle into measurable improvement.
+        </h2>
+        <p>
+          KAIZEN is a trader improvement platform. You plan your trades,
+          journal your sessions, and reflect on what happened. The AI
+          analyzes every entry against your own stated rules and your full
+          history — so every response is specific to your behavior, your
+          patterns, your triggers, your blind spots. Not a template. Not
+          generic advice.
+        </p>
+        <p>
+          The result is the KAIZEN Score: one number, five dimensions —
+          Process, Risk, Execution, Behavior, Learning & Consistency.
+          It measures how you trade, not what you made, because
+          improvement is the one thing you can actually control.
+        </p>
+      </div>
+      <div class="k-solution-panel k-card--elevated k-grid-bg" data-reveal style="transition-delay:100ms;">
+        
+<div class="k-dial" data-dial="87" style="width:180px;" role="img" aria-label="KAIZEN Score 87 of 100">
+  <svg viewBox="0 0 120 120" aria-hidden="true" focusable="false">
+    <circle class="k-dial-track" cx="60" cy="60" r="54"></circle>
+    <circle class="k-dial-arc" cx="60" cy="60" r="54"></circle>
+  </svg>
+  <div class="k-dial-center">
+    <div class="k-dial-value" style="font-size:43px;">87</div>
+    <div class="k-dial-label">KAIZEN Score</div>
+  </div>
+</div>
+
+        
+<div class="k-meters">
+  
+    <div class="k-meter" data-meter="91">
+      <span class="k-meter-label">Process</span>
+      <span class="k-meter-track"><span class="k-meter-fill"></span></span>
+      <span class="k-meter-value">91</span>
+    </div>
+  
+    <div class="k-meter" data-meter="86">
+      <span class="k-meter-label">Risk</span>
+      <span class="k-meter-track"><span class="k-meter-fill"></span></span>
+      <span class="k-meter-value">86</span>
+    </div>
+  
+    <div class="k-meter" data-meter="88">
+      <span class="k-meter-label">Execution</span>
+      <span class="k-meter-track"><span class="k-meter-fill"></span></span>
+      <span class="k-meter-value">88</span>
+    </div>
+  
+    <div class="k-meter" data-meter="82">
+      <span class="k-meter-label">Behavior</span>
+      <span class="k-meter-track"><span class="k-meter-fill"></span></span>
+      <span class="k-meter-value">82</span>
+    </div>
+  
+    <div class="k-meter" data-meter="90">
+      <span class="k-meter-label">Learning &amp; Consistency</span>
+      <span class="k-meter-track"><span class="k-meter-fill"></span></span>
+      <span class="k-meter-value">90</span>
+    </div>
+  
+</div>
+
+        <div class="k-solution-caption">One number. Five dimensions.<br>How you traded — not what you made.</div>
+      </div>
+    </div>
+
+    <!-- HOW IS THIS SCORED? (the Cockpit links here) -->
+    <div id="kaizen-score" data-reveal>
+      <div class="k-eyebrow">The Score, Explained</div>
+      <h2 class="k-title">How is this scored?</h2>
+      <p class="k-sub k-sub--left">
+        The KAIZEN Score is computed by a fixed formula from your sessions
+        — never invented by the AI, never set by hand. It measures how you
+        traded, not what you made. Every number shows its WHY, and when
+        there isn't enough evidence yet, a dimension says <b>Building</b>
+        instead of guessing.
+      </p>
+    </div>
+
+    <div class="k-pillars">
+      <div class="k-pillar k-card k-card--hover" data-reveal>
+        <div class="k-icon-badge"><i data-feather="clipboard" width="18" height="18"></i></div>
+        <div>
+          <div class="k-pillar-title">Process</div>
+          <p>Do you do what you said you would? Planning before the session, and trading inside your own written rules.</p>
+        </div>
+      </div>
+      <div class="k-pillar k-card k-card--hover" data-reveal style="transition-delay:60ms;">
+        <div class="k-icon-badge"><i data-feather="shield" width="18" height="18"></i></div>
+        <div>
+          <div class="k-pillar-title">Risk</div>
+          <p>How responsibly you manage it — predefined risk, sizing, stops, and the daily limits you set for yourself.</p>
+        </div>
+      </div>
+      <div class="k-pillar k-card k-card--hover" data-reveal style="transition-delay:120ms;">
+        <div class="k-icon-badge"><i data-feather="crosshair" width="18" height="18"></i></div>
+        <div>
+          <div class="k-pillar-title">Execution</div>
+          <p>How closely the actual trade matched the plan you wrote beforehand — entries, exits, and the moments in between.</p>
+        </div>
+      </div>
+      <div class="k-pillar k-card k-card--hover" data-reveal>
+        <div class="k-icon-badge"><i data-feather="zap" width="18" height="18"></i></div>
+        <div>
+          <div class="k-pillar-title">Behavior</div>
+          <p>The patterns behind your decisions — the impulses, the hesitations, the things that repeat when nobody is watching.</p>
+        </div>
+      </div>
+      <div class="k-pillar k-card k-card--hover" data-reveal style="transition-delay:60ms;">
+        <div class="k-icon-badge"><i data-feather="trending-up" width="18" height="18"></i></div>
+        <div>
+          <div class="k-pillar-title">Learning &amp; Consistency</div>
+          <p>Whether experience is actually turning into improvement — real reflections, corrected mistakes, steadiness over time.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- WHAT MAKES KAIZEN DIFFERENT -->
+    <div data-reveal>
+      <div class="k-eyebrow">What Makes KAIZEN Different</div>
+    </div>
+    <div class="k-pillars">
+
+      <div class="k-pillar k-card k-card--hover" data-reveal>
+        <div class="k-icon-badge"><i data-feather="activity" width="18" height="18"></i></div>
+        <div>
+          <div class="k-pillar-title">Behavioral AI, Not Signals</div>
+          <p>
+            KAIZEN never tells you what to trade. It tells you whether you
+            followed your own process and identifies exactly where and why
+            your discipline breaks down across sessions. The intelligence
+            grows with every entry you log.
+          </p>
+        </div>
+      </div>
+
+      <div class="k-pillar k-card k-card--hover" data-reveal style="transition-delay:60ms;">
+        <div class="k-icon-badge"><i data-feather="heart" width="18" height="18"></i></div>
+        <div>
+          <div class="k-pillar-title">Psychology, Not Just Trade Analysis</div>
+          <p>
+            A dedicated Psychology Session space lets you talk to KAIZEN AI
+            about your mindset, fear of pulling the trigger, financial
+            pressure, or self-doubt — not tied to any specific trade.
+            Discipline failures are often rooted in psychology that never
+            shows up in a trade log.
+          </p>
+        </div>
+      </div>
+
+      <div class="k-pillar k-card k-card--hover" data-reveal style="transition-delay:120ms;">
+        <div class="k-seal">認</div>
+        <div>
+          <div class="k-pillar-title">Progress You Can Prove</div>
+          <p>
+            Your improvement becomes a record. Session by session, your
+            score history, your patterns, and your milestones build up —
+            and the milestones that matter can become credentials that
+            anyone can independently verify. Verification is the output of
+            improvement, not a substitute for it.
+          </p>
+        </div>
+      </div>
+
+      <div class="k-pillar k-card k-card--hover" data-reveal style="transition-delay:180ms;">
+        <div class="k-icon-badge"><i data-feather="user" width="18" height="18"></i></div>
+        <div>
+          <div class="k-pillar-title">Built From Real Experience</div>
+          <p>
+            KAIZEN was conceived from direct, personal experience with the
+            exact discipline challenges it was built to solve. The
+            multi-timeframe liquidity strategy that KAIZEN was designed to
+            support is the same strategy the founder trades. This is not a
+            tool built by observers. It was built from the inside.
+          </p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- IDENTITY & VERIFICATION -->
+    <div data-reveal>
+      <div class="k-eyebrow">Identity &amp; Verification · Optional</div>
+      <h2 class="k-title">Verification, kept honest and optional</h2>
+      <p class="k-sub k-sub--left">
+        You never need a wallet to use KAIZEN. But if you want your
+        progress to be provable, verification is there.
+      </p>
+    </div>
+
+    <div class="k-verify-grid">
+
+      <div class="k-verify-card k-card k-card--hover" data-reveal>
+        <div class="k-icon-badge"><i data-feather="link" width="18" height="18"></i></div>
+        <h3 class="k-verify-title">Your Wallets</h3>
+        <p>
+          Connect a Stacks, Ethereum, or other supported wallet to verify
+          your identity. Private by default — your address is never shown
+          publicly unless you decide otherwise. A verified wallet proves
+          you control your address. It says nothing about your trading
+          results, and we never pretend otherwise.
+        </p>
+        <span class="k-tag">Stacks · Ethereum · More</span>
+      </div>
+
+      <div class="k-verify-card k-card k-card--featured" data-reveal style="transition-delay:80ms;">
+        <div class="k-seal">認</div>
+        <h3 class="k-verify-title">Your Credentials</h3>
+        <p>
+          Milestones you earn — consistency streaks, process adherence,
+          recovery comebacks — can be recorded on the Mantle blockchain,
+          so your credentials can be independently verified by anyone.
+          Your journal text is never written to any blockchain.
+        </p>
+        <span class="k-tag">Recorded on Mantle · Testnet</span>
+      </div>
+
+      <div class="k-verify-card k-card k-card--hover" data-reveal style="transition-delay:160ms;">
+        <div class="k-icon-badge"><i data-feather="globe" width="18" height="18"></i></div>
+        <h3 class="k-verify-title">Your Web3 Reputation</h3>
+        <p>
+          Already active in Web3? Link your Zero Authority profile to add
+          that reputation to your KAIZEN identity. Entirely optional — for
+          traders who just want the journaling and coaching, nothing
+          changes.
+        </p>
+        <span class="k-tag">Optional</span>
+      </div>
+
+    </div>
+
+    <!-- MISSION -->
+    <div class="k-quote" data-reveal>
+      <blockquote>
+        "KAIZEN scores process, not P&amp;L — because improvement is the
+        one thing you can actually control."
+      </blockquote>
+      <div class="k-quote-tag">Trade Better. Every Day.</div>
+    </div>
+
+    <!-- CTA -->
+    <div class="k-page-cta" data-reveal>
+      <a href="register.html" class="btn-primary k-btn-lg">Start Building Your Improvement Record</a>
+      <p class="k-page-cta-note">Free to start · No credit card · No signals</p>
+    </div>
+
+  </main>
+
+  <footer class="footer">
+  <div class="footer-inner">
+    <span class="footer-logo">改 KAIZEN</span>
+    <div style="display:flex;gap:20px;flex-wrap:wrap;align-items:center;">
+      <a href="privacy.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Privacy</a>
+      <a href="terms.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Terms</a>
+      <a href="about.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">About</a>
+      <a href="whitepaper.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Whitepaper</a>
+      <a href="help.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Help Center</a>
+      <a href="support.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Support</a>
+    </div>
+    <span class="footer-right">© 2026 KAIZEN</span>
+  </div>
+</footer>
+<script>if(window.feather) feather.replace();</script>
+
+  <script src="js/app.js"></script>
+  <script src="js/v2-reveal.js"></script>
+  <script>feather.replace();</script>
+</body>
+</html>

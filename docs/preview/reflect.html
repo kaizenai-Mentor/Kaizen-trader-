@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KAIZEN — Reflect (V2 Preview)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/preview/preview.css">
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('kaizen-theme') ||
+          ((window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) ? 'light' : 'dark');
+        if (t !== 'dark' && t !== 'light') t = 'dark';
+        document.documentElement.setAttribute('data-theme', t);
+      } catch (e) { document.documentElement.setAttribute('data-theme', 'dark'); }
+    })();
+  </script>
+</head>
+<body class="app-page">
+
+  <nav class="navbar">
+    <a href="#" class="nav-logo">改 KAIZEN</a>
+    <div class="nav-right">
+      <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme"><span id="themeIcon">◐</span></button>
+      <button class="three-dot-btn" title="Menu"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+
+  <main class="p-flow">
+
+    <div class="p-step-strip">
+      <span class="is-done">Plan ✓</span><b>—</b>
+      <span class="is-done">Record ✓</span><b>—</b>
+      <span class="is-active">Reflect</span>
+    </div>
+
+    <div class="k-eyebrow" style="margin-bottom:10px;">The Reflection</div>
+    <h1 style="font-size:clamp(1.6rem,3.5vw,2.3rem);font-weight:700;color:var(--text-primary);line-height:1.15;margin:0 0 10px;">
+      A session becomes a lesson here.
+    </h1>
+    <p style="font-size:0.9rem;color:var(--text-secondary);line-height:1.75;margin:0 0 32px;">
+      Four short answers. Yours, not KAIZEN's — the AI responds after you finish.
+    </p>
+
+    <div class="p-col" style="gap:0;">
+
+      <div class="k-card p-prompt" data-reveal>
+        <div class="k-metric-label">WHAT ACTUALLY HAPPENED?</div>
+        <textarea>Entered on the 30min MSS after the 4H sweep, exactly as planned. Price squeezed and I held through it.</textarea>
+      </div>
+
+      <div class="k-card p-prompt" data-reveal>
+        <div class="k-metric-label">DID YOU FOLLOW YOUR PROCESS?</div>
+        <textarea>Yes — no invalidation moves this time. Set the five-minute timer and waited for confirmation.</textarea>
+      </div>
+
+      <div class="k-card p-prompt p-prompt-focus" data-reveal>
+        <div class="k-metric-label" style="color:var(--gold);">WHAT DID YOU LEARN?</div>
+        <textarea placeholder="The timer works. Waiting felt uncomfortable at exactly the moment it mattered...|</textarea>
+      </div>
+
+      <div class="k-card p-prompt" data-reveal>
+        <div class="k-metric-label">WHAT WOULD YOU CHANGE?</div>
+        <textarea placeholder="Answer in your own words..."></textarea>
+      </div>
+
+    </div>
+
+    <div class="p-actions" data-reveal>
+      <a href="#" class="btn-primary k-btn-lg">Finish Session</a>
+      <a href="#" style="font-family:var(--font-mono);font-size:0.68rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);text-decoration:underline;">Save draft</a>
+    </div>
+
+  </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.29.0/feather.min.js"></script>
+  <script>feather.replace();</script>
+  <script src="/js/v2-reveal.js"></script>
+  <script>
+    function toggleTheme() {
+      var el = document.documentElement;
+      var next = el.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      el.setAttribute('data-theme', next);
+      try { localStorage.setItem('kaizen-theme', next); } catch (e) {}
+    }
+  </script>
+</body>
+</html>
