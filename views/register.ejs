@@ -4,7 +4,10 @@
   <%- include('partials/head') %>
   <title>KAIZEN — Join</title>
 </head>
-<body class="k-auth">
+<body class="k-auth" style="display:block;">
+  <%- include('partials/navbar') %>
+
+  <div style="min-height:calc(100vh - 64px);display:flex;align-items:center;justify-content:center;">
   <div class="k-authglow"></div>
 
   <div class="k-authwrap">
@@ -149,5 +152,10 @@
     <% } %>
 
   </div>
+
+  </div>
+
+  <script>feather.replace();</script>
+  <script src="/js/app.js"></script>
 </body>
 </html>

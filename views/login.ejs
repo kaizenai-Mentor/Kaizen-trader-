@@ -4,7 +4,11 @@
   <%- include('partials/head') %>
   <title>KAIZEN — Sign In</title>
 </head>
-<body class="welcome-page" style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;background:var(--bg-base);color:var(--text-primary);">
+<body class="welcome-page" style="background:var(--bg-base);color:var(--text-primary);">
+
+  <%- include('partials/navbar') %>
+
+  <div style="min-height:calc(100vh - 64px);display:flex;align-items:center;justify-content:center;padding:24px;">
 
   <!-- Background glow -->
   <div style="position:fixed;top:20%;left:50%;transform:translateX(-50%);width:600px;height:400px;background:radial-gradient(ellipse,rgba(201,168,76,0.05),transparent 70%);pointer-events:none;"></div>
@@ -123,20 +127,6 @@
 
     </div>
 
-<!-- Theme toggle -->
-<div style="position:fixed;top:16px;right:16px;z-index:100;">
-  <button onclick="toggleTheme()" style="
-    background:rgba(201,168,76,0.08);
-    border:1px solid rgba(201,168,76,0.2);
-    color:var(--gold);
-    width:36px;height:36px;
-    display:flex;align-items:center;justify-content:center;
-    cursor:pointer;
-  ">
-        <span id="themeIcon">◐</span>
-  </button>
-</div>
-
     <!-- Bottom note -->
     <div style="text-align:center;margin-top:20px;">
       <p style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:rgba(168,160,154,0.35);">
@@ -146,9 +136,9 @@
 
   </div>
 
-  <script>feather.replace();</script>
-<script src="/js/app.js"></script>
+  </div>
 
-</script>
+  <script>feather.replace();</script>
+  <script src="/js/app.js"></script>
 </body>
 </html>

@@ -34,14 +34,138 @@
 
   <title>KAIZEN — Join</title>
 </head>
-<body class="k-auth">
+<body class="k-auth" style="display:block;">
+  
+
+<div class="k-ticker" id="k-ticker" role="region" aria-label="Announcement">
+  <button type="button" class="k-ticker-close" onclick="dismissTicker()" aria-label="Dismiss announcement">×</button>
+  <div class="k-ticker-track">
+    <span class="k-ticker-text"><b>KAIZEN V2 IS COMING</b> — the score gets five dimensions · plan → record → reflect sessions · your own Trading System · rolling out over the next 30 days</span>
+  </div>
+  <div class="k-ticker-badge">
+    <div class="k-ticker-megaphone"><i data-feather="megaphone" width="12" height="12"></i></div>
+    <span>Update</span>
+  </div>
+</div>
+<script>
+  (function () {
+    try {
+      if (sessionStorage.getItem('kaizen-ticker-dismissed') === '1') {
+        var t = document.getElementById('k-ticker');
+        if (t) t.style.display = 'none';
+      }
+    } catch (e) { /* private mode: keep showing */ }
+  })();
+  function dismissTicker() {
+    var t = document.getElementById('k-ticker');
+    if (t) t.style.display = 'none';
+    try { sessionStorage.setItem('kaizen-ticker-dismissed', '1'); } catch (e) {}
+  }
+</script>
+
+
+
+<!-- POPUP OVERLAY -->
+<div class="popup-overlay" id="popupOverlay" onclick="closePopup()"></div>
+
+<!-- SIDE POPUP MENU -->
+<div class="nav-popup" id="navPopup">
+  <div class="popup-header">
+    <span class="popup-logo">改 KAIZEN</span>
+    <button class="popup-close" onclick="closePopup()">×</button>
+  </div>
+
+  
+    <!-- NOT LOGGED IN -->
+    <div class="popup-section">
+      <div class="popup-section-label">Get Started</div>
+    </div>
+    <div class="popup-auth-btns">
+      <a href="login.html" class="btn-primary btn-full">Log In</a>
+      <a href="register.html" class="btn-outline btn-full">Sign Up</a>
+    </div>
+
+    <div class="popup-section">
+      <div class="popup-section-label">Info</div>
+      <a href="about.html" class="popup-item">
+        <span class="popup-item-icon">▪</span> About Kaizen
+      </a>
+      <a href="whitepaper.html" class="popup-item">
+        <span class="popup-item-icon">▪</span> Whitepaper
+      </a>
+      <a href="services.html" class="popup-item">
+        <span class="popup-item-icon">▪</span> Services
+      </a>
+      <a href="help.html" class="popup-item">
+        <span class="popup-item-icon">▪</span> Help Center
+      </a>
+    </div>
+  
+</div>
+
+<!-- MAIN NAVBAR -->
+<nav class="navbar">
+  <a href="/" class="nav-logo">改 KAIZEN</a>
+  <div class="nav-right">
+    <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
+      <span id="themeIcon">◐</span>
+    </button>
+    <button class="three-dot-btn" onclick="togglePopup()" title="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- SECURITY MODAL -->
+<div class="modal-overlay" id="securityModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Security</h3>
+      <button class="modal-close" onclick="closeModal('securityModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="security-section">
+        <h4>Change Password</h4>
+        <form action="/auth/change-password" method="POST"
+          style="display:flex;flex-direction:column;gap:12px;">
+          <div class="form-group">
+            <label class="form-label">Current Password</label>
+            <input type="password" name="currentPassword"
+              class="form-input" placeholder="Enter current Password">
+          </div>
+          <div class="form-group">
+            <label class="form-label">New Password</label>
+            <input type="password" name="newPassword"
+              class="form-input" placeholder="Enter New Password">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Confirm Password</label>
+            <input type="password" name="confirmPassword"
+              class="form-input" placeholder="Confirm New Password">
+          </div>
+          <button type="submit" class="btn-primary">Update Password</button>
+        </form>
+      </div>
+      <div class="security-section" style="margin-top:24px;padding-top:24px;border-top:1px solid var(--border);">
+        <h4>Two-Factor Authentication</h4>
+        <p style="font-size:0.85rem;color:var(--ash);margin-bottom:14px;">
+          Add an extra layer of security to your account.
+        </p>
+        <button class="btn-outline btn-full">Enable 2FA — Coming Soon</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+  <div style="min-height:calc(100vh - 64px);display:flex;align-items:center;justify-content:center;">
   <div class="k-authglow"></div>
 
   <div class="k-authwrap">
 
     <!-- Logo -->
     <div class="k-authlogo">
-      <a href="index.html" class="k-authlogolink">
+      <a href="/" class="k-authlogolink">
         <span class="k-authkanji">改</span>
         <span class="k-authword">KAIZEN</span>
       </a>
@@ -106,5 +230,10 @@
     
 
   </div>
+
+  </div>
+
+  <script>feather.replace();</script>
+  <script src="js/app.js"></script>
 </body>
 </html>

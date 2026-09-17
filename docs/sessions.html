@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#C9A84C">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="images/kaizen-icon.png" type="image/png">
+<link rel="apple-touch-icon" href="images/kaizen-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.29.0/feather.min.js"></script>
+<script>
+  // Apply saved theme BEFORE first paint to avoid a flash of the wrong theme
+  (function () {
+    try {
+      var t = localStorage.getItem('kaizen-theme');
+      if (!t) {
+        t = (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches)
+          ? 'light' : 'dark';
+      }
+      if (t !== 'dark' && t !== 'light') t = 'dark';
+      document.documentElement.setAttribute('data-theme', t);
+    } catch (e) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+  })();
+</script>
+
+<script>
+(function(){try{var u=new URL(window.location.href);if(u.searchParams.has('wallet')){u.searchParams.delete('wallet');window.history.replaceState({},document.title,u.toString());}}catch(e){}})();
+</script>
+
+  <title>KAIZEN — Sessions</title>
+</head>
+<body class="app-page">
+  
+
+<div class="k-ticker" id="k-ticker" role="region" aria-label="Announcement">
+  <button type="button" class="k-ticker-close" onclick="dismissTicker()" aria-label="Dismiss announcement">×</button>
+  <div class="k-ticker-track">
+    <span class="k-ticker-text"><b>KAIZEN V2 IS COMING</b> — the score gets five dimensions · plan → record → reflect sessions · your own Trading System · rolling out over the next 30 days</span>
+  </div>
+  <div class="k-ticker-badge">
+    <div class="k-ticker-megaphone"><i data-feather="megaphone" width="12" height="12"></i></div>
+    <span>Update</span>
+  </div>
+</div>
+<script>
+  (function () {
+    try {
+      if (sessionStorage.getItem('kaizen-ticker-dismissed') === '1') {
+        var t = document.getElementById('k-ticker');
+        if (t) t.style.display = 'none';
+      }
+    } catch (e) { /* private mode: keep showing */ }
+  })();
+  function dismissTicker() {
+    var t = document.getElementById('k-ticker');
+    if (t) t.style.display = 'none';
+    try { sessionStorage.setItem('kaizen-ticker-dismissed', '1'); } catch (e) {}
+  }
+</script>
+
+
+
+<!-- POPUP OVERLAY -->
+<div class="popup-overlay" id="popupOverlay" onclick="closePopup()"></div>
+
+<!-- SIDE POPUP MENU -->
+<div class="nav-popup" id="navPopup">
+  <div class="popup-header">
+    <span class="popup-logo">改 KAIZEN</span>
+    <button class="popup-close" onclick="closePopup()">×</button>
+  </div>
+
+  
+    <!-- IMPROVE -->
+    <div class="popup-section">
+      <div class="popup-section-label">Improve</div>
+      <a href="dashboard.html" class="popup-item">▪ Cockpit</a>
+      <a href="sessions.html" class="popup-item">▪ Sessions</a>
+      <a href="leaderboard.html" class="popup-item">▪ My Progress</a>
+    </div>
+
+    <!-- COACH -->
+    <div class="popup-section">
+      <div class="popup-section-label">Coach</div>
+      <a href="kaizen-ai.html" class="popup-item">▪ KAIZEN AI</a>
+      <a href="psychology.html" class="popup-item">▪ Psychology</a>
+      <a href="/memories" class="popup-item">▪ Memories</a>
+    </div>
+
+    <!-- TOOLS -->
+    <div class="popup-section">
+      <div class="popup-section-label">Tools</div>
+      <a href="/chart" class="popup-item">▪ Chart</a>
+      <a href="weekly-summary.html" class="popup-item">▪ Weekly Report</a>
+      <a href="/news" class="popup-item">▪ Market News</a>
+    </div>
+
+    <!-- IDENTITY -->
+    <div class="popup-section">
+      <div class="popup-section-label">Identity</div>
+      <a href="reputation.html" class="popup-item">▪ Wallets &amp; Verification</a>
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="popup-section">
+      <div class="popup-section-label">Settings</div>
+      <a href="trading-system.html" class="popup-item">▪ My Trading System</a>
+    </div>
+
+    <!-- INFO -->
+    <div class="popup-section">
+      <div class="popup-section-label">Info</div>
+      <a href="support.html" class="popup-item">
+        <span class="popup-item-icon">▪</span> Support
+      </a>
+      <a href="about.html" class="popup-item">
+        <span class="popup-item-icon">▪</span> About Kaizen
+      </a>
+      <a href="whitepaper.html" class="popup-item">
+        <span class="popup-item-icon">▪</span> Whitepaper
+      </a>
+      <a href="services.html" class="popup-item">
+        <span class="popup-item-icon">▪</span> Services
+      </a>
+      <a href="help.html" class="popup-item">
+        <span class="popup-item-icon">▪</span> Help Center
+      </a>
+    </div>
+
+    <div class="popup-section">
+      <a href="index.html" class="popup-item" style="color:var(--red);">
+        <span class="popup-item-icon">▪</span> Log Out
+      </a>
+    </div>
+
+    <!-- USER FOOTER -->
+    <div class="popup-footer">
+      <div class="popup-user">
+        <div class="popup-avatar">
+          K
+        </div>
+        <div>
+          <div class="popup-username">Kaizen</div>
+          <div class="popup-user-email">kaizen@example.com</div>
+        </div>
+      </div>
+      <div class="popup-socials">
+        <a href="https://x.com/kaizenaibot"
+          target="_blank" class="popup-social-link" title="X (Twitter)">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+
+  
+</div>
+
+<!-- MAIN NAVBAR -->
+<nav class="navbar">
+  <a href="dashboard.html" class="nav-logo">改 KAIZEN</a>
+  <div class="nav-right">
+    <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
+      <span id="themeIcon">◐</span>
+    </button>
+    <button class="three-dot-btn" onclick="togglePopup()" title="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- SECURITY MODAL -->
+<div class="modal-overlay" id="securityModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Security</h3>
+      <button class="modal-close" onclick="closeModal('securityModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="security-section">
+        <h4>Change Password</h4>
+        <form action="/auth/change-password" method="POST"
+          style="display:flex;flex-direction:column;gap:12px;">
+          <div class="form-group">
+            <label class="form-label">Current Password</label>
+            <input type="password" name="currentPassword"
+              class="form-input" placeholder="Enter current Password">
+          </div>
+          <div class="form-group">
+            <label class="form-label">New Password</label>
+            <input type="password" name="newPassword"
+              class="form-input" placeholder="Enter New Password">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Confirm Password</label>
+            <input type="password" name="confirmPassword"
+              class="form-input" placeholder="Confirm New Password">
+          </div>
+          <button type="submit" class="btn-primary">Update Password</button>
+        </form>
+      </div>
+      <div class="security-section" style="margin-top:24px;padding-top:24px;border-top:1px solid var(--border);">
+        <h4>Two-Factor Authentication</h4>
+        <p style="font-size:0.85rem;color:var(--ash);margin-bottom:14px;">
+          Add an extra layer of security to your account.
+        </p>
+        <button class="btn-outline btn-full">Enable 2FA — Coming Soon</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+  <main class="k-page-main">
+
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:8px;">
+      <div>
+        <div class="k-eyebrow" style="margin-bottom:8px;">Sessions</div>
+        <h1 class="k-page-h1" style="font-size:clamp(1.7rem,4vw,2.4rem);margin-bottom:8px;">
+          One loop at a time.
+        </h1>
+        <p style="font-size:0.9rem;color:var(--text-secondary);max-width:560px;line-height:1.75;margin:0;">
+          Plan before you enter. Write what happened. Learn from it.
+        </p>
+      </div>
+      <a href="session-plan.html" class="btn-primary k-btn-lg">+ New Session</a>
+    </div>
+
+    
+
+    
+
+      <div style="display:flex;flex-direction:column;gap:10px;margin-top:28px;">
+        
+          <a href="/dashboard/sessions/id13" class="k-card k-card--hover" style="display:flex;align-items:center;gap:14px;padding:18px 20px;">
+            <div style="min-width:64px;">
+              <div style="font-family:var(--font-mono);font-size:0.85rem;color:var(--text-primary);font-weight:500;">BTCUSD</div>
+              <div style="font-family:var(--font-mono);font-size:0.55rem;color:var(--text-faint);letter-spacing:0.08em;margin-top:3px;">
+                Sep 3
+              </div>
+            </div>
+            <div style="flex:1;min-width:0;">
+              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                <span class="k-chip" style="padding:3px 9px;font-size:0.52rem;">ANALYZED</span>
+                <span class="k-type-tag k-type-tag--live">LIVE</span>
+                
+                  <span style="font-family:var(--font-mono);font-size:0.6rem;color:var(--red);">LOSS</span>
+                
+              </div>
+              <div style="font-size:0.82rem;color:var(--text-secondary);margin-top:7px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+                Clean session, executed the plan. Waited for the sweep and MSS confirmation before entry.
+              </div>
+            </div>
+            <span class="k-gold" style="font-family:var(--font-mono);">→</span>
+          </a>
+        
+          <a href="/dashboard/sessions/id12" class="k-card k-card--hover" style="display:flex;align-items:center;gap:14px;padding:18px 20px;">
+            <div style="min-width:64px;">
+              <div style="font-family:var(--font-mono);font-size:0.85rem;color:var(--text-primary);font-weight:500;">XAUUSD</div>
+              <div style="font-family:var(--font-mono);font-size:0.55rem;color:var(--text-faint);letter-spacing:0.08em;margin-top:3px;">
+                Sep 4
+              </div>
+            </div>
+            <div style="flex:1;min-width:0;">
+              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                <span class="k-chip" style="padding:3px 9px;font-size:0.52rem;">ANALYZED</span>
+                <span class="k-type-tag k-type-tag--live">LIVE</span>
+                
+                  <span style="font-family:var(--font-mono);font-size:0.6rem;color:var(--green);">WIN</span>
+                
+              </div>
+              <div style="font-size:0.82rem;color:var(--text-secondary);margin-top:7px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+                Clean session, executed the plan. Waited for the sweep and MSS confirmation before entry.
+              </div>
+            </div>
+            <span class="k-gold" style="font-family:var(--font-mono);">→</span>
+          </a>
+        
+          <a href="/dashboard/sessions/id11" class="k-card k-card--hover" style="display:flex;align-items:center;gap:14px;padding:18px 20px;">
+            <div style="min-width:64px;">
+              <div style="font-family:var(--font-mono);font-size:0.85rem;color:var(--text-primary);font-weight:500;">NAS100</div>
+              <div style="font-family:var(--font-mono);font-size:0.55rem;color:var(--text-faint);letter-spacing:0.08em;margin-top:3px;">
+                Sep 5
+              </div>
+            </div>
+            <div style="flex:1;min-width:0;">
+              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                <span class="k-chip" style="padding:3px 9px;font-size:0.52rem;">ANALYZED</span>
+                <span class="k-type-tag k-type-tag--study">STUDY</span>
+                
+                  <span style="font-family:var(--font-mono);font-size:0.6rem;color:var(--ash);">BREAKEVEN</span>
+                
+              </div>
+              <div style="font-size:0.82rem;color:var(--text-secondary);margin-top:7px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+                Clean session, executed the plan. Waited for the sweep and MSS confirmation before entry.
+              </div>
+            </div>
+            <span class="k-gold" style="font-family:var(--font-mono);">→</span>
+          </a>
+        
+          <a href="/dashboard/sessions/id10" class="k-card k-card--hover" style="display:flex;align-items:center;gap:14px;padding:18px 20px;">
+            <div style="min-width:64px;">
+              <div style="font-family:var(--font-mono);font-size:0.85rem;color:var(--text-primary);font-weight:500;">EURJPY</div>
+              <div style="font-family:var(--font-mono);font-size:0.55rem;color:var(--text-faint);letter-spacing:0.08em;margin-top:3px;">
+                Sep 6
+              </div>
+            </div>
+            <div style="flex:1;min-width:0;">
+              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                <span class="k-chip" style="padding:3px 9px;font-size:0.52rem;">ANALYZED</span>
+                <span class="k-type-tag k-type-tag--backtest">BACKTEST</span>
+                
+                  <span style="font-family:var(--font-mono);font-size:0.6rem;color:var(--red);">LOSS</span>
+                
+              </div>
+              <div style="font-size:0.82rem;color:var(--text-secondary);margin-top:7px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+                Clean session, executed the plan. Waited for the sweep and MSS confirmation before entry.
+              </div>
+            </div>
+            <span class="k-gold" style="font-family:var(--font-mono);">→</span>
+          </a>
+        
+          <a href="/dashboard/sessions/id9" class="k-card k-card--hover" style="display:flex;align-items:center;gap:14px;padding:18px 20px;">
+            <div style="min-width:64px;">
+              <div style="font-family:var(--font-mono);font-size:0.85rem;color:var(--text-primary);font-weight:500;">BTCUSD</div>
+              <div style="font-family:var(--font-mono);font-size:0.55rem;color:var(--text-faint);letter-spacing:0.08em;margin-top:3px;">
+                Sep 7
+              </div>
+            </div>
+            <div style="flex:1;min-width:0;">
+              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                <span class="k-chip" style="padding:3px 9px;font-size:0.52rem;">ANALYZED</span>
+                <span class="k-type-tag k-type-tag--live">LIVE</span>
+                
+                  <span style="font-family:var(--font-mono);font-size:0.6rem;color:var(--green);">WIN</span>
+                
+              </div>
+              <div style="font-size:0.82rem;color:var(--text-secondary);margin-top:7px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+                Clean session, executed the plan. Waited for the sweep and MSS confirmation before entry.
+              </div>
+            </div>
+            <span class="k-gold" style="font-family:var(--font-mono);">→</span>
+          </a>
+        
+          <a href="/dashboard/sessions/id8" class="k-card k-card--hover" style="display:flex;align-items:center;gap:14px;padding:18px 20px;">
+            <div style="min-width:64px;">
+              <div style="font-family:var(--font-mono);font-size:0.85rem;color:var(--text-primary);font-weight:500;">XAUUSD</div>
+              <div style="font-family:var(--font-mono);font-size:0.55rem;color:var(--text-faint);letter-spacing:0.08em;margin-top:3px;">
+                Sep 8
+              </div>
+            </div>
+            <div style="flex:1;min-width:0;">
+              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                <span class="k-chip" style="padding:3px 9px;font-size:0.52rem;">ANALYZED</span>
+                <span class="k-type-tag k-type-tag--live">LIVE</span>
+                
+                  <span style="font-family:var(--font-mono);font-size:0.6rem;color:var(--ash);">BREAKEVEN</span>
+                
+              </div>
+              <div style="font-size:0.82rem;color:var(--text-secondary);margin-top:7px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+                Clean session, executed the plan. Waited for the sweep and MSS confirmation before entry.
+              </div>
+            </div>
+            <span class="k-gold" style="font-family:var(--font-mono);">→</span>
+          </a>
+        
+          <a href="/dashboard/sessions/id7" class="k-card k-card--hover" style="display:flex;align-items:center;gap:14px;padding:18px 20px;">
+            <div style="min-width:64px;">
+              <div style="font-family:var(--font-mono);font-size:0.85rem;color:var(--text-primary);font-weight:500;">NAS100</div>
+              <div style="font-family:var(--font-mono);font-size:0.55rem;color:var(--text-faint);letter-spacing:0.08em;margin-top:3px;">
+                Sep 9
+              </div>
+            </div>
+            <div style="flex:1;min-width:0;">
+              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                <span class="k-chip" style="padding:3px 9px;font-size:0.52rem;">ANALYZED</span>
+                <span class="k-type-tag k-type-tag--study">STUDY</span>
+                
+                  <span style="font-family:var(--font-mono);font-size:0.6rem;color:var(--red);">LOSS</span>
+                
+              </div>
+              <div style="font-size:0.82rem;color:var(--text-secondary);margin-top:7px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+                Clean session, executed the plan. Waited for the sweep and MSS confirmation before entry.
+              </div>
+            </div>
+            <span class="k-gold" style="font-family:var(--font-mono);">→</span>
+          </a>
+        
+          <a href="/dashboard/sessions/id6" class="k-card k-card--hover" style="display:flex;align-items:center;gap:14px;padding:18px 20px;">
+            <div style="min-width:64px;">
+              <div style="font-family:var(--font-mono);font-size:0.85rem;color:var(--text-primary);font-weight:500;">EURJPY</div>
+              <div style="font-family:var(--font-mono);font-size:0.55rem;color:var(--text-faint);letter-spacing:0.08em;margin-top:3px;">
+                Sep 10
+              </div>
+            </div>
+            <div style="flex:1;min-width:0;">
+              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                <span class="k-chip" style="padding:3px 9px;font-size:0.52rem;">ANALYZED</span>
+                <span class="k-type-tag k-type-tag--backtest">BACKTEST</span>
+                
+                  <span style="font-family:var(--font-mono);font-size:0.6rem;color:var(--green);">WIN</span>
+                
+              </div>
+              <div style="font-size:0.82rem;color:var(--text-secondary);margin-top:7px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+                Clean session, executed the plan. Waited for the sweep and MSS confirmation before entry.
+              </div>
+            </div>
+            <span class="k-gold" style="font-family:var(--font-mono);">→</span>
+          </a>
+        
+          <a href="/dashboard/sessions/id5" class="k-card k-card--hover" style="display:flex;align-items:center;gap:14px;padding:18px 20px;">
+            <div style="min-width:64px;">
+              <div style="font-family:var(--font-mono);font-size:0.85rem;color:var(--text-primary);font-weight:500;">BTCUSD</div>
+              <div style="font-family:var(--font-mono);font-size:0.55rem;color:var(--text-faint);letter-spacing:0.08em;margin-top:3px;">
+                Sep 11
+              </div>
+            </div>
+            <div style="flex:1;min-width:0;">
+              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                <span class="k-chip" style="padding:3px 9px;font-size:0.52rem;">ANALYZED</span>
+                <span class="k-type-tag k-type-tag--live">LIVE</span>
+                
+                  <span style="font-family:var(--font-mono);font-size:0.6rem;color:var(--ash);">BREAKEVEN</span>
+                
+              </div>
+              <div style="font-size:0.82rem;color:var(--text-secondary);margin-top:7px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+                Clean session, executed the plan. Waited for the sweep and MSS confirmation before entry.
+              </div>
+            </div>
+            <span class="k-gold" style="font-family:var(--font-mono);">→</span>
+          </a>
+        
+          <a href="/dashboard/sessions/id4" class="k-card k-card--hover" style="display:flex;align-items:center;gap:14px;padding:18px 20px;">
+            <div style="min-width:64px;">
+              <div style="font-family:var(--font-mono);font-size:0.85rem;color:var(--text-primary);font-weight:500;">XAUUSD</div>
+              <div style="font-family:var(--font-mono);font-size:0.55rem;color:var(--text-faint);letter-spacing:0.08em;margin-top:3px;">
+                Sep 12
+              </div>
+            </div>
+            <div style="flex:1;min-width:0;">
+              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                <span class="k-chip" style="padding:3px 9px;font-size:0.52rem;">ANALYZED</span>
+                <span class="k-type-tag k-type-tag--live">LIVE</span>
+                
+                  <span style="font-family:var(--font-mono);font-size:0.6rem;color:var(--red);">LOSS</span>
+                
+              </div>
+              <div style="font-size:0.82rem;color:var(--text-secondary);margin-top:7px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+                Clean session, executed the plan. Waited for the sweep and MSS confirmation before entry.
+              </div>
+            </div>
+            <span class="k-gold" style="font-family:var(--font-mono);">→</span>
+          </a>
+        
+          <a href="/dashboard/sessions/id3" class="k-card k-card--hover" style="display:flex;align-items:center;gap:14px;padding:18px 20px;">
+            <div style="min-width:64px;">
+              <div style="font-family:var(--font-mono);font-size:0.85rem;color:var(--text-primary);font-weight:500;">NAS100</div>
+              <div style="font-family:var(--font-mono);font-size:0.55rem;color:var(--text-faint);letter-spacing:0.08em;margin-top:3px;">
+                Sep 13
+              </div>
+            </div>
+            <div style="flex:1;min-width:0;">
+              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                <span class="k-chip" style="padding:3px 9px;font-size:0.52rem;">ANALYZED</span>
+                <span class="k-type-tag k-type-tag--study">STUDY</span>
+                
+                  <span style="font-family:var(--font-mono);font-size:0.6rem;color:var(--green);">WIN</span>
+                
+              </div>
+              <div style="font-size:0.82rem;color:var(--text-secondary);margin-top:7px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+                Clean session, executed the plan. Waited for the sweep and MSS confirmation before entry.
+              </div>
+            </div>
+            <span class="k-gold" style="font-family:var(--font-mono);">→</span>
+          </a>
+        
+          <a href="/dashboard/sessions/id2" class="k-card k-card--hover" style="display:flex;align-items:center;gap:14px;padding:18px 20px;">
+            <div style="min-width:64px;">
+              <div style="font-family:var(--font-mono);font-size:0.85rem;color:var(--text-primary);font-weight:500;">EURJPY</div>
+              <div style="font-family:var(--font-mono);font-size:0.55rem;color:var(--text-faint);letter-spacing:0.08em;margin-top:3px;">
+                Sep 14
+              </div>
+            </div>
+            <div style="flex:1;min-width:0;">
+              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                <span class="k-chip" style="padding:3px 9px;font-size:0.52rem;">ANALYZED</span>
+                <span class="k-type-tag k-type-tag--backtest">BACKTEST</span>
+                
+                  <span style="font-family:var(--font-mono);font-size:0.6rem;color:var(--ash);">BREAKEVEN</span>
+                
+              </div>
+              <div style="font-size:0.82rem;color:var(--text-secondary);margin-top:7px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+                Clean session, executed the plan. Waited for the sweep and MSS confirmation before entry.
+              </div>
+            </div>
+            <span class="k-gold" style="font-family:var(--font-mono);">→</span>
+          </a>
+        
+          <a href="/dashboard/sessions/id1" class="k-card k-card--hover" style="display:flex;align-items:center;gap:14px;padding:18px 20px;">
+            <div style="min-width:64px;">
+              <div style="font-family:var(--font-mono);font-size:0.85rem;color:var(--text-primary);font-weight:500;">BTCUSD</div>
+              <div style="font-family:var(--font-mono);font-size:0.55rem;color:var(--text-faint);letter-spacing:0.08em;margin-top:3px;">
+                Sep 15
+              </div>
+            </div>
+            <div style="flex:1;min-width:0;">
+              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                <span class="k-chip" style="padding:3px 9px;font-size:0.52rem;">ANALYZED</span>
+                <span class="k-type-tag k-type-tag--live">LIVE</span>
+                
+                  <span style="font-family:var(--font-mono);font-size:0.6rem;color:var(--red);">LOSS</span>
+                
+              </div>
+              <div style="font-size:0.82rem;color:var(--text-secondary);margin-top:7px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+                Clean session, executed the plan. Waited for the sweep and MSS confirmation before entry.
+              </div>
+            </div>
+            <span class="k-gold" style="font-family:var(--font-mono);">→</span>
+          </a>
+        
+          <a href="/dashboard/sessions/id0" class="k-card k-card--hover" style="display:flex;align-items:center;gap:14px;padding:18px 20px;">
+            <div style="min-width:64px;">
+              <div style="font-family:var(--font-mono);font-size:0.85rem;color:var(--text-primary);font-weight:500;">XAUUSD</div>
+              <div style="font-family:var(--font-mono);font-size:0.55rem;color:var(--text-faint);letter-spacing:0.08em;margin-top:3px;">
+                Sep 16
+              </div>
+            </div>
+            <div style="flex:1;min-width:0;">
+              <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                <span class="k-chip" style="padding:3px 9px;font-size:0.52rem;">ANALYZED</span>
+                <span class="k-type-tag k-type-tag--live">LIVE</span>
+                
+                  <span style="font-family:var(--font-mono);font-size:0.6rem;color:var(--green);">WIN</span>
+                
+              </div>
+              <div style="font-size:0.82rem;color:var(--text-secondary);margin-top:7px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+                Clean session, executed the plan. Waited for the sweep and MSS confirmation before entry.
+              </div>
+            </div>
+            <span class="k-gold" style="font-family:var(--font-mono);">→</span>
+          </a>
+        
+      </div>
+
+    
+  </main>
+
+  <footer class="footer">
+  <div class="footer-inner">
+    <span class="footer-logo">改 KAIZEN</span>
+    <div style="display:flex;gap:20px;flex-wrap:wrap;align-items:center;">
+      <a href="privacy.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Privacy</a>
+      <a href="terms.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Terms</a>
+      <a href="about.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">About</a>
+      <a href="whitepaper.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Whitepaper</a>
+      <a href="help.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Help Center</a>
+      <a href="support.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Support</a>
+    </div>
+    <span class="footer-right">© 2026 KAIZEN</span>
+  </div>
+</footer>
+<script>if(window.feather) feather.replace();</script>
+
+  <script src="js/app.js"></script>
+  <script>if(window.feather) feather.replace();</script>
+</body>
+</html>

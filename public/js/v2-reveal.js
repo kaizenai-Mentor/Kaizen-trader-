@@ -13,7 +13,14 @@
   function fill(el) {
     var v = parseFloat(el.getAttribute('data-meter'));
     if (isNaN(v)) v = 0;
-    el.style.width = Math.max(0, Math.min(100, v)) + '%';
+    var w = Math.max(0, Math.min(100, v)) + '%';
+    // data-meter lives on the .k-meter ROW; the visible bar is the
+    // .k-meter-fill child inside the track. (.k-milestone-fill carries
+    // data-meter on itself.)
+    var target = el.classList.contains('k-meter')
+      ? el.querySelector('.k-meter-fill')
+      : el;
+    if (target) target.style.width = w;
   }
 
   function reveal() {

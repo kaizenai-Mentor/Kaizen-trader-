@@ -45,9 +45,6 @@
     <div class="popup-section">
       <div class="popup-section-label">Settings</div>
       <a href="/settings/trading-system" class="popup-item">▪ My Trading System</a>
-      <button class="popup-item" onclick="toggleTheme()">
-        <span class="popup-item-icon">▪</span> Dark / Light Mode
-      </button>
     </div>
 
     <!-- INFO -->
@@ -106,12 +103,6 @@
       <a href="/auth/login" class="btn-primary btn-full">Log In</a>
       <a href="/auth/register" class="btn-outline btn-full">Sign Up</a>
     </div>
-    <div class="popup-section">
-     <div class="popup-section-label">Settings</div>
-     <button class="popup-item" onclick="toggleTheme()">
-       <span class="popup-item-icon">▪</span> Dark / Light Mode
-     </button>
-    </div>
 
     <div class="popup-section">
       <div class="popup-section-label">Info</div>
@@ -133,7 +124,7 @@
 
 <!-- MAIN NAVBAR -->
 <nav class="navbar">
-  <a href="/dashboard" class="nav-logo">改 KAIZEN</a>
+  <a href="<%= user ? '/dashboard' : '/' %>" class="nav-logo">改 KAIZEN</a>
   <div class="nav-right">
     <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
       <span id="themeIcon">◐</span>

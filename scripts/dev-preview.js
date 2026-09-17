@@ -45,6 +45,25 @@ async function withMemoryDb() {
       }
     };
 
+    // Demo announcement for review: with no DB there is no announcement,
+    // so the ticker (locked spec) would never render in preview. Fall back
+    // to the V2 launch message so the ticker is reviewable. Production is
+    // unaffected (it has the real DB + seeded announcement).
+    const annPath = require.resolve('../services/announcements.js');
+    const ann = require('../services/announcements');
+    const realGetActive = ann.getActiveAnnouncement;
+    ann.getActiveAnnouncement = async function () {
+      try {
+        const a = await realGetActive.call(ann);
+        if (a) return a;
+      } catch (e) { /* no DB */ }
+      return {
+        message: '<b>KAIZEN V2 IS COMING</b> — the score gets five dimensions · plan → record → reflect sessions · your own Trading System · rolling out over the next 30 days',
+        endsAt: new Date(Date.now() + 25 * 24 * 60 * 60 * 1000)
+      };
+    };
+    require.cache[annPath].exports = ann;
+
     // Safety nets for no-DB preview mode: connect-mongo's session store
     // eagerly opens its own MongoClient, and its failed connection promise
     // is an unhandled (fatal in Node 22) rejection. Shield both so the

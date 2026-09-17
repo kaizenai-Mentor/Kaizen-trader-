@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#C9A84C">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="images/kaizen-icon.png" type="image/png">
+<link rel="apple-touch-icon" href="images/kaizen-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.29.0/feather.min.js"></script>
+<script>
+  // Apply saved theme BEFORE first paint to avoid a flash of the wrong theme
+  (function () {
+    try {
+      var t = localStorage.getItem('kaizen-theme');
+      if (!t) {
+        t = (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches)
+          ? 'light' : 'dark';
+      }
+      if (t !== 'dark' && t !== 'light') t = 'dark';
+      document.documentElement.setAttribute('data-theme', t);
+    } catch (e) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+  })();
+</script>
+
+<script>
+(function(){try{var u=new URL(window.location.href);if(u.searchParams.has('wallet')){u.searchParams.delete('wallet');window.history.replaceState({},document.title,u.toString());}}catch(e){}})();
+</script>
+
+  <title>KAIZEN — Cockpit</title>
+</head>
+<body class="app-page">
+  
+
+<div class="k-ticker" id="k-ticker" role="region" aria-label="Announcement">
+  <button type="button" class="k-ticker-close" onclick="dismissTicker()" aria-label="Dismiss announcement">×</button>
+  <div class="k-ticker-track">
+    <span class="k-ticker-text"><b>KAIZEN V2 IS COMING</b> — the score gets five dimensions · plan → record → reflect sessions · your own Trading System · rolling out over the next 30 days</span>
+  </div>
+  <div class="k-ticker-badge">
+    <div class="k-ticker-megaphone"><i data-feather="megaphone" width="12" height="12"></i></div>
+    <span>Update</span>
+  </div>
+</div>
+<script>
+  (function () {
+    try {
+      if (sessionStorage.getItem('kaizen-ticker-dismissed') === '1') {
+        var t = document.getElementById('k-ticker');
+        if (t) t.style.display = 'none';
+      }
+    } catch (e) { /* private mode: keep showing */ }
+  })();
+  function dismissTicker() {
+    var t = document.getElementById('k-ticker');
+    if (t) t.style.display = 'none';
+    try { sessionStorage.setItem('kaizen-ticker-dismissed', '1'); } catch (e) {}
+  }
+</script>
+
+
+
+<!-- POPUP OVERLAY -->
+<div class="popup-overlay" id="popupOverlay" onclick="closePopup()"></div>
+
+<!-- SIDE POPUP MENU -->
+<div class="nav-popup" id="navPopup">
+  <div class="popup-header">
+    <span class="popup-logo">改 KAIZEN</span>
+    <button class="popup-close" onclick="closePopup()">×</button>
+  </div>
+
+  
+    <!-- IMPROVE -->
+    <div class="popup-section">
+      <div class="popup-section-label">Improve</div>
+      <a href="dashboard.html" class="popup-item">▪ Cockpit</a>
+      <a href="sessions.html" class="popup-item">▪ Sessions</a>
+      <a href="leaderboard.html" class="popup-item">▪ My Progress</a>
+    </div>
+
+    <!-- COACH -->
+    <div class="popup-section">
+      <div class="popup-section-label">Coach</div>
+      <a href="kaizen-ai.html" class="popup-item">▪ KAIZEN AI</a>
+      <a href="psychology.html" class="popup-item">▪ Psychology</a>
+      <a href="/memories" class="popup-item">▪ Memories</a>
+    </div>
+
+    <!-- TOOLS -->
+    <div class="popup-section">
+      <div class="popup-section-label">Tools</div>
+      <a href="/chart" class="popup-item">▪ Chart</a>
+      <a href="weekly-summary.html" class="popup-item">▪ Weekly Report</a>
+      <a href="/news" class="popup-item">▪ Market News</a>
+    </div>
+
+    <!-- IDENTITY -->
+    <div class="popup-section">
+      <div class="popup-section-label">Identity</div>
+      <a href="reputation.html" class="popup-item">▪ Wallets &amp; Verification</a>
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="popup-section">
+      <div class="popup-section-label">Settings</div>
+      <a href="trading-system.html" class="popup-item">▪ My Trading System</a>
+    </div>
+
+    <!-- INFO -->
+    <div class="popup-section">
+      <div class="popup-section-label">Info</div>
+      <a href="support.html" class="popup-item">
+        <span class="popup-item-icon">▪</span> Support
+      </a>
+      <a href="about.html" class="popup-item">
+        <span class="popup-item-icon">▪</span> About Kaizen
+      </a>
+      <a href="whitepaper.html" class="popup-item">
+        <span class="popup-item-icon">▪</span> Whitepaper
+      </a>
+      <a href="services.html" class="popup-item">
+        <span class="popup-item-icon">▪</span> Services
+      </a>
+      <a href="help.html" class="popup-item">
+        <span class="popup-item-icon">▪</span> Help Center
+      </a>
+    </div>
+
+    <div class="popup-section">
+      <a href="index.html" class="popup-item" style="color:var(--red);">
+        <span class="popup-item-icon">▪</span> Log Out
+      </a>
+    </div>
+
+    <!-- USER FOOTER -->
+    <div class="popup-footer">
+      <div class="popup-user">
+        <div class="popup-avatar">
+          K
+        </div>
+        <div>
+          <div class="popup-username">Kaizen</div>
+          <div class="popup-user-email">kaizen@example.com</div>
+        </div>
+      </div>
+      <div class="popup-socials">
+        <a href="https://x.com/kaizenaibot"
+          target="_blank" class="popup-social-link" title="X (Twitter)">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+
+  
+</div>
+
+<!-- MAIN NAVBAR -->
+<nav class="navbar">
+  <a href="dashboard.html" class="nav-logo">改 KAIZEN</a>
+  <div class="nav-right">
+    <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
+      <span id="themeIcon">◐</span>
+    </button>
+    <button class="three-dot-btn" onclick="togglePopup()" title="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- SECURITY MODAL -->
+<div class="modal-overlay" id="securityModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Security</h3>
+      <button class="modal-close" onclick="closeModal('securityModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="security-section">
+        <h4>Change Password</h4>
+        <form action="/auth/change-password" method="POST"
+          style="display:flex;flex-direction:column;gap:12px;">
+          <div class="form-group">
+            <label class="form-label">Current Password</label>
+            <input type="password" name="currentPassword"
+              class="form-input" placeholder="Enter current Password">
+          </div>
+          <div class="form-group">
+            <label class="form-label">New Password</label>
+            <input type="password" name="newPassword"
+              class="form-input" placeholder="Enter New Password">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Confirm Password</label>
+            <input type="password" name="confirmPassword"
+              class="form-input" placeholder="Confirm New Password">
+          </div>
+          <button type="submit" class="btn-primary">Update Password</button>
+        </form>
+      </div>
+      <div class="security-section" style="margin-top:24px;padding-top:24px;border-top:1px solid var(--border);">
+        <h4>Two-Factor Authentication</h4>
+        <p style="font-size:0.85rem;color:var(--ash);margin-bottom:14px;">
+          Add an extra layer of security to your account.
+        </p>
+        <button class="btn-outline btn-full">Enable 2FA — Coming Soon</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+  <main class="k-flow">
+
+    
+
+    <div class="k-cockpit-head">
+      <div>
+        <div class="k-eyebrow">COCKPIT · 改</div>
+        <h1 class="k-page-title">Good morning, Kaizen.</h1>
+        <p class="k-page-sub">One honest question: how are you improving?</p>
+      </div>
+      <div class="k-streakchip" title="Practice consistency — never presented as trading performance">
+        <span class="k-streak-flame">◆</span>
+        <span class="k-streak-num">6</span>
+        <span class="k-streak-label">day streak</span>
+      </div>
+    </div>
+
+    <div class="k-cockpit-grid">
+
+      <!-- ═══ THE SCORE INSTRUMENT ═══ -->
+      <section class="k-card k-card--elevated k-instrument">
+        <div class="k-panel-title"><span class="k-kanji k-kanji--sm">改</span> KAIZEN SCORE</div>
+
+        
+          <div class="k-scoreline">
+            <span class="k-scorenum">87</span>
+            <div class="k-scoremeta">
+              <span class="k-statechip is-ready">READY</span>
+              
+              <span class="k-scoresub">From your last 14 sessions · <a class="k-link" href="/about#kaizen-score">How is this scored?</a></span>
+            </div>
+          </div>
+
+          <div class="k-meters">
+            
+              
+                <div class="k-meter" data-meter="90">
+                  <span class="k-meter-label">Process</span>
+                  <span class="k-meter-track"><span class="k-meter-fill"></span></span>
+                  <span class="k-meter-value">90</span>
+                </div>
+              
+            
+              
+                <div class="k-meter" data-meter="100">
+                  <span class="k-meter-label">Risk</span>
+                  <span class="k-meter-track"><span class="k-meter-fill"></span></span>
+                  <span class="k-meter-value">100</span>
+                </div>
+              
+            
+              
+                <div class="k-meter" data-meter="79">
+                  <span class="k-meter-label">Execution</span>
+                  <span class="k-meter-track"><span class="k-meter-fill"></span></span>
+                  <span class="k-meter-value">79</span>
+                </div>
+              
+            
+              
+                <div class="k-meter" data-meter="97">
+                  <span class="k-meter-label">Behavior</span>
+                  <span class="k-meter-track"><span class="k-meter-fill"></span></span>
+                  <span class="k-meter-value">97</span>
+                </div>
+              
+            
+              
+                <div class="k-meter" data-meter="58">
+                  <span class="k-meter-label">Learning &amp; Consistency</span>
+                  <span class="k-meter-track"><span class="k-meter-fill"></span></span>
+                  <span class="k-meter-value">58</span>
+                </div>
+              
+            
+          </div>
+
+          
+          
+            <div class="k-whyblock">
+              <div class="k-metric-label">WHY THIS NUMBER</div>
+              
+                <p class="k-whyline">
+                  <span class="k-whydim">BEHAVIOR</span> — After a loss, you broke plan in 1 of 5 sessions — the window KAIZEN watches closest.
+                </p>
+              
+                <p class="k-whyline">
+                  <span class="k-whydim">RISK</span> — Respected your risk in 14 of 14 checked sessions.
+                </p>
+              
+                <p class="k-whyline">
+                  <span class="k-whydim">PROCESS</span> — Planned 14 of your last 14 sessions.
+                </p>
+              
+            </div>
+          
+        
+      </section>
+
+      <!-- ═══ TODAY ═══ -->
+      <section class="k-card k-todaycard">
+        <div class="k-panel-title">TODAY</div>
+        
+          
+            <div class="k-todayitem">
+              <div class="k-todaytext">
+                <div class="k-todaytitle">You have no analyzed session in the last 24h</div>
+                <p class="k-todaybody">The loop compounds when it runs daily.</p>
+              </div>
+              <a class="k-btn k-btn-primary k-btn-sm" href="session-plan.html">Plan a session</a>
+            </div>
+          
+            <div class="k-todayitem">
+              <div class="k-todaytext">
+                <div class="k-todaytitle">Review your last lesson</div>
+                <p class="k-todaybody">Re-read what your last session taught you.</p>
+              </div>
+              <a class="k-btn k-btn-primary k-btn-sm" href="/dashboard/sessions/abc">Open session</a>
+            </div>
+          
+        
+      </section>
+
+      <!-- ═══ RECENT PATTERN ═══ -->
+      
+        <section class="k-card k-patterncard is-positive">
+          <div class="k-panel-title">RECENT PATTERN</div>
+          <p class="k-patternmsg">Five consecutive sessions inside your rules. Your discipline is building — protect this streak today.</p>
+          
+        </section>
+      
+
+      <!-- ═══ NEXT MILESTONE ═══ -->
+      <section class="k-card k-milestonecard">
+        <div class="k-panel-title">NEXT MILESTONE</div>
+        <div class="k-milestone-label">25 sessions logged</div>
+        <div class="k-milestone-track"><span class="k-milestone-fill" data-meter="56"></span></div>
+        <div class="k-milestone-meta">
+          11 to go
+          · <a class="k-link" href="leaderboard.html">My Progress</a>
+        </div>
+      </section>
+
+      <!-- ═══ ESSENTIALS: RECENT SESSIONS ═══ -->
+      <section class="k-card k-essentialcard">
+        <div class="k-panel-title" style="display:flex;align-items:center;justify-content:space-between;">
+          <span>RECENT SESSIONS</span>
+          <a class="k-link" href="sessions.html">All sessions →</a>
+        </div>
+        
+          <div class="k-minirows">
+            
+              
+              <a class="k-minirow" href="/dashboard/sessions/id13">
+                <span class="k-type-tag k-type-live">LIVE</span>
+                <span class="k-minirow-asset">BTCUSD</span>
+                <span class="k-minirow-state">ANALYZED</span>
+                <span class="k-minirow-date">Sep 3</span>
+              </a>
+            
+              
+              <a class="k-minirow" href="/dashboard/sessions/id12">
+                <span class="k-type-tag k-type-live">LIVE</span>
+                <span class="k-minirow-asset">XAUUSD</span>
+                <span class="k-minirow-state">ANALYZED</span>
+                <span class="k-minirow-date">Sep 4</span>
+              </a>
+            
+              
+              <a class="k-minirow" href="/dashboard/sessions/id11">
+                <span class="k-type-tag k-type-study">STUDY</span>
+                <span class="k-minirow-asset">NAS100</span>
+                <span class="k-minirow-state">ANALYZED</span>
+                <span class="k-minirow-date">Sep 5</span>
+              </a>
+            
+              
+              <a class="k-minirow" href="/dashboard/sessions/id10">
+                <span class="k-type-tag k-type-backtest">BACKTEST</span>
+                <span class="k-minirow-asset">EURJPY</span>
+                <span class="k-minirow-state">ANALYZED</span>
+                <span class="k-minirow-date">Sep 6</span>
+              </a>
+            
+              
+              <a class="k-minirow" href="/dashboard/sessions/id9">
+                <span class="k-type-tag k-type-live">LIVE</span>
+                <span class="k-minirow-asset">BTCUSD</span>
+                <span class="k-minirow-state">ANALYZED</span>
+                <span class="k-minirow-date">Sep 7</span>
+              </a>
+            
+          </div>
+        
+        <div class="k-essentialfoot">
+          <span>48 sessions total</span>
+          <span>·</span>
+          <span>2 milestones</span>
+          <span>·</span>
+          <a class="k-link" href="trading-system.html">System v3</a>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  
+
+  <!-- ═══ NEW-USER INTRO (D1 — shown once, V2-era accounts) ═══ -->
+  
+
+  <!-- ═══ CUTOVER EXPLAINER (shown once) ═══ -->
+  
+
+  <footer class="footer">
+  <div class="footer-inner">
+    <span class="footer-logo">改 KAIZEN</span>
+    <div style="display:flex;gap:20px;flex-wrap:wrap;align-items:center;">
+      <a href="privacy.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Privacy</a>
+      <a href="terms.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Terms</a>
+      <a href="about.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">About</a>
+      <a href="whitepaper.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Whitepaper</a>
+      <a href="help.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Help Center</a>
+      <a href="support.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Support</a>
+    </div>
+    <span class="footer-right">© 2026 KAIZEN</span>
+  </div>
+</footer>
+<script>if(window.feather) feather.replace();</script>
+
+  <script src="js/v2-reveal.js"></script>
+</body>
+</html>

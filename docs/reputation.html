@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#C9A84C">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="images/kaizen-icon.png" type="image/png">
+<link rel="apple-touch-icon" href="images/kaizen-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.29.0/feather.min.js"></script>
+<script>
+  // Apply saved theme BEFORE first paint to avoid a flash of the wrong theme
+  (function () {
+    try {
+      var t = localStorage.getItem('kaizen-theme');
+      if (!t) {
+        t = (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches)
+          ? 'light' : 'dark';
+      }
+      if (t !== 'dark' && t !== 'light') t = 'dark';
+      document.documentElement.setAttribute('data-theme', t);
+    } catch (e) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+  })();
+</script>
+
+<script>
+(function(){try{var u=new URL(window.location.href);if(u.searchParams.has('wallet')){u.searchParams.delete('wallet');window.history.replaceState({},document.title,u.toString());}}catch(e){}})();
+</script>
+
+  <title>KAIZEN — Reputation</title>
+</head>
+<body class="app-page">
+  
+
+<div class="k-ticker" id="k-ticker" role="region" aria-label="Announcement">
+  <button type="button" class="k-ticker-close" onclick="dismissTicker()" aria-label="Dismiss announcement">×</button>
+  <div class="k-ticker-track">
+    <span class="k-ticker-text"><b>KAIZEN V2 IS COMING</b> — the score gets five dimensions · plan → record → reflect sessions · your own Trading System · rolling out over the next 30 days</span>
+  </div>
+  <div class="k-ticker-badge">
+    <div class="k-ticker-megaphone"><i data-feather="megaphone" width="12" height="12"></i></div>
+    <span>Update</span>
+  </div>
+</div>
+<script>
+  (function () {
+    try {
+      if (sessionStorage.getItem('kaizen-ticker-dismissed') === '1') {
+        var t = document.getElementById('k-ticker');
+        if (t) t.style.display = 'none';
+      }
+    } catch (e) { /* private mode: keep showing */ }
+  })();
+  function dismissTicker() {
+    var t = document.getElementById('k-ticker');
+    if (t) t.style.display = 'none';
+    try { sessionStorage.setItem('kaizen-ticker-dismissed', '1'); } catch (e) {}
+  }
+</script>
+
+
+
+<!-- POPUP OVERLAY -->
+<div class="popup-overlay" id="popupOverlay" onclick="closePopup()"></div>
+
+<!-- SIDE POPUP MENU -->
+<div class="nav-popup" id="navPopup">
+  <div class="popup-header">
+    <span class="popup-logo">改 KAIZEN</span>
+    <button class="popup-close" onclick="closePopup()">×</button>
+  </div>
+
+  
+    <!-- IMPROVE -->
+    <div class="popup-section">
+      <div class="popup-section-label">Improve</div>
+      <a href="dashboard.html" class="popup-item">▪ Cockpit</a>
+      <a href="sessions.html" class="popup-item">▪ Sessions</a>
+      <a href="leaderboard.html" class="popup-item">▪ My Progress</a>
+    </div>
+
+    <!-- COACH -->
+    <div class="popup-section">
+      <div class="popup-section-label">Coach</div>
+      <a href="kaizen-ai.html" class="popup-item">▪ KAIZEN AI</a>
+      <a href="psychology.html" class="popup-item">▪ Psychology</a>
+      <a href="/memories" class="popup-item">▪ Memories</a>
+    </div>
+
+    <!-- TOOLS -->
+    <div class="popup-section">
+      <div class="popup-section-label">Tools</div>
+      <a href="/chart" class="popup-item">▪ Chart</a>
+      <a href="weekly-summary.html" class="popup-item">▪ Weekly Report</a>
+      <a href="/news" class="popup-item">▪ Market News</a>
+    </div>
+
+    <!-- IDENTITY -->
+    <div class="popup-section">
+      <div class="popup-section-label">Identity</div>
+      <a href="reputation.html" class="popup-item">▪ Wallets &amp; Verification</a>
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="popup-section">
+      <div class="popup-section-label">Settings</div>
+      <a href="trading-system.html" class="popup-item">▪ My Trading System</a>
+    </div>
+
+    <!-- INFO -->
+    <div class="popup-section">
+      <div class="popup-section-label">Info</div>
+      <a href="support.html" class="popup-item">
+        <span class="popup-item-icon">▪</span> Support
+      </a>
+      <a href="about.html" class="popup-item">
+        <span class="popup-item-icon">▪</span> About Kaizen
+      </a>
+      <a href="whitepaper.html" class="popup-item">
+        <span class="popup-item-icon">▪</span> Whitepaper
+      </a>
+      <a href="services.html" class="popup-item">
+        <span class="popup-item-icon">▪</span> Services
+      </a>
+      <a href="help.html" class="popup-item">
+        <span class="popup-item-icon">▪</span> Help Center
+      </a>
+    </div>
+
+    <div class="popup-section">
+      <a href="index.html" class="popup-item" style="color:var(--red);">
+        <span class="popup-item-icon">▪</span> Log Out
+      </a>
+    </div>
+
+    <!-- USER FOOTER -->
+    <div class="popup-footer">
+      <div class="popup-user">
+        <div class="popup-avatar">
+          K
+        </div>
+        <div>
+          <div class="popup-username">Kaizen</div>
+          <div class="popup-user-email">kaizen@example.com</div>
+        </div>
+      </div>
+      <div class="popup-socials">
+        <a href="https://x.com/kaizenaibot"
+          target="_blank" class="popup-social-link" title="X (Twitter)">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+
+  
+</div>
+
+<!-- MAIN NAVBAR -->
+<nav class="navbar">
+  <a href="dashboard.html" class="nav-logo">改 KAIZEN</a>
+  <div class="nav-right">
+    <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
+      <span id="themeIcon">◐</span>
+    </button>
+    <button class="three-dot-btn" onclick="togglePopup()" title="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- SECURITY MODAL -->
+<div class="modal-overlay" id="securityModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Security</h3>
+      <button class="modal-close" onclick="closeModal('securityModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="security-section">
+        <h4>Change Password</h4>
+        <form action="/auth/change-password" method="POST"
+          style="display:flex;flex-direction:column;gap:12px;">
+          <div class="form-group">
+            <label class="form-label">Current Password</label>
+            <input type="password" name="currentPassword"
+              class="form-input" placeholder="Enter current Password">
+          </div>
+          <div class="form-group">
+            <label class="form-label">New Password</label>
+            <input type="password" name="newPassword"
+              class="form-input" placeholder="Enter New Password">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Confirm Password</label>
+            <input type="password" name="confirmPassword"
+              class="form-input" placeholder="Confirm New Password">
+          </div>
+          <button type="submit" class="btn-primary">Update Password</button>
+        </form>
+      </div>
+      <div class="security-section" style="margin-top:24px;padding-top:24px;border-top:1px solid var(--border);">
+        <h4>Two-Factor Authentication</h4>
+        <p style="font-size:0.85rem;color:var(--ash);margin-bottom:14px;">
+          Add an extra layer of security to your account.
+        </p>
+        <button class="btn-outline btn-full">Enable 2FA — Coming Soon</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+  <main class="app-main">
+
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:24px;flex-wrap:wrap;">
+      <div>
+        <div style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:6px;display:flex;align-items:center;gap:8px;">
+          <span style="width:16px;height:1px;background:var(--gold);display:inline-block;"></span>
+          On-Chain Identity
+        </div>
+        <h1 style="font-size:1.6rem;font-weight:700;color:var(--text-primary);margin-bottom:4px;">Reputation</h1>
+        <p style="font-size:0.82rem;color:var(--ash);font-style:italic;">Your discipline record — verified on two blockchains.</p>
+      </div>
+      <a href="dashboard.html" style="display:inline-flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);border:1px solid var(--border);padding:10px 16px;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.color='var(--gold)';this.style.borderColor='rgba(201,168,76,0.3)'" onmouseout="this.style.color='var(--ash)';this.style.borderColor='var(--border)'">
+        <i data-feather="arrow-left" width="12" height="12"></i>
+        Dashboard
+      </a>
+    </div>
+
+    <!-- KAIZEN DISCIPLINE SCORE -->
+    <div style="background:var(--bg-card);border:1px solid rgba(201,168,76,0.2);padding:28px;margin-bottom:16px;position:relative;overflow:hidden;">
+      <div style="position:absolute;top:0;right:0;width:160px;height:160px;background:radial-gradient(circle,rgba(201,168,76,0.06),transparent 70%);pointer-events:none;"></div>
+
+      <div style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--ash);margin-bottom:16px;display:flex;align-items:center;gap:8px;">
+        <i data-feather="bar-chart-2" width="12" height="12" style="color:var(--gold);"></i>
+        KAIZEN Discipline Score
+      </div>
+
+      <div style="display:flex;align-items:flex-end;gap:16px;margin-bottom:16px;flex-wrap:wrap;">
+        <div>
+          <div style="font-family:'DM Mono',monospace;font-size:4rem;font-weight:700;color:var(--gold);line-height:1;">
+            72<span style="font-size:1.5rem;">%</span>
+          </div>
+          <div style="height:4px;background:rgba(201,168,76,0.1);margin-top:8px;width:200px;">
+            <div style="height:100%;background:var(--gold);width:72%;transition:width 1.2s ease;"></div>
+          </div>
+        </div>
+        <div style="padding-bottom:8px;">
+          <div style="
+            font-family:'DM Mono',monospace;
+            font-size:0.7rem;
+            font-weight:700;
+            letter-spacing:0.15em;
+            text-transform:uppercase;
+            padding:6px 14px;
+            border:1px solid rgba(201,168,76,0.3);
+            color:var(--gold);
+            background:rgba(201,168,76,0.06);
+          ">
+            CONSISTENT
+          </div>
+          <div style="font-size:0.75rem;color:var(--ash);margin-top:8px;">
+            Based on 48 sessions logged
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats row -->
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:2px;">
+        <div style="background:var(--bg-surface);border:1px solid var(--border);padding:12px;text-align:center;">
+          <div style="font-family:'DM Mono',monospace;font-size:1.2rem;font-weight:700;color:var(--text-primary);">48</div>
+          <div style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-top:3px;">Sessions</div>
+        </div>
+        <div style="background:var(--bg-surface);border:1px solid var(--border);padding:12px;text-align:center;">
+          <div style="font-family:'DM Mono',monospace;font-size:1.2rem;font-weight:700;color:var(--text-primary);">6</div>
+          <div style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-top:3px;">Day Streak</div>
+        </div>
+        <div style="background:var(--bg-surface);border:1px solid var(--border);padding:12px;text-align:center;">
+          <div style="font-family:'DM Mono',monospace;font-size:1.2rem;font-weight:700;color:var(--text-primary);">
+                        2
+          </div>
+          <div style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-top:3px;">Badges</div>
+        </div>
+      </div>
+
+      <!-- DANGER ZONE -->
+      <div style="margin-top:24px;padding-top:20px;border-top:1px solid var(--border);">
+        <div style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.15em;text-transform:uppercase;color:#F87171;margin-bottom:10px;display:flex;align-items:center;gap:6px;">
+          <i data-feather="alert-triangle" width="11" height="11"></i>
+          Danger Zone
+        </div>
+        <button onclick="if(confirm('Delete your account permanently? This cannot be undone.')) window.location='/auth/delete'" style="
+          background:transparent;
+          border:1px solid rgba(248,113,113,0.3);
+          color:#F87171;
+          font-family:'DM Mono',monospace;
+          font-size:0.6rem;
+          letter-spacing:0.1em;
+          text-transform:uppercase;
+          padding:10px 20px;
+          cursor:pointer;
+          display:flex;align-items:center;gap:6px;
+          transition:all 0.2s;
+        " onmouseover="this.style.background='rgba(248,113,113,0.06)'" onmouseout="this.style.background='transparent'">
+          <i data-feather="trash-2" width="12" height="12"></i>
+          Delete Account
+        </button>
+      </div>
+    </div>
+
+    <!-- STACKS WALLET — Phase 1 -->
+    <div id="kz-wallet-card" style="background:var(--bg-card);border:1px solid rgba(201,168,76,0.25);padding:24px;margin-bottom:16px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="width:28px;height:28px;border:1px solid rgba(201,168,76,0.25);background:rgba(201,168,76,0.05);display:flex;align-items:center;justify-content:center;color:var(--gold);">
+            <i data-feather="key" width="13" height="13"></i>
+          </div>
+          <div>
+            <div style="font-weight:700;font-size:0.95rem;color:var(--text-primary);">Stacks Wallet</div>
+            <div style="font-size:0.72rem;color:var(--ash);">Ownership verified by signature · no private keys, ever</div>
+          </div>
+        </div>
+        <span style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(201,168,76,0.25);padding:4px 10px;">PHASE 1 · LIVE</span>
+      </div>
+
+      <!-- Not connected -->
+      <div id="kz-wallet-connect-view">
+        <p style="font-size:0.85rem;color:var(--text-secondary);line-height:1.8;margin-bottom:16px;">
+          Link your Stacks wallet to build an <strong style="color:var(--text-primary);">evidence-backed discipline record</strong>.
+          KAIZEN asks your wallet to sign a one-time verification message — that signature
+          cryptographically proves you control the address. Your wallet address is stored encrypted,
+          and nothing is published without your consent.
+        </p>
+
+        <div style="background:var(--bg-surface);border:1px solid var(--border);padding:14px 16px;margin-bottom:16px;">
+          <div style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--ash);margin-bottom:10px;">What this does &amp; does not do</div>
+          <div style="font-size:0.78rem;color:var(--text-secondary);line-height:1.9;">
+            <div><span style="color:#4ADE80;">✓</span>&nbsp; Proves wallet ownership with a one-time signed message</div>
+            <div><span style="color:#4ADE80;">✓</span>&nbsp; Stores your address encrypted (AES-256-GCM)</div>
+            <div><span style="color:#4ADE80;">✓</span>&nbsp; Records your consent with a versioned audit trail</div>
+            <div><span style="color:#F87171;">✗</span>&nbsp; Never sees or stores private keys or seed phrases</div>
+            <div><span style="color:#F87171;">✗</span>&nbsp; Never exposes your balance or P&amp;L publicly</div>
+          </div>
+        </div>
+
+        <label style="display:flex;gap:10px;align-items:flex-start;cursor:pointer;margin-bottom:16px;padding:12px;border:1px dashed rgba(201,168,76,0.25);background:rgba(201,168,76,0.02);">
+          <input type="checkbox" id="kz-wallet-consent" style="margin-top:2px;accent-color:var(--gold);">
+          <span style="font-size:0.76rem;color:var(--text-secondary);line-height:1.7;">
+            I confirm I control this wallet, and I consent to KAIZEN indexing and analyzing its
+            <em>public</em> on-chain activity (transaction timing, protocol interactions) to compute
+            behavioral discipline metrics. KAIZEN will never publish my balance, P&amp;L, journal entries,
+            or identifiable wallet history. Consent version 1.0 — revocable anytime by disconnecting.
+          </span>
+        </label>
+
+        <button id="kz-wallet-connect-btn" style="background:var(--gold);color:#000;border:none;font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;font-weight:700;padding:13px 26px;cursor:pointer;display:inline-flex;align-items:center;gap:8px;">
+          <i data-feather="link-2" width="12" height="12"></i>
+          Connect Stacks Wallet
+        </button>
+        <div style="font-family:'DM Mono',monospace;font-size:0.52rem;letter-spacing:0.08em;color:rgba(168,160,154,0.6);margin-top:10px;text-transform:uppercase;">
+          Works with Leather · Xverse · any compatible Stacks wallet
+        </div>
+        <div id="kz-wallet-msg" style="font-size:0.75rem;margin-top:12px;min-height:1em;" role="status" aria-live="polite"></div>
+      </div>
+
+      <!-- Connected -->
+      <div id="kz-wallet-connected-view" style="display:none;">
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:2px;margin-bottom:18px;">
+          <div style="background:var(--bg-surface);border:1px solid var(--border);padding:14px;">
+            <div style="font-family:'DM Mono',monospace;font-size:0.85rem;font-weight:700;color:var(--gold);word-break:break-all;" id="kz-wallet-addr">—</div>
+            <div style="font-family:'DM Mono',monospace;font-size:0.48rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-top:5px;">Verified Address</div>
+          </div>
+          <div style="background:var(--bg-surface);border:1px solid var(--border);padding:14px;text-align:center;">
+            <div style="font-family:'DM Mono',monospace;font-size:0.85rem;font-weight:700;color:var(--text-primary);" id="kz-wallet-network">—</div>
+            <div style="font-family:'DM Mono',monospace;font-size:0.48rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-top:5px;">Network</div>
+          </div>
+          <div style="background:var(--bg-surface);border:1px solid var(--border);padding:14px;text-align:center;">
+            <div style="font-family:'DM Mono',monospace;font-size:0.85rem;font-weight:700;color:var(--text-primary);" id="kz-wallet-verified-at">—</div>
+            <div style="font-family:'DM Mono',monospace;font-size:0.48rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-top:5px;">Verified</div>
+          </div>
+        </div>
+
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+          <div>
+            <span style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:#4ADE80;border:1px solid rgba(74,222,128,0.25);padding:5px 10px;">OWNERSHIP PROVEN</span>
+            <div id="kz-wallet-consent-state" style="font-family:'DM Mono',monospace;font-size:0.52rem;letter-spacing:0.08em;color:var(--ash);margin-top:8px;text-transform:uppercase;"></div>
+          </div>
+          <button id="kz-wallet-disconnect-btn" style="background:transparent;border:1px solid rgba(248,113,113,0.3);color:#F87171;font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;padding:10px 18px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;">
+            <i data-feather="x-circle" width="11" height="11"></i>
+            Disconnect
+          </button>
+        </div>
+
+      <!-- On-chain activity (Phase 1B) -->
+      <div id="kz-wallet-activity" style="margin-top:20px;padding-top:20px;border-top:1px solid var(--border);display:none;">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:14px;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <i data-feather="activity" width="13" height="13" style="color:var(--gold);"></i>
+            <span style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);">Verified On-Chain Activity</span>
+            <span style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-primary);border:1px solid rgba(201,168,76,0.25);padding:3px 8px;">L2 · WALLET-VERIFIED</span>
+          </div>
+          <button id="kz-wallet-sync-btn" style="background:transparent;border:1px solid rgba(201,168,76,0.3);color:var(--gold);font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;padding:8px 14px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;">
+            <i data-feather="refresh-cw" width="10" height="10"></i>
+            Sync Now
+          </button>
+        </div>
+
+        <div id="kz-wallet-activity-none" style="font-size:0.8rem;color:var(--ash);line-height:1.8;">
+          No activity indexed yet. Press <strong style="color:var(--gold);">Sync Now</strong> to pull your confirmed
+          on-chain activity via the Hiro API. Timing, cadence and protocol usage are analyzed —
+          <em>never amounts or balances</em>.
+        </div>
+
+        <div id="kz-wallet-activity-data" style="display:none;">
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(105px,1fr));gap:2px;margin-bottom:12px;">
+            <div style="background:var(--bg-surface);border:1px solid var(--border);padding:12px;text-align:center;">
+              <div style="font-family:'DM Mono',monospace;font-size:1.15rem;font-weight:700;color:var(--text-primary);" id="kz-m-txs">0</div>
+              <div style="font-family:'DM Mono',monospace;font-size:0.46rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-top:4px;">Tx · 30d</div>
+            </div>
+            <div style="background:var(--bg-surface);border:1px solid var(--border);padding:12px;text-align:center;">
+              <div style="font-family:'DM Mono',monospace;font-size:1.15rem;font-weight:700;color:var(--text-primary);" id="kz-m-days">0</div>
+              <div style="font-family:'DM Mono',monospace;font-size:0.46rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-top:4px;">Active Days</div>
+            </div>
+            <div style="background:var(--bg-surface);border:1px solid var(--border);padding:12px;text-align:center;">
+              <div style="font-family:'DM Mono',monospace;font-size:1.15rem;font-weight:700;color:var(--text-primary);" id="kz-m-gap">—</div>
+              <div style="font-family:'DM Mono',monospace;font-size:0.46rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-top:4px;">Median Gap (h)</div>
+            </div>
+            <div style="background:var(--bg-surface);border:1px solid var(--border);padding:12px;text-align:center;">
+              <div style="font-family:'DM Mono',monospace;font-size:1.15rem;font-weight:700;" id="kz-m-maxday">0</div>
+              <div style="font-family:'DM Mono',monospace;font-size:0.46rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-top:4px;">Max Tx / Day</div>
+            </div>
+            <div style="background:var(--bg-surface);border:1px solid var(--border);padding:12px;text-align:center;">
+              <div style="font-family:'DM Mono',monospace;font-size:1.15rem;font-weight:700;color:var(--text-primary);" id="kz-m-defi">0%</div>
+              <div style="font-family:'DM Mono',monospace;font-size:0.46rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-top:4px;">DeFi Protocol Tx</div>
+            </div>
+          </div>
+
+          <div id="kz-m-heavy" style="display:none;font-size:0.72rem;color:#F87171;border:1px solid rgba(248,113,113,0.25);background:rgba(248,113,113,0.05);padding:10px 12px;margin-bottom:12px;line-height:1.6;">
+            <i data-feather="alert-triangle" width="11" height="11" style="display:inline;margin-right:6px;"></i>
+            High-frequency days detected (10+ transactions in a day). This is a behavioral signal —
+            KAIZEN coaching will reference it in your next review.
+          </div>
+
+          <div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:12px;">
+            <div style="flex:1;min-width:200px;">
+              <div style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--ash);margin-bottom:8px;">Protocols Used</div>
+              <div id="kz-m-protocols" style="font-size:0.76rem;color:var(--text-secondary);line-height:1.9;"></div>
+            </div>
+            <div style="flex:1;min-width:200px;">
+              <div style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--ash);margin-bottom:8px;">Action Mix</div>
+              <div id="kz-m-actions" style="font-size:0.76rem;color:var(--text-secondary);line-height:1.9;"></div>
+            </div>
+          </div>
+
+          <div style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--ash);margin-bottom:8px;">Recent Confirmed Activity</div>
+          <div id="kz-m-recent" style="font-size:0.72rem;color:var(--text-secondary);"></div>
+
+          <div id="kz-m-lastsync" style="font-family:'DM Mono',monospace;font-size:0.52rem;letter-spacing:0.08em;color:rgba(168,160,154,0.6);margin-top:12px;text-transform:uppercase;"></div>
+        </div>
+
+        <div id="kz-wallet-sync-msg" style="font-size:0.75rem;margin-top:12px;min-height:1em;" aria-live="polite"></div>
+      </div>
+    </div>
+
+    <!-- DISCIPLINE CREDENTIALS -->
+    <div id="kz-credentials-card" style="background:var(--bg-card);border:1px solid rgba(201,168,76,0.2);padding:24px;margin-bottom:16px;display:none;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="width:28px;height:28px;border:1px solid rgba(201,168,76,0.25);background:rgba(201,168,76,0.05);display:flex;align-items:center;justify-content:center;color:var(--gold);">
+            <i data-feather="check-circle" width="13" height="13"></i>
+          </div>
+          <div>
+            <div style="font-weight:700;font-size:0.95rem;color:var(--text-primary);">Discipline Credentials</div>
+            <div style="font-size:0.72rem;color:var(--ash);">Verified behavioral records based on Stacks activity</div>
+          </div>
+        </div>
+        <button id="kz-creds-refresh-btn" style="background:transparent;border:1px solid var(--border);color:var(--ash);font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;padding:6px 12px;cursor:pointer;display:flex;align-items:center;gap:6px;transition:all 0.2s;" onmouseover="this.style.color='var(--gold)';this.style.borderColor='rgba(201,168,76,0.3)'" onmouseout="this.style.color='var(--ash)';this.style.borderColor='var(--border)'">
+          <i data-feather="refresh-cw" width="10" height="10"></i>
+          Re-evaluate
+        </button>
+      </div>
+
+      <div id="kz-creds-list" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;">
+        <!-- Credentials injected here -->
+      </div>
+      
+      <div id="kz-creds-none" style="text-align:center;padding:20px;border:1px dashed var(--border);display:none;">
+        <p style="font-size:0.8rem;color:var(--ash);">No discipline credentials earned yet. Sync your wallet activity to evaluate.</p>
+      </div>
+
+      <div id="kz-creds-msg" style="font-size:0.7rem;margin-top:12px;min-height:1em;text-align:right;" aria-live="polite"></div>
+    </div>
+
+    <!-- ZERO AUTHORITY DAO -->
+    <div style="background:var(--bg-card);border:1px solid var(--border);padding:24px;margin-bottom:16px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="width:28px;height:28px;border:1px solid rgba(201,168,76,0.2);background:rgba(201,168,76,0.04);display:flex;align-items:center;justify-content:center;color:var(--gold);">
+            <i data-feather="shield" width="13" height="13"></i>
+          </div>
+          <div>
+            <div style="font-weight:700;font-size:0.95rem;color:var(--text-primary);">Zero Authority Reputation</div>
+            <div style="font-size:0.72rem;color:var(--ash);">Stacks blockchain · Trader credentials</div>
+          </div>
+        </div>
+        <span style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(201,168,76,0.2);padding:4px 10px;">ON-CHAIN</span>
+      </div>
+
+      
+        <div style="background:rgba(74,222,128,0.06);border:1px solid rgba(74,222,128,0.25);color:#4ADE80;padding:12px 14px;font-size:0.78rem;margin-bottom:18px;display:flex;align-items:center;gap:8px;">
+          <i data-feather="check-circle" width="14" height="14"></i>
+          Zero Authority account linked successfully.
+        </div>
+      
+      
+
+      
+        <div style="text-align:center;padding:10px 0 20px;">
+          <div style="font-family:'DM Mono',monospace;font-size:2.8rem;font-weight:700;color:var(--blue);line-height:1;margin-bottom:5px;">0</div>
+          <div style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--ash);margin-bottom:6px;">Activity Score</div>
+          
+            <div style="margin-bottom:20px;"></div>
+          
+
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:2px;margin-bottom:20px;">
+            
+              <div style="background:var(--bg-surface);border:1px solid var(--border);padding:12px 8px;text-align:center;">
+                <div style="font-family:'DM Mono',monospace;font-size:1.2rem;font-weight:700;color:var(--gold);">0</div>
+                <div style="font-family:'DM Mono',monospace;font-size:0.48rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-top:4px;">
+                  <i data-feather="award" width="9" height="9" style="display:inline;margin-right:3px;"></i>Bounties Won
+                </div>
+              </div>
+            
+              <div style="background:var(--bg-surface);border:1px solid var(--border);padding:12px 8px;text-align:center;">
+                <div style="font-family:'DM Mono',monospace;font-size:1.2rem;font-weight:700;color:var(--gold);">0</div>
+                <div style="font-family:'DM Mono',monospace;font-size:0.48rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-top:4px;">
+                  <i data-feather="user-check" width="9" height="9" style="display:inline;margin-right:3px;"></i>Endorsements
+                </div>
+              </div>
+            
+              <div style="background:var(--bg-surface);border:1px solid var(--border);padding:12px 8px;text-align:center;">
+                <div style="font-family:'DM Mono',monospace;font-size:1.2rem;font-weight:700;color:var(--gold);">0</div>
+                <div style="font-family:'DM Mono',monospace;font-size:0.48rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-top:4px;">
+                  <i data-feather="file-text" width="9" height="9" style="display:inline;margin-right:3px;"></i>Submissions
+                </div>
+              </div>
+            
+              <div style="background:var(--bg-surface);border:1px solid var(--border);padding:12px 8px;text-align:center;">
+                <div style="font-family:'DM Mono',monospace;font-size:1.2rem;font-weight:700;color:var(--gold);">0</div>
+                <div style="font-family:'DM Mono',monospace;font-size:0.48rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-top:4px;">
+                  <i data-feather="percent" width="9" height="9" style="display:inline;margin-right:3px;"></i>Profile %
+                </div>
+              </div>
+            
+          </div>
+
+          <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+            <a href="https://zeroauthoritydao.com/profile/ZA-1042" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(201,168,76,0.25);background:rgba(201,168,76,0.04);padding:10px 18px;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.background='rgba(201,168,76,0.1)'" onmouseout="this.style.background='rgba(201,168,76,0.04)'">
+              View ZA Profile
+              <i data-feather="external-link" width="11" height="11"></i>
+            </a>
+            
+              <form method="POST" action="/za/unlink" style="display:inline;" onsubmit="return confirm('Unlink your Zero Authority account from KAIZEN?');">
+                <button type="submit" style="background:transparent;border:1px solid rgba(248,113,113,0.3);color:#F87171;font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;padding:10px 18px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;">
+                  <i data-feather="unlink" width="11" height="11"></i>
+                  Unlink
+                </button>
+              </form>
+            
+          </div>
+        </div>
+      
+    </div>
+
+    <!-- MANTLE AI BENCHMARK -->
+    <div style="background:var(--bg-card);border:1px solid rgba(59,130,246,0.15);padding:24px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="width:28px;height:28px;border:1px solid rgba(59,130,246,0.2);background:rgba(59,130,246,0.04);display:flex;align-items:center;justify-content:center;color:var(--blue);">
+            <i data-feather="link" width="13" height="13"></i>
+          </div>
+          <div>
+            <div style="font-weight:700;font-size:0.95rem;color:var(--text-primary);">Mantle AI Benchmark</div>
+            <div style="font-size:0.72rem;color:var(--ash);">Mantle blockchain · AI performance record</div>
+          </div>
+        </div>
+        <span style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--blue);border:1px solid rgba(59,130,246,0.2);padding:4px 10px;">ON-CHAIN</span>
+      </div>
+
+      <p style="font-size:0.85rem;color:var(--text-secondary);line-height:1.8;margin-bottom:20px;">
+        Every significant KAIZEN AI output about your account is permanently recorded on Mantle blockchain — discipline score changes, pattern detections, and milestones. Verifiable by anyone. Tamper-proof.
+      </p>
+
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:2px;margin-bottom:20px;">
+        <div style="background:var(--bg-surface);border:1px solid rgba(59,130,246,0.1);padding:16px;text-align:center;">
+          <div style="font-family:'DM Mono',monospace;font-size:1.4rem;font-weight:700;color:var(--gold);">72%</div>
+          <div style="font-family:'DM Mono',monospace;font-size:0.48rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-top:4px;">On-Chain Score</div>
+        </div>
+        <div style="background:var(--bg-surface);border:1px solid rgba(59,130,246,0.1);padding:16px;text-align:center;">
+          <div style="font-family:'DM Mono',monospace;font-size:1.4rem;font-weight:700;color:var(--blue);">48</div>
+          <div style="font-family:'DM Mono',monospace;font-size:0.48rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-top:4px;">Sessions Logged</div>
+        </div>
+        <div style="background:var(--bg-surface);border:1px solid rgba(59,130,246,0.1);padding:16px;text-align:center;">
+          <div style="font-family:'DM Mono',monospace;font-size:1.4rem;font-weight:700;color:var(--text-primary);">2</div>
+          <div style="font-family:'DM Mono',monospace;font-size:0.48rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-top:4px;">Milestones</div>
+        </div>
+        <div style="background:var(--bg-surface);border:1px solid rgba(59,130,246,0.1);padding:16px;text-align:center;">
+          <div style="font-family:'DM Mono',monospace;font-size:1.4rem;font-weight:700;color:var(--text-primary);">[object Object]</div>
+          <div style="font-family:'DM Mono',monospace;font-size:0.48rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-top:4px;">Total Network Events</div>
+        </div>
+      </div>
+
+      
+        <div style="margin-bottom:20px;">
+          <div style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);margin-bottom:10px;">Recent On-Chain Records</div>
+          
+            <div style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);flex-wrap:wrap;">
+              <span style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.1em;color:var(--blue);border:1px solid rgba(59,130,246,0.25);padding:2px 7px;"></span>
+              <span style="font-size:0.78rem;color:var(--text-primary);"></span>
+              
+              
+                <a href="https://sepolia.mantlescan.xyz/address/0x65fe9Ccd1701C680fb137dD9f0D571d9045c5A0E/tx/0x09afa48f904490f0154a670e94e2ae8bc0bfde822a1b4ec5d6d11c1e8c0df81a" target="_blank" style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--blue);text-decoration:none;">
+                  0x09afa4… ↗
+                </a>
+              
+            </div>
+          
+            <div style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);flex-wrap:wrap;">
+              <span style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.1em;color:var(--blue);border:1px solid rgba(59,130,246,0.25);padding:2px 7px;"></span>
+              <span style="font-size:0.78rem;color:var(--text-primary);"></span>
+              
+              
+                <a href="https://sepolia.mantlescan.xyz/address/0x65fe9Ccd1701C680fb137dD9f0D571d9045c5A0E/tx/0xabc" target="_blank" style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--blue);text-decoration:none;">
+                  0xabc… ↗
+                </a>
+              
+            </div>
+          
+          <div style="font-family:'DM Mono',monospace;font-size:0.52rem;letter-spacing:0.06em;color:var(--ash);margin-top:8px;line-height:1.6;">
+            Each record links to its immutable transaction — the same words are written on-chain, where they cannot be edited.
+          </div>
+        </div>
+      
+
+      <a href="https://sepolia.mantlescan.xyz/address/0x65fe9Ccd1701C680fb137dD9f0D571d9045c5A0E/address/" target="_blank" style="display:inline-flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--blue);border:1px solid rgba(59,130,246,0.2);background:rgba(59,130,246,0.04);padding:10px 18px;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.background='rgba(59,130,246,0.1)'" onmouseout="this.style.background='rgba(59,130,246,0.04)'">
+        View on Mantle Explorer
+        <i data-feather="external-link" width="11" height="11"></i>
+      </a>
+
+      <p style="font-family:'DM Mono',monospace;font-size:0.52rem;letter-spacing:0.08em;color:rgba(201,168,76,0.3);margin-top:12px;text-transform:uppercase;">
+        Powered by KaizenBenchmark.sol · Mantle Sepolia (testnet)
+      </p>
+    </div>
+
+  </main>
+
+  <footer class="footer">
+  <div class="footer-inner">
+    <span class="footer-logo">改 KAIZEN</span>
+    <div style="display:flex;gap:20px;flex-wrap:wrap;align-items:center;">
+      <a href="privacy.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Privacy</a>
+      <a href="terms.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Terms</a>
+      <a href="about.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">About</a>
+      <a href="whitepaper.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Whitepaper</a>
+      <a href="help.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Help Center</a>
+      <a href="support.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Support</a>
+    </div>
+    <span class="footer-right">© 2026 KAIZEN</span>
+  </div>
+</footer>
+<script>if(window.feather) feather.replace();</script>
+
+    <script src="js/app.js"></script>
+  <script src="/vendor/stacks-connect.js"></script>
+  <script src="js/kaizen-wallet.js"></script>
+  <script>feather.replace();</script>
+</body>
+</html>
