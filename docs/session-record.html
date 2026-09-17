@@ -2,11 +2,39 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My Trading System · 改 KAIZEN</title>
-  <link rel="stylesheet" href="css/style.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#C9A84C">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="images/kaizen-icon.png" type="image/png">
+<link rel="apple-touch-icon" href="images/kaizen-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.29.0/feather.min.js"></script>
+<script>
+  // Apply saved theme BEFORE first paint to avoid a flash of the wrong theme
+  (function () {
+    try {
+      var t = localStorage.getItem('kaizen-theme');
+      if (!t) {
+        t = (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches)
+          ? 'light' : 'dark';
+      }
+      if (t !== 'dark' && t !== 'light') t = 'dark';
+      document.documentElement.setAttribute('data-theme', t);
+    } catch (e) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+  })();
+</script>
+
+<script>
+(function(){try{var u=new URL(window.location.href);if(u.searchParams.has('wallet')){u.searchParams.delete('wallet');window.history.replaceState({},document.title,u.toString());}}catch(e){}})();
+</script>
+
+  <title>KAIZEN — The Record</title>
 </head>
-<body class="k-app">
+<body class="app-page">
   <!-- POPUP OVERLAY -->
 <div class="popup-overlay" id="popupOverlay" onclick="closePopup()"></div>
 
@@ -189,118 +217,112 @@
 </div>
 
 
-  <main class="k-page">
-    <div class="k-container">
+  <main class="k-flow">
 
-      <div class="k-head">
-        <div>
-          <div class="k-eyebrow">SETTINGS · 改</div>
-          <h1 class="k-title">My Trading System</h1>
-          <p class="k-sub">The rules every session is measured against. Each save creates a new version — history is never overwritten, so past sessions stay judged by the rules you had at the time.</p>
+    <div class="k-stepstrip">
+      <span class="is-done">Plan ✓</span><b>—</b>
+      <span class="is-active">Record</span><b>—</b>
+      <span>Reflect</span>
+    </div>
+
+    <div class="k-eyebrow" style="margin-bottom:10px;">The Record — LIVE</div>
+    <h1 style="font-size:clamp(1.5rem,3.5vw,2.1rem);font-weight:700;color:var(--text-primary);line-height:1.15;margin:0 0 8px;">
+      Write what actually happened.
+    </h1>
+    <p style="font-size:0.88rem;color:var(--text-secondary);line-height:1.75;margin:0 0 24px;">
+      The quick checks catch what your notes don't mention.
+    </p>
+
+    
+      <div class="k-card" style="margin-bottom:18px;border-color:var(--gold-border);">
+        <div class="k-metric-label" style="margin-bottom:10px;">YOUR DECLARED PLAN</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;font-size:0.8rem;color:var(--text-secondary);">
+          <div><span class="k-gold">Setup:</span> 4H sweep → 30min MSS</div>
+          <div><span class="k-gold">Entry:</span> MSS close after liquidity sweep</div>
+          <div><span class="k-gold">Invalidation:</span> Sweep fails below range low</div>
+          <div><span class="k-gold">Risk:</span> 1% — 2 lots max</div>
         </div>
-        <div class="k-versionchip">
-          <span class="k-versionnum">v3</span>
-          <span class="k-versionmeta">3 versions on record</span>
-        </div>
+      </div>
+    
+
+    <form action="/dashboard/sessions/plan1/record" method="POST" enctype="multipart/form-data">
+
+      <div class="k-card k-formcard" style="margin-bottom:14px;">
+        <div class="k-metric-label" style="margin-bottom:10px;">WHAT HAPPENED? — WHAT CHANGED DURING AND AFTER THE TRADE</div>
+        <textarea name="notes" id="notes" class="k-input" rows="7" required
+          placeholder="Took the EURUSD short off the 4H sweep. Entry was clean but I moved my invalidation twice when price squeezed — that was fear, not strategy. Sized in properly at 1%..."></textarea>
+        <div id="autodetect" class="k-fieldhint" style="margin-top:8px;"></div>
+        <input type="hidden" name="asset" id="asset" value="">
+        <input type="hidden" name="timeframe" id="timeframe" value="N/A">
       </div>
 
       
+        <div class="k-card k-formcard" style="margin-bottom:14px;">
+          <div class="k-metric-label" style="margin-bottom:14px;">QUICK CHECKS — ONLY WHAT YOUR NOTES DON'T MENTION</div>
 
-      <form method="POST" action="/settings/trading-system" class="k-formgrid">
-
-        <section class="k-formcard">
-          <h2 class="k-cardtitle">Identity</h2>
-          <div class="k-field">
-            <label class="k-fieldlabel" for="name">System name</label>
-            <input class="k-input" type="text" id="name" name="name" value="My Trading System" maxlength="60" placeholder="e.g. London Open Playbook">
-          </div>
-          <div class="k-field">
-            <label class="k-fieldlabel" for="marketConditions">Where it works — market conditions</label>
-            <textarea class="k-input" id="marketConditions" name="marketConditions" rows="3" placeholder="The conditions your system is built for. e.g. London session, trending pairs, post-news drift, high-liquidity hours…">London open — indices and metals only</textarea>
-          </div>
-        </section>
-
-        <section class="k-formcard">
-          <h2 class="k-cardtitle">Your edge</h2>
-          <div class="k-field">
-            <label class="k-fieldlabel" for="setups">Setups — one per line</label>
-            <textarea class="k-input" id="setups" name="setups" rows="4" placeholder="e.g.&#10;London open breakout&#10;Trend pullback to 20 EMA&#10;Range sweep reversal">4H sweep → 30min MSS
-Range fakeout</textarea>
-            <div class="k-fieldhint">These become the setups you pick from when planning a session.</div>
-          </div>
-          <div class="k-field">
-            <label class="k-fieldlabel" for="entryRules">Entry rules</label>
-            <textarea class="k-input" id="entryRules" name="entryRules" rows="3" placeholder="What must be true before you enter. If you can't point to it on the chart, it's not a rule.">MSS on 30min after liquidity sweep; no entry without confirmation candle close.</textarea>
-          </div>
-          <div class="k-field">
-            <label class="k-fieldlabel" for="exitRules">Exit rules</label>
-            <textarea class="k-input" id="exitRules" name="exitRules" rows="3" placeholder="Take-profit logic, and when you're out because the idea is wrong.">2R fixed or structure invalidation.</textarea>
-          </div>
-        </section>
-
-        <section class="k-formcard">
-          <h2 class="k-cardtitle">Risk rules</h2>
-          <p class="k-cardsub">Hard numbers. The engine reads these — breaking them is what moves your Risk dimension.</p>
-          <div class="k-fieldrow">
-            <div class="k-field">
-              <label class="k-fieldlabel" for="riskPerTrade">Risk per trade</label>
-              <input class="k-input" type="text" id="riskPerTrade" name="riskPerTrade" value="1" placeholder="e.g. 1% of account">
+          
+            <div class="k-checkrow">
+              <span class="k-checklabel">Followed your plan?</span>
+              <div class="k-checkopts">
+                <label class="k-opt"><input type="radio" name="followedPlan" value="YES"><span>YES</span></label>
+                <label class="k-opt"><input type="radio" name="followedPlan" value="NO"><span>NO</span></label>
+              </div>
             </div>
-            <div class="k-field">
-              <label class="k-fieldlabel" for="maxDailyTrades">Max trades per day</label>
-              <input class="k-input" type="text" id="maxDailyTrades" name="maxDailyTrades" value="2" placeholder="e.g. 3">
+            <div class="k-checkrow">
+              <span class="k-checklabel">Within your entry criteria?</span>
+              <div class="k-checkopts">
+                <label class="k-opt"><input type="radio" name="withinEntryCriteria" value="YES"><span>YES</span></label>
+                <label class="k-opt"><input type="radio" name="withinEntryCriteria" value="NO"><span>NO</span></label>
+              </div>
+            </div>
+          
+
+          <div class="k-checkrow">
+            <span class="k-checklabel">Respected your risk?</span>
+            <div class="k-checkopts">
+              <label class="k-opt"><input type="radio" name="respectedRisk" value="YES"><span>YES</span></label>
+              <label class="k-opt"><input type="radio" name="respectedRisk" value="NO"><span>NO</span></label>
             </div>
           </div>
-          <div class="k-fieldrow">
-            <div class="k-field">
-              <label class="k-fieldlabel" for="dailyDrawdown">Daily drawdown limit</label>
-              <input class="k-input" type="text" id="dailyDrawdown" name="dailyDrawdown" value="3" placeholder="e.g. 3% then stop">
+
+          <div class="k-checkrow">
+            <span class="k-checklabel">Outcome</span>
+            <div class="k-checkopts">
+              
+                <label class="k-opt"><input type="radio" name="outcome" value="Win"><span>WIN</span></label>
+              
+                <label class="k-opt"><input type="radio" name="outcome" value="Loss"><span>LOSS</span></label>
+              
+                <label class="k-opt"><input type="radio" name="outcome" value="Breakeven"><span>BREAKEVEN</span></label>
+              
+                <label class="k-opt"><input type="radio" name="outcome" value="No Trade"><span>NO TRADE</span></label>
+              
             </div>
-            <div class="k-field">
-              <label class="k-fieldlabel" for="maxPositionSize">Max position size</label>
-              <input class="k-input" type="text" id="maxPositionSize" name="maxPositionSize" value="2 lots" placeholder="e.g. 0.5 lots">
+          </div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px;">
+            <div class="k-field" style="margin:0;">
+              <label class="k-fieldlabel">RR ACHIEVED (OPTIONAL)</label>
+              <input type="text" name="rrAchieved" class="k-input" placeholder="e.g. 1:2.5">
+            </div>
+            <div class="k-field" style="margin:0;">
+              <label class="k-fieldlabel">PIPS / POINTS (OPTIONAL)</label>
+              <input type="text" name="pipsGained" class="k-input" placeholder="e.g. +45">
             </div>
           </div>
-        </section>
+        </div>
+      
 
-        <section class="k-formcard">
-          <h2 class="k-cardtitle">Discipline</h2>
-          <div class="k-field">
-            <label class="k-fieldlabel" for="tradingHours">Trading hours</label>
-            <input class="k-input" type="text" id="tradingHours" name="tradingHours" value="08:00–11:00 GMT" placeholder="e.g. 08:00–12:00 London, weekdays only">
-          </div>
-          <div class="k-field">
-            <label class="k-fieldlabel" for="noTradeConditions">No-trade conditions — one per line</label>
-            <textarea class="k-input" id="noTradeConditions" name="noTradeConditions" rows="3" placeholder="e.g.&#10;During red-folder news&#10;After two losses in a day&#10;Less than 6 hours of sleep">News within 30min</textarea>
-          </div>
-          <div class="k-field">
-            <label class="k-fieldlabel" for="psychologicalRules">Psychological rules — one per line</label>
-            <textarea class="k-input" id="psychologicalRules" name="psychologicalRules" rows="3" placeholder="e.g.&#10;No entries in the first 10 minutes&#10;Journal before the next trade, win or lose&#10;Stop after a 2R loss">No trading after two losses</textarea>
-          </div>
-        </section>
+      <div class="k-card k-formcard" style="margin-bottom:18px;">
+        <div class="k-metric-label" style="margin-bottom:10px;">CHART IMAGE (OPTIONAL)</div>
+        <input type="file" name="chartImage" accept="image/*" class="k-input" style="padding:10px;">
+      </div>
 
-        <section class="k-formcard">
-          <h2 class="k-cardtitle">Position rules</h2>
-          <div class="k-field">
-            <label class="k-fieldlabel" for="positionRules">How you size and manage positions</label>
-            <textarea class="k-input" id="positionRules" name="positionRules" rows="3" placeholder="Scaling in/out, partials, trailing, when you move a stop…"></textarea>
-          </div>
-        </section>
+      <div class="k-actions">
+        <button type="submit" class="btn-primary k-btn-lg">Save &amp; Reflect →</button>
+      </div>
+    </form>
 
-        <section class="k-formcard k-savecard">
-          <div class="k-field">
-            <label class="k-fieldlabel" for="changeNote">What changed? (optional)</label>
-            <input class="k-input" type="text" id="changeNote" name="changeNote" maxlength="140" placeholder="e.g. Cut max daily trades from 5 to 3 — overtrading on losses">
-          </div>
-          <div class="k-actions">
-            <button type="submit" class="k-btn k-btn-primary">Save as new version</button>
-            <a class="k-btn k-btn-ghost" href="dashboard.html">Back to Cockpit</a>
-          </div>
-          <div class="k-fieldhint">Nothing is deleted. Your previous version stays on record, and sessions logged before this save stay measured against the rules you had then.</div>
-        </section>
-
-      </form>
-    </div>
   </main>
 
   <footer class="footer">
@@ -320,5 +342,27 @@ Range fakeout</textarea>
 <script>if(window.feather) feather.replace();</script>
 
   <script src="js/app.js"></script>
+  <script>
+    if (window.feather) feather.replace();
+    // Auto-detect asset/timeframe from notes (V1 precedent, kept)
+    (function () {
+      var notes = document.getElementById('notes');
+      var out = document.getElementById('autodetect');
+      var assetEl = document.getElementById('asset');
+      var tfEl = document.getElementById('timeframe');
+      var ASSETS = /\b(EURUSD|GBPUSD|USDJPY|AUDJPY|USDCAD|XAUUSD|NAS100|SPX500|BTCUSD|ETHUSD|XAU|DXY)\b/i;
+      var TFS = /\b(1m|5m|15m|30m|1h|4h|1d|1w|M1|M5|M15|M30|H1|H4|D1|W1)\b/i;
+      function detect() {
+        var t = notes.value || '';
+        var a = t.match(ASSETS), f = t.match(TFS);
+        var parts = [];
+        if (a) { assetEl.value = a[1].toUpperCase(); parts.push(a[1].toUpperCase()); }
+        if (f) { tfEl.value = f[1].toUpperCase(); parts.push(f[1].toUpperCase()); }
+        out.textContent = parts.length ? parts.join(' · ') + ' — detected from your notes ✓' : '';
+      }
+      notes.addEventListener('input', detect);
+      detect();
+    })();
+  </script>
 </body>
 </html>

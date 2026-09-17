@@ -2,11 +2,39 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My Trading System · 改 KAIZEN</title>
-  <link rel="stylesheet" href="css/style.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#C9A84C">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="images/kaizen-icon.png" type="image/png">
+<link rel="apple-touch-icon" href="images/kaizen-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.29.0/feather.min.js"></script>
+<script>
+  // Apply saved theme BEFORE first paint to avoid a flash of the wrong theme
+  (function () {
+    try {
+      var t = localStorage.getItem('kaizen-theme');
+      if (!t) {
+        t = (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches)
+          ? 'light' : 'dark';
+      }
+      if (t !== 'dark' && t !== 'light') t = 'dark';
+      document.documentElement.setAttribute('data-theme', t);
+    } catch (e) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+  })();
+</script>
+
+<script>
+(function(){try{var u=new URL(window.location.href);if(u.searchParams.has('wallet')){u.searchParams.delete('wallet');window.history.replaceState({},document.title,u.toString());}}catch(e){}})();
+</script>
+
+  <title>KAIZEN — Session</title>
 </head>
-<body class="k-app">
+<body class="app-page">
   <!-- POPUP OVERLAY -->
 <div class="popup-overlay" id="popupOverlay" onclick="closePopup()"></div>
 
@@ -189,118 +217,75 @@
 </div>
 
 
-  <main class="k-page">
-    <div class="k-container">
+  <main class="k-flow">
 
-      <div class="k-head">
-        <div>
-          <div class="k-eyebrow">SETTINGS · 改</div>
-          <h1 class="k-title">My Trading System</h1>
-          <p class="k-sub">The rules every session is measured against. Each save creates a new version — history is never overwritten, so past sessions stay judged by the rules you had at the time.</p>
-        </div>
-        <div class="k-versionchip">
-          <span class="k-versionnum">v3</span>
-          <span class="k-versionmeta">3 versions on record</span>
-        </div>
+    <div class="k-stepstrip">
+      <span class="is-done">Plan ✓</span><b>—</b>
+      <span class="is-done">Record ✓</span><b>—</b>
+      <span class="is-done">Reflect ✓</span><b>—</b>
+      <span class="is-active">Analyzed</span>
+    </div>
+
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:18px;">
+      <span class="k-chip">ANALYZED</span>
+      <span class="k-type-tag k-type-tag--live">LIVE</span>
+      
+        <span style="font-family:var(--font-mono);font-size:0.68rem;color:var(--red);">LOSS</span>
+      
+      <span style="font-family:var(--font-mono);font-size:0.6rem;color:var(--text-faint);letter-spacing:0.08em;margin-left:auto;">
+        Sep 3, 2026
+      </span>
+    </div>
+
+    <h1 style="font-size:clamp(1.4rem,3vw,2rem);font-weight:700;color:var(--text-primary);margin:0 0 20px;">
+      BTCUSD — the session, closed.
+    </h1>
+
+    <div style="display:grid;grid-template-columns:1.25fr 0.75fr;gap:14px;align-items:start;" class="k-detail-grid">
+
+      <!-- LEFT: the coach's response -->
+      <div class="k-card k-card--featured">
+        <div class="k-panel-title" style="margin-bottom:16px;"><span class="k-kanji k-kanji--sm">改</span> KAIZEN RESPONDS</div>
+        <div style="font-size:0.9rem;color:var(--text-primary);line-height:1.85;white-space:pre-wrap;">Your entry timing improved on this one — the confirmation candle closed before you acted, and that patience is what moved Execution up. The loss itself is noise; the process that produced it is signal. One thing to watch: your confidence was a 7 pre-session but your reflection says you almost added size at +1.5R. That gap between declared confidence and in-trade impulses is exactly what the after-loss window tracks. Keep logging that urge honestly — it is the raw material for the next improvement.</div>
       </div>
 
+      <!-- RIGHT: the engine's numbers -->
+      
+        <div class="k-card k-card--elevated">
+          <div class="k-metric-label" style="margin-bottom:14px;">THE ENGINE — AFTER THIS SESSION</div>
+          
+            <p style="font-size:0.82rem;color:var(--text-secondary);line-height:1.75;margin:0;">
+              Building baseline — your score appears once there's enough evidence. Keep logging; the engine is watching your plan → record → reflect loop, not the clock.
+            </p>
+          
+          <div style="border-top:1px solid var(--border);margin-top:14px;padding-top:12px;">
+            <a href="dashboard.html" style="font-family:var(--font-mono);font-size:0.62rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);text-decoration:underline;">How is this scored? →</a>
+          </div>
+        </div>
       
 
-      <form method="POST" action="/settings/trading-system" class="k-formgrid">
-
-        <section class="k-formcard">
-          <h2 class="k-cardtitle">Identity</h2>
-          <div class="k-field">
-            <label class="k-fieldlabel" for="name">System name</label>
-            <input class="k-input" type="text" id="name" name="name" value="My Trading System" maxlength="60" placeholder="e.g. London Open Playbook">
-          </div>
-          <div class="k-field">
-            <label class="k-fieldlabel" for="marketConditions">Where it works — market conditions</label>
-            <textarea class="k-input" id="marketConditions" name="marketConditions" rows="3" placeholder="The conditions your system is built for. e.g. London session, trending pairs, post-news drift, high-liquidity hours…">London open — indices and metals only</textarea>
-          </div>
-        </section>
-
-        <section class="k-formcard">
-          <h2 class="k-cardtitle">Your edge</h2>
-          <div class="k-field">
-            <label class="k-fieldlabel" for="setups">Setups — one per line</label>
-            <textarea class="k-input" id="setups" name="setups" rows="4" placeholder="e.g.&#10;London open breakout&#10;Trend pullback to 20 EMA&#10;Range sweep reversal">4H sweep → 30min MSS
-Range fakeout</textarea>
-            <div class="k-fieldhint">These become the setups you pick from when planning a session.</div>
-          </div>
-          <div class="k-field">
-            <label class="k-fieldlabel" for="entryRules">Entry rules</label>
-            <textarea class="k-input" id="entryRules" name="entryRules" rows="3" placeholder="What must be true before you enter. If you can't point to it on the chart, it's not a rule.">MSS on 30min after liquidity sweep; no entry without confirmation candle close.</textarea>
-          </div>
-          <div class="k-field">
-            <label class="k-fieldlabel" for="exitRules">Exit rules</label>
-            <textarea class="k-input" id="exitRules" name="exitRules" rows="3" placeholder="Take-profit logic, and when you're out because the idea is wrong.">2R fixed or structure invalidation.</textarea>
-          </div>
-        </section>
-
-        <section class="k-formcard">
-          <h2 class="k-cardtitle">Risk rules</h2>
-          <p class="k-cardsub">Hard numbers. The engine reads these — breaking them is what moves your Risk dimension.</p>
-          <div class="k-fieldrow">
-            <div class="k-field">
-              <label class="k-fieldlabel" for="riskPerTrade">Risk per trade</label>
-              <input class="k-input" type="text" id="riskPerTrade" name="riskPerTrade" value="1" placeholder="e.g. 1% of account">
-            </div>
-            <div class="k-field">
-              <label class="k-fieldlabel" for="maxDailyTrades">Max trades per day</label>
-              <input class="k-input" type="text" id="maxDailyTrades" name="maxDailyTrades" value="2" placeholder="e.g. 3">
-            </div>
-          </div>
-          <div class="k-fieldrow">
-            <div class="k-field">
-              <label class="k-fieldlabel" for="dailyDrawdown">Daily drawdown limit</label>
-              <input class="k-input" type="text" id="dailyDrawdown" name="dailyDrawdown" value="3" placeholder="e.g. 3% then stop">
-            </div>
-            <div class="k-field">
-              <label class="k-fieldlabel" for="maxPositionSize">Max position size</label>
-              <input class="k-input" type="text" id="maxPositionSize" name="maxPositionSize" value="2 lots" placeholder="e.g. 0.5 lots">
-            </div>
-          </div>
-        </section>
-
-        <section class="k-formcard">
-          <h2 class="k-cardtitle">Discipline</h2>
-          <div class="k-field">
-            <label class="k-fieldlabel" for="tradingHours">Trading hours</label>
-            <input class="k-input" type="text" id="tradingHours" name="tradingHours" value="08:00–11:00 GMT" placeholder="e.g. 08:00–12:00 London, weekdays only">
-          </div>
-          <div class="k-field">
-            <label class="k-fieldlabel" for="noTradeConditions">No-trade conditions — one per line</label>
-            <textarea class="k-input" id="noTradeConditions" name="noTradeConditions" rows="3" placeholder="e.g.&#10;During red-folder news&#10;After two losses in a day&#10;Less than 6 hours of sleep">News within 30min</textarea>
-          </div>
-          <div class="k-field">
-            <label class="k-fieldlabel" for="psychologicalRules">Psychological rules — one per line</label>
-            <textarea class="k-input" id="psychologicalRules" name="psychologicalRules" rows="3" placeholder="e.g.&#10;No entries in the first 10 minutes&#10;Journal before the next trade, win or lose&#10;Stop after a 2R loss">No trading after two losses</textarea>
-          </div>
-        </section>
-
-        <section class="k-formcard">
-          <h2 class="k-cardtitle">Position rules</h2>
-          <div class="k-field">
-            <label class="k-fieldlabel" for="positionRules">How you size and manage positions</label>
-            <textarea class="k-input" id="positionRules" name="positionRules" rows="3" placeholder="Scaling in/out, partials, trailing, when you move a stop…"></textarea>
-          </div>
-        </section>
-
-        <section class="k-formcard k-savecard">
-          <div class="k-field">
-            <label class="k-fieldlabel" for="changeNote">What changed? (optional)</label>
-            <input class="k-input" type="text" id="changeNote" name="changeNote" maxlength="140" placeholder="e.g. Cut max daily trades from 5 to 3 — overtrading on losses">
-          </div>
-          <div class="k-actions">
-            <button type="submit" class="k-btn k-btn-primary">Save as new version</button>
-            <a class="k-btn k-btn-ghost" href="dashboard.html">Back to Cockpit</a>
-          </div>
-          <div class="k-fieldhint">Nothing is deleted. Your previous version stays on record, and sessions logged before this save stay measured against the rules you had then.</div>
-        </section>
-
-      </form>
     </div>
+
+    <!-- The record + reflection, for the record -->
+    <div class="k-card" style="margin-top:14px;">
+      <div class="k-metric-label" style="margin-bottom:10px;">YOUR RECORD</div>
+      <div style="font-size:0.86rem;color:var(--text-secondary);line-height:1.85;white-space:pre-wrap;">Clean session, executed the plan. Waited for the sweep and MSS confirmation before entry.</div>
+    </div>
+
+    
+      <div class="k-card" style="margin-top:14px;">
+        <div class="k-metric-label" style="margin-bottom:10px;">YOUR REFLECTION</div>
+        <p style="font-size:0.84rem;color:var(--text-secondary);line-height:1.8;margin:0 0 10px;"><span class="k-gold">What happened:</span> Entered as planned and held through the squeeze.</p>
+        <p style="font-size:0.84rem;color:var(--text-secondary);line-height:1.8;margin:0 0 10px;"><span class="k-gold">Learned:</span> The five-minute timer works when it matters most.</p>
+        <p style="font-size:0.84rem;color:var(--text-secondary);line-height:1.8;margin:0;"><span class="k-gold">Would change:</span> Nothing this time.</p>
+      </div>
+    
+
+    <div class="k-actions" style="margin-top:24px;">
+      <a href="session-plan.html" class="btn-outline k-btn-lg">+ New Session</a>
+      <a href="sessions.html" style="font-family:var(--font-mono);font-size:0.68rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);text-decoration:underline;">All sessions</a>
+    </div>
+
   </main>
 
   <footer class="footer">
@@ -320,5 +305,7 @@ Range fakeout</textarea>
 <script>if(window.feather) feather.replace();</script>
 
   <script src="js/app.js"></script>
+  <script src="js/v2-reveal.js"></script>
+  <script>if(window.feather) feather.replace();</script>
 </body>
 </html>

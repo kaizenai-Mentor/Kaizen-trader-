@@ -35,37 +35,7 @@
   <title>KAIZEN — Sessions</title>
 </head>
 <body class="app-page">
-  
-
-<div class="k-ticker" id="k-ticker" role="region" aria-label="Announcement">
-  <button type="button" class="k-ticker-close" onclick="dismissTicker()" aria-label="Dismiss announcement">×</button>
-  <div class="k-ticker-track">
-    <span class="k-ticker-text"><b>KAIZEN V2 IS COMING</b> — the score gets five dimensions · plan → record → reflect sessions · your own Trading System · rolling out over the next 30 days</span>
-  </div>
-  <div class="k-ticker-badge">
-    <div class="k-ticker-megaphone"><i data-feather="megaphone" width="12" height="12"></i></div>
-    <span>Update</span>
-  </div>
-</div>
-<script>
-  (function () {
-    try {
-      if (sessionStorage.getItem('kaizen-ticker-dismissed') === '1') {
-        var t = document.getElementById('k-ticker');
-        if (t) t.style.display = 'none';
-      }
-    } catch (e) { /* private mode: keep showing */ }
-  })();
-  function dismissTicker() {
-    var t = document.getElementById('k-ticker');
-    if (t) t.style.display = 'none';
-    try { sessionStorage.setItem('kaizen-ticker-dismissed', '1'); } catch (e) {}
-  }
-</script>
-
-
-
-<!-- POPUP OVERLAY -->
+  <!-- POPUP OVERLAY -->
 <div class="popup-overlay" id="popupOverlay" onclick="closePopup()"></div>
 
 <!-- SIDE POPUP MENU -->
@@ -89,7 +59,7 @@
       <div class="popup-section-label">Coach</div>
       <a href="kaizen-ai.html" class="popup-item">▪ KAIZEN AI</a>
       <a href="psychology.html" class="popup-item">▪ Psychology</a>
-      <a href="/memories" class="popup-item">▪ Memories</a>
+      <a href="memories.html" class="popup-item">▪ Memories</a>
     </div>
 
     <!-- TOOLS -->
@@ -175,6 +145,36 @@
   </div>
 </nav>
 
+
+
+<div class="k-ticker" id="k-ticker" role="region" aria-label="Announcement">
+  <button type="button" class="k-ticker-close" onclick="dismissTicker()" aria-label="Dismiss announcement">×</button>
+  <div class="k-ticker-track">
+    <span class="k-ticker-text"><b>KAIZEN V2 IS COMING</b> — the score gets five dimensions · plan → record → reflect sessions · your own Trading System · rolling out over the next 30 days</span>
+  </div>
+  <div class="k-ticker-badge">
+    <div class="k-ticker-megaphone"><i data-feather="megaphone" width="12" height="12"></i></div>
+    <span>Update</span>
+  </div>
+</div>
+<script>
+  (function () {
+    try {
+      if (sessionStorage.getItem('kaizen-ticker-dismissed') === '1') {
+        var t = document.getElementById('k-ticker');
+        if (t) t.style.display = 'none';
+      }
+    } catch (e) { /* private mode: keep showing */ }
+  })();
+  function dismissTicker() {
+    var t = document.getElementById('k-ticker');
+    if (t) t.style.display = 'none';
+    try { sessionStorage.setItem('kaizen-ticker-dismissed', '1'); } catch (e) {}
+  }
+</script>
+
+
+
 <!-- SECURITY MODAL -->
 <div class="modal-overlay" id="securityModal">
   <div class="modal">
@@ -238,7 +238,7 @@
 
       <div style="display:flex;flex-direction:column;gap:10px;margin-top:28px;">
         
-          <a href="/dashboard/sessions/id13" class="k-card k-card--hover" style="display:flex;align-items:center;gap:14px;padding:18px 20px;">
+          <a href="session-detail.html" class="k-card k-card--hover" style="display:flex;align-items:center;gap:14px;padding:18px 20px;">
             <div style="min-width:64px;">
               <div style="font-family:var(--font-mono);font-size:0.85rem;color:var(--text-primary);font-weight:500;">BTCUSD</div>
               <div style="font-family:var(--font-mono);font-size:0.55rem;color:var(--text-faint);letter-spacing:0.08em;margin-top:3px;">
@@ -260,7 +260,7 @@
             <span class="k-gold" style="font-family:var(--font-mono);">→</span>
           </a>
         
-          <a href="/dashboard/sessions/id12" class="k-card k-card--hover" style="display:flex;align-items:center;gap:14px;padding:18px 20px;">
+          <a href="session-detail.html" class="k-card k-card--hover" style="display:flex;align-items:center;gap:14px;padding:18px 20px;">
             <div style="min-width:64px;">
               <div style="font-family:var(--font-mono);font-size:0.85rem;color:var(--text-primary);font-weight:500;">XAUUSD</div>
               <div style="font-family:var(--font-mono);font-size:0.55rem;color:var(--text-faint);letter-spacing:0.08em;margin-top:3px;">
@@ -282,7 +282,7 @@
             <span class="k-gold" style="font-family:var(--font-mono);">→</span>
           </a>
         
-          <a href="/dashboard/sessions/id11" class="k-card k-card--hover" style="display:flex;align-items:center;gap:14px;padding:18px 20px;">
+          <a href="session-detail.html" class="k-card k-card--hover" style="display:flex;align-items:center;gap:14px;padding:18px 20px;">
             <div style="min-width:64px;">
               <div style="font-family:var(--font-mono);font-size:0.85rem;color:var(--text-primary);font-weight:500;">NAS100</div>
               <div style="font-family:var(--font-mono);font-size:0.55rem;color:var(--text-faint);letter-spacing:0.08em;margin-top:3px;">
@@ -304,7 +304,7 @@
             <span class="k-gold" style="font-family:var(--font-mono);">→</span>
           </a>
         
-          <a href="/dashboard/sessions/id10" class="k-card k-card--hover" style="display:flex;align-items:center;gap:14px;padding:18px 20px;">
+          <a href="session-detail.html" class="k-card k-card--hover" style="display:flex;align-items:center;gap:14px;padding:18px 20px;">
             <div style="min-width:64px;">
               <div style="font-family:var(--font-mono);font-size:0.85rem;color:var(--text-primary);font-weight:500;">EURJPY</div>
               <div style="font-family:var(--font-mono);font-size:0.55rem;color:var(--text-faint);letter-spacing:0.08em;margin-top:3px;">
@@ -326,7 +326,7 @@
             <span class="k-gold" style="font-family:var(--font-mono);">→</span>
           </a>
         
-          <a href="/dashboard/sessions/id9" class="k-card k-card--hover" style="display:flex;align-items:center;gap:14px;padding:18px 20px;">
+          <a href="session-detail.html" class="k-card k-card--hover" style="display:flex;align-items:center;gap:14px;padding:18px 20px;">
             <div style="min-width:64px;">
               <div style="font-family:var(--font-mono);font-size:0.85rem;color:var(--text-primary);font-weight:500;">BTCUSD</div>
               <div style="font-family:var(--font-mono);font-size:0.55rem;color:var(--text-faint);letter-spacing:0.08em;margin-top:3px;">
@@ -348,7 +348,7 @@
             <span class="k-gold" style="font-family:var(--font-mono);">→</span>
           </a>
         
-          <a href="/dashboard/sessions/id8" class="k-card k-card--hover" style="display:flex;align-items:center;gap:14px;padding:18px 20px;">
+          <a href="session-detail.html" class="k-card k-card--hover" style="display:flex;align-items:center;gap:14px;padding:18px 20px;">
             <div style="min-width:64px;">
               <div style="font-family:var(--font-mono);font-size:0.85rem;color:var(--text-primary);font-weight:500;">XAUUSD</div>
               <div style="font-family:var(--font-mono);font-size:0.55rem;color:var(--text-faint);letter-spacing:0.08em;margin-top:3px;">
@@ -370,7 +370,7 @@
             <span class="k-gold" style="font-family:var(--font-mono);">→</span>
           </a>
         
-          <a href="/dashboard/sessions/id7" class="k-card k-card--hover" style="display:flex;align-items:center;gap:14px;padding:18px 20px;">
+          <a href="session-detail.html" class="k-card k-card--hover" style="display:flex;align-items:center;gap:14px;padding:18px 20px;">
             <div style="min-width:64px;">
               <div style="font-family:var(--font-mono);font-size:0.85rem;color:var(--text-primary);font-weight:500;">NAS100</div>
               <div style="font-family:var(--font-mono);font-size:0.55rem;color:var(--text-faint);letter-spacing:0.08em;margin-top:3px;">
@@ -392,7 +392,7 @@
             <span class="k-gold" style="font-family:var(--font-mono);">→</span>
           </a>
         
-          <a href="/dashboard/sessions/id6" class="k-card k-card--hover" style="display:flex;align-items:center;gap:14px;padding:18px 20px;">
+          <a href="session-detail.html" class="k-card k-card--hover" style="display:flex;align-items:center;gap:14px;padding:18px 20px;">
             <div style="min-width:64px;">
               <div style="font-family:var(--font-mono);font-size:0.85rem;color:var(--text-primary);font-weight:500;">EURJPY</div>
               <div style="font-family:var(--font-mono);font-size:0.55rem;color:var(--text-faint);letter-spacing:0.08em;margin-top:3px;">
@@ -414,7 +414,7 @@
             <span class="k-gold" style="font-family:var(--font-mono);">→</span>
           </a>
         
-          <a href="/dashboard/sessions/id5" class="k-card k-card--hover" style="display:flex;align-items:center;gap:14px;padding:18px 20px;">
+          <a href="session-detail.html" class="k-card k-card--hover" style="display:flex;align-items:center;gap:14px;padding:18px 20px;">
             <div style="min-width:64px;">
               <div style="font-family:var(--font-mono);font-size:0.85rem;color:var(--text-primary);font-weight:500;">BTCUSD</div>
               <div style="font-family:var(--font-mono);font-size:0.55rem;color:var(--text-faint);letter-spacing:0.08em;margin-top:3px;">
@@ -436,7 +436,7 @@
             <span class="k-gold" style="font-family:var(--font-mono);">→</span>
           </a>
         
-          <a href="/dashboard/sessions/id4" class="k-card k-card--hover" style="display:flex;align-items:center;gap:14px;padding:18px 20px;">
+          <a href="session-detail.html" class="k-card k-card--hover" style="display:flex;align-items:center;gap:14px;padding:18px 20px;">
             <div style="min-width:64px;">
               <div style="font-family:var(--font-mono);font-size:0.85rem;color:var(--text-primary);font-weight:500;">XAUUSD</div>
               <div style="font-family:var(--font-mono);font-size:0.55rem;color:var(--text-faint);letter-spacing:0.08em;margin-top:3px;">
@@ -458,7 +458,7 @@
             <span class="k-gold" style="font-family:var(--font-mono);">→</span>
           </a>
         
-          <a href="/dashboard/sessions/id3" class="k-card k-card--hover" style="display:flex;align-items:center;gap:14px;padding:18px 20px;">
+          <a href="session-detail.html" class="k-card k-card--hover" style="display:flex;align-items:center;gap:14px;padding:18px 20px;">
             <div style="min-width:64px;">
               <div style="font-family:var(--font-mono);font-size:0.85rem;color:var(--text-primary);font-weight:500;">NAS100</div>
               <div style="font-family:var(--font-mono);font-size:0.55rem;color:var(--text-faint);letter-spacing:0.08em;margin-top:3px;">
@@ -480,7 +480,7 @@
             <span class="k-gold" style="font-family:var(--font-mono);">→</span>
           </a>
         
-          <a href="/dashboard/sessions/id2" class="k-card k-card--hover" style="display:flex;align-items:center;gap:14px;padding:18px 20px;">
+          <a href="session-detail.html" class="k-card k-card--hover" style="display:flex;align-items:center;gap:14px;padding:18px 20px;">
             <div style="min-width:64px;">
               <div style="font-family:var(--font-mono);font-size:0.85rem;color:var(--text-primary);font-weight:500;">EURJPY</div>
               <div style="font-family:var(--font-mono);font-size:0.55rem;color:var(--text-faint);letter-spacing:0.08em;margin-top:3px;">
@@ -502,7 +502,7 @@
             <span class="k-gold" style="font-family:var(--font-mono);">→</span>
           </a>
         
-          <a href="/dashboard/sessions/id1" class="k-card k-card--hover" style="display:flex;align-items:center;gap:14px;padding:18px 20px;">
+          <a href="session-detail.html" class="k-card k-card--hover" style="display:flex;align-items:center;gap:14px;padding:18px 20px;">
             <div style="min-width:64px;">
               <div style="font-family:var(--font-mono);font-size:0.85rem;color:var(--text-primary);font-weight:500;">BTCUSD</div>
               <div style="font-family:var(--font-mono);font-size:0.55rem;color:var(--text-faint);letter-spacing:0.08em;margin-top:3px;">
@@ -524,7 +524,7 @@
             <span class="k-gold" style="font-family:var(--font-mono);">→</span>
           </a>
         
-          <a href="/dashboard/sessions/id0" class="k-card k-card--hover" style="display:flex;align-items:center;gap:14px;padding:18px 20px;">
+          <a href="session-detail.html" class="k-card k-card--hover" style="display:flex;align-items:center;gap:14px;padding:18px 20px;">
             <div style="min-width:64px;">
               <div style="font-family:var(--font-mono);font-size:0.85rem;color:var(--text-primary);font-weight:500;">XAUUSD</div>
               <div style="font-family:var(--font-mono);font-size:0.55rem;color:var(--text-faint);letter-spacing:0.08em;margin-top:3px;">

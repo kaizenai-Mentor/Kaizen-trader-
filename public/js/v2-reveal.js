@@ -23,16 +23,36 @@
     if (target) target.style.width = w;
   }
 
+  // KAIZEN dial: draw the gold arc to the score value. The arc starts
+  // fully retracted (stroke-dashoffset = circumference) and animates to
+  // the score fraction of the circle.
+  function fillDial(el) {
+    var v = parseFloat(el.getAttribute('data-dial'));
+    if (isNaN(v)) v = 0;
+    v = Math.max(0, Math.min(100, v));
+    var arc = el.querySelector('.k-dial-arc');
+    if (!arc) return;
+    var c = 339.292; // 2πr, r=54 — keep in sync with .k-dial-arc CSS
+    var dash = getComputedStyle(arc).strokeDasharray;
+    var parsed = dash ? parseFloat(dash) : NaN;
+    if (!isNaN(parsed) && parsed > 0) c = parsed;
+    arc.style.strokeDashoffset = (c * (1 - v / 100)) + 'px';
+  }
+
   function reveal() {
-    var els = document.querySelectorAll('.k-meter[data-meter], .k-milestone-fill[data-meter]');
+    var els = document.querySelectorAll(
+      '.k-meter[data-meter], .k-milestone-fill[data-meter], .k-dial[data-dial]');
     if (reduced || !('IntersectionObserver' in window)) {
-      els.forEach(fill);
+      els.forEach(function (el) {
+        if (el.classList.contains('k-dial')) fillDial(el); else fill(el);
+      });
       return;
     }
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (e) {
         if (e.isIntersecting) {
-          fill(e.target);
+          if (e.target.classList.contains('k-dial')) fillDial(e.target);
+          else fill(e.target);
           io.unobserve(e.target);
         }
       });

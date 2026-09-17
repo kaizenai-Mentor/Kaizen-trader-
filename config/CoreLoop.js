@@ -208,8 +208,9 @@ marks where the text enters. Purpose: pre/post information about what's
 being built — starting with the V2 update, shown for ~20–30 days.
 
 SPEC (LOCKED, owner 14 Sep 2026):
-- Placement: ABOVE the navbar, at the very top of the page (pushes the
-  navbar down). Renders ONLY while an announcement is active — no bar,
+- Placement: directly BELOW the navbar (owner revision 17 Sep 2026 —
+  was above; the navbar and its toggle stay on top). Renders ONLY while
+  an announcement is active — no bar,
   no space, when there is nothing to say.
 - Motion: text enters at the megaphone and travels right→left
   (confirmed option A): megaphone badge fixed at the RIGHT end with the

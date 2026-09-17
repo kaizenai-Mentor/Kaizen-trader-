@@ -29,8 +29,9 @@ treatment specified here) · 🔨 REBUILD (page must be rebuilt to the spec belo
 3. **Mobile-first**: every layout is designed single-column at 360–430px width,
    then enhanced at ≥900px. Tap targets ≥44px. The owner reviews on Android —
    mobile is the primary acceptance context, not an afterthought.
-4. **Announcement ticker** (locked spec, `config/CoreLoop.js`): renders above the
-   navbar ONLY while an announcement is active. Megaphone badge fixed at the right
+4. **Announcement ticker** (locked spec, `config/CoreLoop.js`; placement revised
+   by owner 17 Sep 2026): renders directly BELOW the navbar ONLY while an
+   announcement is active. Megaphone badge fixed at the right
    end + mono "UPDATE" label; text scrolls right→left; ~34px tall; × dismisses for
    the session; prefers-reduced-motion → static text swapping ~8s.
 5. **Two machines, one voice** (frozen): the ENGINE measures (deterministic score

@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#C9A84C">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="images/kaizen-icon.png" type="image/png">
+<link rel="apple-touch-icon" href="images/kaizen-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.29.0/feather.min.js"></script>
+<script>
+  // Apply saved theme BEFORE first paint to avoid a flash of the wrong theme
+  (function () {
+    try {
+      var t = localStorage.getItem('kaizen-theme');
+      if (!t) {
+        t = (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches)
+          ? 'light' : 'dark';
+      }
+      if (t !== 'dark' && t !== 'light') t = 'dark';
+      document.documentElement.setAttribute('data-theme', t);
+    } catch (e) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+  })();
+</script>
+
+<script>
+(function(){try{var u=new URL(window.location.href);if(u.searchParams.has('wallet')){u.searchParams.delete('wallet');window.history.replaceState({},document.title,u.toString());}}catch(e){}})();
+</script>
+
+  <title>KAIZEN — Memories</title>
+</head>
+<body class="app-page">
+  <!-- POPUP OVERLAY -->
+<div class="popup-overlay" id="popupOverlay" onclick="closePopup()"></div>
+
+<!-- SIDE POPUP MENU -->
+<div class="nav-popup" id="navPopup">
+  <div class="popup-header">
+    <span class="popup-logo">改 KAIZEN</span>
+    <button class="popup-close" onclick="closePopup()">×</button>
+  </div>
+
+  
+    <!-- IMPROVE -->
+    <div class="popup-section">
+      <div class="popup-section-label">Improve</div>
+      <a href="dashboard.html" class="popup-item">▪ Cockpit</a>
+      <a href="sessions.html" class="popup-item">▪ Sessions</a>
+      <a href="leaderboard.html" class="popup-item">▪ My Progress</a>
+    </div>
+
+    <!-- COACH -->
+    <div class="popup-section">
+      <div class="popup-section-label">Coach</div>
+      <a href="kaizen-ai.html" class="popup-item">▪ KAIZEN AI</a>
+      <a href="psychology.html" class="popup-item">▪ Psychology</a>
+      <a href="memories.html" class="popup-item">▪ Memories</a>
+    </div>
+
+    <!-- TOOLS -->
+    <div class="popup-section">
+      <div class="popup-section-label">Tools</div>
+      <a href="/chart" class="popup-item">▪ Chart</a>
+      <a href="weekly-summary.html" class="popup-item">▪ Weekly Report</a>
+      <a href="/news" class="popup-item">▪ Market News</a>
+    </div>
+
+    <!-- IDENTITY -->
+    <div class="popup-section">
+      <div class="popup-section-label">Identity</div>
+      <a href="reputation.html" class="popup-item">▪ Wallets &amp; Verification</a>
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="popup-section">
+      <div class="popup-section-label">Settings</div>
+      <a href="trading-system.html" class="popup-item">▪ My Trading System</a>
+    </div>
+
+    <!-- INFO -->
+    <div class="popup-section">
+      <div class="popup-section-label">Info</div>
+      <a href="support.html" class="popup-item">
+        <span class="popup-item-icon">▪</span> Support
+      </a>
+      <a href="about.html" class="popup-item">
+        <span class="popup-item-icon">▪</span> About Kaizen
+      </a>
+      <a href="whitepaper.html" class="popup-item">
+        <span class="popup-item-icon">▪</span> Whitepaper
+      </a>
+      <a href="services.html" class="popup-item">
+        <span class="popup-item-icon">▪</span> Services
+      </a>
+      <a href="help.html" class="popup-item">
+        <span class="popup-item-icon">▪</span> Help Center
+      </a>
+    </div>
+
+    <div class="popup-section">
+      <a href="index.html" class="popup-item" style="color:var(--red);">
+        <span class="popup-item-icon">▪</span> Log Out
+      </a>
+    </div>
+
+    <!-- USER FOOTER -->
+    <div class="popup-footer">
+      <div class="popup-user">
+        <div class="popup-avatar">
+          K
+        </div>
+        <div>
+          <div class="popup-username">Kaizen</div>
+          <div class="popup-user-email">kaizen@example.com</div>
+        </div>
+      </div>
+      <div class="popup-socials">
+        <a href="https://x.com/kaizenaibot"
+          target="_blank" class="popup-social-link" title="X (Twitter)">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+
+  
+</div>
+
+<!-- MAIN NAVBAR -->
+<nav class="navbar">
+  <a href="dashboard.html" class="nav-logo">改 KAIZEN</a>
+  <div class="nav-right">
+    <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
+      <span id="themeIcon">◐</span>
+    </button>
+    <button class="three-dot-btn" onclick="togglePopup()" title="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+
+
+<div class="k-ticker" id="k-ticker" role="region" aria-label="Announcement">
+  <button type="button" class="k-ticker-close" onclick="dismissTicker()" aria-label="Dismiss announcement">×</button>
+  <div class="k-ticker-track">
+    <span class="k-ticker-text"><b>KAIZEN V2 IS COMING</b> — the score gets five dimensions · plan → record → reflect sessions · your own Trading System · rolling out over the next 30 days</span>
+  </div>
+  <div class="k-ticker-badge">
+    <div class="k-ticker-megaphone"><i data-feather="megaphone" width="12" height="12"></i></div>
+    <span>Update</span>
+  </div>
+</div>
+<script>
+  (function () {
+    try {
+      if (sessionStorage.getItem('kaizen-ticker-dismissed') === '1') {
+        var t = document.getElementById('k-ticker');
+        if (t) t.style.display = 'none';
+      }
+    } catch (e) { /* private mode: keep showing */ }
+  })();
+  function dismissTicker() {
+    var t = document.getElementById('k-ticker');
+    if (t) t.style.display = 'none';
+    try { sessionStorage.setItem('kaizen-ticker-dismissed', '1'); } catch (e) {}
+  }
+</script>
+
+
+
+<!-- SECURITY MODAL -->
+<div class="modal-overlay" id="securityModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Security</h3>
+      <button class="modal-close" onclick="closeModal('securityModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="security-section">
+        <h4>Change Password</h4>
+        <form action="/auth/change-password" method="POST"
+          style="display:flex;flex-direction:column;gap:12px;">
+          <div class="form-group">
+            <label class="form-label">Current Password</label>
+            <input type="password" name="currentPassword"
+              class="form-input" placeholder="Enter current Password">
+          </div>
+          <div class="form-group">
+            <label class="form-label">New Password</label>
+            <input type="password" name="newPassword"
+              class="form-input" placeholder="Enter New Password">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Confirm Password</label>
+            <input type="password" name="confirmPassword"
+              class="form-input" placeholder="Confirm New Password">
+          </div>
+          <button type="submit" class="btn-primary">Update Password</button>
+        </form>
+      </div>
+      <div class="security-section" style="margin-top:24px;padding-top:24px;border-top:1px solid var(--border);">
+        <h4>Two-Factor Authentication</h4>
+        <p style="font-size:0.85rem;color:var(--ash);margin-bottom:14px;">
+          Add an extra layer of security to your account.
+        </p>
+        <button class="btn-outline btn-full">Enable 2FA — Coming Soon</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+  <main class="app-main">
+
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:24px;flex-wrap:wrap;">
+      <div>
+        <div style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:6px;display:flex;align-items:center;gap:8px;">
+          <span style="width:16px;height:1px;background:var(--gold);display:inline-block;"></span>
+          Session Archive
+        </div>
+        <h1 style="font-size:1.6rem;font-weight:700;color:var(--text-primary);margin-bottom:4px;">Memories</h1>
+        <p style="font-size:0.82rem;color:var(--ash);font-style:italic;">Every KAIZEN AI response — saved permanently for reflection.</p>
+      </div>
+      <a href="kaizen-ai.html" style="display:inline-flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);border:1px solid var(--border);padding:10px 16px;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.color='var(--gold)';this.style.borderColor='rgba(201,168,76,0.3)'" onmouseout="this.style.color='var(--ash)';this.style.borderColor='var(--border)'">
+        KAIZEN AI
+        <i data-feather="arrow-right" width="12" height="12"></i>
+      </a>
+    </div>
+
+    
+
+      <!-- Stats row -->
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:2px;margin-bottom:16px;">
+        <div style="background:var(--bg-card);border:1px solid rgba(201,168,76,0.15);padding:16px;">
+          <div style="font-family:'DM Mono',monospace;font-size:0.52rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--ash);margin-bottom:6px;display:flex;align-items:center;gap:5px;">
+            <i data-feather="archive" width="10" height="10"></i> Total Saved
+          </div>
+          <div style="font-family:'DM Mono',monospace;font-size:1.6rem;font-weight:700;color:var(--gold);">3</div>
+        </div>
+        <div style="background:var(--bg-card);border:1px solid var(--border);padding:16px;">
+          <div style="font-family:'DM Mono',monospace;font-size:0.52rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--ash);margin-bottom:6px;display:flex;align-items:center;gap:5px;">
+            <i data-feather="edit-3" width="10" height="10"></i> Journal
+          </div>
+          <div style="font-family:'DM Mono',monospace;font-size:1.6rem;font-weight:700;color:var(--text-primary);">
+            3
+          </div>
+        </div>
+        <div style="background:var(--bg-card);border:1px solid var(--border);padding:16px;">
+          <div style="font-family:'DM Mono',monospace;font-size:0.52rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--ash);margin-bottom:6px;display:flex;align-items:center;gap:5px;">
+            <i data-feather="cpu" width="10" height="10"></i> Psychology
+          </div>
+          <div style="font-family:'DM Mono',monospace;font-size:1.6rem;font-weight:700;color:var(--text-primary);">
+            0
+          </div>
+        </div>
+        <div style="background:var(--bg-card);border:1px solid var(--border);padding:16px;">
+          <div style="font-family:'DM Mono',monospace;font-size:0.52rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--ash);margin-bottom:6px;display:flex;align-items:center;gap:5px;">
+            <i data-feather="calendar" width="10" height="10"></i> Latest
+          </div>
+          <div style="font-family:'DM Mono',monospace;font-size:0.85rem;font-weight:700;color:var(--text-primary);">
+            Sep 15
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:2px;">
+        
+          <div style="
+            background:var(--bg-card);
+            border:1px solid var(--border);
+            border-left:2px solid rgba(201,168,76,0.3);
+            padding:20px;
+            cursor:pointer;
+            transition:border-color 0.2s;
+          " onclick="toggleMemory('')"
+             onmouseover="this.style.borderColor='rgba(201,168,76,0.3)'"
+             onmouseout="this.style.borderColor='var(--border)'">
+
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;">
+              <div style="flex:1;">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap;">
+                  <div style="display:flex;align-items:center;gap:5px;">
+                    <i data-feather="edit-3" width="11" height="11" style="color:var(--gold);"></i>
+                    <span style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);">
+                      改 KAIZEN AI · XAUUSD
+                    </span>
+                  </div>
+                  <span style="font-family:'DM Mono',monospace;font-size:0.52rem;color:var(--ash);">
+                    Sep 15, 2026
+                  </span>
+                  
+                    <span style="font-family:'DM Mono',monospace;font-size:0.55rem;font-weight:700;color:#4ADE80;">
+                      82%
+                    </span>
+                  
+                </div>
+                <p style="font-size:0.85rem;color:var(--ash-light);line-height:1.7;margin:0;">
+                  Strong execution. The patience after the sweep is exactly the behavior to repeat. Note the urge to add size at +1.5R — log what you felt there....
+                </p>
+              </div>
+              <div style="display:flex;align-items:center;gap:5px;font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--ash);flex-shrink:0;">
+                <i data-feather="chevron-down" width="12" height="12" id="icon-"></i>
+                Expand
+              </div>
+            </div>
+
+            <div id="memory-" style="display:none;margin-top:20px;padding-top:20px;border-top:1px solid var(--border);">
+              <div style="font-size:0.88rem;color:var(--ash-light);line-height:1.9;white-space:pre-wrap;margin-bottom:16px;">
+                Strong execution. The patience after the sweep is exactly the behavior to repeat. Note the urge to add size at +1.5R — log what you felt there.
+              </div>
+              
+                <div style="padding:14px 16px;background:var(--bg-surface);border:1px solid var(--border);border-left:2px solid rgba(201,168,76,0.2);">
+                  <div style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);margin-bottom:8px;">Your Session Entry</div>
+                  <p style="font-size:0.82rem;color:var(--ash);line-height:1.7;margin:0;font-style:italic;">"London sweep + MSS, entered on retest, held to 2R."</p>
+                </div>
+              
+            </div>
+
+          </div>
+        
+          <div style="
+            background:var(--bg-card);
+            border:1px solid var(--border);
+            border-left:2px solid rgba(201,168,76,0.3);
+            padding:20px;
+            cursor:pointer;
+            transition:border-color 0.2s;
+          " onclick="toggleMemory('')"
+             onmouseover="this.style.borderColor='rgba(201,168,76,0.3)'"
+             onmouseout="this.style.borderColor='var(--border)'">
+
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;">
+              <div style="flex:1;">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap;">
+                  <div style="display:flex;align-items:center;gap:5px;">
+                    <i data-feather="edit-3" width="11" height="11" style="color:var(--gold);"></i>
+                    <span style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);">
+                      改 KAIZEN AI · BTCUSD
+                    </span>
+                  </div>
+                  <span style="font-family:'DM Mono',monospace;font-size:0.52rem;color:var(--ash);">
+                    Sep 12, 2026
+                  </span>
+                  
+                    <span style="font-family:'DM Mono',monospace;font-size:0.55rem;font-weight:700;color:#F87171;">
+                      48%
+                    </span>
+                  
+                </div>
+                <p style="font-size:0.85rem;color:var(--ash-light);line-height:1.7;margin:0;">
+                  The entry came before your trigger fired. Same setup, one candle early. The five-minute timer exists for exactly this moment....
+                </p>
+              </div>
+              <div style="display:flex;align-items:center;gap:5px;font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--ash);flex-shrink:0;">
+                <i data-feather="chevron-down" width="12" height="12" id="icon-"></i>
+                Expand
+              </div>
+            </div>
+
+            <div id="memory-" style="display:none;margin-top:20px;padding-top:20px;border-top:1px solid var(--border);">
+              <div style="font-size:0.88rem;color:var(--ash-light);line-height:1.9;white-space:pre-wrap;margin-bottom:16px;">
+                The entry came before your trigger fired. Same setup, one candle early. The five-minute timer exists for exactly this moment.
+              </div>
+              
+                <div style="padding:14px 16px;background:var(--bg-surface);border:1px solid var(--border);border-left:2px solid rgba(201,168,76,0.2);">
+                  <div style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);margin-bottom:8px;">Your Session Entry</div>
+                  <p style="font-size:0.82rem;color:var(--ash);line-height:1.7;margin:0;font-style:italic;">"Entered before MSS confirmation."</p>
+                </div>
+              
+            </div>
+
+          </div>
+        
+          <div style="
+            background:var(--bg-card);
+            border:1px solid var(--border);
+            border-left:2px solid rgba(201,168,76,0.3);
+            padding:20px;
+            cursor:pointer;
+            transition:border-color 0.2s;
+          " onclick="toggleMemory('')"
+             onmouseover="this.style.borderColor='rgba(201,168,76,0.3)'"
+             onmouseout="this.style.borderColor='var(--border)'">
+
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;">
+              <div style="flex:1;">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap;">
+                  <div style="display:flex;align-items:center;gap:5px;">
+                    <i data-feather="edit-3" width="11" height="11" style="color:var(--gold);"></i>
+                    <span style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);">
+                      改 KAIZEN AI · —
+                    </span>
+                  </div>
+                  <span style="font-family:'DM Mono',monospace;font-size:0.52rem;color:var(--ash);">
+                    Sep 9, 2026
+                  </span>
+                  
+                </div>
+                <p style="font-size:0.85rem;color:var(--ash-light);line-height:1.7;margin:0;">
+                  The freeze is data, not failure. It appeared after two losses — we will watch that window together....
+                </p>
+              </div>
+              <div style="display:flex;align-items:center;gap:5px;font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--ash);flex-shrink:0;">
+                <i data-feather="chevron-down" width="12" height="12" id="icon-"></i>
+                Expand
+              </div>
+            </div>
+
+            <div id="memory-" style="display:none;margin-top:20px;padding-top:20px;border-top:1px solid var(--border);">
+              <div style="font-size:0.88rem;color:var(--ash-light);line-height:1.9;white-space:pre-wrap;margin-bottom:16px;">
+                The freeze is data, not failure. It appeared after two losses — we will watch that window together.
+              </div>
+              
+                <div style="padding:14px 16px;background:var(--bg-surface);border:1px solid var(--border);border-left:2px solid rgba(201,168,76,0.2);">
+                  <div style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);margin-bottom:8px;">Your Session Entry</div>
+                  <p style="font-size:0.82rem;color:var(--ash);line-height:1.7;margin:0;font-style:italic;">"Froze before clicking on a perfect setup."</p>
+                </div>
+              
+            </div>
+
+          </div>
+        
+      </div>
+
+    
+
+  </main>
+
+  <footer class="footer">
+  <div class="footer-inner">
+    <span class="footer-logo">改 KAIZEN</span>
+    <div style="display:flex;gap:20px;flex-wrap:wrap;align-items:center;">
+      <a href="privacy.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Privacy</a>
+      <a href="terms.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Terms</a>
+      <a href="about.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">About</a>
+      <a href="whitepaper.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Whitepaper</a>
+      <a href="help.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Help Center</a>
+      <a href="support.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Support</a>
+    </div>
+    <span class="footer-right">© 2026 KAIZEN</span>
+  </div>
+</footer>
+<script>if(window.feather) feather.replace();</script>
+
+  <script src="js/app.js"></script>
+  <script>
+    feather.replace();
+    function toggleMemory(id) {
+      const el = document.getElementById('memory-' + id);
+      const icon = document.getElementById('icon-' + id);
+      if (el) {
+        const open = el.style.display === 'block';
+        el.style.display = open ? 'none' : 'block';
+        if (icon) icon.setAttribute('data-feather', open ? 'chevron-down' : 'chevron-up');
+        feather.replace();
+      }
+    }
+  </script>
+</body>
+</html>

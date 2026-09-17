@@ -35,37 +35,7 @@
   <title>KAIZEN — Terms of Service</title>
 </head>
 <body class="app-page">
-  
-
-<div class="k-ticker" id="k-ticker" role="region" aria-label="Announcement">
-  <button type="button" class="k-ticker-close" onclick="dismissTicker()" aria-label="Dismiss announcement">×</button>
-  <div class="k-ticker-track">
-    <span class="k-ticker-text"><b>KAIZEN V2 IS COMING</b> — the score gets five dimensions · plan → record → reflect sessions · your own Trading System · rolling out over the next 30 days</span>
-  </div>
-  <div class="k-ticker-badge">
-    <div class="k-ticker-megaphone"><i data-feather="megaphone" width="12" height="12"></i></div>
-    <span>Update</span>
-  </div>
-</div>
-<script>
-  (function () {
-    try {
-      if (sessionStorage.getItem('kaizen-ticker-dismissed') === '1') {
-        var t = document.getElementById('k-ticker');
-        if (t) t.style.display = 'none';
-      }
-    } catch (e) { /* private mode: keep showing */ }
-  })();
-  function dismissTicker() {
-    var t = document.getElementById('k-ticker');
-    if (t) t.style.display = 'none';
-    try { sessionStorage.setItem('kaizen-ticker-dismissed', '1'); } catch (e) {}
-  }
-</script>
-
-
-
-<!-- POPUP OVERLAY -->
+  <!-- POPUP OVERLAY -->
 <div class="popup-overlay" id="popupOverlay" onclick="closePopup()"></div>
 
 <!-- SIDE POPUP MENU -->
@@ -105,7 +75,7 @@
 
 <!-- MAIN NAVBAR -->
 <nav class="navbar">
-  <a href="/" class="nav-logo">改 KAIZEN</a>
+  <a href="index.html" class="nav-logo">改 KAIZEN</a>
   <div class="nav-right">
     <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
       <span id="themeIcon">◐</span>
@@ -115,6 +85,36 @@
     </button>
   </div>
 </nav>
+
+
+
+<div class="k-ticker" id="k-ticker" role="region" aria-label="Announcement">
+  <button type="button" class="k-ticker-close" onclick="dismissTicker()" aria-label="Dismiss announcement">×</button>
+  <div class="k-ticker-track">
+    <span class="k-ticker-text"><b>KAIZEN V2 IS COMING</b> — the score gets five dimensions · plan → record → reflect sessions · your own Trading System · rolling out over the next 30 days</span>
+  </div>
+  <div class="k-ticker-badge">
+    <div class="k-ticker-megaphone"><i data-feather="megaphone" width="12" height="12"></i></div>
+    <span>Update</span>
+  </div>
+</div>
+<script>
+  (function () {
+    try {
+      if (sessionStorage.getItem('kaizen-ticker-dismissed') === '1') {
+        var t = document.getElementById('k-ticker');
+        if (t) t.style.display = 'none';
+      }
+    } catch (e) { /* private mode: keep showing */ }
+  })();
+  function dismissTicker() {
+    var t = document.getElementById('k-ticker');
+    if (t) t.style.display = 'none';
+    try { sessionStorage.setItem('kaizen-ticker-dismissed', '1'); } catch (e) {}
+  }
+</script>
+
+
 
 <!-- SECURITY MODAL -->
 <div class="modal-overlay" id="securityModal">
