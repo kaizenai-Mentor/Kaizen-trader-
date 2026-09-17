@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.29.0/feather.min.js"></script>
+<script src="js/feather.min.js"></script>
 <script>
   // Apply saved theme BEFORE first paint to avoid a flash of the wrong theme
   (function () {
@@ -49,62 +49,62 @@
     <!-- IMPROVE -->
     <div class="popup-section">
       <div class="popup-section-label">Improve</div>
-      <a href="dashboard.html" class="popup-item">▪ Cockpit</a>
-      <a href="sessions.html" class="popup-item">▪ Sessions</a>
-      <a href="leaderboard.html" class="popup-item">▪ My Progress</a>
+      <a href="dashboard.html" class="popup-item"><span class="popup-item-icon"><i data-feather="activity" width="14" height="14"></i></span> Cockpit</a>
+      <a href="sessions.html" class="popup-item"><span class="popup-item-icon"><i data-feather="list" width="14" height="14"></i></span> Sessions</a>
+      <a href="leaderboard.html" class="popup-item"><span class="popup-item-icon"><i data-feather="trending-up" width="14" height="14"></i></span> My Progress</a>
     </div>
 
     <!-- COACH -->
     <div class="popup-section">
       <div class="popup-section-label">Coach</div>
-      <a href="kaizen-ai.html" class="popup-item">▪ KAIZEN AI</a>
-      <a href="psychology.html" class="popup-item">▪ Psychology</a>
-      <a href="memories.html" class="popup-item">▪ Memories</a>
+      <a href="kaizen-ai.html" class="popup-item"><span class="popup-item-icon"><i data-feather="message-circle" width="14" height="14"></i></span> KAIZEN AI</a>
+      <a href="psychology.html" class="popup-item"><span class="popup-item-icon"><i data-feather="heart" width="14" height="14"></i></span> Psychology</a>
+      <a href="memories.html" class="popup-item"><span class="popup-item-icon"><i data-feather="book-open" width="14" height="14"></i></span> Memories</a>
     </div>
 
     <!-- TOOLS -->
     <div class="popup-section">
       <div class="popup-section-label">Tools</div>
-      <a href="/chart" class="popup-item">▪ Chart</a>
-      <a href="weekly-summary.html" class="popup-item">▪ Weekly Report</a>
-      <a href="/news" class="popup-item">▪ Market News</a>
+      <a href="/chart" class="popup-item"><span class="popup-item-icon"><i data-feather="bar-chart-2" width="14" height="14"></i></span> Chart</a>
+      <a href="weekly-summary.html" class="popup-item"><span class="popup-item-icon"><i data-feather="file-text" width="14" height="14"></i></span> Weekly Report</a>
+      <a href="/news" class="popup-item"><span class="popup-item-icon"><i data-feather="globe" width="14" height="14"></i></span> Market News</a>
     </div>
 
     <!-- IDENTITY -->
     <div class="popup-section">
       <div class="popup-section-label">Identity</div>
-      <a href="reputation.html" class="popup-item">▪ Wallets &amp; Verification</a>
+      <a href="reputation.html" class="popup-item"><span class="popup-item-icon"><i data-feather="link" width="14" height="14"></i></span> Wallets &amp; Verification</a>
     </div>
 
     <!-- SETTINGS -->
     <div class="popup-section">
       <div class="popup-section-label">Settings</div>
-      <a href="trading-system.html" class="popup-item">▪ My Trading System</a>
+      <a href="trading-system.html" class="popup-item"><span class="popup-item-icon"><i data-feather="sliders" width="14" height="14"></i></span> My Trading System</a>
     </div>
 
     <!-- INFO -->
     <div class="popup-section">
       <div class="popup-section-label">Info</div>
       <a href="support.html" class="popup-item">
-        <span class="popup-item-icon">▪</span> Support
+        <span class="popup-item-icon"><i data-feather="life-buoy" width="14" height="14"></i></span> Support
       </a>
       <a href="about.html" class="popup-item">
-        <span class="popup-item-icon">▪</span> About Kaizen
+        <span class="popup-item-icon"><i data-feather="info" width="14" height="14"></i></span> About Kaizen
       </a>
       <a href="whitepaper.html" class="popup-item">
-        <span class="popup-item-icon">▪</span> Whitepaper
+        <span class="popup-item-icon"><i data-feather="book" width="14" height="14"></i></span> Whitepaper
       </a>
       <a href="services.html" class="popup-item">
-        <span class="popup-item-icon">▪</span> Services
+        <span class="popup-item-icon"><i data-feather="grid" width="14" height="14"></i></span> Services
       </a>
       <a href="help.html" class="popup-item">
-        <span class="popup-item-icon">▪</span> Help Center
+        <span class="popup-item-icon"><i data-feather="help-circle" width="14" height="14"></i></span> Help Center
       </a>
     </div>
 
     <div class="popup-section">
       <a href="index.html" class="popup-item" style="color:var(--red);">
-        <span class="popup-item-icon">▪</span> Log Out
+        <span class="popup-item-icon"><i data-feather="log-out" width="14" height="14"></i></span> Log Out
       </a>
     </div>
 
@@ -339,11 +339,11 @@
     <span class="footer-right">© 2026 KAIZEN</span>
   </div>
 </footer>
-<script>if(window.feather) feather.replace();</script>
+<script>if (window.feather) feather.replace();</script>
 
   <script src="js/app.js"></script>
   <script>
-    if (window.feather) feather.replace();
+    if (window.feather) if (window.feather) feather.replace();
     // Auto-detect asset/timeframe from notes (V1 precedent, kept)
     (function () {
       var notes = document.getElementById('notes');

@@ -368,6 +368,44 @@
   <%- include('partials/footer') %>
   <script src="/js/app.js"></script>
   <script src="/js/v2-reveal.js"></script>
-  <script>feather.replace();</script>
+  <script>if (window.feather) feather.replace();</script>
+  <script>
+    // Hero typing reveal — the promise types itself out on load.
+    // prefers-reduced-motion: hero renders instantly (untouched).
+    (function () {
+      var h = document.querySelector('.k-hero-h1');
+      if (!h) return;
+      var reduced = window.matchMedia &&
+        window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (reduced) return;
+      var lines = [
+        { text: 'Most traders know', gold: false },
+        { text: 'their rules.', gold: false },
+        { text: 'Few follow them.', gold: true }
+      ];
+      var spans = [];
+      h.innerHTML = '';
+      function ensureLine(i) {
+        if (spans[i]) return spans[i];
+        if (i > 0) h.appendChild(document.createElement('br'));
+        var sp = document.createElement('span');
+        if (lines[i].gold) sp.className = 'k-gold';
+        h.appendChild(sp);
+        spans[i] = sp;
+        return sp;
+      }
+      var li = 0, ci = 0;
+      function tick() {
+        if (li >= lines.length) return;
+        var sp = ensureLine(li);
+        ci += 1;
+        sp.textContent = lines[li].text.slice(0, ci);
+        if (ci >= lines[li].text.length) { li += 1; ci = 0; setTimeout(tick, 420); return; }
+        setTimeout(tick, 38);
+      }
+      h.style.minHeight = '3.6em'; // reserve space while typing (no layout jump)
+      setTimeout(tick, 450);
+    })();
+  </script>
 </body>
 </html>

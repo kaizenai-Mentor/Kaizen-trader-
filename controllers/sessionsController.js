@@ -263,6 +263,14 @@ async function postReflect(req, res) {
   session.state = 'ANALYZED';
   await session.save();
 
+  // Streaming path: the Reflect page fetches this and reveals the
+  // analysis in place (Psychology-style); no-JS falls back to redirect.
+  const wantsJson = req.xhr || String(req.body.json) === '1' ||
+    (req.headers.accept || '').includes('application/json');
+  if (wantsJson) {
+    return res.json({ ok: true, sessionId: String(session._id), analysis: session.aiAnalysis || '' });
+  }
+
   res.redirect(`/dashboard/sessions/${session._id}`);
 }
 

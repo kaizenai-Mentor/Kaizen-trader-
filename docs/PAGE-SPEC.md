@@ -234,6 +234,11 @@ responds AFTER, never before, never instead.
 3. What did you learn?
 4. What would you change?
 
+**Streaming reveal** (owner directive 17 Sep 2026): on Finish, the analysis
+streams in place on the Reflect page — KAIZEN-typing indicator, then the
+response types out (Psychology-style), then a link to the analyzed session.
+No-JS falls back to the redirect; prefers-reduced-motion shows it instantly.
+
 **Logic.** Save → state `REFLECTED` → the ANALYZE chain runs server-side:
 one-time V1 extraction → `computeScore` → new `ScoreSnapshot` →
 `aiCoach.analyzeSession` (plan-vs-record comparison in the prompt; EXTRACTED tail

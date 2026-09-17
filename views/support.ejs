@@ -111,7 +111,7 @@
 
   <%- include('partials/footer') %>
   <script src="/js/app.js"></script>
-  <script>feather.replace();</script>
+  <script>if (window.feather) feather.replace();</script>
   <style>
     @media (max-width:700px) {
       .support-grid { grid-template-columns:1fr !important; }

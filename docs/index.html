@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.29.0/feather.min.js"></script>
+<script src="js/feather.min.js"></script>
 <script>
   // Apply saved theme BEFORE first paint to avoid a flash of the wrong theme
   (function () {
@@ -58,16 +58,16 @@
     <div class="popup-section">
       <div class="popup-section-label">Info</div>
       <a href="about.html" class="popup-item">
-        <span class="popup-item-icon">▪</span> About Kaizen
+        <span class="popup-item-icon"><i data-feather="info" width="14" height="14"></i></span> About Kaizen
       </a>
       <a href="whitepaper.html" class="popup-item">
-        <span class="popup-item-icon">▪</span> Whitepaper
+        <span class="popup-item-icon"><i data-feather="book" width="14" height="14"></i></span> Whitepaper
       </a>
       <a href="services.html" class="popup-item">
-        <span class="popup-item-icon">▪</span> Services
+        <span class="popup-item-icon"><i data-feather="grid" width="14" height="14"></i></span> Services
       </a>
       <a href="help.html" class="popup-item">
-        <span class="popup-item-icon">▪</span> Help Center
+        <span class="popup-item-icon"><i data-feather="help-circle" width="14" height="14"></i></span> Help Center
       </a>
     </div>
   
@@ -576,10 +576,48 @@
     <span class="footer-right">© 2026 KAIZEN</span>
   </div>
 </footer>
-<script>if(window.feather) feather.replace();</script>
+<script>if (window.feather) feather.replace();</script>
 
   <script src="js/app.js"></script>
   <script src="js/v2-reveal.js"></script>
-  <script>feather.replace();</script>
+  <script>if (window.feather) feather.replace();</script>
+  <script>
+    // Hero typing reveal — the promise types itself out on load.
+    // prefers-reduced-motion: hero renders instantly (untouched).
+    (function () {
+      var h = document.querySelector('.k-hero-h1');
+      if (!h) return;
+      var reduced = window.matchMedia &&
+        window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (reduced) return;
+      var lines = [
+        { text: 'Most traders know', gold: false },
+        { text: 'their rules.', gold: false },
+        { text: 'Few follow them.', gold: true }
+      ];
+      var spans = [];
+      h.innerHTML = '';
+      function ensureLine(i) {
+        if (spans[i]) return spans[i];
+        if (i > 0) h.appendChild(document.createElement('br'));
+        var sp = document.createElement('span');
+        if (lines[i].gold) sp.className = 'k-gold';
+        h.appendChild(sp);
+        spans[i] = sp;
+        return sp;
+      }
+      var li = 0, ci = 0;
+      function tick() {
+        if (li >= lines.length) return;
+        var sp = ensureLine(li);
+        ci += 1;
+        sp.textContent = lines[li].text.slice(0, ci);
+        if (ci >= lines[li].text.length) { li += 1; ci = 0; setTimeout(tick, 420); return; }
+        setTimeout(tick, 38);
+      }
+      h.style.minHeight = '3.6em'; // reserve space while typing (no layout jump)
+      setTimeout(tick, 450);
+    })();
+  </script>
 </body>
 </html>
