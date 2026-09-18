@@ -2,162 +2,245 @@
 <html lang="en">
 <head>
   <%- include('partials/head') %>
-  <title>KAIZEN AI — Session Analysis</title>
+  <title>KAIZEN — KAIZEN AI</title>
 </head>
-<body class="app-page">
+<body class="app-page k-chatbody">
   <%- include('partials/navbar') %>
 
-  <main class="app-main">
+  <% if (mode === 'index') { %>
 
-    <!-- HEADER -->
-    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:24px;flex-wrap:wrap;">
+  <!-- ═══ CONVERSATIONS: list + start + legacy analysis ─═ -->
+  <main class="k-flow k-flow--wide">
+    <div class="k-cockpit-head">
       <div>
-        <div style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:6px;display:flex;align-items:center;gap:8px;">
-          <span style="width:16px;height:1px;background:var(--gold);display:inline-block;"></span>
-          AI Analysis
-        </div>
-        <h1 style="font-size:1.6rem;font-weight:700;color:var(--text-primary);margin-bottom:4px;">改 KAIZEN AI</h1>
-        <p style="font-size:0.82rem;color:var(--ash);font-style:italic;">Your AI discipline mentor. Session analysis appears here.</p>
+        <div class="k-eyebrow">COACH · 改</div>
+        <h1 class="k-page-title">KAIZEN AI</h1>
+        <p class="k-page-sub">The trading room. Talk setups, rules, charts — everything anchored to your own system. No signals, no predictions: process.</p>
       </div>
-      <a href="/memories" style="display:inline-flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);border:1px solid var(--border);padding:10px 16px;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.color='var(--gold)';this.style.borderColor='rgba(201,168,76,0.3)'" onmouseout="this.style.color='var(--ash)';this.style.borderColor='var(--border)'">
-        Memories
-        <i data-feather="arrow-right" width="12" height="12"></i>
-      </a>
     </div>
 
     <% if (aiResponse) { %>
-
-      <!-- RESPONSE CARD -->
-      <div style="background:var(--bg-card);border:1px solid rgba(201,168,76,0.2);padding:28px;margin-bottom:16px;position:relative;overflow:hidden;">
-
-        <!-- Background glow -->
-        <div style="position:absolute;top:0;right:0;width:200px;height:200px;background:radial-gradient(circle,rgba(201,168,76,0.04),transparent 70%);pointer-events:none;"></div>
-
-        <!-- Header -->
-        <div style="display:flex;align-items:center;gap:12px;margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border);">
-          <div style="width:32px;height:32px;border:1px solid rgba(201,168,76,0.3);background:rgba(201,168,76,0.08);display:flex;align-items:center;justify-content:center;color:var(--gold);">
-            <i data-feather="cpu" width="15" height="15"></i>
-          </div>
-          <div>
-            <div style="font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);">改 KAIZEN AI · Session Analysis</div>
-            <div style="font-size:0.72rem;color:var(--ash);margin-top:2px;">Behavioral feedback based on your session and history</div>
-          </div>
-          <div style="margin-left:auto;display:flex;align-items:center;gap:6px;">
-            <div style="width:6px;height:6px;border-radius:50%;background:#4ADE80;box-shadow:0 0 8px rgba(74,222,128,0.5);"></div>
-            <span style="font-family:'DM Mono',monospace;font-size:0.52rem;letter-spacing:0.1em;text-transform:uppercase;color:#4ADE80;">Analysis Complete</span>
-          </div>
-        </div>
-
-        <!-- Streaming text -->
-        <div style="border-left:2px solid var(--gold);padding-left:20px;">
-          <div id="streaming-text"
-            data-content="<%- aiResponse.replace(/"/g, '&quot;') %>"
-            style="font-size:0.92rem;color:var(--ash-light);line-height:1.95;white-space:pre-wrap;min-height:120px;">
-          </div>
-        </div>
-
-        <!-- Actions -->
-        <div style="display:flex;gap:10px;flex-wrap:wrap;padding-top:20px;margin-top:24px;border-top:1px solid var(--border);">
-          <a href="/memories" style="display:inline-flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);border:1px solid var(--border);padding:10px 16px;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.color='var(--gold)';this.style.borderColor='rgba(201,168,76,0.3)'" onmouseout="this.style.color='var(--ash)';this.style.borderColor='var(--border)'">
-            <i data-feather="clock" width="12" height="12"></i>
-            All Memories
-          </a>
-          <a href="/dashboard/journal" style="display:inline-flex;align-items:center;gap:6px;background:var(--gold);color:#000;font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;font-weight:700;padding:10px 20px;text-decoration:none;border:1px solid var(--gold);transition:background 0.2s;" onmouseover="this.style.background='#E2C46A'" onmouseout="this.style.background='var(--gold)'">
-            <i data-feather="plus" width="12" height="12"></i>
-            Log Another Session
-          </a>
-          <a href="/dashboard" style="display:inline-flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);border:1px solid var(--border);padding:10px 16px;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.color='var(--gold)';this.style.borderColor='rgba(201,168,76,0.3)'" onmouseout="this.style.color='var(--ash)';this.style.borderColor='var(--border)'">
-            <i data-feather="home" width="12" height="12"></i>
-            Dashboard
-          </a>
-        </div>
-
-      </div>
-
-      <!-- WHAT THIS MEANS -->
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:2px;">
-        <div style="background:var(--bg-card);border:1px solid var(--border);padding:18px;">
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
-            <i data-feather="save" width="13" height="13" style="color:var(--gold);"></i>
-            <span style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);">Auto-Saved</span>
-          </div>
-          <p style="font-size:0.78rem;color:var(--ash);line-height:1.6;margin:0;">This response is permanently saved in your Memories archive.</p>
-        </div>
-        <div style="background:var(--bg-card);border:1px solid var(--border);padding:18px;">
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
-            <i data-feather="trending-up" width="13" height="13" style="color:var(--gold);"></i>
-            <span style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);">Score Updated</span>
-          </div>
-          <p style="font-size:0.78rem;color:var(--ash);line-height:1.6;margin:0;">Your Discipline Score has been recalculated and updated on your dashboard.</p>
-        </div>
-        <div style="background:var(--bg-card);border:1px solid rgba(59,130,246,0.15);padding:18px;">
-          <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
-            <i data-feather="link" width="13" height="13" style="color:var(--blue);"></i>
-            <span style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);">On-Chain</span>
-          </div>
-          <p style="font-size:0.78rem;color:var(--ash);line-height:1.6;margin:0;">This session's AI output is being recorded on Mantle blockchain.</p>
-        </div>
-      </div>
-
-    <% } else { %>
-
-      <!-- EMPTY STATE -->
-      <div style="background:var(--bg-card);border:1px solid var(--border);padding:80px 32px;text-align:center;min-height:400px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;">
-
-        <div style="font-family:'DM Mono',monospace;font-size:4rem;color:rgba(201,168,76,0.1);line-height:1;">改</div>
-
-        <div>
-          <h2 style="font-size:1.1rem;font-weight:700;color:var(--text-primary);margin-bottom:8px;">No analysis yet</h2>
-          <p style="font-size:0.88rem;color:var(--ash);max-width:360px;margin:0 auto;line-height:1.8;">
-            Log a session in My Journal and KAIZEN AI will analyze your discipline, strategy, and behavioral patterns here.
-          </p>
-        </div>
-
-        <div style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.15em;text-transform:uppercase;color:rgba(201,168,76,0.25);padding:10px 20px;border:1px solid rgba(201,168,76,0.1);">
-          Previous responses saved in Memories
-        </div>
-
-        <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;">
-          <a href="/dashboard/journal" style="display:inline-flex;align-items:center;gap:6px;background:var(--gold);color:#000;font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;font-weight:700;padding:12px 24px;text-decoration:none;">
-            <i data-feather="edit-3" width="13" height="13"></i>
-            Log a Session
-          </a>
-          <a href="/memories" style="display:inline-flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);border:1px solid var(--border);padding:12px 24px;text-decoration:none;" onmouseover="this.style.color='var(--gold)';this.style.borderColor='rgba(201,168,76,0.3)'" onmouseout="this.style.color='var(--ash)';this.style.borderColor='var(--border)'">
-            <i data-feather="clock" width="13" height="13"></i>
-            View Memories
-          </a>
-        </div>
-      </div>
-
+    <section class="k-card k-card--featured">
+      <div class="k-panel-title"><span class="k-kanji k-kanji--sm">改</span> YOUR LATEST SESSION ANALYSIS</div>
+      <div class="k-legacyai"><%= aiResponse %></div>
+      <div class="k-fieldhint">From your last logged session. New analyses now live on the session itself — <a class="k-link" href="/dashboard/sessions">Sessions</a>.</div>
+    </section>
     <% } %>
 
+    <section class="k-card">
+      <div class="k-panel-title" style="margin-bottom:14px;">START A CONVERSATION</div>
+      <% if (openers && openers.length) { %>
+        <div class="k-openerrow">
+          <% openers.forEach(function(o){ %>
+            <button type="button" class="k-opener" data-opener="<%= o %>"<% if (o.indexOf('Quiz') === 0) { %> data-quiz="1"<% } %>><%= o %></button>
+          <% }); %>
+        </div>
+      <% } %>
+      <div class="k-composer">
+        <label class="k-attachbtn" title="Attach a chart">
+          📎<input type="file" id="chart-file" accept="image/png,image/jpeg,image/webp" hidden>
+        </label>
+        <textarea id="ai-input" rows="2" placeholder="Ask KAIZEN about a setup, a rule, a chart…"></textarea>
+        <button type="button" id="ai-send" class="k-btn k-btn-primary">Send</button>
+      </div>
+      <div class="k-attachmeta" id="attach-meta" hidden></div>
+    </section>
+
+    <section class="k-card">
+      <div class="k-panel-title" style="margin-bottom:6px;">CONVERSATIONS</div>
+      <% if (threads && threads.length) { %>
+        <div class="k-threadlist">
+          <% threads.forEach(function(t){ %>
+            <a class="k-threadrow" href="/kaizen-ai/t/<%= t._id %>">
+              <div class="k-threadmain">
+                <span class="k-threadtitle"><%= t.title %></span>
+                <span class="k-threadmeta">
+                  <%= t.messageCount %> message<%= t.messageCount === 1 ? '' : 's' %>
+                  · <%= new Date(t.lastMessageAt).toLocaleDateString('en-US',{month:'short',day:'numeric'}) %>
+                </span>
+              </div>
+              <span class="k-threadarrow">→</span>
+            </a>
+          <% }); %>
+        </div>
+      <% } else { %>
+        <p class="k-emptyhint">No conversations yet. Ask anything about your trading — it stays between you and KAIZEN.</p>
+      <% } %>
+    </section>
   </main>
 
+  <% } else { %>
+
+  <!-- ═══ ONE CONVERSATION ═══ -->
+  <main class="k-flow k-flow--wide k-chatmain">
+    <div class="k-chathead">
+      <a class="k-backlink" href="/kaizen-ai">← KAIZEN AI</a>
+      <span class="k-chattitle"><%= thread.title %></span>
+    </div>
+
+    <div class="k-chatlog" id="chatlog">
+      <% if (thread.messages && thread.messages.length) { %>
+        <% thread.messages.forEach(function(m){ %>
+          <% if (m.role === 'user') { %>
+            <div class="k-msg k-msg-user">
+              <div class="k-msg-bubble"><% if (m.hasImage) { %><span class="k-attachtag">📎 chart</span> <% } %><%= m.text %></div>
+            </div>
+          <% } else { %>
+            <div class="k-msg k-msg-kai">
+              <span class="k-kanji k-kanji--sm">改</span>
+              <div class="k-msg-text"><%= m.text %></div>
+            </div>
+          <% } %>
+        <% }); %>
+      <% } %>
+      <div class="k-typing" id="typing" hidden>
+        <span class="k-kanji k-kanji--sm">改</span>
+        <div class="k-msg-text k-typingdots"><span></span><span></span><span></span></div>
+      </div>
+    </div>
+
+    <% if (openers && openers.length) { %>
+      <div class="k-openerrow k-openerrow--inline">
+        <% openers.forEach(function(o){ %>
+          <button type="button" class="k-opener" data-opener="<%= o %>"<% if (o.indexOf('Quiz') === 0) { %> data-quiz="1"<% } %>><%= o %></button>
+        <% }); %>
+      </div>
+    <% } %>
+
+    <div class="k-composer k-composer--sticky">
+      <label class="k-attachbtn" title="Attach a chart">
+        📎<input type="file" id="chart-file" accept="image/png,image/jpeg,image/webp" hidden>
+      </label>
+      <textarea id="ai-input" rows="2" placeholder="Reply to KAIZEN…"></textarea>
+      <button type="button" id="ai-send" class="k-btn k-btn-primary">Send</button>
+    </div>
+    <div class="k-attachmeta" id="attach-meta" hidden></div>
+  </main>
+
+  <% } %>
+
   <%- include('partials/footer') %>
-  <script src="/js/app.js"></script>
   <script>
-    feather.replace();
-    document.addEventListener('DOMContentLoaded', function() {
-      const streamEl = document.getElementById('streaming-text');
-      if (!streamEl) return;
-      const rawText = streamEl.getAttribute('data-content');
-      if (!rawText) return;
-      streamEl.textContent = '';
-      let i = 0;
-      function stream() {
-        if (i < rawText.length) {
-          const char = rawText[i];
-          streamEl.textContent += char;
-          i++;
-          let delay = 12;
-          if (char === '.' || char === '\n') delay = 70;
-          else if (char === ',') delay = 35;
-          else if (char === ' ') delay = 6;
-          setTimeout(stream, delay);
+    (function () {
+      var input = document.getElementById('ai-input');
+      var send = document.getElementById('ai-send');
+      var typing = document.getElementById('typing');
+      var log = document.getElementById('chatlog');
+      var fileInput = document.getElementById('chart-file');
+      var attachMeta = document.getElementById('attach-meta');
+      var threadId = <%- (mode === 'thread' && thread && thread._id) ? JSON.stringify(String(thread._id)) : 'null' %>;
+      var imageData = null;
+
+      function scrollBottom() { if (log) log.scrollTop = log.scrollHeight; }
+      scrollBottom();
+
+      document.querySelectorAll('.k-opener').forEach(function (b) {
+        b.addEventListener('click', function () {
+          if (b.hasAttribute('data-quiz')) { sendQuiz(); return; }
+          input.value = b.getAttribute('data-opener');
+          input.focus();
+        });
+      });
+
+      fileInput.addEventListener('change', function () {
+        var f = fileInput.files && fileInput.files[0];
+        if (!f) return;
+        if (f.size > 2 * 1024 * 1024) {
+          attachMeta.hidden = false;
+          attachMeta.textContent = 'Chart too large — keep it under 2 MB.';
+          fileInput.value = '';
+          return;
         }
+        var fr = new FileReader();
+        fr.onload = function () {
+          imageData = fr.result;
+          attachMeta.hidden = false;
+          attachMeta.textContent = '📎 ' + f.name + ' attached — describe what to check, or just send.';
+        };
+        fr.readAsDataURL(f);
+      });
+
+      function addMsg(role, text, hasImage) {
+        if (!log) return;
+        var wrap = document.createElement('div');
+        if (role === 'user') {
+          wrap.className = 'k-msg k-msg-user';
+          var b = document.createElement('div');
+          b.className = 'k-msg-bubble';
+          if (hasImage) {
+            var tag = document.createElement('span');
+            tag.className = 'k-attachtag';
+            tag.textContent = '📎 chart ';
+            b.appendChild(tag);
+          }
+          b.appendChild(document.createTextNode(text));
+          wrap.appendChild(b);
+        } else {
+          wrap.className = 'k-msg k-msg-kai';
+          var k = document.createElement('span');
+          k.className = 'k-kanji k-kanji--sm';
+          k.textContent = '改';
+          var t = document.createElement('div');
+          t.className = 'k-msg-text';
+          t.textContent = text;
+          wrap.appendChild(k);
+          wrap.appendChild(t);
+        }
+        log.appendChild(wrap);
+        scrollBottom();
       }
-      setTimeout(stream, 400);
-    });
+
+      var busy = false;
+      function send(payload) {
+        busy = true;
+        send.disabled = true;
+        if (threadId && payload.message) addMsg('user', payload.message, !!payload.image);
+        if (!payload.message && payload.image && threadId) addMsg('user', '(chart attached)', true);
+        input.value = '';
+        imageData = null;
+        attachMeta.hidden = true;
+        if (typing) typing.hidden = false;
+        scrollBottom();
+
+        fetch('/kaizen-ai/ask', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(Object.assign({ threadId: threadId }, payload))
+        })
+          .then(function (r) { return r.json(); })
+          .then(function (data) {
+            if (data.error) { addMsg('kaizen', data.error); return; }
+            if (!threadId) { window.location = '/kaizen-ai/t/' + data.threadId; return; }
+            addMsg('kaizen', data.reply);
+          })
+          .catch(function () {
+            addMsg('kaizen', 'Connection dropped. Your message was sent — refresh in a moment.');
+          })
+          .finally(function () {
+            busy = false;
+            send.disabled = false;
+            if (typing) typing.hidden = true;
+            input.focus();
+          });
+      }
+
+      function sendMsg() {
+        var text = input.value.trim();
+        if (busy) return;
+        if (!text && !imageData) return;
+        send({ message: text, image: imageData });
+      }
+      function sendQuiz() { if (!busy) send({ message: 'Quiz me on my rules.', mode: 'quiz' }); }
+
+      send.addEventListener('click', sendMsg);
+      input.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' && !e.shiftKey && window.innerWidth > 760) {
+          e.preventDefault();
+          sendMsg();
+        }
+      });
+    })();
   </script>
+  <script src="/js/app.js"></script>
 </body>
 </html>

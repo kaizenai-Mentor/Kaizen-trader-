@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KAIZEN — My Trading System (V2 Preview)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/preview/preview.css">
+  <script>
+    (function () {
+      try {
+        var t = localStorage.getItem('kaizen-theme') ||
+          ((window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) ? 'light' : 'dark');
+        if (t !== 'dark' && t !== 'light') t = 'dark';
+        document.documentElement.setAttribute('data-theme', t);
+      } catch (e) { document.documentElement.setAttribute('data-theme', 'dark'); }
+    })();
+  </script>
+</head>
+<body class="app-page">
+
+  <nav class="navbar">
+    <a href="#" class="nav-logo">改 KAIZEN</a>
+    <div class="nav-right">
+      <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme"><span id="themeIcon">◐</span></button>
+      <button class="three-dot-btn" title="Menu"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+
+  <main class="p-main">
+
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:22px;">
+      <div>
+        <div class="k-eyebrow" style="margin-bottom:8px;">My Trading System</div>
+        <h1 style="font-size:clamp(1.6rem,3.5vw,2.3rem);font-weight:700;color:var(--text-primary);line-height:1.1;margin:0 0 10px;">
+          Your rules, <span class="k-gold">evolved.</span>
+        </h1>
+        <p style="font-size:0.88rem;color:var(--text-secondary);max-width:560px;line-height:1.75;margin:0;">
+          KAIZEN measures every session against the version you had at the time.
+        </p>
+      </div>
+      <span class="k-tag" style="border-color:var(--gold-border);color:var(--gold);">VERSION 3 · SAVED SEP 10</span>
+    </div>
+
+    <!-- Migration notice (one-time) -->
+    <div class="k-card" style="border-color:var(--gold-border);background:var(--gold-pale);margin-bottom:22px;padding:16px 20px;display:flex;gap:12px;align-items:flex-start;">
+      <i data-feather="info" width="15" height="15" style="color:var(--gold);margin-top:2px;flex-shrink:0;"></i>
+      <p style="font-size:0.84rem;color:var(--text-primary);line-height:1.7;margin:0;">
+        Your trading style moved into your Trading System — nothing was lost. Add setups and no-trade conditions when you're ready; they make your plans faster and your score sharper.
+      </p>
+    </div>
+
+    <div class="p-system-grid">
+
+      <!-- LEFT: editor -->
+      <div class="p-col" style="gap:14px;">
+
+        <div class="k-card" data-reveal>
+          <div class="k-metric-label" style="margin-bottom:14px;">THE SYSTEM</div>
+          <div class="p-field"><input type="text" value="London liquidity sweeps"></div>
+        </div>
+
+        <div class="k-card" data-reveal>
+          <div class="k-metric-label" style="margin-bottom:14px;">STRATEGY</div>
+          <div class="p-field"><label class="k-meter-label" style="display:block;margin-bottom:6px;">MARKET CONDITIONS</label><input type="text" value="Swept Asian range, London open direction bias"></div>
+          <div style="margin-bottom:10px;"><label class="k-meter-label" style="display:block;margin:10px 0 8px;">SETUPS — 3</label>
+            <div class="p-list-item"><i data-feather="check" width="12" height="12"></i> 4H sweep → 30min MSS</div>
+            <div class="p-list-item"><i data-feather="check" width="12" height="12"></i> Daily open liquidity grab</div>
+            <div class="p-list-item"><i data-feather="check" width="12" height="12"></i> Weekly close reclaim</div>
+            <a href="#" class="k-gold" style="font-family:var(--font-mono);font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;text-decoration:underline;">+ Add a setup</a>
+          </div>
+          <div class="p-field"><label class="k-meter-label" style="display:block;margin-bottom:6px;">ENTRY RULES</label><input type="text" value="MSS confirms on 30min after 4H sweep; no chasing extended moves"></div>
+          <div class="p-field" style="margin-bottom:0;"><label class="k-meter-label" style="display:block;margin-bottom:6px;">EXIT RULES</label><input type="text" value="Minimum 1:2 RR; partial at 1:1"></div>
+        </div>
+
+        <div class="k-card" data-reveal>
+          <div class="k-metric-label" style="margin-bottom:14px;">RISK RULES</div>
+          <div class="p-steppers">
+            <div class="p-list-item" style="justify-content:space-between;">Risk per trade <b class="k-gold" style="font-family:var(--font-mono);font-weight:500;">1%</b></div>
+            <div class="p-list-item" style="justify-content:space-between;">Max position <b class="k-gold" style="font-family:var(--font-mono);font-weight:500;">5%</b></div>
+            <div class="p-list-item" style="justify-content:space-between;">Daily drawdown <b class="k-gold" style="font-family:var(--font-mono);font-weight:500;">3%</b></div>
+            <div class="p-list-item" style="justify-content:space-between;">Max trades/day <b class="k-gold" style="font-family:var(--font-mono);font-weight:500;">2</b></div>
+          </div>
+        </div>
+
+        <div class="k-card" data-reveal>
+          <div class="k-metric-label" style="margin-bottom:14px;">NO-TRADE CONDITIONS</div>
+          <div class="p-list-item"><i data-feather="x" width="12" height="12"></i> No trades 30 min before red news</div>
+          <div class="p-list-item"><i data-feather="x" width="12" height="12"></i> No entries in the last 30 min of London</div>
+        </div>
+
+        <div class="k-card" data-reveal>
+          <div class="k-metric-label" style="margin-bottom:14px;">PSYCHOLOGICAL RULES</div>
+          <div class="p-list-item"><i data-feather="brain" width="12" height="12"></i> No entries after 2 losses without a 15-minute break</div>
+        </div>
+
+        <a href="#" class="btn-primary k-btn-lg" style="text-align:center;">Save as New Version</a>
+      </div>
+
+      <!-- RIGHT: version rail -->
+      <div class="k-card k-card--elevated" style="position:sticky;top:90px;" data-reveal>
+        <div class="k-metric-label" style="margin-bottom:14px;">VERSION HISTORY</div>
+        <div class="p-version-dot">
+          <span class="p-vdot"></span>
+          <div>
+            <div style="font-family:var(--font-mono);font-size:0.62rem;color:var(--gold);letter-spacing:0.1em;">V1 · AUG 12</div>
+            <div style="font-size:0.78rem;color:var(--text-secondary);line-height:1.6;">First system, migrated from trading style.</div>
+          </div>
+        </div>
+        <div class="p-version-dot">
+          <span class="p-vdot"></span>
+          <div>
+            <div style="font-family:var(--font-mono);font-size:0.62rem;color:var(--gold);letter-spacing:0.1em;">V2 · AUG 30</div>
+            <div style="font-size:0.78rem;color:var(--text-secondary);line-height:1.6;">Tightened entry rules after Friday pattern.</div>
+          </div>
+        </div>
+        <div class="p-version-dot">
+          <span class="p-vdot p-vdot--active"></span>
+          <div>
+            <div style="font-family:var(--font-mono);font-size:0.62rem;color:var(--gold);letter-spacing:0.1em;">V3 · SEP 10</div>
+            <div style="font-size:0.78rem;color:var(--text-primary);line-height:1.6;">Added no-trade window before red news.</div>
+          </div>
+        </div>
+        <p style="font-size:0.72rem;color:var(--ash);line-height:1.7;margin:16px 0 0;border-top:1px solid var(--border);padding-top:14px;">
+          Each session is measured against the version you traded it with.
+        </p>
+      </div>
+
+    </div>
+  </main>
+
+  <script src="/js/feather.min.js"></script>
+  <script>
+    // KAIZEN custom icon: "brain" (Psychology) — same registration as the app head partial.
+    (function () {
+      try {
+        if (!window.feather || !feather.icons || !feather.icons.activity) return;
+        var Icon = feather.icons.activity.constructor;
+        feather.icons.brain = new Icon('brain', ['psychology', 'mind', 'mental'],
+          '<path d="M12 18V5"/><path d="M15 13a4.17 4.17 0 0 1-3-4 4.17 4.17 0 0 1-3 4"/><path d="M17.598 6.5A3 3 0 1 0 12 5a3 3 0 1 0-5.598 1.5"/><path d="M17.997 5.125a4 4 0 0 1 2.526 5.77"/><path d="M18 18a4 4 0 0 0 2-7.464"/><path d="M19.967 17.483A4 4 0 1 1 12 18a4 4 0 1 1-7.967-.517"/><path d="M6 18a4 4 0 0 1-2-7.464"/><path d="M6.003 5.125a4 4 0 0 0-2.526 5.77"/>');
+      } catch (e) {}
+    })();
+  </script>
+  <script>if (window.feather) feather.replace();</script>
+  <script src="/js/v2-reveal.js"></script>
+  <script>
+    function toggleTheme() {
+      var el = document.documentElement;
+      var next = el.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      el.setAttribute('data-theme', next);
+      try { localStorage.setItem('kaizen-theme', next); } catch (e) {}
+    }
+  </script>
+</body>
+</html>

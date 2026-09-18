@@ -3,8 +3,6 @@
 <head>
   <%- include('partials/head') %>
   <title>KAIZEN - Trade Better. Every Day.</title>
-  <!-- Feather Icons lightweight outline icon set -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.29.0/feather.min.js"></script>
 </head>
 <body class="welcome-page" style="min-height:100vh;background:var(--bg-base);color:var(--text-primary);">
   <%- include('partials/navbar') %>
@@ -16,379 +14,347 @@
   <% } %>
 
   <!-- ============================================================
-       HERO
+       HERO — problem first, instrument panel right
   ============================================================ -->
-  <section class="hero-section">
+  <section class="k-hero k-grid-bg">
 
-    <div class="hero-glow hero-glow-1"></div>
-    <div class="hero-glow hero-glow-2"></div>
+    <div class="k-hero-inner">
 
-    <!-- Live badge -->
-    <div class="live-badge">
-      <span class="live-dot"></span>
-      Now Live · Powered by Zero Authority DAO & Mantle 
+      <div class="k-hero-copy" data-reveal>
+        <h1 class="k-hero-h1">
+          Most traders know<br>
+          their rules.<br>
+          <span class="k-gold">Few follow them.</span>
+        </h1>
+
+        <p class="k-hero-sub">
+          KAIZEN is a trader improvement platform that turns your trading
+          behavior into measurable progress. It learns your rules, reads
+          every session you log, and shows you the patterns you can't
+          see — so you can become the trader you can
+          <strong style="color:var(--text-primary);">prove you're becoming.</strong>
+        </p>
+
+        <p class="k-hero-sub2">
+          Not a signal app. Not a copy-trading platform.
+          A mentor that makes you a better trader from the inside out.
+        </p>
+
+        <div class="k-hero-ctas">
+          <a href="/auth/register" class="btn-primary k-btn-lg">Start Improving</a>
+          <a href="#how-it-works" class="btn-outline k-btn-lg">See How It Works</a>
+        </div>
+      </div>
+
+      <div class="k-hero-panel k-card--elevated k-grid-bg" data-reveal style="transition-delay:120ms;">
+        <div class="k-panel-head">
+          <span class="k-panel-title"><span class="k-kanji k-kanji--sm">改</span> KAIZEN SCORE</span>
+          <span class="k-tag">Live Preview</span>
+        </div>
+
+        <div class="k-panel-dial">
+          <%- include('partials/k-dial', { value: 76, size: 200, label: 'KAIZEN Score' }) %>
+        </div>
+
+        <%- include('partials/k-meters', { meters: [
+          ['Process', 91],
+          ['Risk', 89],
+          ['Execution', 84],
+          ['Behavior', 79],
+          ['Learning & Consistency', 86]
+        ] }) %>
+
+        <div class="k-panel-foot">
+          Updates after every session. Measures how you traded — not what you made.
+        </div>
+      </div>
+
     </div>
 
-    <!-- Headline -->
-    <h1 class="hero-headline">
-      Most traders know<br>
-      their rules.<br>
-      <span style="color:var(--gold);">Few follow them.</span>
-    </h1>
+    <!-- Trust row -->
+    <div class="k-trust-row" data-reveal>
+      <div class="k-trust-item">
+        <div class="k-trust-icon"><i data-feather="zap" width="18" height="18"></i></div>
+        <div class="k-trust-label">AI-Powered Analysis</div>
+      </div>
+      <div class="k-trust-item">
+        <div class="k-trust-icon"><i data-feather="activity" width="18" height="18"></i></div>
+        <div class="k-trust-label">Behavioral Pattern Detection</div>
+      </div>
+      <div class="k-trust-item">
+        <div class="k-trust-icon"><i data-feather="bar-chart-2" width="18" height="18"></i></div>
+        <div class="k-trust-label">KAIZEN Score Tracking</div>
+      </div>
+      <div class="k-trust-item">
+        <div class="k-trust-icon"><i data-feather="unlock" width="18" height="18"></i></div>
+        <div class="k-trust-label">100% Free to Start</div>
+      </div>
+    </div>
+  </section>
 
-    <!-- Sub -->
-    <p class="hero-sub">
-      KAIZEN is an AI trading discipline mentor that analyzes
-      your sessions, learns your behavioral patterns, and holds
-      you accountable to the rules
-      <strong style="color:var(--text-primary);">you yourself created.</strong>
+  <!-- ============================================================
+       PRODUCT PREVIEW
+  ============================================================ -->
+  <section class="k-section k-section--border">
+    <div class="k-eyebrow k-eyebrow--center" data-reveal>Inside KAIZEN</div>
+    <h2 class="k-title k-title--center" data-reveal>Built for traders</h2>
+    <p class="k-sub" data-reveal>
+      Every session logged becomes data. Every pattern detected becomes
+      insight. Every insight becomes discipline.
     </p>
 
-    <p class="hero-sub2">
-      Not a signal app. Not a copy-trading platform.
-      A mentor that makes you a better trader from the inside out.
+    <div class="k-preview-grid">
+
+      <div class="k-preview-card k-card k-card--elevated k-card--hover" data-reveal>
+        <div class="k-card-label"><i data-feather="bar-chart-2" width="14" height="14"></i> KAIZEN SCORE</div>
+        <div style="display:flex;justify-content:center;padding:12px 0;">
+          <%- include('partials/k-dial', { value: 76, size: 140, label: 'KAIZEN Score' }) %>
+        </div>
+        <p class="k-preview-desc">
+          Updates after every session. Measures how you traded —
+          not what you made.
+        </p>
+      </div>
+
+      <div class="k-preview-card k-card k-card--featured" data-reveal style="transition-delay:80ms;">
+        <div class="k-card-label"><span class="k-kanji k-kanji--sm">改</span> KAIZEN AI RESPONSE</div>
+        <div class="k-metric-label">Where the breakdown occurred</div>
+        <p class="k-ai-text">
+          The EURUSD entry came before your 30min MSS confirmed. You have
+          documented this exact sequence three times. Valid zone, valid
+          direction — premature entry. That nine-second gap between price
+          moving and your decision is where FOMO lives.
+        </p>
+        <div class="k-metric-label" style="margin-top:16px;">One thing to focus on</div>
+        <p class="k-ai-text">
+          Before your next EURUSD trade, set a timer for five minutes after
+          the 4H sweep. Do nothing. Enter only if MSS confirms.
+        </p>
+        <div class="k-ai-score-line">KAIZEN SCORE: <strong>61</strong></div>
+      </div>
+
+      <div class="k-preview-card k-card k-card--hover" data-reveal style="transition-delay:160ms;">
+        <div class="k-card-label"><i data-feather="activity" width="14" height="14"></i> PATTERN DETECTION</div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div class="k-chip k-chip--warn"><i data-feather="alert-triangle" width="13" height="13"></i> FOMO detected · 4 sessions</div>
+          <div class="k-chip k-chip--watch"><i data-feather="clock" width="13" height="13"></i> Premature entries · EURUSD</div>
+          <div class="k-chip k-chip--good"><i data-feather="check-circle" width="13" height="13"></i> AUDJPY compliance · improving</div>
+          <div class="k-chip k-chip--warn"><i data-feather="trending-down" width="13" height="13"></i> Friday compliance · −18%</div>
+        </div>
+        <p class="k-preview-desc">
+          Patterns your P&amp;L will never show. Only your journal can
+          reveal them.
+        </p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============================================================
+       HOW IT WORKS — the improvement loop
+  ============================================================ -->
+  <section id="how-it-works" class="k-section k-section--border k-grid-bg">
+    <div class="k-eyebrow k-eyebrow--center" data-reveal>How It Works</div>
+    <h2 class="k-title k-title--center" data-reveal>The improvement loop</h2>
+    <div style="display:flex;justify-content:center;margin-bottom:8px;" data-reveal>
+      <div class="k-loop">
+        <span>Plan</span><b>→</b>
+        <span>Trade</span><b>→</b>
+        <span>Reflect</span><b>→</b>
+        <span>Analyze</span><b>→</b>
+        <span>Improve</span><b>→</b>
+        <span>Repeat</span>
+      </div>
+    </div>
+
+    <div class="k-steps">
+
+      <div class="k-step" data-reveal>
+        <div class="k-step-num">01</div>
+        <div class="k-step-kicker">Plan</div>
+        <div class="k-step-icon"><i data-feather="sliders" width="22" height="22"></i></div>
+        <h3>Define Your System</h3>
+        <p>
+          Your setups, entry and exit rules, risk rules, and no-trade
+          conditions — set once, refined as you grow. This becomes the
+          standard KAIZEN measures you against. Your rules, not ours.
+        </p>
+      </div>
+
+      <div class="k-step" data-reveal style="transition-delay:60ms;">
+        <div class="k-step-num">02</div>
+        <div class="k-step-kicker">Trade</div>
+        <div class="k-step-icon"><i data-feather="edit-3" width="22" height="22"></i></div>
+        <h3>Log Every Session</h3>
+        <p>
+          Plan before you enter. Journal after you exit. What you saw,
+          what you did, what you felt. Honest notes, every time.
+        </p>
+      </div>
+
+      <div class="k-step" data-reveal style="transition-delay:120ms;">
+        <div class="k-step-num">03</div>
+        <div class="k-step-kicker">Reflect</div>
+        <div class="k-step-icon"><i data-feather="search" width="22" height="22"></i></div>
+        <h3>Face What Happened</h3>
+        <p>
+          Did you follow your plan? What went wrong? What did you learn?
+          Structured reflection is where a session becomes a lesson.
+        </p>
+      </div>
+
+      <div class="k-step k-step--featured" data-reveal style="transition-delay:180ms;">
+        <div class="k-step-num">04</div>
+        <div class="k-step-kicker">Analyze</div>
+        <div class="k-step-icon"><span class="k-kanji k-kanji--md">改</span></div>
+        <h3>KAIZEN AI Responds</h3>
+        <p>
+          The AI reads every entry against your rules and your full
+          history, identifies your patterns, and gives you specific,
+          actionable feedback. Never generic advice.
+        </p>
+      </div>
+
+      <div class="k-step" data-reveal style="transition-delay:240ms;">
+        <div class="k-step-num">05</div>
+        <div class="k-step-kicker">Improve</div>
+        <div class="k-step-icon"><i data-feather="trending-up" width="22" height="22"></i></div>
+        <h3>Watch Yourself Get Better</h3>
+        <p>
+          Your KAIZEN Score updates after every session, across five
+          dimensions. Improvement becomes visible — and over time, provable.
+        </p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============================================================
+       WHAT KAIZEN TRACKS
+  ============================================================ -->
+  <section class="k-section k-section--border">
+    <div class="k-tracks">
+
+      <div data-reveal>
+        <div class="k-eyebrow">What KAIZEN AI Tracks</div>
+        <h2 class="k-title">The patterns you cannot see yourself</h2>
+        <p style="font-size:0.95rem;color:var(--text-secondary);line-height:1.85;margin:0 0 32px;">
+          KAIZEN AI learns from every session you log. Over time it builds
+          a behavioral profile specific to you — your triggers, your
+          tendencies, your blind spots — and surfaces them with data you
+          cannot argue with.
+        </p>
+        <a href="/auth/register" class="btn-primary">Start Tracking Now</a>
+      </div>
+
+      <div data-reveal style="transition-delay:100ms;">
+
+        <div class="k-track-item">
+          <div class="k-track-icon"><i data-feather="check-square" width="16" height="16"></i></div>
+          <div>
+            <div class="k-track-title">Rule Compliance Rate</div>
+            <div class="k-track-desc">Tracks whether you follow your own defined entry and risk rules across every session.</div>
+          </div>
+        </div>
+
+        <div class="k-track-item">
+          <div class="k-track-icon"><i data-feather="zap" width="16" height="16"></i></div>
+          <div>
+            <div class="k-track-title">Emotional Trigger Patterns</div>
+            <div class="k-track-desc">Detects FOMO, revenge trading, and overconfidence in your writing before they become habits.</div>
+          </div>
+        </div>
+
+        <div class="k-track-item">
+          <div class="k-track-icon"><i data-feather="target" width="16" height="16"></i></div>
+          <div>
+            <div class="k-track-title">Technical Execution Quality</div>
+            <div class="k-track-desc">Identifies whether losses come from strategy errors or discipline failures — a critical distinction.</div>
+          </div>
+        </div>
+
+        <div class="k-track-item">
+          <div class="k-track-icon"><i data-feather="trending-up" width="16" height="16"></i></div>
+          <div>
+            <div class="k-track-title">KAIZEN Score Progression</div>
+            <div class="k-track-desc">Five dimensions, updated every session. A rising score means rising consistency — not luck.</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       WHO KAIZEN IS FOR
+  ============================================================ -->
+  <section class="k-section k-section--border">
+    <div class="k-eyebrow k-eyebrow--center" data-reveal>Who KAIZEN Is For</div>
+    <h2 class="k-title k-title--center" data-reveal>Built for traders who want to get better</h2>
+    <p class="k-sub" data-reveal>
+      Forex, crypto, stocks, indices — wherever you trade, KAIZEN works the
+      same way: it makes your behavior visible so you can change it.
     </p>
 
-    <!-- CTAs -->
-    <div class="hero-ctas">
-      <a href="/auth/register" class="btn-primary btn-hero">
-        Start Today
-      </a>
-      <a href="#how-it-works" class="btn-outline btn-hero">
-        See How It Works
-      </a>
-    </div>
+    <div class="k-audience-grid">
 
-    <!-- Trust stats row -->
-    <div class="trust-row">
-      <div class="trust-item">
-        <div class="trust-icon">
-          <i data-feather="shield" width="18" height="18"></i>
-        </div>
-        <div class="trust-label">AI-Powered Analysis</div>
-      </div>
-      <div class="trust-item">
-        <div class="trust-icon">
-          <i data-feather="link" width="18" height="18"></i>
-        </div>
-        <div class="trust-label">Dual On-Chain Reputation</div>
-      </div>
-      <div class="trust-item">
-        <div class="trust-icon">
-          <i data-feather="trending-up" width="18" height="18"></i>
-        </div>
-        <div class="trust-label">Discipline Score Tracking</div>
-      </div>
-      <div class="trust-item">
-        <div class="trust-icon">
-          <i data-feather="unlock" width="18" height="18"></i>
-        </div>
-        <div class="trust-label">100% Free to Start</div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============================================================
-       PRODUCT PREVIEW - shows what the product actually looks like
-  ============================================================ -->
-  <section class="preview-section">
-    <div class="section-eyebrow">Inside KAIZEN</div>
-    <h2 class="section-title">Built for traders</h2>
-    <p class="section-sub">
-      Every session logged becomes data. Every pattern detected becomes insight.
-      Every insight becomes discipline.
-    </p>
-
-    <!-- Three feature preview cards -->
-    <div class="preview-grid">
-
-      <div class="preview-card">
-        <div class="preview-card-icon">
-          <i data-feather="bar-chart-2" width="22" height="22"></i>
-        </div>
-        <div class="preview-card-label">Discipline Score</div>
-        <div class="preview-score">
-          <span class="score-number">76</span>
-          <span class="score-pct">%</span>
-        </div>
-        <div class="score-bar-wrap">
-          <div class="score-bar" style="width:76%;"></div>
-        </div>
-        <div class="preview-card-desc">
-          Updates after every session. Measures process compliance - not profit.
-        </div>
-      </div>
-
-      <div class="preview-card preview-card-featured">
-        <div class="preview-card-icon">
-          <i data-feather="cpu" width="22" height="22"></i>
-        </div>
-        <div class="preview-card-label">KAIZEN AI Response</div>
-        <div class="ai-response-preview">
-          <div class="ai-section-label">WHERE THE BREAKDOWN OCCURRED</div>
-          <p class="ai-section-text">
-            The EURUSD entry came before your 30min MSS confirmed. You have documented this exact sequence three times. Valid zone, valid direction - premature entry. That nine-second gap between price moving and your decision is where FOMO lives.
-          </p>
-          <div class="ai-section-label" style="margin-top:14px;">ONE THING TO FOCUS ON</div>
-          <p class="ai-section-text">
-            Before your next EURUSD trade, set a timer for five minutes after the 4H sweep. Do nothing. Enter only if MSS confirms.
-          </p>
-          <div class="ai-score-line">
-            DISCIPLINE SCORE: <strong>61%</strong>
-          </div>
-        </div>
-      </div>
-
-      <div class="preview-card">
-        <div class="preview-card-icon">
-          <i data-feather="activity" width="22" height="22"></i>
-        </div>
-        <div class="preview-card-label">Pattern Detection</div>
-        <div class="pattern-list">
-          <div class="pattern-item pattern-high">
-            <i data-feather="alert-triangle" width="13" height="13"></i>
-            FOMO detected · 4 sessions
-          </div>
-          <div class="pattern-item pattern-medium">
-            <i data-feather="clock" width="13" height="13"></i>
-            Premature entries · EURUSD
-          </div>
-          <div class="pattern-item pattern-positive">
-            <i data-feather="check-circle" width="13" height="13"></i>
-            AUDJPY compliance · improving
-          </div>
-          <div class="pattern-item pattern-medium">
-            <i data-feather="trending-down" width="13" height="13"></i>
-            Friday compliance · -18%
-          </div>
-        </div>
-        <div class="preview-card-desc" style="margin-top:12px;">
-          Patterns your P&L will never show. Only your journal can reveal them.
-        </div>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- ============================================================
-       HOW IT WORKS
-  ============================================================ -->
-  <section id="how-it-works" class="how-section">
-    <div class="section-eyebrow">How It Works</div>
-    <h2 class="section-title">Your discipline journey in four steps</h2>
-
-    <div class="steps-grid">
-
-      <div class="step-card">
-        <div class="step-number">01</div>
-        <div class="step-icon">
-          <i data-feather="sliders" width="24" height="24"></i>
-        </div>
-        <h3 class="step-title">Define Your Rules</h3>
-        <p class="step-desc">
-          Set your max risk, entry criteria, and trading rules during onboarding.
-          These become the standard KAIZEN holds you to permanently.
+      <div class="k-audience-card k-card k-card--hover" data-reveal>
+        <div class="k-audience-icon"><i data-feather="book-open" width="18" height="18"></i></div>
+        <div class="k-audience-tier">New Trader</div>
+        <h3 class="k-audience-level">Starting out</h3>
+        <p class="k-audience-desc">
+          Build the right habits before the bad ones form. Journal from
+          day one and you'll never have to unlearn recklessness.
         </p>
       </div>
 
-      <div class="step-card">
-        <div class="step-number">02</div>
-        <div class="step-icon">
-          <i data-feather="edit-3" width="24" height="24"></i>
-        </div>
-        <h3 class="step-title">Log Every Session</h3>
-        <p class="step-desc">
-          Write honest session notes after every trade or backtest.
-          What you saw, what you did, what you felt. KAIZEN reads all of it.
+      <div class="k-audience-card k-card k-card--hover" data-reveal style="transition-delay:60ms;">
+        <div class="k-audience-icon"><i data-feather="compass" width="18" height="18"></i></div>
+        <div class="k-audience-tier">Developing Trader</div>
+        <h3 class="k-audience-level">Finding your style</h3>
+        <p class="k-audience-desc">
+          You know the basics. Now find out what you actually do versus
+          what you think you do — and close the gap.
         </p>
       </div>
 
-      <div class="step-card step-card-featured">
-        <div class="step-number">03</div>
-        <div class="step-icon">
-          <i data-feather="cpu" width="24" height="24"></i>
-        </div>
-        <h3 class="step-title" style="color:var(--gold);">KAIZEN AI Responds</h3>
-        <p class="step-desc">
-          The AI analyzes your entry, cross-references your history, identifies
-          patterns, and gives you specific actionable feedback. Not generic advice.
-        </p>
-      </div>
-
-      <div class="step-card">
-        <div class="step-number">04</div>
-        <div class="step-icon">
-          <i data-feather="award" width="24" height="24"></i>
-        </div>
-        <h3 class="step-title">Track Your Growth</h3>
-        <p class="step-desc">
-          Your Discipline Score updates after every session. Watch it rise as
-          consistency builds. Earn verifiable on-chain reputation through ZA DAO.
-        </p>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- ============================================================
-       WHAT KAIZEN TRACKS - two column, mobile-safe
-  ============================================================ -->
-  <section class="tracks-section">
-    <div class="tracks-inner">
-
-      <div class="tracks-left">
-        <div class="section-eyebrow" style="justify-content:flex-start;">
-          <span style="width:24px;height:1px;background:var(--gold);display:inline-block;"></span>
-          What KAIZEN AI Tracks
-        </div>
-        <h2 class="section-title" style="text-align:left;margin-bottom:16px;">
-          The patterns you cannot see yourself
-        </h2>
-        <p style="font-size:0.95rem;color:var(--text-secondary);line-height:1.85;margin-bottom:32px;">
-          KAIZEN AI learns from every session you log. Over time it builds a
-          behavioral profile specific to you: your triggers, your tendencies,
-          your blind spots and surfaces them with data you cannot argue with.
-        </p>
-        <a href="/auth/register" class="btn-primary">
-          Start Tracking Now
-        </a>
-      </div>
-
-      <div class="tracks-right">
-
-        <div class="track-item">
-          <div class="track-icon">
-            <i data-feather="check-square" width="16" height="16"></i>
-          </div>
-          <div>
-            <div class="track-title">Rule Compliance Rate</div>
-            <div class="track-desc">Tracks whether you follow your own defined entry and risk rules across every session.</div>
-          </div>
-        </div>
-
-        <div class="track-item">
-          <div class="track-icon">
-            <i data-feather="zap" width="16" height="16"></i>
-          </div>
-          <div>
-            <div class="track-title">Emotional Trigger Patterns</div>
-            <div class="track-desc">Detects FOMO, revenge trading, and overconfidence in your writing before they become habits.</div>
-          </div>
-        </div>
-
-        <div class="track-item">
-          <div class="track-icon">
-            <i data-feather="target" width="16" height="16"></i>
-          </div>
-          <div>
-            <div class="track-title">Technical Execution Quality</div>
-            <div class="track-desc">Identifies whether losses come from strategy errors or discipline failures with critical distinction.</div>
-          </div>
-        </div>
-
-        <div class="track-item">
-          <div class="track-icon">
-            <i data-feather="trending-up" width="16" height="16"></i>
-          </div>
-          <div>
-            <div class="track-title">Discipline Score Progression</div>
-            <div class="track-desc">Your score updates after every session. Rising score means rising consistency not luck.</div>
-          </div>
-        </div>
-
-        <div class="track-item track-item-blue">
-          <div class="track-icon track-icon-blue">
-            <i data-feather="link" width="16" height="16"></i>
-          </div>
-          <div>
-            <div class="track-title">On-Chain Reputation via ZA DAO & Mantle</div>
-            <div class="track-desc">Your discipline milestones become verifiable on-chain. Proof of consistency that follows you across Web3.</div>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- ============================================================
-       WHO IS KAIZEN FOR
-  ============================================================ -->
-  <section class="audience-section">
-    <div style="text-align:center;margin-bottom:60px;">
-      <h2 class="section-title">Built for serious traders</h2>
-      <p class="section-sub">
-        Whether you trade Forex, Crypto, Stocks, or Indices - if you have a
-        strategy and struggle with consistent execution, KAIZEN is for you.
-      </p>
-    </div>
-
-    <div class="audience-grid">
-
-      <div class="audience-card">
-        <div class="audience-icon">
-          <i data-feather="user" width="20" height="20"></i>
-        </div>
-        <div class="audience-tier">Developing Trader</div>
-        <h3 class="audience-level">2 years experience</h3>
-        <p class="audience-desc">
-          Build the right habits from the beginning. KAIZEN prevents the bad
-          behavioral patterns that take most traders years to identify and fix.
-        </p>
-      </div>
-
-      <div class="audience-card audience-card-featured">
-        <div class="audience-icon">
-          <i data-feather="trending-up" width="20" height="20"></i>
-        </div>
-        <div class="audience-tier">Consistent Trader</div>
-        <h3 class="audience-level">2-5 years experience</h3>
-        <p class="audience-desc">
+      <div class="k-audience-card k-card k-card--featured" data-reveal style="transition-delay:120ms;">
+        <div class="k-audience-icon"><i data-feather="trending-up" width="18" height="18"></i></div>
+        <div class="k-audience-tier">Consistent Trader</div>
+        <h3 class="k-audience-level">2–5 years experience</h3>
+        <p class="k-audience-desc">
           You have a strategy. The problem is executing it consistently.
-          KAIZEN gives you data on exactly where and why your discipline
-          breaks and fixes it.
+          KAIZEN shows you exactly where and why your discipline breaks.
         </p>
       </div>
 
-      <div class="audience-card">
-        <div class="audience-icon">
-          <i data-feather="award" width="20" height="20"></i>
-        </div>
-        <div class="audience-tier">Prop Firm Trader</div>
-        <h3 class="audience-level">Funded or seeking funding</h3>
-        <p class="audience-desc">
-          Prop firms fund discipline, not luck. KAIZEN builds and verifies
-          your behavioral track record on-chain proof that you follow
-          your rules under pressure.
+      <div class="k-audience-card k-card k-card--hover" data-reveal style="transition-delay:180ms;">
+        <div class="k-audience-icon"><i data-feather="award" width="18" height="18"></i></div>
+        <div class="k-audience-tier">Prop Firm Trader</div>
+        <h3 class="k-audience-level">Funded or seeking funding</h3>
+        <p class="k-audience-desc">
+          Prop firms fund discipline, not luck. Build a verifiable
+          behavioral record that proves you follow your rules under
+          pressure.
         </p>
       </div>
 
     </div>
 
     <!-- Final CTA -->
-    <div class="final-cta">
-      <div class="final-cta-glow"></div>
-      <div class="final-cta-inner">
-        <div class="section-eyebrow" style="justify-content:center;">
-          <span style="width:32px;height:1px;background:var(--gold);display:inline-block;"></span>
-          Start Your Journey
-          <span style="width:32px;height:1px;background:var(--gold);display:inline-block;"></span>
-        </div>
-        <h2 class="final-cta-headline">
-          Your discipline is<br>
-          <span style="color:var(--gold);">your edge.</span>
-        </h2>
-        <p class="final-cta-sub">
-          No signals. No shortcuts.
-          Just honest feedback that makes you a better trader.
-        </p>
-        <div class="final-cta-btns">
-          <a href="/auth/register" class="btn-primary btn-hero">
-            Create Account
-          </a>
-          <a href="/about" class="btn-outline btn-hero">
-            Learn More
-          </a>
-        </div>
+    <div class="k-final-cta" style="margin-top:72px;" data-reveal>
+      <div class="k-eyebrow k-eyebrow--center">Start Your Journey</div>
+      <h2 class="k-cta-h">
+        Your discipline is<br>
+        <span class="k-gold">your edge.</span>
+      </h2>
+      <p class="k-cta-sub">
+        No signals. No shortcuts. Just honest feedback that makes you
+        a better trader.
+      </p>
+      <div class="k-cta-btns">
+        <a href="/auth/register" class="btn-primary k-btn-lg">Create Account</a>
+        <a href="/about" class="btn-outline k-btn-lg">Learn More</a>
       </div>
     </div>
 
@@ -396,530 +362,45 @@
 
   <%- include('partials/footer') %>
   <script src="/js/app.js"></script>
-
+  <script src="/js/v2-reveal.js"></script>
+  <script>if (window.feather) feather.replace();</script>
   <script>
-    // Initialise Feather Icons
-    feather.replace();
+    // Hero typing reveal — the promise types itself out on load.
+    // prefers-reduced-motion: hero renders instantly (untouched).
+    (function () {
+      var h = document.querySelector('.k-hero-h1');
+      if (!h) return;
+      var reduced = window.matchMedia &&
+        window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (reduced) return;
+      var lines = [
+        { text: 'Most traders know', gold: false },
+        { text: 'their rules.', gold: false },
+        { text: 'Few follow them.', gold: true }
+      ];
+      var spans = [];
+      h.innerHTML = '';
+      function ensureLine(i) {
+        if (spans[i]) return spans[i];
+        if (i > 0) h.appendChild(document.createElement('br'));
+        var sp = document.createElement('span');
+        if (lines[i].gold) sp.className = 'k-gold';
+        h.appendChild(sp);
+        spans[i] = sp;
+        return sp;
+      }
+      var li = 0, ci = 0;
+      function tick() {
+        if (li >= lines.length) return;
+        var sp = ensureLine(li);
+        ci += 1;
+        sp.textContent = lines[li].text.slice(0, ci);
+        if (ci >= lines[li].text.length) { li += 1; ci = 0; setTimeout(tick, 420); return; }
+        setTimeout(tick, 38);
+      }
+      h.style.minHeight = '3.6em'; // reserve space while typing (no layout jump)
+      setTimeout(tick, 450);
+    })();
   </script>
-
-  <style>
-    /* â”€â”€ Animations â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
-    @keyframes pulse {
-      0%,100% { box-shadow:0 0 0 0 rgba(74,222,128,0.4); }
-      50%      { box-shadow:0 0 0 8px rgba(74,222,128,0); }
-    }
-
-    /* â”€â”€ Shared section helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
-    .section-eyebrow {
-      font-family:'DM Mono',monospace;
-      font-size:0.68rem;
-      letter-spacing:0.2em;
-      text-transform:uppercase;
-      color:var(--gold);
-      margin-bottom:14px;
-      display:flex;
-      align-items:center;
-      gap:10px;
-      justify-content:center;
-    }
-    .section-title {
-      font-size:clamp(1.8rem,4vw,3rem);
-      font-weight:700;
-      color:var(--text-primary);
-      line-height:1.1;
-      text-align:center;
-      margin-bottom:16px;
-    }
-    .section-sub {
-      font-size:0.95rem;
-      color:var(--text-secondary);
-      max-width:520px;
-      margin:0 auto 48px;
-      line-height:1.85;
-      text-align:center;
-    }
-
-    /* â”€â”€ HERO â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
-    .hero-section {
-      min-height:100vh;
-      display:flex;
-      flex-direction:column;
-      justify-content:center;
-      align-items:flex-start;
-      padding:100px 60px 80px;
-      position:relative;
-      overflow:hidden;
-      max-width:1200px;
-      margin:0 auto;
-    }
-    .hero-glow {
-      position:absolute;
-      pointer-events:none;
-      border-radius:50%;
-    }
-    .hero-glow-1 {
-      top:20%;right:10%;
-      width:500px;height:500px;
-      background:radial-gradient(ellipse,rgba(201,168,76,0.07),transparent 70%);
-    }
-    .hero-glow-2 {
-      bottom:20%;left:5%;
-      width:400px;height:400px;
-      background:radial-gradient(ellipse,rgba(59,130,246,0.04),transparent 70%);
-    }
-    .live-badge {
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      font-family:'DM Mono',monospace;
-      font-size:0.68rem;
-      letter-spacing:0.15em;
-      text-transform:uppercase;
-      color:var(--gold);
-      border:1px solid rgba(201,168,76,0.25);
-      background:rgba(201,168,76,0.05);
-      padding:7px 18px;
-      margin-bottom:40px;
-    }
-    .live-dot {
-      width:6px;height:6px;
-      border-radius:50%;
-      background:#4ADE80;
-      box-shadow:0 0 8px rgba(74,222,128,0.6);
-      animation:pulse 2s infinite;
-      flex-shrink:0;
-    }
-    .hero-headline {
-      font-family:'DM Mono',monospace;
-      font-size:clamp(2.8rem,6vw,5.5rem);
-      font-weight:700;
-      line-height:1.05;
-      letter-spacing:-0.02em;
-      color:var(--text-primary);
-      margin-bottom:28px;
-      max-width:800px;
-    }
-    .hero-sub {
-      font-size:1.15rem;
-      color:var(--text-secondary);
-      max-width:560px;
-      line-height:1.85;
-      margin-bottom:16px;
-    }
-    .hero-sub2 {
-      font-size:0.95rem;
-      color:var(--ash);
-      max-width:500px;
-      line-height:1.8;
-      margin-bottom:48px;
-    }
-    .hero-ctas {
-      display:flex;
-      gap:14px;
-      flex-wrap:wrap;
-      margin-bottom:64px;
-    }
-    .btn-hero {
-      padding:16px 40px;
-      font-size:0.85rem;
-    }
-    .trust-row {
-      display:flex;
-      gap:32px;
-      flex-wrap:wrap;
-      padding-top:40px;
-      border-top:1px solid var(--border);
-    }
-    .trust-item {
-      display:flex;
-      align-items:center;
-      gap:10px;
-    }
-    .trust-icon {
-      width:32px;height:32px;
-      border:1px solid rgba(201,168,76,0.2);
-      background:rgba(201,168,76,0.04);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      color:var(--gold);
-      flex-shrink:0;
-    }
-    .trust-label {
-      font-family:'DM Mono',monospace;
-      font-size:0.6rem;
-      letter-spacing:0.1em;
-      text-transform:uppercase;
-      color:var(--ash);
-    }
-
-    /* â”€â”€ PRODUCT PREVIEW â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
-    .preview-section {
-      padding:100px 60px;
-      border-top:1px solid var(--border);
-      max-width:1200px;
-      margin:0 auto;
-    }
-    .preview-grid {
-      display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-      gap:2px;
-    }
-    .preview-card {
-      background:var(--bg-card);
-      border:1px solid var(--border);
-      padding:28px 24px;
-    }
-    .preview-card-featured {
-      border-color:rgba(201,168,76,0.25);
-      background:linear-gradient(160deg,var(--bg-card),rgba(201,168,76,0.03));
-    }
-    .preview-card-icon {
-      width:36px;height:36px;
-      border:1px solid rgba(201,168,76,0.2);
-      background:rgba(201,168,76,0.05);
-      display:flex;align-items:center;justify-content:center;
-      color:var(--gold);
-      margin-bottom:14px;
-    }
-    .preview-card-label {
-      font-family:'DM Mono',monospace;
-      font-size:0.6rem;
-      letter-spacing:0.15em;
-      text-transform:uppercase;
-      color:var(--ash);
-      margin-bottom:16px;
-    }
-    .preview-card-desc {
-      font-size:0.82rem;
-      color:var(--text-secondary);
-      line-height:1.7;
-      margin-top:16px;
-    }
-    /* Score preview */
-    .preview-score {
-      display:flex;
-      align-items:baseline;
-      gap:4px;
-      margin-bottom:10px;
-    }
-    .score-number {
-      font-family:'DM Mono',monospace;
-      font-size:3rem;
-      font-weight:700;
-      color:var(--gold);
-      line-height:1;
-    }
-    .score-pct {
-      font-family:'DM Mono',monospace;
-      font-size:1.2rem;
-      color:var(--gold);
-    }
-    .score-bar-wrap {
-      height:4px;
-      background:rgba(201,168,76,0.1);
-      margin-bottom:4px;
-    }
-    .score-bar {
-      height:100%;
-      background:var(--gold);
-    }
-    /* AI response preview */
-    .ai-response-preview {
-      background:var(--bg-surface);
-      border-left:2px solid var(--gold);
-      padding:14px 16px;
-    }
-    .ai-section-label {
-      font-family:'DM Mono',monospace;
-      font-size:0.55rem;
-      letter-spacing:0.12em;
-      text-transform:uppercase;
-      color:var(--ash);
-      margin-bottom:6px;
-    }
-    .ai-section-text {
-      font-size:0.8rem;
-      color:var(--ash-light);
-      line-height:1.75;
-      margin:0;
-    }
-    .ai-score-line {
-      font-family:'DM Mono',monospace;
-      font-size:0.7rem;
-      color:var(--gold);
-      margin-top:14px;
-      padding-top:10px;
-      border-top:1px solid var(--border);
-    }
-    /* Pattern list */
-    .pattern-list {
-      display:flex;
-      flex-direction:column;
-      gap:8px;
-    }
-    .pattern-item {
-      display:flex;
-      align-items:center;
-      gap:8px;
-      font-family:'DM Mono',monospace;
-      font-size:0.72rem;
-      letter-spacing:0.04em;
-      padding:8px 12px;
-      border:1px solid var(--border);
-    }
-    .pattern-high   { color:#F87171;border-color:rgba(248,113,113,0.2);background:rgba(248,113,113,0.04); }
-    .pattern-medium { color:#FBBF24;border-color:rgba(251,191,36,0.2);background:rgba(251,191,36,0.04); }
-    .pattern-positive { color:#4ADE80;border-color:rgba(74,222,128,0.2);background:rgba(74,222,128,0.04); }
-
-    /* â”€â”€ HOW IT WORKS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
-    .how-section {
-      padding:100px 60px;
-      border-top:1px solid var(--border);
-      background:linear-gradient(180deg,transparent,rgba(201,168,76,0.015),transparent);
-      max-width:1200px;
-      margin:0 auto;
-    }
-    .steps-grid {
-      display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-      gap:2px;
-      margin-top:60px;
-    }
-    .step-card {
-      background:var(--bg-card);
-      border:1px solid var(--border);
-      padding:36px 28px;
-      position:relative;
-    }
-    .step-card-featured {
-      border-color:rgba(201,168,76,0.25);
-    }
-    .step-number {
-      font-family:'DM Mono',monospace;
-      font-size:3rem;
-      font-weight:700;
-      color:rgba(201,168,76,0.08);
-      position:absolute;
-      top:16px;right:20px;
-      line-height:1;
-    }
-    .step-icon {
-      width:40px;height:40px;
-      border:1px solid rgba(201,168,76,0.2);
-      background:rgba(201,168,76,0.05);
-      display:flex;align-items:center;justify-content:center;
-      color:var(--gold);
-      margin-bottom:18px;
-    }
-    .step-title {
-      font-size:1rem;
-      font-weight:700;
-      color:var(--text-primary);
-      margin-bottom:10px;
-    }
-    .step-desc {
-      font-size:0.85rem;
-      color:var(--text-secondary);
-      line-height:1.75;
-    }
-
-    /* â”€â”€ WHAT KAIZEN TRACKS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
-    .tracks-section {
-      padding:100px 60px;
-      border-top:1px solid var(--border);
-      max-width:1200px;
-      margin:0 auto;
-    }
-    .tracks-inner {
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:80px;
-      align-items:center;
-    }
-    .tracks-right {
-      display:flex;
-      flex-direction:column;
-      gap:2px;
-    }
-    .track-item {
-      background:var(--bg-card);
-      border:1px solid var(--border);
-      padding:18px 20px;
-      display:flex;
-      gap:14px;
-      align-items:flex-start;
-    }
-    .track-item-blue {
-      border-color:rgba(59,130,246,0.2);
-    }
-    .track-icon {
-      width:28px;height:28px;
-      border:1px solid rgba(201,168,76,0.2);
-      background:rgba(201,168,76,0.05);
-      display:flex;align-items:center;justify-content:center;
-      color:var(--gold);
-      flex-shrink:0;
-      margin-top:2px;
-    }
-    .track-icon-blue {
-      border-color:rgba(59,130,246,0.2);
-      background:rgba(59,130,246,0.05);
-      color:var(--blue);
-    }
-    .track-title {
-      font-weight:700;
-      font-size:0.88rem;
-      color:var(--text-primary);
-      margin-bottom:4px;
-    }
-    .track-desc {
-      font-size:0.8rem;
-      color:var(--text-secondary);
-      line-height:1.65;
-    }
-
-    /* â”€â”€ AUDIENCE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
-    .audience-section {
-      padding:100px 60px;
-      border-top:1px solid var(--border);
-      max-width:1200px;
-      margin:0 auto;
-    }
-    .audience-grid {
-      display:grid;
-      grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
-      gap:2px;
-      margin-bottom:60px;
-    }
-    .audience-card {
-      background:var(--bg-card);
-      border:1px solid var(--border);
-      padding:32px 28px;
-    }
-    .audience-card-featured {
-      border-color:rgba(201,168,76,0.2);
-    }
-    .audience-icon {
-      width:36px;height:36px;
-      border:1px solid rgba(201,168,76,0.2);
-      background:rgba(201,168,76,0.05);
-      display:flex;align-items:center;justify-content:center;
-      color:var(--gold);
-      margin-bottom:14px;
-    }
-    .audience-tier {
-      font-family:'DM Mono',monospace;
-      font-size:0.6rem;
-      letter-spacing:0.15em;
-      text-transform:uppercase;
-      color:var(--gold);
-      margin-bottom:10px;
-    }
-    .audience-level {
-      font-size:1rem;
-      font-weight:700;
-      color:var(--text-primary);
-      margin-bottom:10px;
-    }
-    .audience-desc {
-      font-size:0.85rem;
-      color:var(--text-secondary);
-      line-height:1.75;
-    }
-
-    /* â”€â”€ FINAL CTA â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
-    .final-cta {
-      text-align:center;
-      padding:80px 40px;
-      border:1px solid rgba(201,168,76,0.2);
-      background:linear-gradient(135deg,rgba(201,168,76,0.04),rgba(59,130,246,0.02));
-      position:relative;
-      overflow:hidden;
-    }
-    .final-cta-glow {
-      position:absolute;
-      top:50%;left:50%;
-      transform:translate(-50%,-50%);
-      width:600px;height:300px;
-      background:radial-gradient(ellipse,rgba(201,168,76,0.06),transparent 70%);
-      pointer-events:none;
-    }
-    .final-cta-inner { position:relative;z-index:1; }
-    .final-cta-headline {
-      font-size:clamp(2rem,4vw,3.5rem);
-      font-weight:700;
-      color:var(--text-primary);
-      margin-bottom:16px;
-      line-height:1.1;
-    }
-    .final-cta-sub {
-      font-size:0.95rem;
-      color:var(--text-secondary);
-      max-width:440px;
-      margin:0 auto 36px;
-      line-height:1.8;
-    }
-    .final-cta-btns {
-      display:flex;
-      gap:14px;
-      justify-content:center;
-      flex-wrap:wrap;
-    }
-
-    /* â”€â”€ MOBILE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
-    @media (max-width:768px) {
-      .hero-section,
-      .preview-section,
-      .how-section,
-      .tracks-section,
-      .audience-section { padding:70px 24px !important; }
-
-      .hero-headline { font-size:2.6rem; }
-      .hero-sub { font-size:1rem; }
-
-      .trust-row {
-        gap:20px;
-      }
-      .trust-item {
-        width:calc(50% - 10px);
-      }
-
-      .tracks-inner {
-        grid-template-columns:1fr !important;
-        gap:48px !important;
-      }
-      .tracks-left {
-        text-align:center;
-      }
-      .tracks-left .section-eyebrow {
-        justify-content:center !important;
-      }
-      .tracks-left .section-title {
-        text-align:center;
-      }
-      .tracks-left .btn-primary {
-        display:block;
-        text-align:center;
-      }
-
-      .preview-grid,
-      .steps-grid,
-      .audience-grid {
-        grid-template-columns:1fr !important;
-      }
-
-      .final-cta { padding:60px 24px; }
-
-      .hero-ctas {
-        flex-direction:column;
-        width:100%;
-      }
-      .btn-hero {
-        text-align:center;
-      }
-    }
-  </style>
-
 </body>
 </html>

@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#C9A84C">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="images/kaizen-icon.png" type="image/png">
+<link rel="apple-touch-icon" href="images/kaizen-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<script src="js/feather.min.js"></script>
+<script>
+  // KAIZEN custom icon: "brain" for Psychology. Feather ships no brain glyph,
+  // so it is registered here in the same stroke style as the rest of the set
+  // (paths from the ISC-licensed lucide brain icon) and renders through the
+  // normal data-feather="brain" mechanism. Must run before feather.replace().
+  (function () {
+    try {
+      if (!window.feather || !feather.icons || !feather.icons.activity) return;
+      var Icon = feather.icons.activity.constructor;
+      feather.icons.brain = new Icon('brain', ['psychology', 'mind', 'mental'],
+        '<path d="M12 18V5"/>' +
+        '<path d="M15 13a4.17 4.17 0 0 1-3-4 4.17 4.17 0 0 1-3 4"/>' +
+        '<path d="M17.598 6.5A3 3 0 1 0 12 5a3 3 0 1 0-5.598 1.5"/>' +
+        '<path d="M17.997 5.125a4 4 0 0 1 2.526 5.77"/>' +
+        '<path d="M18 18a4 4 0 0 0 2-7.464"/>' +
+        '<path d="M19.967 17.483A4 4 0 1 1 12 18a4 4 0 1 1-7.967-.517"/>' +
+        '<path d="M6 18a4 4 0 0 1-2-7.464"/>' +
+        '<path d="M6.003 5.125a4 4 0 0 0-2.526 5.77"/>');
+    } catch (e) { /* brain icon unavailable: Psychology links still work */ }
+  })();
+</script>
+<script>
+  // Apply saved theme BEFORE first paint to avoid a flash of the wrong theme
+  (function () {
+    try {
+      var t = localStorage.getItem('kaizen-theme');
+      if (!t) {
+        t = (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches)
+          ? 'light' : 'dark';
+      }
+      if (t !== 'dark' && t !== 'light') t = 'dark';
+      document.documentElement.setAttribute('data-theme', t);
+    } catch (e) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+  })();
+</script>
+
+<script>
+(function(){try{var u=new URL(window.location.href);if(u.searchParams.has('wallet')){u.searchParams.delete('wallet');window.history.replaceState({},document.title,u.toString());}}catch(e){}})();
+</script>
+
+  <title>My Trading System · 改 KAIZEN</title>
+</head>
+<body class="k-app">
+  <!-- POPUP OVERLAY -->
+<div class="popup-overlay" id="popupOverlay" onclick="closePopup()"></div>
+
+<!-- SIDE POPUP MENU -->
+<div class="nav-popup" id="navPopup">
+  <div class="popup-header">
+    <span class="popup-logo">改 KAIZEN</span>
+    <button class="popup-close" onclick="closePopup()">×</button>
+  </div>
+
+  
+    <!-- IMPROVE -->
+    <div class="popup-section">
+      <div class="popup-section-label">Improve</div>
+      <a href="dashboard.html" class="popup-item"><span class="popup-item-icon"><i data-feather="activity" width="14" height="14"></i></span> Cockpit</a>
+      <a href="sessions.html" class="popup-item"><span class="popup-item-icon"><i data-feather="list" width="14" height="14"></i></span> Sessions</a>
+      <a href="leaderboard.html" class="popup-item"><span class="popup-item-icon"><i data-feather="trending-up" width="14" height="14"></i></span> My Progress</a>
+    </div>
+
+    <!-- COACH -->
+    <div class="popup-section">
+      <div class="popup-section-label">Coach</div>
+      <a href="kaizen-ai.html" class="popup-item"><span class="popup-item-icon"><i data-feather="message-circle" width="14" height="14"></i></span> KAIZEN AI</a>
+      <a href="psychology.html" class="popup-item"><span class="popup-item-icon"><i data-feather="brain" width="14" height="14"></i></span> Psychology</a>
+      <a href="memories.html" class="popup-item"><span class="popup-item-icon"><i data-feather="book-open" width="14" height="14"></i></span> Memories</a>
+    </div>
+
+    <!-- TOOLS -->
+    <div class="popup-section">
+      <div class="popup-section-label">Tools</div>
+      <a href="/chart" class="popup-item"><span class="popup-item-icon"><i data-feather="bar-chart-2" width="14" height="14"></i></span> Chart</a>
+      <a href="weekly-summary.html" class="popup-item"><span class="popup-item-icon"><i data-feather="file-text" width="14" height="14"></i></span> Weekly Report</a>
+      <a href="/news" class="popup-item"><span class="popup-item-icon"><i data-feather="globe" width="14" height="14"></i></span> Market News</a>
+    </div>
+
+    <!-- IDENTITY -->
+    <div class="popup-section">
+      <div class="popup-section-label">Identity</div>
+      <a href="reputation.html" class="popup-item"><span class="popup-item-icon"><i data-feather="link" width="14" height="14"></i></span> Wallets &amp; Verification</a>
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="popup-section">
+      <div class="popup-section-label">Settings</div>
+      <a href="trading-system.html" class="popup-item"><span class="popup-item-icon"><i data-feather="sliders" width="14" height="14"></i></span> My Trading System</a>
+    </div>
+
+    <!-- INFO -->
+    <div class="popup-section">
+      <div class="popup-section-label">Info</div>
+      <a href="support.html" class="popup-item">
+        <span class="popup-item-icon"><i data-feather="life-buoy" width="14" height="14"></i></span> Support
+      </a>
+      <a href="about.html" class="popup-item">
+        <span class="popup-item-icon"><i data-feather="info" width="14" height="14"></i></span> About Kaizen
+      </a>
+      <a href="whitepaper.html" class="popup-item">
+        <span class="popup-item-icon"><i data-feather="book" width="14" height="14"></i></span> Whitepaper
+      </a>
+      <a href="services.html" class="popup-item">
+        <span class="popup-item-icon"><i data-feather="grid" width="14" height="14"></i></span> Services
+      </a>
+      <a href="help.html" class="popup-item">
+        <span class="popup-item-icon"><i data-feather="help-circle" width="14" height="14"></i></span> Help Center
+      </a>
+    </div>
+
+    <div class="popup-section">
+      <a href="index.html" class="popup-item" style="color:var(--red);">
+        <span class="popup-item-icon"><i data-feather="log-out" width="14" height="14"></i></span> Log Out
+      </a>
+    </div>
+
+    <!-- USER FOOTER -->
+    <div class="popup-footer">
+      <div class="popup-user">
+        <div class="popup-avatar">
+          K
+        </div>
+        <div>
+          <div class="popup-username">Kaizen</div>
+          <div class="popup-user-email">kaizen@example.com</div>
+        </div>
+      </div>
+      <div class="popup-socials">
+        <a href="https://x.com/kaizenaibot"
+          target="_blank" class="popup-social-link" title="X (Twitter)">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+
+  
+</div>
+
+<!-- MAIN NAVBAR -->
+<nav class="navbar">
+  <a href="dashboard.html" class="nav-logo">改 KAIZEN</a>
+  <div class="nav-right">
+    <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
+      <span id="themeIcon">◐</span>
+    </button>
+    <button class="three-dot-btn" onclick="togglePopup()" title="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+
+
+<div class="k-ticker" id="k-ticker" role="region" aria-label="Announcement">
+  <button type="button" class="k-ticker-close" onclick="dismissTicker()" aria-label="Dismiss announcement">×</button>
+  <div class="k-ticker-track">
+    <span class="k-ticker-text"><b>KAIZEN V2 IS COMING</b> — the score gets five dimensions · plan → record → reflect sessions · your own Trading System · rolling out over the next 30 days</span>
+  </div>
+  <div class="k-ticker-badge">
+    <div class="k-ticker-megaphone"><i data-feather="megaphone" width="12" height="12"></i></div>
+    <span>Update</span>
+  </div>
+</div>
+<script>
+  (function () {
+    try {
+      if (sessionStorage.getItem('kaizen-ticker-dismissed') === '1') {
+        var t = document.getElementById('k-ticker');
+        if (t) t.style.display = 'none';
+      }
+    } catch (e) { /* private mode: keep showing */ }
+  })();
+  function dismissTicker() {
+    var t = document.getElementById('k-ticker');
+    if (t) t.style.display = 'none';
+    try { sessionStorage.setItem('kaizen-ticker-dismissed', '1'); } catch (e) {}
+  }
+</script>
+
+
+
+<!-- SECURITY MODAL -->
+<div class="modal-overlay" id="securityModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Security</h3>
+      <button class="modal-close" onclick="closeModal('securityModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="security-section">
+        <h4>Change Password</h4>
+        <form action="/auth/change-password" method="POST"
+          style="display:flex;flex-direction:column;gap:12px;">
+          <div class="form-group">
+            <label class="form-label">Current Password</label>
+            <input type="password" name="currentPassword"
+              class="form-input" placeholder="Enter current Password">
+          </div>
+          <div class="form-group">
+            <label class="form-label">New Password</label>
+            <input type="password" name="newPassword"
+              class="form-input" placeholder="Enter New Password">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Confirm Password</label>
+            <input type="password" name="confirmPassword"
+              class="form-input" placeholder="Confirm New Password">
+          </div>
+          <button type="submit" class="btn-primary">Update Password</button>
+        </form>
+      </div>
+      <div class="security-section" style="margin-top:24px;padding-top:24px;border-top:1px solid var(--border);">
+        <h4>Two-Factor Authentication</h4>
+        <p style="font-size:0.85rem;color:var(--ash);margin-bottom:14px;">
+          Add an extra layer of security to your account.
+        </p>
+        <button class="btn-outline btn-full">Enable 2FA — Coming Soon</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+  <main class="k-page">
+    <div class="k-container">
+
+      <div class="k-head">
+        <div>
+          <div class="k-eyebrow">SETTINGS · 改</div>
+          <h1 class="k-title">My Trading System</h1>
+          <p class="k-sub">The rules every session is measured against. Each save creates a new version — history is never overwritten, so past sessions stay judged by the rules you had at the time.</p>
+        </div>
+        <div class="k-versionchip">
+          <span class="k-versionnum">v3</span>
+          <span class="k-versionmeta">3 versions on record</span>
+        </div>
+      </div>
+
+      
+
+      <form method="POST" action="/settings/trading-system" class="k-formgrid">
+
+        <section class="k-formcard">
+          <h2 class="k-cardtitle">Identity</h2>
+          <div class="k-field">
+            <label class="k-fieldlabel" for="name">System name</label>
+            <input class="k-input" type="text" id="name" name="name" value="My Trading System" maxlength="60" placeholder="e.g. London Open Playbook">
+          </div>
+          <div class="k-field">
+            <label class="k-fieldlabel" for="marketConditions">Where it works — market conditions</label>
+            <textarea class="k-input" id="marketConditions" name="marketConditions" rows="3" placeholder="The conditions your system is built for. e.g. London session, trending pairs, post-news drift, high-liquidity hours…">London open — indices and metals only</textarea>
+          </div>
+        </section>
+
+        <section class="k-formcard">
+          <h2 class="k-cardtitle">Your edge</h2>
+          <div class="k-field">
+            <label class="k-fieldlabel" for="setups">Setups — one per line</label>
+            <textarea class="k-input" id="setups" name="setups" rows="4" placeholder="e.g.&#10;London open breakout&#10;Trend pullback to 20 EMA&#10;Range sweep reversal">4H sweep → 30min MSS
+Range fakeout</textarea>
+            <div class="k-fieldhint">These become the setups you pick from when planning a session.</div>
+          </div>
+          <div class="k-field">
+            <label class="k-fieldlabel" for="entryRules">Entry rules</label>
+            <textarea class="k-input" id="entryRules" name="entryRules" rows="3" placeholder="What must be true before you enter. If you can't point to it on the chart, it's not a rule.">MSS on 30min after liquidity sweep; no entry without confirmation candle close.</textarea>
+          </div>
+          <div class="k-field">
+            <label class="k-fieldlabel" for="exitRules">Exit rules</label>
+            <textarea class="k-input" id="exitRules" name="exitRules" rows="3" placeholder="Take-profit logic, and when you're out because the idea is wrong.">2R fixed or structure invalidation.</textarea>
+          </div>
+        </section>
+
+        <section class="k-formcard">
+          <h2 class="k-cardtitle">Risk rules</h2>
+          <p class="k-cardsub">Hard numbers. The engine reads these — breaking them is what moves your Risk dimension.</p>
+          <div class="k-fieldrow">
+            <div class="k-field">
+              <label class="k-fieldlabel" for="riskPerTrade">Risk per trade</label>
+              <input class="k-input" type="text" id="riskPerTrade" name="riskPerTrade" value="1" placeholder="e.g. 1% of account">
+            </div>
+            <div class="k-field">
+              <label class="k-fieldlabel" for="maxDailyTrades">Max trades per day</label>
+              <input class="k-input" type="text" id="maxDailyTrades" name="maxDailyTrades" value="2" placeholder="e.g. 3">
+            </div>
+          </div>
+          <div class="k-fieldrow">
+            <div class="k-field">
+              <label class="k-fieldlabel" for="dailyDrawdown">Daily drawdown limit</label>
+              <input class="k-input" type="text" id="dailyDrawdown" name="dailyDrawdown" value="3" placeholder="e.g. 3% then stop">
+            </div>
+            <div class="k-field">
+              <label class="k-fieldlabel" for="maxPositionSize">Max position size</label>
+              <input class="k-input" type="text" id="maxPositionSize" name="maxPositionSize" value="2 lots" placeholder="e.g. 0.5 lots">
+            </div>
+          </div>
+        </section>
+
+        <section class="k-formcard">
+          <h2 class="k-cardtitle">Discipline</h2>
+          <div class="k-field">
+            <label class="k-fieldlabel" for="tradingHours">Trading hours</label>
+            <input class="k-input" type="text" id="tradingHours" name="tradingHours" value="08:00–11:00 GMT" placeholder="e.g. 08:00–12:00 London, weekdays only">
+          </div>
+          <div class="k-field">
+            <label class="k-fieldlabel" for="noTradeConditions">No-trade conditions — one per line</label>
+            <textarea class="k-input" id="noTradeConditions" name="noTradeConditions" rows="3" placeholder="e.g.&#10;During red-folder news&#10;After two losses in a day&#10;Less than 6 hours of sleep">News within 30min</textarea>
+          </div>
+          <div class="k-field">
+            <label class="k-fieldlabel" for="psychologicalRules">Psychological rules — one per line</label>
+            <textarea class="k-input" id="psychologicalRules" name="psychologicalRules" rows="3" placeholder="e.g.&#10;No entries in the first 10 minutes&#10;Journal before the next trade, win or lose&#10;Stop after a 2R loss">No trading after two losses</textarea>
+          </div>
+        </section>
+
+        <section class="k-formcard">
+          <h2 class="k-cardtitle">Position rules</h2>
+          <div class="k-field">
+            <label class="k-fieldlabel" for="positionRules">How you size and manage positions</label>
+            <textarea class="k-input" id="positionRules" name="positionRules" rows="3" placeholder="Scaling in/out, partials, trailing, when you move a stop…"></textarea>
+          </div>
+        </section>
+
+        <section class="k-formcard k-savecard">
+          <div class="k-field">
+            <label class="k-fieldlabel" for="changeNote">What changed? (optional)</label>
+            <input class="k-input" type="text" id="changeNote" name="changeNote" maxlength="140" placeholder="e.g. Cut max daily trades from 5 to 3 — overtrading on losses">
+          </div>
+          <div class="k-actions">
+            <button type="submit" class="k-btn k-btn-primary">Save as new version</button>
+            <a class="k-btn k-btn-ghost" href="dashboard.html">Back to Cockpit</a>
+          </div>
+          <div class="k-fieldhint">Nothing is deleted. Your previous version stays on record, and sessions logged before this save stay measured against the rules you had then.</div>
+        </section>
+
+      </form>
+    </div>
+  </main>
+
+  <footer class="footer">
+  <div class="footer-inner">
+    <span class="footer-logo">改 KAIZEN</span>
+    <div style="display:flex;gap:20px;flex-wrap:wrap;align-items:center;">
+      <a href="privacy.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Privacy</a>
+      <a href="terms.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Terms</a>
+      <a href="about.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">About</a>
+      <a href="whitepaper.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Whitepaper</a>
+      <a href="help.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Help Center</a>
+      <a href="support.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Support</a>
+    </div>
+    <span class="footer-right">© 2026 KAIZEN</span>
+  </div>
+</footer>
+<script>if (window.feather) feather.replace();</script>
+
+  <script src="js/app.js"></script>
+  <script>if (window.feather) feather.replace();</script>
+</body>
+</html>

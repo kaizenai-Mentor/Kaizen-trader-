@@ -123,6 +123,17 @@ app.use((req, res, next) => {
   next();
 });
 
+// Site-wide announcement ticker (V2): one cached lookup, never blocks
+// a page — silently absent when there is no announcement or no DB.
+app.use(async (req, res, next) => {
+  try {
+    res.locals.announcement = await require('./services/announcements').getActiveAnnouncement();
+  } catch (e) {
+    res.locals.announcement = null;
+  }
+  next();
+});
+
 // Google Auth Routes
 app.get('/auth/google',
   passport.authenticate('google', { scope: ['profile', 'email'] })
@@ -163,48 +174,20 @@ app.get('/auth/google/callback',
   }
 );
 
-// Trading style update
-app.get('/settings/trading-style', (req, res) => {
+// Trading system (V2) — versioned rules editor
+const systemController = require('./controllers/systemController');
+app.get('/settings/trading-system', (req, res) => {
   if (!req.session.user) return res.redirect('/auth/login');
-  res.render('trading-style', { user: req.session.user, success: null });
+  systemController.getSystem(req, res);
+});
+app.post('/settings/trading-system', (req, res) => {
+  if (!req.session.user) return res.redirect('/auth/login');
+  systemController.postSystem(req, res);
 });
 
-app.post('/settings/trading-style', async (req, res) => {
-  if (!req.session.user) return res.redirect('/auth/login');
-  try {
-    const User = require('./models/User');
-    const {
-      riskPerTrade, dailyDrawdown, tradingEdge,
-      entryRule, stopLossRule, takeProfitRule,
-      emotionalTriggers, maxDailyTrades,
-      markets, maxPositionSize
-    } = req.body;
-
-    // Save old style as history
-    const user = await User.findById(req.session.user.id);
-    const oldStyle = { ...user.tradingStyle, savedAt: new Date() };
-
-    await User.findByIdAndUpdate(req.session.user.id, {
-      tradingStyle: {
-        riskPerTrade, dailyDrawdown, tradingEdge,
-        entryRule, stopLossRule, takeProfitRule,
-        emotionalTriggers, maxDailyTrades,
-        markets, maxPositionSize
-      },
-      $push: {
-        tradingStyleHistory: oldStyle
-      }
-    });
-
-    res.render('trading-style', {
-      user: { ...req.session.user },
-      success: 'Trading style updated. KAIZEN AI will use your new rules from the next session.'
-    });
-  } catch(err) {
-    console.error('Trading style update error:', err.message);
-    res.redirect('/dashboard');
-  }
-});
+// Legacy V1 route → V2 editor
+app.get('/settings/trading-style', (req, res) => res.redirect('/settings/trading-system'));
+app.post('/settings/trading-style', (req, res) => res.redirect(307, '/settings/trading-system'));
 
 // Routes
 const authRoutes = require('./routes/auth');
@@ -235,38 +218,11 @@ app.get('/', (req, res) => {
 
 const Memory = require('./models/Memory');
 
-app.get('/leaderboard', async (req, res) => {
+// My Progress (V2, spec §2.8) — progress regions + carried community ranking
+const progressController = require('./controllers/progressController');
+app.get('/leaderboard', (req, res) => {
   if (!req.session.user) return res.redirect('/auth/login');
-  try {
-    const User = require('./models/User');
-
-    const allTimeLeaders = await User.find({})
-      .sort({ disciplineScore: -1 })
-      .limit(20)
-      .select('username disciplineScore totalSessions streak');
-
-    const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-    const weeklyLeaders = await User.find({
-      updatedAt: { $gte: weekAgo }
-    })
-      .sort({ disciplineScore: -1 })
-      .limit(20)
-      .select('username disciplineScore totalSessions streak');
-
-    const currentUser = await User.findById(req.session.user.id);
-
-    res.render('leaderboard', {
-      user: req.session.user,
-      allTimeLeaders,
-      weeklyLeaders,
-      disciplineScore: currentUser ? currentUser.disciplineScore || 0 : 0,
-      totalSessions: currentUser ? currentUser.totalSessions || 0 : 0,
-      streak: currentUser ? currentUser.streak || 0 : 0
-    });
-  } catch (error) {
-    console.error('Leaderboard error:', error);
-    res.redirect('/dashboard');
-  }
+  progressController.getProgress(req, res);
 });
 
 app.get('/trader/:username', async (req, res) => {
@@ -334,256 +290,35 @@ app.get('/trader/:username', async (req, res) => {
 });
 
 // Kaizen AI page
+// KAIZEN AI — the trading-side conversation (V2, spec §3.2)
+const kaizenAiController = require('./controllers/kaizenAiController');
 app.get('/kaizen-ai', (req, res) => {
   if (!req.session.user) return res.redirect('/auth/login');
-  const aiResponse = req.session.aiResponse || null;
-  // Clear after reading
-  if (req.session.aiResponse) {
-    delete req.session.aiResponse;
-  }
-  res.render('kaizen-ai', {
-    user: req.session.user,
-    aiResponse: aiResponse
-  });
+  kaizenAiController.getIndex(req, res);
 });
-
-// Psychology Session
-app.get('/psychology', async (req, res) => {
+app.get('/kaizen-ai/t/:id', (req, res) => {
   if (!req.session.user) return res.redirect('/auth/login');
-  try {
-    const Memory = require('./models/Memory');
-    const sessions = await Memory.find({
-      userId: req.session.user.id,
-      type: 'psychology'
-    }).sort({ createdAt: -1 }).limit(10);
-    res.render('psychology', {
-      user: req.session.user,
-      sessions
-    });
-  } catch(err) {
-    res.render('psychology', {
-      user: req.session.user,
-      sessions: []
-    });
-  }
+  kaizenAiController.getThread(req, res);
+});
+app.post('/kaizen-ai/ask', (req, res) => {
+  if (!req.session.user) return res.status(401).json({ error: 'Not logged in.' });
+  kaizenAiController.postAsk(req, res);
 });
 
-app.post('/psychology/ask', async (req, res) => {
-  if (!req.session.user) return res.json({ response: 'Not logged in.' });
-
-  try {
-    const { message } = req.body;
-    const User = require('./models/User');
-    const Journal = require('./models/Journal');
-    const Memory = require('./models/Memory');
-
-    const user = await User.findById(req.session.user.id);
-    const recentJournals = await Journal.find({
-      userId: req.session.user.id
-    }).sort({ createdAt: -1 }).limit(10);
-
-    const allText = recentJournals
-      .map(j => j.notes.toLowerCase()).join(' ');
-    const fomoCount = (allText.match(/fomo/gi) || []).length;
-    const lossCount = (allText.match(/loss|sl|stop/gi) || []).length;
-    const winCount = (allText.match(/tp|win|profit/gi) || []).length;
-    const totalSessions = recentJournals.length;
-    const compliantCount = recentJournals
-      .filter(j => j.ruleCompliance).length;
-
-    let response = '';
-
-    if (process.env.ANTHROPIC_API_KEY) {
-      const https = require('https');
-
-      const systemPrompt = `You are Kaizen — an AI trading psychologist and mentor. 
-
-This is NOT a trade journal session. This is a psychology session where the trader is sharing how they feel about trading, their mindset, their fears, their confidence, or anything on their mind. Your role here is fundamentally different from trade analysis.
-
-TRADER PROFILE:
-Name: ${user.username}
-Discipline Score: ${user.disciplineScore || 0}%
-Total Sessions Logged: ${totalSessions}
-Rule Compliance Rate: ${totalSessions > 0 ? Math.round((compliantCount / totalSessions) * 100) : 0}%
-FOMO mentions across sessions: ${fomoCount}
-Loss mentions across sessions: ${lossCount}
-Known Emotional Triggers: ${user.tradingStyle?.emotionalTriggers || 'Not set'}
-Strategy: ${user.tradingStyle?.tradingEdge || 'Not set'}
-
-YOUR ROLE IN PSYCHOLOGY SESSIONS:
-1. Listen first — acknowledge what they said before anything else
-2. Ask ONE focused follow-up question that goes deeper
-3. Identify underlying beliefs about money, risk, self-worth, or fear that affect their trading
-4. Never give trade signals or market analysis here
-5. Connect their mindset to their behavioral data when relevant
-6. End with one practical psychological exercise they can do today
-7. Be warm but honest — like a trusted mentor who has seen everything
-8. Keep response under 250 words
-9. Never start with "I" — vary your opening every response
-
-TOPICS YOU HANDLE IN PSYCHOLOGY SESSIONS:
-- Fear of pulling the trigger on valid setups
-- Fear of success or sabotaging winning trades
-- Anxiety when opening charts
-- Dealing with losing streaks emotionally
-- Overconfidence after winning streaks
-- Identity as a trader
-- Pressure from financial need while trading
-- Comparing yourself to other traders
-- Imposter syndrome
-- Relationship between self-worth and trade outcomes`;
-
-      const payload = JSON.stringify({
-        model: 'claude-haiku-4-5',
-        max_tokens: 350,
-        system: systemPrompt,
-        messages: [{ role: 'user', content: message }]
-      });
-
-      const apiResponse = await new Promise((resolve, reject) => {
-        const req2 = https.request({
-          hostname: 'api.anthropic.com',
-          path: '/v1/messages',
-          method: 'POST',
-          headers: {
-            'x-api-key': process.env.ANTHROPIC_API_KEY,
-            'anthropic-version': '2023-06-01',
-            'content-type': 'application/json',
-            'content-length': Buffer.byteLength(payload)
-          }
-        }, (r) => {
-          let d = '';
-          r.on('data', c => d += c);
-          r.on('end', () => resolve(d));
-        });
-        req2.on('error', reject);
-        req2.setTimeout(15000, () => {
-          req2.destroy();
-          reject(new Error('Timeout'));
-        });
-        req2.write(payload);
-        req2.end();
-      });
-
-      const parsed = JSON.parse(apiResponse);
-      response = parsed.content?.[0]?.text || '';
-    }
-
-    // Fallback
-    if (!response) {
-      const msg = message.toLowerCase();
-      const hasAnxiety = /anxious|anxiety|nervous|scared|afraid/i.test(msg);
-      const hasFear = /fear|doubt|unsure|uncertain|confident/i.test(msg);
-      const hasLoss = /loss|losing|lost|blew|down/i.test(msg);
-      const hasPressure = /pressure|need|money|bills|financial/i.test(msg);
-
-      if (hasPressure) {
-        response = `Trading from financial need is one of the most psychologically dangerous states a trader can be in. When you need the money, every loss feels catastrophic and every missed trade feels like a failure. The market does not care about your bills.\n\nWhat would it feel like to trade an amount so small that losing it meant nothing? That emotional state — detached, process-focused, calm — is the state you need to replicate at your actual size.\n\nToday's exercise: Write down the worst realistic outcome of your next session. Then ask yourself: will I survive it? If yes, trade. If the answer creates panic, do not open the charts today.\n\nWhat is driving the financial pressure right now?`;
-      } else if (hasAnxiety) {
-        response = `The anxiety you feel before opening your charts is your nervous system responding to perceived threat. It is not weakness — it is biology. The question is not how to eliminate it but how to trade alongside it without letting it make your decisions.\n\nYour data shows ${fomoCount > 0 ? `FOMO has appeared ${fomoCount} times in your sessions` : 'you have been building your session history'}. Anxiety and FOMO often travel together — anxiety about missing a move triggers premature entries.\n\nToday's exercise: Before opening any chart, sit for two minutes and write down the single rule you will not break today. One rule. Read it after every trade.\n\nWhen does the anxiety feel strongest — before entry, during the trade, or after?`;
-      } else if (hasLoss) {
-        response = `Losses affect traders in two distinct ways — financially and psychologically. The financial impact is measurable. The psychological impact is often invisible and far more damaging because it shapes every decision that follows.\n\nHow you respond in the 30 minutes after a stop loss hit is one of the most important behavioral patterns in trading. Most revenge trades happen in that window.\n\nToday's exercise: After your next stop loss, close your platform for exactly 15 minutes before doing anything else. Set a timer. No exceptions. This single habit has saved more trading accounts than any strategy.\n\nHow long after a loss do you typically take your next trade?`;
-      } else if (hasFear) {
-        response = `Doubt before a valid setup is one of the most common and costly psychological patterns in trading. You do the analysis. You see the setup. You hesitate. The trade moves without you. Now you feel worse — and more likely to chase the next one.\n\nThe doubt is not telling you the trade is wrong. It is telling you that you do not yet fully trust your own process. That trust is built through repetition and data — exactly what your KAIZEN sessions are building.\n\nToday's exercise: On your next valid setup, write down your confidence level from 1 to 10 before entry. Write why. After the trade, write the actual outcome. Over 20 sessions you will see your doubt calibration improve.\n\nWhat specifically makes you doubt — the entry timing, the direction, or something else?`;
-      } else {
-        response = `Thank you for sharing that. What you're describing is something many serious traders carry but rarely talk about — and the fact that you're willing to examine it honestly is already more than most do.\n\nYour discipline score of ${user.disciplineScore || 0}% reflects your behavioral consistency across your logged sessions. But scores only capture what happens during trades. The mindset work you're doing right now — this conversation — is what happens between trades. Both matter.\n\nToday's exercise: Write one sentence that completes this: "The story I tell myself about my trading is..." Do not filter it. Whatever comes out first is usually the most honest.\n\nWhat made you want to start this psychology session today specifically?`;
-      }
-    }
-
-    // Calculate psychology score contribution
-    const psychScore = (() => {
-      const msg = message.toLowerCase();
-      const hasReflection = /feel|felt|think|realize|notice|aware|understand/i.test(msg);
-      const hasSpecific = /when|because|after|before|during|every time/i.test(msg);
-      const hasOwnership = /i did|i chose|i decided|my fault|i know|i realize/i.test(msg);
-      const hasAvoidance = /market|luck|should have|they|it just/i.test(msg);
-
-      let score = 50;
-      if (hasReflection) score += 15;
-      if (hasSpecific) score += 15;
-      if (hasOwnership) score += 20;
-      if (hasAvoidance) score -= 10;
-      return Math.min(100, Math.max(10, score));
-    })();
-
-    // Save to memories
-    try {
-      await Memory.create({
-        userId: req.session.user.id,
-        sessionData: message.substring(0, 300),
-        response,
-        asset: 'Psychology Session',
-        sessionScore: psychScore,
-        type: 'psychology'
-      });
-    } catch(memErr) {
-      console.error('Psychology memory save error:', memErr.message);
-    }
-
-    // Update discipline score to include psychology sessions
-    const allJournals = await Journal.find({
-      userId: req.session.user.id
-    });
-
-    const psychMemories = await Memory.find({
-      userId: req.session.user.id,
-      $or: [
-        { type: 'psychology' },
-        { asset: 'Psychology Session' }
-      ]
-    });
-
-    const journalCompliant = allJournals.filter(j => j.ruleCompliance).length;
-    const journalTotal = allJournals.length;
-
-    const journalScore = journalTotal > 0
-      ? Math.round((journalCompliant / journalTotal) * 100)
-      : 0;
-
-    const psychAvg = psychMemories.length > 0
-      ? Math.round(
-          psychMemories.reduce((sum, m) =>
-            sum + (m.sessionScore || 50), 0)
-          / psychMemories.length
-        )
-      : 0;
-
-    const newScore = psychMemories.length > 0
-      ? Math.round((journalScore * 0.7) + (psychAvg * 0.3))
-      : journalScore;
-
-    await User.findByIdAndUpdate(req.session.user.id, {
-      disciplineScore: newScore
-    });
-
-    req.session.user.disciplineScore = newScore;
-    await new Promise((resolve, reject) => {
-      req.session.save((err) => {
-        if (err) reject(err);
-        else resolve();
-      });
-    });
-
-    console.log(`Psychology score: ${psychAvg}% | Journal score: ${journalScore}% | Combined: ${newScore}%`);
-
-    // Check for new badges after psychology session
-    try {
-      const checkBadges = require('./config/checkBadges');
-      const newBadges = await checkBadges(req.session.user.id);
-      if (newBadges.length > 0) {
-        req.session.newBadges = newBadges;
-        await new Promise((resolve) => req.session.save(resolve));
-      }
-    } catch(e) {}
-
-    res.json({ response, psychScore });
-
-  } catch(err) {
-    console.error('Psychology session error:', err.message);
-    res.json({
-      response: '改 KAIZEN AI is temporarily unavailable. Try again in a moment.'
-    });
-  }
+// Psychology — the conversation surface (V2, spec §3.1)
+// ChatGPT-style threads; self-maintaining MindState; nothing deletable (D2).
+const psychController = require('./controllers/psychController');
+app.get('/psychology', (req, res) => {
+  if (!req.session.user) return res.redirect('/auth/login');
+  psychController.getIndex(req, res);
+});
+app.get('/psychology/t/:id', (req, res) => {
+  if (!req.session.user) return res.redirect('/auth/login');
+  psychController.getThread(req, res);
+});
+app.post('/psychology/ask', (req, res) => {
+  if (!req.session.user) return res.status(401).json({ error: 'Not logged in.' });
+  psychController.postAsk(req, res);
 });
 
 // Keeps on-chain activity fresh for every active, consented wallet.
@@ -863,113 +598,11 @@ End with one YES or WAIT recommendation.`,
 });
 
 // Weekly summary (can be triggered manually or by cron)
-app.get('/weekly-summary', async (req, res) => {
+// Weekly Report (V2, spec §4.2) — snapshots, sessions, coach letter
+const weeklyController = require('./controllers/weeklyController');
+app.get('/weekly-summary', (req, res) => {
   if (!req.session.user) return res.redirect('/auth/login');
-
-  try {
-    const Journal = require('./models/Journal');
-    const User = require('./models/User');
-
-    const sevenDaysAgo = new Date();
-    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-
-    const weekJournals = await Journal.find({
-      userId: req.session.user.id,
-      createdAt: { $gte: sevenDaysAgo }
-    }).sort({ createdAt: -1 });
-
-    const user = await User.findById(req.session.user.id);
-
-    if (weekJournals.length === 0) {
-      return res.render('weekly-summary', {
-        user,
-        summary: null,
-        weekJournals: []
-      });
-    }
-
-    const compliant = weekJournals.filter(j => j.ruleCompliance).length;
-    const weekScore = Math.round((compliant / weekJournals.length) * 100);
-    const allText = weekJournals.map(j => j.notes).join('\n\n');
-
-    let summary = '';
-
-    if (process.env.ANTHROPIC_API_KEY) {
-      try {
-        const https = require('https');
-        const payload = JSON.stringify({
-          model: 'claude-haiku-4-5',
-          max_tokens: 600,
-          system: `You are Kaizen AI generating a weekly trading discipline report for ${user.username}.
-
-Be specific. Be honest. Reference actual patterns from their sessions.
-Format with these sections:
-WEEK IN REVIEW
-[2-3 sentences summarizing the week]
-
-STRONGEST MOMENT
-[The best thing they did this week — be specific]
-
-BIGGEST PATTERN TO FIX
-[The one thing that most needs improvement — be direct]
-
-WEEK SCORE: ${weekScore}%
-NEXT WEEK FOCUS
-[One specific behavioral goal for next week]`,
-          messages: [{
-            role: 'user',
-            content: `Sessions this week: ${weekJournals.length}
-Compliant sessions: ${compliant}
-Rule compliance rate: ${weekScore}%
-
-All journal entries this week:
-${allText.substring(0, 2000)}`
-          }]
-        });
-
-        const response = await new Promise((resolve, reject) => {
-          const req2 = https.request({
-            hostname: 'api.anthropic.com',
-            path: '/v1/messages',
-            method: 'POST',
-            headers: {
-              'x-api-key': process.env.ANTHROPIC_API_KEY,
-              'anthropic-version': '2023-06-01',
-              'content-type': 'application/json',
-              'content-length': Buffer.byteLength(payload)
-            }
-          }, (r) => {
-            let d = '';
-            r.on('data', c => d += c);
-            r.on('end', () => resolve(d));
-          });
-          req2.on('error', reject);
-          req2.setTimeout(20000, () => { req2.destroy(); reject(new Error('Timeout')); });
-          req2.write(payload);
-          req2.end();
-        });
-
-        const parsed = JSON.parse(response);
-        summary = parsed.content?.[0]?.text || 'Summary unavailable.';
-      } catch (e) {
-        summary = `Week Score: ${weekScore}%\n\nYou logged ${weekJournals.length} sessions this week with ${compliant} compliant. Keep building consistency.`;
-      }
-    } else {
-      summary = `Week Score: ${weekScore}%\n\nYou logged ${weekJournals.length} sessions this week with ${compliant} compliant.`;
-    }
-
-    res.render('weekly-summary', {
-      user,
-      summary,
-      weekJournals,
-      weekScore,
-      compliant
-    });
-
-  } catch (err) {
-    console.error('Weekly summary error:', err.message);
-    res.redirect('/dashboard');
-  }
+  weeklyController.getWeekly(req, res);
 });
 
 // Test email route
@@ -1098,6 +731,7 @@ app.get('/support', (req, res) => res.render('support', { user: req.session.user
 app.get('/privacy', (req, res) => res.render('privacy', { user: req.session.user || null }));
 app.get('/terms', (req, res) => res.render('terms', { user: req.session.user || null }));
 app.get('/help', (req, res) => res.render('help', { user: req.session.user || null }));
+app.get('/whitepaper', (req, res) => res.render('whitepaper', { user: req.session.user || null }));
 
 // Support form submission
 app.post('/support/send', async (req, res) => {

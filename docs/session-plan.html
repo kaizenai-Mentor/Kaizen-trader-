@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#C9A84C">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="images/kaizen-icon.png" type="image/png">
+<link rel="apple-touch-icon" href="images/kaizen-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<script src="js/feather.min.js"></script>
+<script>
+  // KAIZEN custom icon: "brain" for Psychology. Feather ships no brain glyph,
+  // so it is registered here in the same stroke style as the rest of the set
+  // (paths from the ISC-licensed lucide brain icon) and renders through the
+  // normal data-feather="brain" mechanism. Must run before feather.replace().
+  (function () {
+    try {
+      if (!window.feather || !feather.icons || !feather.icons.activity) return;
+      var Icon = feather.icons.activity.constructor;
+      feather.icons.brain = new Icon('brain', ['psychology', 'mind', 'mental'],
+        '<path d="M12 18V5"/>' +
+        '<path d="M15 13a4.17 4.17 0 0 1-3-4 4.17 4.17 0 0 1-3 4"/>' +
+        '<path d="M17.598 6.5A3 3 0 1 0 12 5a3 3 0 1 0-5.598 1.5"/>' +
+        '<path d="M17.997 5.125a4 4 0 0 1 2.526 5.77"/>' +
+        '<path d="M18 18a4 4 0 0 0 2-7.464"/>' +
+        '<path d="M19.967 17.483A4 4 0 1 1 12 18a4 4 0 1 1-7.967-.517"/>' +
+        '<path d="M6 18a4 4 0 0 1-2-7.464"/>' +
+        '<path d="M6.003 5.125a4 4 0 0 0-2.526 5.77"/>');
+    } catch (e) { /* brain icon unavailable: Psychology links still work */ }
+  })();
+</script>
+<script>
+  // Apply saved theme BEFORE first paint to avoid a flash of the wrong theme
+  (function () {
+    try {
+      var t = localStorage.getItem('kaizen-theme');
+      if (!t) {
+        t = (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches)
+          ? 'light' : 'dark';
+      }
+      if (t !== 'dark' && t !== 'light') t = 'dark';
+      document.documentElement.setAttribute('data-theme', t);
+    } catch (e) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+  })();
+</script>
+
+<script>
+(function(){try{var u=new URL(window.location.href);if(u.searchParams.has('wallet')){u.searchParams.delete('wallet');window.history.replaceState({},document.title,u.toString());}}catch(e){}})();
+</script>
+
+  <title>KAIZEN — New Session</title>
+</head>
+<body class="app-page">
+  <!-- POPUP OVERLAY -->
+<div class="popup-overlay" id="popupOverlay" onclick="closePopup()"></div>
+
+<!-- SIDE POPUP MENU -->
+<div class="nav-popup" id="navPopup">
+  <div class="popup-header">
+    <span class="popup-logo">改 KAIZEN</span>
+    <button class="popup-close" onclick="closePopup()">×</button>
+  </div>
+
+  
+    <!-- IMPROVE -->
+    <div class="popup-section">
+      <div class="popup-section-label">Improve</div>
+      <a href="dashboard.html" class="popup-item"><span class="popup-item-icon"><i data-feather="activity" width="14" height="14"></i></span> Cockpit</a>
+      <a href="sessions.html" class="popup-item"><span class="popup-item-icon"><i data-feather="list" width="14" height="14"></i></span> Sessions</a>
+      <a href="leaderboard.html" class="popup-item"><span class="popup-item-icon"><i data-feather="trending-up" width="14" height="14"></i></span> My Progress</a>
+    </div>
+
+    <!-- COACH -->
+    <div class="popup-section">
+      <div class="popup-section-label">Coach</div>
+      <a href="kaizen-ai.html" class="popup-item"><span class="popup-item-icon"><i data-feather="message-circle" width="14" height="14"></i></span> KAIZEN AI</a>
+      <a href="psychology.html" class="popup-item"><span class="popup-item-icon"><i data-feather="brain" width="14" height="14"></i></span> Psychology</a>
+      <a href="memories.html" class="popup-item"><span class="popup-item-icon"><i data-feather="book-open" width="14" height="14"></i></span> Memories</a>
+    </div>
+
+    <!-- TOOLS -->
+    <div class="popup-section">
+      <div class="popup-section-label">Tools</div>
+      <a href="/chart" class="popup-item"><span class="popup-item-icon"><i data-feather="bar-chart-2" width="14" height="14"></i></span> Chart</a>
+      <a href="weekly-summary.html" class="popup-item"><span class="popup-item-icon"><i data-feather="file-text" width="14" height="14"></i></span> Weekly Report</a>
+      <a href="/news" class="popup-item"><span class="popup-item-icon"><i data-feather="globe" width="14" height="14"></i></span> Market News</a>
+    </div>
+
+    <!-- IDENTITY -->
+    <div class="popup-section">
+      <div class="popup-section-label">Identity</div>
+      <a href="reputation.html" class="popup-item"><span class="popup-item-icon"><i data-feather="link" width="14" height="14"></i></span> Wallets &amp; Verification</a>
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="popup-section">
+      <div class="popup-section-label">Settings</div>
+      <a href="trading-system.html" class="popup-item"><span class="popup-item-icon"><i data-feather="sliders" width="14" height="14"></i></span> My Trading System</a>
+    </div>
+
+    <!-- INFO -->
+    <div class="popup-section">
+      <div class="popup-section-label">Info</div>
+      <a href="support.html" class="popup-item">
+        <span class="popup-item-icon"><i data-feather="life-buoy" width="14" height="14"></i></span> Support
+      </a>
+      <a href="about.html" class="popup-item">
+        <span class="popup-item-icon"><i data-feather="info" width="14" height="14"></i></span> About Kaizen
+      </a>
+      <a href="whitepaper.html" class="popup-item">
+        <span class="popup-item-icon"><i data-feather="book" width="14" height="14"></i></span> Whitepaper
+      </a>
+      <a href="services.html" class="popup-item">
+        <span class="popup-item-icon"><i data-feather="grid" width="14" height="14"></i></span> Services
+      </a>
+      <a href="help.html" class="popup-item">
+        <span class="popup-item-icon"><i data-feather="help-circle" width="14" height="14"></i></span> Help Center
+      </a>
+    </div>
+
+    <div class="popup-section">
+      <a href="index.html" class="popup-item" style="color:var(--red);">
+        <span class="popup-item-icon"><i data-feather="log-out" width="14" height="14"></i></span> Log Out
+      </a>
+    </div>
+
+    <!-- USER FOOTER -->
+    <div class="popup-footer">
+      <div class="popup-user">
+        <div class="popup-avatar">
+          K
+        </div>
+        <div>
+          <div class="popup-username">Kaizen</div>
+          <div class="popup-user-email">kaizen@example.com</div>
+        </div>
+      </div>
+      <div class="popup-socials">
+        <a href="https://x.com/kaizenaibot"
+          target="_blank" class="popup-social-link" title="X (Twitter)">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+
+  
+</div>
+
+<!-- MAIN NAVBAR -->
+<nav class="navbar">
+  <a href="dashboard.html" class="nav-logo">改 KAIZEN</a>
+  <div class="nav-right">
+    <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
+      <span id="themeIcon">◐</span>
+    </button>
+    <button class="three-dot-btn" onclick="togglePopup()" title="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+
+
+<div class="k-ticker" id="k-ticker" role="region" aria-label="Announcement">
+  <button type="button" class="k-ticker-close" onclick="dismissTicker()" aria-label="Dismiss announcement">×</button>
+  <div class="k-ticker-track">
+    <span class="k-ticker-text"><b>KAIZEN V2 IS COMING</b> — the score gets five dimensions · plan → record → reflect sessions · your own Trading System · rolling out over the next 30 days</span>
+  </div>
+  <div class="k-ticker-badge">
+    <div class="k-ticker-megaphone"><i data-feather="megaphone" width="12" height="12"></i></div>
+    <span>Update</span>
+  </div>
+</div>
+<script>
+  (function () {
+    try {
+      if (sessionStorage.getItem('kaizen-ticker-dismissed') === '1') {
+        var t = document.getElementById('k-ticker');
+        if (t) t.style.display = 'none';
+      }
+    } catch (e) { /* private mode: keep showing */ }
+  })();
+  function dismissTicker() {
+    var t = document.getElementById('k-ticker');
+    if (t) t.style.display = 'none';
+    try { sessionStorage.setItem('kaizen-ticker-dismissed', '1'); } catch (e) {}
+  }
+</script>
+
+
+
+<!-- SECURITY MODAL -->
+<div class="modal-overlay" id="securityModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Security</h3>
+      <button class="modal-close" onclick="closeModal('securityModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="security-section">
+        <h4>Change Password</h4>
+        <form action="/auth/change-password" method="POST"
+          style="display:flex;flex-direction:column;gap:12px;">
+          <div class="form-group">
+            <label class="form-label">Current Password</label>
+            <input type="password" name="currentPassword"
+              class="form-input" placeholder="Enter current Password">
+          </div>
+          <div class="form-group">
+            <label class="form-label">New Password</label>
+            <input type="password" name="newPassword"
+              class="form-input" placeholder="Enter New Password">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Confirm Password</label>
+            <input type="password" name="confirmPassword"
+              class="form-input" placeholder="Confirm New Password">
+          </div>
+          <button type="submit" class="btn-primary">Update Password</button>
+        </form>
+      </div>
+      <div class="security-section" style="margin-top:24px;padding-top:24px;border-top:1px solid var(--border);">
+        <h4>Two-Factor Authentication</h4>
+        <p style="font-size:0.85rem;color:var(--ash);margin-bottom:14px;">
+          Add an extra layer of security to your account.
+        </p>
+        <button class="btn-outline btn-full">Enable 2FA — Coming Soon</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+  <main class="k-flow">
+
+    <div class="k-stepstrip">
+      <span class="is-active">Plan</span><b>—</b>
+      <span>Record</span><b>—</b>
+      <span>Reflect</span>
+    </div>
+
+    <div class="k-eyebrow" style="margin-bottom:10px;">New Session — The Plan</div>
+    <h1 style="font-size:clamp(1.5rem,3.5vw,2.1rem);font-weight:700;color:var(--text-primary);line-height:1.15;margin:0 0 8px;">
+      Declare it before you do it.
+    </h1>
+    <p style="font-size:0.88rem;color:var(--text-secondary);line-height:1.75;margin:0 0 24px;">
+      This is what KAIZEN measures you against. Under a minute.
+    </p>
+
+    <!-- Session type -->
+    <div class="k-card" style="margin-bottom:14px;">
+      <div class="k-metric-label" style="margin-bottom:12px;">SESSION TYPE</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">
+        
+          <a href="session-plan.html" class="k-typecard is-active">
+            <div class="k-typecard-name">LIVE</div>
+            <div class="k-typecard-desc">Real execution, capital at risk</div>
+          </a>
+        
+          <a href="session-plan.html" class="k-typecard ">
+            <div class="k-typecard-name">BACKTEST</div>
+            <div class="k-typecard-desc">Practice on historical markets</div>
+          </a>
+        
+          <a href="session-plan.html" class="k-typecard ">
+            <div class="k-typecard-name">STUDY</div>
+            <div class="k-typecard-desc">Market analysis, no trade</div>
+          </a>
+        
+      </div>
+    </div>
+
+    <form action="/dashboard/sessions/plan" method="POST">
+      <input type="hidden" name="sessionType" value="LIVE">
+
+      
+        <div class="k-card k-formcard">
+          <div class="k-field">
+            <label class="k-fieldlabel">SETUP <span style="color:var(--text-faint);text-transform:none;letter-spacing:0;">— from your Trading System</span></label>
+            
+              <select name="setup" class="k-input">
+                
+                  <option value="4H sweep → 30min MSS">4H sweep → 30min MSS</option>
+                
+                  <option value="Range fakeout">Range fakeout</option>
+                
+                <option value="">Other / ad-hoc</option>
+              </select>
+            
+          </div>
+
+          <div class="k-field">
+            <label class="k-fieldlabel">ENTRY CONDITION</label>
+            <input type="text" name="entryCondition" class="k-input" placeholder="Price retests the demand zone">
+          </div>
+
+          <div class="k-field">
+            <label class="k-fieldlabel">INVALIDATION</label>
+            <input type="text" name="invalidation" class="k-input" placeholder="Below the 4H swing low">
+          </div>
+
+          <div class="k-field">
+            <label class="k-fieldlabel">RISK</label>
+            
+              <select name="predefinedRisk" class="k-input">
+                <option value="1%">1% — from your system</option>
+                <option value="">Different this time (say it in the record)</option>
+              </select>
+            
+          </div>
+
+          <div class="k-field">
+            <label class="k-fieldlabel">EMOTIONAL STATE</label>
+            <div class="k-chiprow">
+              
+                <label class="k-emochip"><input type="radio" name="emotionalState" value="CALM" checked><span>CALM</span></label>
+              
+                <label class="k-emochip"><input type="radio" name="emotionalState" value="FOCUSED" ><span>FOCUSED</span></label>
+              
+                <label class="k-emochip"><input type="radio" name="emotionalState" value="ANXIOUS" ><span>ANXIOUS</span></label>
+              
+                <label class="k-emochip"><input type="radio" name="emotionalState" value="FOMO" ><span>FOMO</span></label>
+              
+                <label class="k-emochip"><input type="radio" name="emotionalState" value="REVENGE" ><span>REVENGE</span></label>
+              
+            </div>
+          </div>
+
+          <div class="k-field">
+            <label class="k-fieldlabel">CONFIDENCE — <span id="conf-val" class="k-gold">7</span>/10</label>
+            <input type="range" name="confidence" min="1" max="10" value="7" class="k-slider" oninput="document.getElementById('conf-val').textContent=this.value">
+          </div>
+        </div>
+      
+
+      <div class="k-actions">
+        <button type="submit" class="btn-primary k-btn-lg">Save Plan</button>
+        <button type="submit" name="skip" value="1" class="btn-outline k-btn-lg">Skip — trade without a plan</button>
+      </div>
+      <p style="font-size:0.72rem;color:var(--ash);line-height:1.7;margin:14px 0 0;">
+        Skipping is allowed — this session will carry less Process evidence. KAIZEN will nudge you to plan next time.
+      </p>
+    </form>
+
+  </main>
+
+  <footer class="footer">
+  <div class="footer-inner">
+    <span class="footer-logo">改 KAIZEN</span>
+    <div style="display:flex;gap:20px;flex-wrap:wrap;align-items:center;">
+      <a href="privacy.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Privacy</a>
+      <a href="terms.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Terms</a>
+      <a href="about.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">About</a>
+      <a href="whitepaper.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Whitepaper</a>
+      <a href="help.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Help Center</a>
+      <a href="support.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Support</a>
+    </div>
+    <span class="footer-right">© 2026 KAIZEN</span>
+  </div>
+</footer>
+<script>if (window.feather) feather.replace();</script>
+
+  <script src="js/app.js"></script>
+  <script>if (window.feather) feather.replace();</script>
+</body>
+</html>

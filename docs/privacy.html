@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#C9A84C">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="images/kaizen-icon.png" type="image/png">
+<link rel="apple-touch-icon" href="images/kaizen-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<script src="js/feather.min.js"></script>
+<script>
+  // KAIZEN custom icon: "brain" for Psychology. Feather ships no brain glyph,
+  // so it is registered here in the same stroke style as the rest of the set
+  // (paths from the ISC-licensed lucide brain icon) and renders through the
+  // normal data-feather="brain" mechanism. Must run before feather.replace().
+  (function () {
+    try {
+      if (!window.feather || !feather.icons || !feather.icons.activity) return;
+      var Icon = feather.icons.activity.constructor;
+      feather.icons.brain = new Icon('brain', ['psychology', 'mind', 'mental'],
+        '<path d="M12 18V5"/>' +
+        '<path d="M15 13a4.17 4.17 0 0 1-3-4 4.17 4.17 0 0 1-3 4"/>' +
+        '<path d="M17.598 6.5A3 3 0 1 0 12 5a3 3 0 1 0-5.598 1.5"/>' +
+        '<path d="M17.997 5.125a4 4 0 0 1 2.526 5.77"/>' +
+        '<path d="M18 18a4 4 0 0 0 2-7.464"/>' +
+        '<path d="M19.967 17.483A4 4 0 1 1 12 18a4 4 0 1 1-7.967-.517"/>' +
+        '<path d="M6 18a4 4 0 0 1-2-7.464"/>' +
+        '<path d="M6.003 5.125a4 4 0 0 0-2.526 5.77"/>');
+    } catch (e) { /* brain icon unavailable: Psychology links still work */ }
+  })();
+</script>
+<script>
+  // Apply saved theme BEFORE first paint to avoid a flash of the wrong theme
+  (function () {
+    try {
+      var t = localStorage.getItem('kaizen-theme');
+      if (!t) {
+        t = (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches)
+          ? 'light' : 'dark';
+      }
+      if (t !== 'dark' && t !== 'light') t = 'dark';
+      document.documentElement.setAttribute('data-theme', t);
+    } catch (e) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+  })();
+</script>
+
+<script>
+(function(){try{var u=new URL(window.location.href);if(u.searchParams.has('wallet')){u.searchParams.delete('wallet');window.history.replaceState({},document.title,u.toString());}}catch(e){}})();
+</script>
+
+  <title>KAIZEN — Privacy Policy</title>
+</head>
+<body class="app-page">
+  <!-- POPUP OVERLAY -->
+<div class="popup-overlay" id="popupOverlay" onclick="closePopup()"></div>
+
+<!-- SIDE POPUP MENU -->
+<div class="nav-popup" id="navPopup">
+  <div class="popup-header">
+    <span class="popup-logo">改 KAIZEN</span>
+    <button class="popup-close" onclick="closePopup()">×</button>
+  </div>
+
+  
+    <!-- NOT LOGGED IN -->
+    <div class="popup-section">
+      <div class="popup-section-label">Get Started</div>
+    </div>
+    <div class="popup-auth-btns">
+      <a href="login.html" class="btn-primary btn-full">Log In</a>
+      <a href="register.html" class="btn-outline btn-full">Sign Up</a>
+    </div>
+
+    <div class="popup-section">
+      <div class="popup-section-label">Info</div>
+      <a href="about.html" class="popup-item">
+        <span class="popup-item-icon"><i data-feather="info" width="14" height="14"></i></span> About Kaizen
+      </a>
+      <a href="whitepaper.html" class="popup-item">
+        <span class="popup-item-icon"><i data-feather="book" width="14" height="14"></i></span> Whitepaper
+      </a>
+      <a href="services.html" class="popup-item">
+        <span class="popup-item-icon"><i data-feather="grid" width="14" height="14"></i></span> Services
+      </a>
+      <a href="help.html" class="popup-item">
+        <span class="popup-item-icon"><i data-feather="help-circle" width="14" height="14"></i></span> Help Center
+      </a>
+    </div>
+  
+</div>
+
+<!-- MAIN NAVBAR -->
+<nav class="navbar">
+  <a href="index.html" class="nav-logo">改 KAIZEN</a>
+  <div class="nav-right">
+    <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
+      <span id="themeIcon">◐</span>
+    </button>
+    <button class="three-dot-btn" onclick="togglePopup()" title="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+
+
+<div class="k-ticker" id="k-ticker" role="region" aria-label="Announcement">
+  <button type="button" class="k-ticker-close" onclick="dismissTicker()" aria-label="Dismiss announcement">×</button>
+  <div class="k-ticker-track">
+    <span class="k-ticker-text"><b>KAIZEN V2 IS COMING</b> — the score gets five dimensions · plan → record → reflect sessions · your own Trading System · rolling out over the next 30 days</span>
+  </div>
+  <div class="k-ticker-badge">
+    <div class="k-ticker-megaphone"><i data-feather="megaphone" width="12" height="12"></i></div>
+    <span>Update</span>
+  </div>
+</div>
+<script>
+  (function () {
+    try {
+      if (sessionStorage.getItem('kaizen-ticker-dismissed') === '1') {
+        var t = document.getElementById('k-ticker');
+        if (t) t.style.display = 'none';
+      }
+    } catch (e) { /* private mode: keep showing */ }
+  })();
+  function dismissTicker() {
+    var t = document.getElementById('k-ticker');
+    if (t) t.style.display = 'none';
+    try { sessionStorage.setItem('kaizen-ticker-dismissed', '1'); } catch (e) {}
+  }
+</script>
+
+
+
+<!-- SECURITY MODAL -->
+<div class="modal-overlay" id="securityModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Security</h3>
+      <button class="modal-close" onclick="closeModal('securityModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="security-section">
+        <h4>Change Password</h4>
+        <form action="/auth/change-password" method="POST"
+          style="display:flex;flex-direction:column;gap:12px;">
+          <div class="form-group">
+            <label class="form-label">Current Password</label>
+            <input type="password" name="currentPassword"
+              class="form-input" placeholder="Enter current Password">
+          </div>
+          <div class="form-group">
+            <label class="form-label">New Password</label>
+            <input type="password" name="newPassword"
+              class="form-input" placeholder="Enter New Password">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Confirm Password</label>
+            <input type="password" name="confirmPassword"
+              class="form-input" placeholder="Confirm New Password">
+          </div>
+          <button type="submit" class="btn-primary">Update Password</button>
+        </form>
+      </div>
+      <div class="security-section" style="margin-top:24px;padding-top:24px;border-top:1px solid var(--border);">
+        <h4>Two-Factor Authentication</h4>
+        <p style="font-size:0.85rem;color:var(--ash);margin-bottom:14px;">
+          Add an extra layer of security to your account.
+        </p>
+        <button class="btn-outline btn-full">Enable 2FA — Coming Soon</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+  <div class="legal-wrap">
+    <!-- Sticky TOC -->
+    <nav class="legal-toc" aria-label="Privacy sections">
+      <div class="legal-toc-title">Contents</div>
+      <a href="#p1">1 · Introduction</a>
+      <a href="#p2">2 · We Collect</a>
+      <a href="#p3">3 · How We Use</a>
+      <a href="#p4">4 · Third Parties</a>
+      <a href="#p5">5 · Security</a>
+      <a href="#p6">6 · Retention</a>
+      <a href="#p7">7 · Your Rights</a>
+      <a href="#p8">8 · Children</a>
+      <a href="#p9">9 · Cookies</a>
+      <a href="#p10">10 · Transfers</a>
+      <a href="#p11">11 · Changes</a>
+      <a href="#p12">12 · Contact</a>
+    </nav>
+
+    <main class="legal-body">
+      <div class="page-header">
+        <div>
+          <h1 style="color:var(--gold);">Privacy Policy</h1>
+          <p class="legal-updated">Last updated: September 2026</p>
+        </div>
+      </div>
+
+      <div class="legal-sec" id="p1">
+        <h3><span class="legal-n">01</span> Introduction</h3>
+        <p>
+          This Privacy Policy explains how KAIZEN ("we," "us," "our")
+          collects, uses, stores, and protects your information when you
+          use the Platform at kaizen-trader.onrender.com.
+        </p>
+        <p>
+          KAIZEN handles sensitive personal information, including your
+          trading behavior and, where you choose to share it, information
+          about your psychological state related to trading. We take this
+          responsibility seriously and aim to be fully transparent about
+          our data practices.
+        </p>
+      </div>
+
+      <div class="legal-sec" id="p2">
+        <h3><span class="legal-n">02</span> Information We Collect</h3>
+
+        <div class="legal-h4">Account Information</div>
+        <ul>
+          <li>Email address</li>
+          <li>Username</li>
+          <li>Password (stored as a secure hash, never in plain text)</li>
+          <li>Google account information, if you register or log in via Google OAuth (name, email, profile ID)</li>
+        </ul>
+
+        <div class="legal-h4">Trading Profile Information</div>
+        <ul>
+          <li>Your stated trading style, including risk per trade, daily drawdown limits, entry and exit rules, trading edge/strategy, emotional triggers, and markets traded</li>
+          <li>This information is provided voluntarily during onboarding and can be updated at any time</li>
+        </ul>
+
+        <div class="legal-h4">Journal Entries</div>
+        <ul>
+          <li>The free-text descriptions of your trading sessions that you submit</li>
+          <li>Whether you indicated rule compliance for each session</li>
+          <li>Detected asset, timeframe, and outcome information</li>
+        </ul>
+
+        <div class="legal-h4">Psychology Session Content</div>
+        <ul>
+          <li>Messages you send during Psychology Sessions, which may include sensitive information about your emotional state, financial pressures, fears, or mindset related to trading</li>
+        </ul>
+
+        <div class="legal-h4">Wallet Data</div>
+        <ul>
+          <li>If you connect a wallet: the wallet address (stored encrypted)</li>
+          <li>Wallet verification nonces (stored only as cryptographic hashes)</li>
+          <li>Versioned consent records for each wallet connection</li>
+          <li>Wallet addresses are private by default and are never displayed publicly unless you explicitly choose to publish them</li>
+        </ul>
+
+        <div class="legal-h4">Usage Data</div>
+        <ul>
+          <li>Login times and session activity</li>
+          <li>Pages and features accessed within the Platform</li>
+          <li>KAIZEN Score history and streak data</li>
+        </ul>
+
+        <div class="legal-h4">On-Chain Data</div>
+        <ul>
+          <li>If you connect a Zero Authority DAO account, your ZA user ID and associated reputation data</li>
+          <li>A one-way cryptographic hash of your internal user ID may be recorded on the Mantle blockchain, along with earned credentials and milestones, all in anonymized form</li>
+        </ul>
+      </div>
+
+      <div class="legal-sec" id="p3">
+        <h3><span class="legal-n">03</span> How We Use Your Information</h3>
+        <p>We use the information we collect to:</p>
+        <ul>
+          <li>Generate AI-powered feedback on your journal entries and psychology sessions</li>
+          <li>Calculate and display your KAIZEN Score</li>
+          <li>Detect behavioral patterns across your sessions (such as recurring FOMO or rule violations) to provide more relevant feedback over time</li>
+          <li>Send you account-related emails, including welcome emails and, where enabled, weekly summary emails</li>
+          <li>Show your progress over time and, where you choose to participate, community challenge results</li>
+          <li>Maintain and improve the Platform</li>
+          <li>Investigate and prevent fraud, abuse, or violations of our Terms of Service</li>
+        </ul>
+      </div>
+
+      <div class="legal-sec" id="p4">
+        <h3><span class="legal-n">04</span> How Your Data Is Processed by Third Parties</h3>
+        <p>To provide KAIZEN's core functionality, certain data is shared with third-party service providers:</p>
+
+        <p><strong>Anthropic:</strong> Your journal entries and psychology session messages are sent to Anthropic's Claude API to generate AI feedback. Anthropic processes this text according to their own data handling practices. We do not control how Anthropic's underlying infrastructure processes this data beyond generating the response returned to KAIZEN.</p>
+
+        <p><strong>MongoDB Atlas:</strong> All account data, journal entries, and psychology session content are stored in MongoDB Atlas, a cloud database service. Data is stored in a database we control and is not accessible to MongoDB Atlas employees for any purpose other than infrastructure operation.</p>
+
+        <p><strong>Google:</strong> If you use Google OAuth to register or log in, Google provides us with basic profile information (name, email, profile ID) as authorized by you during the Google sign-in process.</p>
+
+        <p><strong>Render:</strong> Our application is hosted on Render's infrastructure. Usage data necessary to operate the service may be processed by Render.</p>
+
+        <p><strong>Resend:</strong> Used to send transactional emails such as welcome messages and weekly summaries. Your email address is shared with Resend solely for this purpose.</p>
+
+        <p><strong>Wallet providers:</strong> Wallet connection and verification happen through your wallet's own software. Signing happens on your device — KAIZEN never receives, transmits, or stores your seed phrase or private keys. We receive only your public wallet address and the signature needed to verify it.</p>
+
+        <p><strong>Zero Authority DAO:</strong> If you choose to connect your ZA account, your ZA user ID is used to retrieve your public reputation data from the ZA DAO platform. We do not share your KAIZEN journal content or psychology session content with Zero Authority DAO.</p>
+
+        <p><strong>Mantle Blockchain:</strong> A cryptographic hash of your user ID (not your actual identity, email, or any personal information) may be recorded on the Mantle blockchain along with earned credentials and milestones, so your progress can be independently verified. These records currently run on a public testnet. Raw journal text, psychology session content, and any personally identifiable information are never written to any blockchain.</p>
+      </div>
+
+      <div class="legal-sec" id="p5">
+        <h3><span class="legal-n">05</span> Data Storage and Security</h3>
+        <ul>
+          <li>Passwords are hashed using bcrypt and are never stored or transmitted in plain text</li>
+          <li>Data is transmitted over encrypted HTTPS connections</li>
+          <li>Account data is stored in MongoDB Atlas with access restricted to authorized systems</li>
+          <li>Connected wallet addresses are encrypted at rest (AES-256-GCM); lookups use keyed HMAC fingerprints rather than raw addresses; verification nonces are stored only as SHA-256 hashes</li>
+          <li>We implement reasonable technical and organizational measures to protect your data, but no system can be guaranteed 100% secure</li>
+        </ul>
+      </div>
+
+      <div class="legal-sec" id="p6">
+        <h3><span class="legal-n">06</span> Data Retention</h3>
+        <ul>
+          <li>Journal entries and AI-generated responses ("Memories") are retained indefinitely to allow KAIZEN to track your behavioral patterns over time and provide increasingly personalized feedback</li>
+          <li>If you delete your account, your personal account data, journal entries, and psychology session content will be permanently removed from our active database</li>
+          <li>Hashed, anonymized data already recorded on the Mantle blockchain cannot be deleted due to the immutable nature of blockchain technology. However, this data contains no personally identifiable information and cannot be linked back to you without access to our internal database</li>
+        </ul>
+      </div>
+
+      <div class="legal-sec" id="p7">
+        <h3><span class="legal-n">07</span> Your Rights</h3>
+        <p>You have the right to:</p>
+        <ul>
+          <li>Access the personal data we hold about you</li>
+          <li>Request correction of inaccurate information via your account settings</li>
+          <li>Delete your account and associated personal data at any time using the Delete Account feature</li>
+          <li>Withdraw consent for non-essential data processing, where applicable</li>
+          <li>Request a copy of your data in a portable format by contacting us</li>
+        </ul>
+        <p>
+          KAIZEN is a Nigerian business serving a global audience. Personal
+          data is processed in accordance with the Nigeria Data Protection
+          Act 2023, in addition to the rights described above.
+        </p>
+      </div>
+
+      <div class="legal-sec" id="p8">
+        <h3><span class="legal-n">08</span> Children's Privacy</h3>
+        <p>
+          KAIZEN is not intended for individuals under the age of 18. We do
+          not knowingly collect personal information from minors. If we
+          become aware that a user is under 18, we will take steps to
+          delete their account and associated data.
+        </p>
+      </div>
+
+      <div class="legal-sec" id="p9">
+        <h3><span class="legal-n">09</span> Cookies and Session Data</h3>
+        <p>
+          KAIZEN uses a single session cookie to keep you logged in, and
+          stores your theme preference (dark or light) locally on your
+          device. We do not use advertising cookies or third-party
+          trackers.
+        </p>
+      </div>
+
+      <div class="legal-sec" id="p10">
+        <h3><span class="legal-n">10</span> International Data Transfers</h3>
+        <p>
+          KAIZEN's infrastructure, including MongoDB Atlas and hosting via
+          Render, may process and store data in regions outside your
+          country of residence. By using KAIZEN, you consent to this
+          transfer and processing of your data.
+        </p>
+      </div>
+
+      <div class="legal-sec" id="p11">
+        <h3><span class="legal-n">11</span> Changes to This Privacy Policy</h3>
+        <p>
+          We may update this Privacy Policy from time to time as KAIZEN
+          evolves. Material changes will be communicated to users where
+          reasonably possible. Continued use of the Platform after changes
+          are posted constitutes acceptance of the revised Policy.
+        </p>
+      </div>
+
+      <div class="legal-sec" id="p12">
+        <h3><span class="legal-n">12</span> Contact Us</h3>
+        <p>
+          If you have questions about this Privacy Policy or how your data
+          is handled, contact us via X at <strong>@kaizenaibot</strong> or
+          through the Support page on the Platform.
+        </p>
+      </div>
+    </main>
+  </div>
+
+  <footer class="footer">
+  <div class="footer-inner">
+    <span class="footer-logo">改 KAIZEN</span>
+    <div style="display:flex;gap:20px;flex-wrap:wrap;align-items:center;">
+      <a href="privacy.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Privacy</a>
+      <a href="terms.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Terms</a>
+      <a href="about.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">About</a>
+      <a href="whitepaper.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Whitepaper</a>
+      <a href="help.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Help Center</a>
+      <a href="support.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Support</a>
+    </div>
+    <span class="footer-right">© 2026 KAIZEN</span>
+  </div>
+</footer>
+<script>if (window.feather) feather.replace();</script>
+
+  <script src="js/app.js"></script>
+  <script>if (window.feather) feather.replace();</script>
+</body>
+</html>

@@ -1,0 +1,1079 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#C9A84C">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="images/kaizen-icon.png" type="image/png">
+<link rel="apple-touch-icon" href="images/kaizen-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<script src="js/feather.min.js"></script>
+<script>
+  // KAIZEN custom icon: "brain" for Psychology. Feather ships no brain glyph,
+  // so it is registered here in the same stroke style as the rest of the set
+  // (paths from the ISC-licensed lucide brain icon) and renders through the
+  // normal data-feather="brain" mechanism. Must run before feather.replace().
+  (function () {
+    try {
+      if (!window.feather || !feather.icons || !feather.icons.activity) return;
+      var Icon = feather.icons.activity.constructor;
+      feather.icons.brain = new Icon('brain', ['psychology', 'mind', 'mental'],
+        '<path d="M12 18V5"/>' +
+        '<path d="M15 13a4.17 4.17 0 0 1-3-4 4.17 4.17 0 0 1-3 4"/>' +
+        '<path d="M17.598 6.5A3 3 0 1 0 12 5a3 3 0 1 0-5.598 1.5"/>' +
+        '<path d="M17.997 5.125a4 4 0 0 1 2.526 5.77"/>' +
+        '<path d="M18 18a4 4 0 0 0 2-7.464"/>' +
+        '<path d="M19.967 17.483A4 4 0 1 1 12 18a4 4 0 1 1-7.967-.517"/>' +
+        '<path d="M6 18a4 4 0 0 1-2-7.464"/>' +
+        '<path d="M6.003 5.125a4 4 0 0 0-2.526 5.77"/>');
+    } catch (e) { /* brain icon unavailable: Psychology links still work */ }
+  })();
+</script>
+<script>
+  // Apply saved theme BEFORE first paint to avoid a flash of the wrong theme
+  (function () {
+    try {
+      var t = localStorage.getItem('kaizen-theme');
+      if (!t) {
+        t = (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches)
+          ? 'light' : 'dark';
+      }
+      if (t !== 'dark' && t !== 'light') t = 'dark';
+      document.documentElement.setAttribute('data-theme', t);
+    } catch (e) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+  })();
+</script>
+
+<script>
+(function(){try{var u=new URL(window.location.href);if(u.searchParams.has('wallet')){u.searchParams.delete('wallet');window.history.replaceState({},document.title,u.toString());}}catch(e){}})();
+</script>
+
+  <title>KAIZEN Help Center</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.29.0/feather.min.js"></script>
+</head>
+<body class="app-page">
+  <!-- POPUP OVERLAY -->
+<div class="popup-overlay" id="popupOverlay" onclick="closePopup()"></div>
+
+<!-- SIDE POPUP MENU -->
+<div class="nav-popup" id="navPopup">
+  <div class="popup-header">
+    <span class="popup-logo">改 KAIZEN</span>
+    <button class="popup-close" onclick="closePopup()">×</button>
+  </div>
+
+  
+    <!-- NOT LOGGED IN -->
+    <div class="popup-section">
+      <div class="popup-section-label">Get Started</div>
+    </div>
+    <div class="popup-auth-btns">
+      <a href="login.html" class="btn-primary btn-full">Log In</a>
+      <a href="register.html" class="btn-outline btn-full">Sign Up</a>
+    </div>
+
+    <div class="popup-section">
+      <div class="popup-section-label">Info</div>
+      <a href="about.html" class="popup-item">
+        <span class="popup-item-icon"><i data-feather="info" width="14" height="14"></i></span> About Kaizen
+      </a>
+      <a href="whitepaper.html" class="popup-item">
+        <span class="popup-item-icon"><i data-feather="book" width="14" height="14"></i></span> Whitepaper
+      </a>
+      <a href="services.html" class="popup-item">
+        <span class="popup-item-icon"><i data-feather="grid" width="14" height="14"></i></span> Services
+      </a>
+      <a href="help.html" class="popup-item">
+        <span class="popup-item-icon"><i data-feather="help-circle" width="14" height="14"></i></span> Help Center
+      </a>
+    </div>
+  
+</div>
+
+<!-- MAIN NAVBAR -->
+<nav class="navbar">
+  <a href="index.html" class="nav-logo">改 KAIZEN</a>
+  <div class="nav-right">
+    <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
+      <span id="themeIcon">◐</span>
+    </button>
+    <button class="three-dot-btn" onclick="togglePopup()" title="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+
+
+<div class="k-ticker" id="k-ticker" role="region" aria-label="Announcement">
+  <button type="button" class="k-ticker-close" onclick="dismissTicker()" aria-label="Dismiss announcement">×</button>
+  <div class="k-ticker-track">
+    <span class="k-ticker-text"><b>KAIZEN V2 IS COMING</b> — the score gets five dimensions · plan → record → reflect sessions · your own Trading System · rolling out over the next 30 days</span>
+  </div>
+  <div class="k-ticker-badge">
+    <div class="k-ticker-megaphone"><i data-feather="megaphone" width="12" height="12"></i></div>
+    <span>Update</span>
+  </div>
+</div>
+<script>
+  (function () {
+    try {
+      if (sessionStorage.getItem('kaizen-ticker-dismissed') === '1') {
+        var t = document.getElementById('k-ticker');
+        if (t) t.style.display = 'none';
+      }
+    } catch (e) { /* private mode: keep showing */ }
+  })();
+  function dismissTicker() {
+    var t = document.getElementById('k-ticker');
+    if (t) t.style.display = 'none';
+    try { sessionStorage.setItem('kaizen-ticker-dismissed', '1'); } catch (e) {}
+  }
+</script>
+
+
+
+<!-- SECURITY MODAL -->
+<div class="modal-overlay" id="securityModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Security</h3>
+      <button class="modal-close" onclick="closeModal('securityModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="security-section">
+        <h4>Change Password</h4>
+        <form action="/auth/change-password" method="POST"
+          style="display:flex;flex-direction:column;gap:12px;">
+          <div class="form-group">
+            <label class="form-label">Current Password</label>
+            <input type="password" name="currentPassword"
+              class="form-input" placeholder="Enter current Password">
+          </div>
+          <div class="form-group">
+            <label class="form-label">New Password</label>
+            <input type="password" name="newPassword"
+              class="form-input" placeholder="Enter New Password">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Confirm Password</label>
+            <input type="password" name="confirmPassword"
+              class="form-input" placeholder="Confirm New Password">
+          </div>
+          <button type="submit" class="btn-primary">Update Password</button>
+        </form>
+      </div>
+      <div class="security-section" style="margin-top:24px;padding-top:24px;border-top:1px solid var(--border);">
+        <h4>Two-Factor Authentication</h4>
+        <p style="font-size:0.85rem;color:var(--ash);margin-bottom:14px;">
+          Add an extra layer of security to your account.
+        </p>
+        <button class="btn-outline btn-full">Enable 2FA — Coming Soon</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+  <main style="max-width:860px;margin:0 auto;padding:40px 24px 80px;">
+
+    <!-- HEADER -->
+    <div style="text-align:center;padding:60px 0 48px;border-bottom:1px solid var(--border);margin-bottom:48px;">
+      <div style="
+        font-family:'DM Mono',monospace;
+        font-size:0.62rem;
+        letter-spacing:0.25em;
+        text-transform:uppercase;
+        color:var(--gold);
+        margin-bottom:20px;
+        display:flex;align-items:center;justify-content:center;gap:12px;
+      ">
+        <span style="width:32px;height:1px;background:var(--gold);display:inline-block;"></span>
+        Support
+        <span style="width:32px;height:1px;background:var(--gold);display:inline-block;"></span>
+      </div>
+      <h1 style="
+        font-size:clamp(2.2rem,5vw,3.2rem);
+        font-weight:700;
+        color:var(--text-primary);
+        line-height:1.05;
+        margin-bottom:16px;
+      ">Help Center</h1>
+      <p style="
+        font-size:1rem;
+        color:var(--text-secondary);
+        max-width:480px;
+        margin:0 auto 28px;
+        line-height:1.85;
+      ">
+        Everything you need to know about using KAIZEN.
+        Can't find what you need? Reach us on X.
+      </p>
+      <a href="https://x.com/kaizenaibot" target="_blank" style="
+        display:inline-flex;align-items:center;gap:8px;
+        font-family:'DM Mono',monospace;
+        font-size:0.65rem;
+        letter-spacing:0.1em;
+        text-transform:uppercase;
+        color:var(--gold);
+        border:1px solid rgba(201,168,76,0.25);
+        background:rgba(201,168,76,0.05);
+        padding:10px 20px;
+        text-decoration:none;
+      ">
+        <i data-feather="twitter" width="13" height="13"></i>
+        @kaizenaibot
+      </a>
+    </div>
+
+    <!-- QUICK LINKS -->
+    <div style="
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+      gap:2px;
+      margin-bottom:48px;
+    ">
+      
+        <a href="#getting-started" style="
+          background:var(--bg-card);
+          border:1px solid var(--border);
+          padding:18px 16px;
+          text-decoration:none;
+          display:flex;align-items:center;gap:10px;
+          transition:border-color 0.15s;
+        " onmouseover="this.style.borderColor='rgba(201,168,76,0.3)'"
+           onmouseout="this.style.borderColor='var(--border)'">
+          <div style="
+            width:28px;height:28px;min-width:28px;
+            border:1px solid rgba(201,168,76,0.2);
+            background:rgba(201,168,76,0.04);
+            display:flex;align-items:center;justify-content:center;
+            color:var(--gold);
+          ">
+            <i data-feather="book-open" width="13" height="13"></i>
+          </div>
+          <span style="font-size:0.8rem;font-weight:600;color:var(--text-primary);">
+            Getting Started
+          </span>
+        </a>
+      
+        <a href="#journal" style="
+          background:var(--bg-card);
+          border:1px solid var(--border);
+          padding:18px 16px;
+          text-decoration:none;
+          display:flex;align-items:center;gap:10px;
+          transition:border-color 0.15s;
+        " onmouseover="this.style.borderColor='rgba(201,168,76,0.3)'"
+           onmouseout="this.style.borderColor='var(--border)'">
+          <div style="
+            width:28px;height:28px;min-width:28px;
+            border:1px solid rgba(201,168,76,0.2);
+            background:rgba(201,168,76,0.04);
+            display:flex;align-items:center;justify-content:center;
+            color:var(--gold);
+          ">
+            <i data-feather="edit-3" width="13" height="13"></i>
+          </div>
+          <span style="font-size:0.8rem;font-weight:600;color:var(--text-primary);">
+            Using Sessions
+          </span>
+        </a>
+      
+        <a href="#score" style="
+          background:var(--bg-card);
+          border:1px solid var(--border);
+          padding:18px 16px;
+          text-decoration:none;
+          display:flex;align-items:center;gap:10px;
+          transition:border-color 0.15s;
+        " onmouseover="this.style.borderColor='rgba(201,168,76,0.3)'"
+           onmouseout="this.style.borderColor='var(--border)'">
+          <div style="
+            width:28px;height:28px;min-width:28px;
+            border:1px solid rgba(201,168,76,0.2);
+            background:rgba(201,168,76,0.04);
+            display:flex;align-items:center;justify-content:center;
+            color:var(--gold);
+          ">
+            <i data-feather="bar-chart-2" width="13" height="13"></i>
+          </div>
+          <span style="font-size:0.8rem;font-weight:600;color:var(--text-primary);">
+            KAIZEN Score
+          </span>
+        </a>
+      
+        <a href="#psychology" style="
+          background:var(--bg-card);
+          border:1px solid var(--border);
+          padding:18px 16px;
+          text-decoration:none;
+          display:flex;align-items:center;gap:10px;
+          transition:border-color 0.15s;
+        " onmouseover="this.style.borderColor='rgba(201,168,76,0.3)'"
+           onmouseout="this.style.borderColor='var(--border)'">
+          <div style="
+            width:28px;height:28px;min-width:28px;
+            border:1px solid rgba(201,168,76,0.2);
+            background:rgba(201,168,76,0.04);
+            display:flex;align-items:center;justify-content:center;
+            color:var(--gold);
+          ">
+            <i data-feather="brain" width="13" height="13"></i>
+          </div>
+          <span style="font-size:0.8rem;font-weight:600;color:var(--text-primary);">
+            Psychology
+          </span>
+        </a>
+      
+        <a href="#onchain" style="
+          background:var(--bg-card);
+          border:1px solid var(--border);
+          padding:18px 16px;
+          text-decoration:none;
+          display:flex;align-items:center;gap:10px;
+          transition:border-color 0.15s;
+        " onmouseover="this.style.borderColor='rgba(201,168,76,0.3)'"
+           onmouseout="this.style.borderColor='var(--border)'">
+          <div style="
+            width:28px;height:28px;min-width:28px;
+            border:1px solid rgba(201,168,76,0.2);
+            background:rgba(201,168,76,0.04);
+            display:flex;align-items:center;justify-content:center;
+            color:var(--gold);
+          ">
+            <i data-feather="link" width="13" height="13"></i>
+          </div>
+          <span style="font-size:0.8rem;font-weight:600;color:var(--text-primary);">
+            On-Chain Reputation
+          </span>
+        </a>
+      
+        <a href="#account" style="
+          background:var(--bg-card);
+          border:1px solid var(--border);
+          padding:18px 16px;
+          text-decoration:none;
+          display:flex;align-items:center;gap:10px;
+          transition:border-color 0.15s;
+        " onmouseover="this.style.borderColor='rgba(201,168,76,0.3)'"
+           onmouseout="this.style.borderColor='var(--border)'">
+          <div style="
+            width:28px;height:28px;min-width:28px;
+            border:1px solid rgba(201,168,76,0.2);
+            background:rgba(201,168,76,0.04);
+            display:flex;align-items:center;justify-content:center;
+            color:var(--gold);
+          ">
+            <i data-feather="settings" width="13" height="13"></i>
+          </div>
+          <span style="font-size:0.8rem;font-weight:600;color:var(--text-primary);">
+            Account Settings
+          </span>
+        </a>
+      
+    </div>
+
+    <!-- GETTING STARTED -->
+    <div id="getting-started" style="margin-bottom:48px;">
+      <div style="
+        font-family:'DM Mono',monospace;
+        font-size:0.6rem;
+        letter-spacing:0.2em;
+        text-transform:uppercase;
+        color:var(--gold);
+        margin-bottom:20px;
+        display:flex;align-items:center;gap:8px;
+        padding-bottom:12px;
+        border-bottom:1px solid var(--border);
+      ">
+        <i data-feather="book-open" width="14" height="14"></i>
+        Getting Started
+      </div>
+
+      
+        <div style="
+          background:var(--bg-card);
+          border:1px solid var(--border);
+          padding:22px 24px;
+          margin-bottom:2px;
+        ">
+          <div style="
+            font-weight:700;
+            font-size:0.9rem;
+            color:var(--text-primary);
+            margin-bottom:8px;
+            display:flex;align-items:flex-start;gap:10px;
+          ">
+            <i data-feather="chevron-right" width="15" height="15" style="color:var(--gold);flex-shrink:0;margin-top:2px;"></i>
+            What is KAIZEN?
+          </div>
+          <p style="font-size:0.85rem;color:var(--text-secondary);line-height:1.75;margin:0;padding-left:25px;">
+            KAIZEN is an AI-powered trading discipline mentor. You plan, record, and reflect on your trading sessions, and KAIZEN measures how you actually traded against your own rules — then explains what the numbers mean. The goal is to make you more consistent, not just more informed.
+          </p>
+        </div>
+      
+        <div style="
+          background:var(--bg-card);
+          border:1px solid var(--border);
+          padding:22px 24px;
+          margin-bottom:2px;
+        ">
+          <div style="
+            font-weight:700;
+            font-size:0.9rem;
+            color:var(--text-primary);
+            margin-bottom:8px;
+            display:flex;align-items:flex-start;gap:10px;
+          ">
+            <i data-feather="chevron-right" width="15" height="15" style="color:var(--gold);flex-shrink:0;margin-top:2px;"></i>
+            Is KAIZEN a signal service or copy-trading platform?
+          </div>
+          <p style="font-size:0.85rem;color:var(--text-secondary);line-height:1.75;margin:0;padding-left:25px;">
+            No. KAIZEN never tells you what to trade. It analyzes how you trade — your decision-making, your rule compliance, your emotional patterns — and helps you hold yourself accountable to your own process.
+          </p>
+        </div>
+      
+        <div style="
+          background:var(--bg-card);
+          border:1px solid var(--border);
+          padding:22px 24px;
+          margin-bottom:2px;
+        ">
+          <div style="
+            font-weight:700;
+            font-size:0.9rem;
+            color:var(--text-primary);
+            margin-bottom:8px;
+            display:flex;align-items:flex-start;gap:10px;
+          ">
+            <i data-feather="chevron-right" width="15" height="15" style="color:var(--gold);flex-shrink:0;margin-top:2px;"></i>
+            How do I create an account?
+          </div>
+          <p style="font-size:0.85rem;color:var(--text-secondary);line-height:1.75;margin:0;padding-left:25px;">
+            Go to the Register page and sign up using your email and password, or use Google Sign-In for faster access. You will then be guided through building your first Trading System — your rules and risk numbers — which becomes the baseline KAIZEN measures against.
+          </p>
+        </div>
+      
+        <div style="
+          background:var(--bg-card);
+          border:1px solid var(--border);
+          padding:22px 24px;
+          margin-bottom:2px;
+        ">
+          <div style="
+            font-weight:700;
+            font-size:0.9rem;
+            color:var(--text-primary);
+            margin-bottom:8px;
+            display:flex;align-items:flex-start;gap:10px;
+          ">
+            <i data-feather="chevron-right" width="15" height="15" style="color:var(--gold);flex-shrink:0;margin-top:2px;"></i>
+            What information do I need to provide during onboarding?
+          </div>
+          <p style="font-size:0.85rem;color:var(--text-secondary);line-height:1.75;margin:0;padding-left:25px;">
+            The markets and hours you trade, your setups, one clear entry rule, and your hard risk numbers: risk per trade, maximum daily trades, and daily drawdown limit. This is saved as version 1 of your Trading System — you can refine it anytime, and every save is a new version so nothing is lost.
+          </p>
+        </div>
+      
+    </div>
+
+    <!-- USING THE JOURNAL -->
+    <div id="journal" style="margin-bottom:48px;">
+      <div style="
+        font-family:'DM Mono',monospace;
+        font-size:0.6rem;
+        letter-spacing:0.2em;
+        text-transform:uppercase;
+        color:var(--gold);
+        margin-bottom:20px;
+        display:flex;align-items:center;gap:8px;
+        padding-bottom:12px;
+        border-bottom:1px solid var(--border);
+      ">
+        <i data-feather="edit-3" width="14" height="14"></i>
+        Using Sessions
+      </div>
+
+      
+        <div style="
+          background:var(--bg-card);
+          border:1px solid var(--border);
+          padding:22px 24px;
+          margin-bottom:2px;
+        ">
+          <div style="
+            font-weight:700;
+            font-size:0.9rem;
+            color:var(--text-primary);
+            margin-bottom:8px;
+            display:flex;align-items:flex-start;gap:10px;
+          ">
+            <i data-feather="chevron-right" width="15" height="15" style="color:var(--gold);flex-shrink:0;margin-top:2px;"></i>
+            How do I log a trading session?
+          </div>
+          <p style="font-size:0.85rem;color:var(--text-secondary);line-height:1.75;margin:0;padding-left:25px;">
+            Every session runs the same loop: Plan it (setup, emotional state, confidence), Record it (what actually happened, with your quick checks), then Reflect on it in your own words. KAIZEN AI responds after you reflect. The loop is the product — plan, trade, record, reflect, improve.
+          </p>
+        </div>
+      
+        <div style="
+          background:var(--bg-card);
+          border:1px solid var(--border);
+          padding:22px 24px;
+          margin-bottom:2px;
+        ">
+          <div style="
+            font-weight:700;
+            font-size:0.9rem;
+            color:var(--text-primary);
+            margin-bottom:8px;
+            display:flex;align-items:flex-start;gap:10px;
+          ">
+            <i data-feather="chevron-right" width="15" height="15" style="color:var(--gold);flex-shrink:0;margin-top:2px;"></i>
+            Do I need to specify which asset I traded?
+          </div>
+          <p style="font-size:0.85rem;color:var(--text-secondary);line-height:1.75;margin:0;padding-left:25px;">
+            You set the asset yourself when you record your session — no guessing from your notes. Just pick or type the pair or instrument: AUDJPY, EURUSD, BTC, Gold, anything.
+          </p>
+        </div>
+      
+        <div style="
+          background:var(--bg-card);
+          border:1px solid var(--border);
+          padding:22px 24px;
+          margin-bottom:2px;
+        ">
+          <div style="
+            font-weight:700;
+            font-size:0.9rem;
+            color:var(--text-primary);
+            margin-bottom:8px;
+            display:flex;align-items:flex-start;gap:10px;
+          ">
+            <i data-feather="chevron-right" width="15" height="15" style="color:var(--gold);flex-shrink:0;margin-top:2px;"></i>
+            How honest do I need to be in my reflections?
+          </div>
+          <p style="font-size:0.85rem;color:var(--text-secondary);line-height:1.75;margin:0;padding-left:25px;">
+            Completely honest — and honesty is never punished here. Writing that you felt fear or urgency but still waited for your setup is exactly the kind of disclosure that makes you sharper. Vague reflections produce vague feedback. The traders who improve fastest are the ones who write down exactly what happened, including mistakes.
+          </p>
+        </div>
+      
+        <div style="
+          background:var(--bg-card);
+          border:1px solid var(--border);
+          padding:22px 24px;
+          margin-bottom:2px;
+        ">
+          <div style="
+            font-weight:700;
+            font-size:0.9rem;
+            color:var(--text-primary);
+            margin-bottom:8px;
+            display:flex;align-items:flex-start;gap:10px;
+          ">
+            <i data-feather="chevron-right" width="15" height="15" style="color:var(--gold);flex-shrink:0;margin-top:2px;"></i>
+            Can I log backtesting sessions and analysis-only sessions?
+          </div>
+          <p style="font-size:0.85rem;color:var(--text-secondary);line-height:1.75;margin:0;padding-left:25px;">
+            Yes — and they are not second-class. LIVE, BACKTEST, and STUDY are first-class session types, and your patterns segment by type. One of the most valuable insights KAIZEN tracks is the gap between how you practice (backtest and study) and how you perform (live).
+          </p>
+        </div>
+      
+    </div>
+
+    <!-- KAIZEN SCORE -->
+    <div id="score" style="margin-bottom:48px;">
+      <div style="
+        font-family:'DM Mono',monospace;
+        font-size:0.6rem;
+        letter-spacing:0.2em;
+        text-transform:uppercase;
+        color:var(--gold);
+        margin-bottom:20px;
+        display:flex;align-items:center;gap:8px;
+        padding-bottom:12px;
+        border-bottom:1px solid var(--border);
+      ">
+        <i data-feather="bar-chart-2" width="14" height="14"></i>
+        KAIZEN Score
+      </div>
+
+      
+        <div style="
+          background:var(--bg-card);
+          border:1px solid var(--border);
+          padding:22px 24px;
+          margin-bottom:2px;
+        ">
+          <div style="
+            font-weight:700;
+            font-size:0.9rem;
+            color:var(--text-primary);
+            margin-bottom:8px;
+            display:flex;align-items:flex-start;gap:10px;
+          ">
+            <i data-feather="chevron-right" width="15" height="15" style="color:var(--gold);flex-shrink:0;margin-top:2px;"></i>
+            How is my KAIZEN Score calculated?
+          </div>
+          <p style="font-size:0.85rem;color:var(--text-secondary);line-height:1.75;margin:0;padding-left:25px;">
+            The engine — not the AI — computes your score with a fixed formula from what you actually do in sessions: five dimensions (Process, Risk, Execution, Behavior, Learning) built from your plans, quick checks, reflections, and outcomes. KAIZEN AI explains what the numbers mean; it never invents them. The formula rewards consistent process — not winning trades.
+          </p>
+        </div>
+      
+        <div style="
+          background:var(--bg-card);
+          border:1px solid var(--border);
+          padding:22px 24px;
+          margin-bottom:2px;
+        ">
+          <div style="
+            font-weight:700;
+            font-size:0.9rem;
+            color:var(--text-primary);
+            margin-bottom:8px;
+            display:flex;align-items:flex-start;gap:10px;
+          ">
+            <i data-feather="chevron-right" width="15" height="15" style="color:var(--gold);flex-shrink:0;margin-top:2px;"></i>
+            Does a losing trade lower my score?
+          </div>
+          <p style="font-size:0.85rem;color:var(--text-secondary);line-height:1.75;margin:0;padding-left:25px;">
+            Not directly. Your score reflects whether you followed your own rules, not whether the trade was profitable. A losing trade taken in full compliance with your rules is a good process decision. A winning trade that broke your rules is dangerous — KAIZEN flags it exactly that way.
+          </p>
+        </div>
+      
+        <div style="
+          background:var(--bg-card);
+          border:1px solid var(--border);
+          padding:22px 24px;
+          margin-bottom:2px;
+        ">
+          <div style="
+            font-weight:700;
+            font-size:0.9rem;
+            color:var(--text-primary);
+            margin-bottom:8px;
+            display:flex;align-items:flex-start;gap:10px;
+          ">
+            <i data-feather="chevron-right" width="15" height="15" style="color:var(--gold);flex-shrink:0;margin-top:2px;"></i>
+            Can Psychology conversations change my KAIZEN Score?
+          </div>
+          <p style="font-size:0.85rem;color:var(--text-secondary);line-height:1.75;margin:0;padding-left:25px;">
+            No — never. Psychology is a private space for the mental side of trading. Your score is measured only from your sessions. Nothing you say in Psychology can raise or lower it.
+          </p>
+        </div>
+      
+        <div style="
+          background:var(--bg-card);
+          border:1px solid var(--border);
+          padding:22px 24px;
+          margin-bottom:2px;
+        ">
+          <div style="
+            font-weight:700;
+            font-size:0.9rem;
+            color:var(--text-primary);
+            margin-bottom:8px;
+            display:flex;align-items:flex-start;gap:10px;
+          ">
+            <i data-feather="chevron-right" width="15" height="15" style="color:var(--gold);flex-shrink:0;margin-top:2px;"></i>
+            What do the discipline tiers mean?
+          </div>
+          <p style="font-size:0.85rem;color:var(--text-secondary);line-height:1.75;margin:0;padding-left:25px;">
+            Developing (0–39%): building the foundation. Consistent (40–59%): showing improvement but inconsistencies remain. Elite (60–79%): strong process adherence. Master (80–100%): exceptional behavioral discipline. Each tier reflects your process consistency across all sessions.
+          </p>
+        </div>
+      
+    </div>
+
+    <!-- PSYCHOLOGY SESSIONS -->
+    <div id="psychology" style="margin-bottom:48px;">
+      <div style="
+        font-family:'DM Mono',monospace;
+        font-size:0.6rem;
+        letter-spacing:0.2em;
+        text-transform:uppercase;
+        color:var(--gold);
+        margin-bottom:20px;
+        display:flex;align-items:center;gap:8px;
+        padding-bottom:12px;
+        border-bottom:1px solid var(--border);
+      ">
+        <i data-feather="brain" width="14" height="14"></i>
+        Psychology
+      </div>
+
+      
+        <div style="
+          background:var(--bg-card);
+          border:1px solid var(--border);
+          padding:22px 24px;
+          margin-bottom:2px;
+        ">
+          <div style="
+            font-weight:700;
+            font-size:0.9rem;
+            color:var(--text-primary);
+            margin-bottom:8px;
+            display:flex;align-items:flex-start;gap:10px;
+          ">
+            <i data-feather="chevron-right" width="15" height="15" style="color:var(--gold);flex-shrink:0;margin-top:2px;"></i>
+            What is the difference between my sessions and Psychology?
+          </div>
+          <p style="font-size:0.85rem;color:var(--text-secondary);line-height:1.75;margin:0;padding-left:25px;">
+            Your sessions are where you trade and where your score comes from. Psychology is a separate, private space for talking through your mindset, fears, confidence, or pressure around trading in general — not tied to any specific trade. It never feeds your score; it exists so the mental side gets its own honest attention.
+          </p>
+        </div>
+      
+        <div style="
+          background:var(--bg-card);
+          border:1px solid var(--border);
+          padding:22px 24px;
+          margin-bottom:2px;
+        ">
+          <div style="
+            font-weight:700;
+            font-size:0.9rem;
+            color:var(--text-primary);
+            margin-bottom:8px;
+            display:flex;align-items:flex-start;gap:10px;
+          ">
+            <i data-feather="chevron-right" width="15" height="15" style="color:var(--gold);flex-shrink:0;margin-top:2px;"></i>
+            What can I talk about in a Psychology Session?
+          </div>
+          <p style="font-size:0.85rem;color:var(--text-secondary);line-height:1.75;margin:0;padding-left:25px;">
+            Anything affecting your trading mindset — fear of pulling the trigger on valid setups, anxiety when opening charts, pressure from needing trading income, imposter syndrome, overconfidence after winning streaks, comparing yourself to other traders, or struggling after a losing streak.
+          </p>
+        </div>
+      
+        <div style="
+          background:var(--bg-card);
+          border:1px solid var(--border);
+          padding:22px 24px;
+          margin-bottom:2px;
+        ">
+          <div style="
+            font-weight:700;
+            font-size:0.9rem;
+            color:var(--text-primary);
+            margin-bottom:8px;
+            display:flex;align-items:flex-start;gap:10px;
+          ">
+            <i data-feather="chevron-right" width="15" height="15" style="color:var(--gold);flex-shrink:0;margin-top:2px;"></i>
+            Are my psychology conversations private?
+          </div>
+          <p style="font-size:0.85rem;color:var(--text-secondary);line-height:1.75;margin:0;padding-left:25px;">
+            Yes, completely. Psychology conversations stay private by default. They power your conversation with KAIZEN and your private MindState overview — nothing else. They never feed your score. Refer to our Privacy Policy for full details on how this sensitive data is handled.
+          </p>
+        </div>
+      
+        <div style="
+          background:var(--bg-card);
+          border:1px solid var(--border);
+          padding:22px 24px;
+          margin-bottom:2px;
+        ">
+          <div style="
+            font-weight:700;
+            font-size:0.9rem;
+            color:var(--text-primary);
+            margin-bottom:8px;
+            display:flex;align-items:flex-start;gap:10px;
+          ">
+            <i data-feather="chevron-right" width="15" height="15" style="color:var(--gold);flex-shrink:0;margin-top:2px;"></i>
+            Do psychology conversations affect my KAIZEN Score?
+          </div>
+          <p style="font-size:0.85rem;color:var(--text-secondary);line-height:1.75;margin:0;padding-left:25px;">
+            No. Your score comes only from your sessions — what you planned, what you did, what you reflected on. Psychology is where you work on the mind behind the process, and that work is never graded.
+          </p>
+        </div>
+      
+    </div>
+
+    <!-- ON-CHAIN REPUTATION -->
+    <div id="onchain" style="margin-bottom:48px;">
+      <div style="
+        font-family:'DM Mono',monospace;
+        font-size:0.6rem;
+        letter-spacing:0.2em;
+        text-transform:uppercase;
+        color:var(--gold);
+        margin-bottom:20px;
+        display:flex;align-items:center;gap:8px;
+        padding-bottom:12px;
+        border-bottom:1px solid var(--border);
+      ">
+        <i data-feather="link" width="14" height="14"></i>
+        On-Chain Reputation
+      </div>
+
+      
+        <div style="
+          background:var(--bg-card);
+          border:1px solid var(--border);
+          padding:22px 24px;
+          margin-bottom:2px;
+        ">
+          <div style="
+            font-weight:700;
+            font-size:0.9rem;
+            color:var(--text-primary);
+            margin-bottom:8px;
+            display:flex;align-items:flex-start;gap:10px;
+          ">
+            <i data-feather="chevron-right" width="15" height="15" style="color:var(--gold);flex-shrink:0;margin-top:2px;"></i>
+            What is the Mantle AI Benchmark?
+          </div>
+          <p style="font-size:0.85rem;color:var(--text-secondary);line-height:1.75;margin:0;padding-left:25px;">
+            Score changes and milestones from your KAIZEN journey are permanently recorded on the Mantle blockchain via our KaizenBenchmark smart contract. This creates a public, verifiable record of your progress that anyone can check on the Mantle explorer — your reputation becomes evidence, not claims.
+          </p>
+        </div>
+      
+        <div style="
+          background:var(--bg-card);
+          border:1px solid var(--border);
+          padding:22px 24px;
+          margin-bottom:2px;
+        ">
+          <div style="
+            font-weight:700;
+            font-size:0.9rem;
+            color:var(--text-primary);
+            margin-bottom:8px;
+            display:flex;align-items:flex-start;gap:10px;
+          ">
+            <i data-feather="chevron-right" width="15" height="15" style="color:var(--gold);flex-shrink:0;margin-top:2px;"></i>
+            What is Zero Authority DAO reputation?
+          </div>
+          <p style="font-size:0.85rem;color:var(--text-secondary);line-height:1.75;margin:0;padding-left:25px;">
+            Zero Authority DAO (ZA DAO) is a decentralized reputation platform built on the Stacks blockchain. Connecting your ZA account to KAIZEN displays your on-chain trading credentials — bounty completions, endorsements, and activity score — alongside your KAIZEN Score. Together they form your complete on-chain trader profile.
+          </p>
+        </div>
+      
+        <div style="
+          background:var(--bg-card);
+          border:1px solid var(--border);
+          padding:22px 24px;
+          margin-bottom:2px;
+        ">
+          <div style="
+            font-weight:700;
+            font-size:0.9rem;
+            color:var(--text-primary);
+            margin-bottom:8px;
+            display:flex;align-items:flex-start;gap:10px;
+          ">
+            <i data-feather="chevron-right" width="15" height="15" style="color:var(--gold);flex-shrink:0;margin-top:2px;"></i>
+            How do I connect my Zero Authority DAO account?
+          </div>
+          <p style="font-size:0.85rem;color:var(--text-secondary);line-height:1.75;margin:0;padding-left:25px;">
+            Visit zeroauthoritydao.com, create or log into your account, and find your ZA profile ID. Then contact us via X at @kaizenaibot and we will connect it to your KAIZEN account. Once connected, your ZA reputation will display automatically on your Reputation page.
+          </p>
+        </div>
+      
+        <div style="
+          background:var(--bg-card);
+          border:1px solid var(--border);
+          padding:22px 24px;
+          margin-bottom:2px;
+        ">
+          <div style="
+            font-weight:700;
+            font-size:0.9rem;
+            color:var(--text-primary);
+            margin-bottom:8px;
+            display:flex;align-items:flex-start;gap:10px;
+          ">
+            <i data-feather="chevron-right" width="15" height="15" style="color:var(--gold);flex-shrink:0;margin-top:2px;"></i>
+            Is my raw journal content ever put on a blockchain?
+          </div>
+          <p style="font-size:0.85rem;color:var(--text-secondary);line-height:1.75;margin:0;padding-left:25px;">
+            Never. Only a one-way cryptographic hash of your internal user ID, along with score changes and milestone labels, is ever recorded on-chain. Your actual session text, psychology conversations, and any personally identifiable information never leave KAIZEN&#39;s secure database.
+          </p>
+        </div>
+      
+        <div style="
+          background:var(--bg-card);
+          border:1px solid var(--border);
+          padding:22px 24px;
+          margin-bottom:2px;
+        ">
+          <div style="
+            font-weight:700;
+            font-size:0.9rem;
+            color:var(--text-primary);
+            margin-bottom:8px;
+            display:flex;align-items:flex-start;gap:10px;
+          ">
+            <i data-feather="chevron-right" width="15" height="15" style="color:var(--gold);flex-shrink:0;margin-top:2px;"></i>
+            Do I need a crypto wallet to use KAIZEN?
+          </div>
+          <p style="font-size:0.85rem;color:var(--text-secondary);line-height:1.75;margin:0;padding-left:25px;">
+            No. KAIZEN records blockchain data on your behalf using our own wallet. You never need MetaMask, MNT tokens, or any crypto to benefit from the on-chain reputation features. Everything happens automatically in the background when you log sessions.
+          </p>
+        </div>
+      
+    </div>
+
+    <!-- ACCOUNT SETTINGS -->
+    <div id="account" style="margin-bottom:48px;">
+      <div style="
+        font-family:'DM Mono',monospace;
+        font-size:0.6rem;
+        letter-spacing:0.2em;
+        text-transform:uppercase;
+        color:var(--gold);
+        margin-bottom:20px;
+        display:flex;align-items:center;gap:8px;
+        padding-bottom:12px;
+        border-bottom:1px solid var(--border);
+      ">
+        <i data-feather="settings" width="14" height="14"></i>
+        Account Management
+      </div>
+
+      
+        <div style="
+          background:var(--bg-card);
+          border:1px solid var(--border);
+          padding:22px 24px;
+          margin-bottom:2px;
+        ">
+          <div style="
+            font-weight:700;
+            font-size:0.9rem;
+            color:var(--text-primary);
+            margin-bottom:8px;
+            display:flex;align-items:flex-start;gap:10px;
+          ">
+            <i data-feather="chevron-right" width="15" height="15" style="color:var(--gold);flex-shrink:0;margin-top:2px;"></i>
+            How do I update my Trading System?
+          </div>
+          <p style="font-size:0.85rem;color:var(--text-secondary);line-height:1.75;margin:0;padding-left:25px;">
+            Go to Settings and open My Trading System. Every save creates a new version, so KAIZEN can track how your system has evolved over time — your previous rules are never lost.
+          </p>
+        </div>
+      
+        <div style="
+          background:var(--bg-card);
+          border:1px solid var(--border);
+          padding:22px 24px;
+          margin-bottom:2px;
+        ">
+          <div style="
+            font-weight:700;
+            font-size:0.9rem;
+            color:var(--text-primary);
+            margin-bottom:8px;
+            display:flex;align-items:flex-start;gap:10px;
+          ">
+            <i data-feather="chevron-right" width="15" height="15" style="color:var(--gold);flex-shrink:0;margin-top:2px;"></i>
+            I forgot my password. What do I do?
+          </div>
+          <p style="font-size:0.85rem;color:var(--text-secondary);line-height:1.75;margin:0;padding-left:25px;">
+            Password reset via email is not yet available. Please reach out to us on X at @kaizenaibot and we will help you regain access to your account directly.
+          </p>
+        </div>
+      
+        <div style="
+          background:var(--bg-card);
+          border:1px solid var(--border);
+          padding:22px 24px;
+          margin-bottom:2px;
+        ">
+          <div style="
+            font-weight:700;
+            font-size:0.9rem;
+            color:var(--text-primary);
+            margin-bottom:8px;
+            display:flex;align-items:flex-start;gap:10px;
+          ">
+            <i data-feather="chevron-right" width="15" height="15" style="color:var(--gold);flex-shrink:0;margin-top:2px;"></i>
+            How do I delete my account?
+          </div>
+          <p style="font-size:0.85rem;color:var(--text-secondary);line-height:1.75;margin:0;padding-left:25px;">
+            Go to your Reputation page and select Delete Account under the Danger Zone section. This action is permanent and will remove your personal data — sessions, psychology conversations, and memories — in accordance with our Privacy Policy.
+          </p>
+        </div>
+      
+        <div style="
+          background:var(--bg-card);
+          border:1px solid var(--border);
+          padding:22px 24px;
+          margin-bottom:2px;
+        ">
+          <div style="
+            font-weight:700;
+            font-size:0.9rem;
+            color:var(--text-primary);
+            margin-bottom:8px;
+            display:flex;align-items:flex-start;gap:10px;
+          ">
+            <i data-feather="chevron-right" width="15" height="15" style="color:var(--gold);flex-shrink:0;margin-top:2px;"></i>
+            Can I use KAIZEN on mobile?
+          </div>
+          <p style="font-size:0.85rem;color:var(--text-secondary);line-height:1.75;margin:0;padding-left:25px;">
+            Yes. KAIZEN is a mobile-first web application that works in any browser on any device. A dedicated native app for Android and iOS is on our roadmap.
+          </p>
+        </div>
+      
+    </div>
+
+    <!-- CONTACT BLOCK -->
+    <div style="
+      text-align:center;
+      padding:48px 32px;
+      border:1px solid rgba(201,168,76,0.2);
+      background:rgba(201,168,76,0.03);
+    ">
+      <div style="
+        width:44px;height:44px;
+        border:1px solid rgba(201,168,76,0.25);
+        background:rgba(201,168,76,0.06);
+        display:flex;align-items:center;justify-content:center;
+        color:var(--gold);
+        margin:0 auto 16px;
+      ">
+        <i data-feather="message-circle" width="20" height="20"></i>
+      </div>
+      <h3 style="font-size:1.2rem;font-weight:700;color:var(--text-primary);margin-bottom:10px;">
+        Still need help?
+      </h3>
+      <p style="font-size:0.88rem;color:var(--text-secondary);max-width:340px;margin:0 auto 24px;line-height:1.75;">
+        Reach out directly on X and we will get back to you
+        as soon as possible — usually within 24 hours.
+      </p>
+      <a href="https://x.com/kaizenaibot" target="_blank" class="btn-primary"
+        style="display:inline-flex;align-items:center;gap:8px;padding:14px 32px;">
+        <i data-feather="twitter" width="14" height="14"></i>
+        Message @kaizenaibot
+      </a>
+    </div>
+
+  </main>
+
+  <footer class="footer">
+  <div class="footer-inner">
+    <span class="footer-logo">改 KAIZEN</span>
+    <div style="display:flex;gap:20px;flex-wrap:wrap;align-items:center;">
+      <a href="privacy.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Privacy</a>
+      <a href="terms.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Terms</a>
+      <a href="about.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">About</a>
+      <a href="whitepaper.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Whitepaper</a>
+      <a href="help.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Help Center</a>
+      <a href="support.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Support</a>
+    </div>
+    <span class="footer-right">© 2026 KAIZEN</span>
+  </div>
+</footer>
+<script>if (window.feather) feather.replace();</script>
+
+  <script src="js/app.js"></script>
+  <script>if (window.feather) feather.replace();</script>
+</body>
+</html>
