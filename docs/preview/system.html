@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../css/style.css">
-  <link rel="stylesheet" href="/preview/preview.css">
+  <link rel="stylesheet" href="preview.css">
   <script>
     (function () {
       try {
@@ -93,7 +93,7 @@
 
         <div class="k-card" data-reveal>
           <div class="k-metric-label" style="margin-bottom:14px;">PSYCHOLOGICAL RULES</div>
-          <div class="p-list-item"><i data-feather="heart" width="12" height="12"></i> No entries after 2 losses without a 15-minute break</div>
+          <div class="p-list-item"><i data-feather="brain" width="12" height="12"></i> No entries after 2 losses without a 15-minute break</div>
         </div>
 
         <a href="#" class="btn-primary k-btn-lg" style="text-align:center;">Save as New Version</a>
@@ -131,8 +131,19 @@
     </div>
   </main>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.29.0/feather.min.js"></script>
-  <script>feather.replace();</script>
+  <script src="../js/feather.min.js"></script>
+  <script>
+    // KAIZEN custom icon: "brain" (Psychology) — same registration as the app head partial.
+    (function () {
+      try {
+        if (!window.feather || !feather.icons || !feather.icons.activity) return;
+        var Icon = feather.icons.activity.constructor;
+        feather.icons.brain = new Icon('brain', ['psychology', 'mind', 'mental'],
+          '<path d="M12 18V5"/><path d="M15 13a4.17 4.17 0 0 1-3-4 4.17 4.17 0 0 1-3 4"/><path d="M17.598 6.5A3 3 0 1 0 12 5a3 3 0 1 0-5.598 1.5"/><path d="M17.997 5.125a4 4 0 0 1 2.526 5.77"/><path d="M18 18a4 4 0 0 0 2-7.464"/><path d="M19.967 17.483A4 4 0 1 1 12 18a4 4 0 1 1-7.967-.517"/><path d="M6 18a4 4 0 0 1-2-7.464"/><path d="M6.003 5.125a4 4 0 0 0-2.526 5.77"/>');
+      } catch (e) {}
+    })();
+  </script>
+  <script>if (window.feather) feather.replace();</script>
   <script src="../js/v2-reveal.js"></script>
   <script>
     function toggleTheme() {

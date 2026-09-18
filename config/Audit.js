@@ -93,6 +93,7 @@ VERDICT: CHANGE
 Blockchain is in the first thing a visitor sees. Frozen rule: the user doesn't
 need to care about blockchain to use KAIZEN. Replace with something about the
 product, e.g. "Now Live · Free to Start" or simply remove the badge.
+RESOLVED 18 Sep 2026: badge removed from the hero entirely (owner decision).
 
 1.3 Hero headline: "Most traders know their rules. Few follow them."
 VERDICT: KEEP

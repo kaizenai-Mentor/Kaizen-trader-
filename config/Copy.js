@@ -33,8 +33,8 @@ KAIZEN - Trade Better. Every Day.
 [unchanged]
 
 LIVE BADGE
-Now Live · Free to Start
-[was: "Now Live · Powered by Zero Authority DAO & Mantle"]
+Removed from the hero entirely (owner decision, 18 Sep 2026)
+[was: "Now Live · Free to Start", before that "Now Live · Powered by Zero Authority DAO & Mantle"]
 
 HERO HEADLINE
 Most traders know their rules.
