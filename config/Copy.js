@@ -179,9 +179,18 @@ CARD 3 — Consistent Trader · 2–5 years experience
 You have a strategy. The problem is executing it consistently. KAIZEN shows
 you exactly where and why your discipline breaks.
 
-CARD 4 — Prop Firm Trader · Funded or seeking funding
-Prop firms fund discipline, not luck. Build a verifiable behavioral record
-that proves you follow your rules under pressure.
+CARD 4 — Prop Firm Trader · In a challenge or funded
+A challenge doesn't test your strategy — it tests rule-following under
+pressure. KAIZEN measures that behavior session by session and builds the
+record behind it. Funding comes from your firm, never from us.
+
+[reworded 18 Sep 2026, owner decision: the old copy ("Funded or seeking
+funding" / "Prop firms fund discipline, not luck") read like KAIZEN offers
+or brokers funding. The owner misread it for a second, so the public will
+too. New copy names the boundary in plain words: the firm funds, we only
+measure and coach discipline. was: "Prop firms fund discipline, not luck.
+Build a verifiable behavioral record that proves you follow your rules
+under pressure."]
 
 [was three tiers starting at "2 years experience" — beginners now have a
 seat at the table]
