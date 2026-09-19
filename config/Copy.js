@@ -180,11 +180,15 @@ You have a strategy. The problem is executing it consistently. KAIZEN shows
 you exactly where and why your discipline breaks.
 
 CARD 4 — Prop Firm Trader · In a challenge or funded
-A challenge doesn't test your strategy — it tests rule-following under
-pressure. KAIZEN measures that behavior session by session and builds the
-record behind it. Funding comes from your firm, never from us.
+A challenge doesn't just test your strategy, it also tests your
+rule-following under pressure. KAIZEN measures that behavior session by
+session and builds the record behind it. Funding comes from your firm,
+never from us.
 
-[reworded 18 Sep 2026, owner decision: the old copy ("Funded or seeking
+[final wording adjusted by the owner 18 Sep 2026: "doesn't just test
+your strategy, it also tests your rule-following" — a challenge tests
+strategy too; the point is what it tests in addition. Reworded 18 Sep 2026,
+owner decision: the old copy ("Funded or seeking
 funding" / "Prop firms fund discipline, not luck") read like KAIZEN offers
 or brokers funding. The owner misread it for a second, so the public will
 too. New copy names the boundary in plain words: the firm funds, we only
