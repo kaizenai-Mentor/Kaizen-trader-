@@ -641,3 +641,29 @@ refresh. Copy first, design second, code last — as agreed.
 After that, implementation: the five pages get rebuilt in code with this
 copy, the renamed strings, and the corrected facts (30% claim, privacy §9
 bug, wallet terms/privacy coverage, testnet labels).
+
+================================================================================
+REGISTER — TERMS CONSENT (added 18 Sep 2026, owner directive)
+================================================================================
+
+Checkbox below Confirm password, above Create Account:
+"I have read and accept the Terms of Service and Privacy Policy."
+(Links open in a new tab; tapping a link does not toggle the box.)
+
+Hard gate, both layers:
+- Browser: the box is required — the form will not submit unticked.
+- Server: POST /auth/register checks the box BEFORE any database write and
+  rejects with "You must confirm you have read the Terms of Service and
+  Privacy Policy before creating your account." Typed username and email
+  survive the error re-render. If the box is not ticked, the account is not
+  approved — no exceptions, tampering included (any value other than the
+  real tick is refused).
+
+Acceptance timestamp (termsAcceptedAt) stored on the account for email and
+Google sign-ups; the Google buttons on Register and Login carry "By
+continuing with Google you accept our Terms of Service and Privacy Policy."
+so OAuth sign-ups are informed too.
+
+Fixed while in here: the referral ?ref= was read by the controller but the
+form never carried it — silently lost on submit. Now a hidden field keeps
+attribution intact.

@@ -33,6 +33,10 @@ const UserSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
+  termsAcceptedAt: {
+    type: Date,
+    default: null
+  },
   otp: {
     code: { type: String, default: null },
     expiresAt: { type: Date, default: null }

@@ -617,8 +617,17 @@ redirect to Cockpit. No dark patterns, no upsell.
 **The journey made real: JOIN → RULES → PLAN → LOG** (stepstrip visible on both
 steps).
 
-- **JOIN** — account creation (Google or email; referral `?ref=` honored). PRG
-  into RULES.
+- **JOIN** — account creation (Google or email; referral `?ref=` honored and
+  actually carried through the form as a hidden field — it was silently lost
+  before). **Terms consent is a hard gate** (owner directive 18 Sep 2026):
+  an "I have read and accept the Terms of Service and Privacy Policy"
+  checkbox sits above the Create Account button — `required` in the browser
+  and re-checked on the server BEFORE any database write. Unticked = no
+  account, with the typed username/email preserved on the error re-render.
+  Acceptance timestamp (`termsAcceptedAt`) is stored on the account for both
+  email and Google sign-ups; the Google buttons on Register and Login carry
+  "By continuing with Google you accept our Terms of Service and Privacy
+  Policy." so OAuth sign-ups are informed too. PRG into RULES.
 - **RULES** — guided first Trading System: market + hours, setups, one entry
   rule, hard risk numbers ("the engine reads these"). Saved as version 1 →
   redirect to PLAN. "You can refine later — every save is a new version."
@@ -632,7 +641,9 @@ verify-otp stub kept for compatibility.
 
 **Acceptance.** Full journey JOIN→RULES→PLAN works E2E; skip path lands on
 Cockpit with a blank-but-real system v1; journey strip accurate on both steps;
-error states inline; mobile keyboard flow (Enter advances); both themes.
+error states inline; mobile keyboard flow (Enter advances); both themes;
+registration without the terms tick is refused server-side (tested in
+test/auth.test.js).
 
 ---
 

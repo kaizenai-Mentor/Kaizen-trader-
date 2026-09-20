@@ -3097,6 +3097,33 @@ select.k-input { cursor: pointer; }
   padding: 10px 14px; margin-bottom: 16px; line-height: 1.6;
 }
 .k-authform .k-field { margin-bottom: 14px; }
+.k-oauthnote {
+  text-align: center;
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+  margin: -6px 0 16px;
+  line-height: 1.5;
+}
+.k-oauthnote a { color: var(--gold); }
+.k-termscheck { margin: 18px 0 4px; }
+.k-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  line-height: 1.55;
+  color: var(--text-secondary);
+}
+.k-check input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  min-width: 16px;
+  margin-top: 2px;
+  accent-color: var(--gold);
+  cursor: pointer;
+}
+.k-check a { color: var(--gold); }
 .k-btn-block { width: 100%; box-sizing: border-box; }
 .k-authfoot {
   text-align: center; margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border);

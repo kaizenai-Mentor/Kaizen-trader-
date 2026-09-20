@@ -18,21 +18,35 @@ const postRegister = async (req, res) => {
     if (!username || !email || !password || !confirmPassword) {
       return res.render('register', {
         error: 'All fields are required',
-        step: 'join'
+        step: 'join',
+        username, email
+      });
+    }
+
+    // Terms consent is a hard gate (owner directive 18 Sep 2026):
+    // no account is created until the box is ticked. Checked BEFORE any
+    // database write; the browser-side `required` is convenience only.
+    if (req.body.terms !== '1') {
+      return res.render('register', {
+        error: 'You must confirm you have read the Terms of Service and Privacy Policy before creating your account.',
+        step: 'join',
+        username, email
       });
     }
 
     if (password !== confirmPassword) {
       return res.render('register', {
         error: 'Passwords do not match',
-        step: 'join'
+        step: 'join',
+        username, email
       });
     }
 
     if (password.length < 6) {
       return res.render('register', {
         error: 'Password must be at least 6 characters',
-        step: 'join'
+        step: 'join',
+        username, email
       });
     }
 
@@ -43,7 +57,8 @@ const postRegister = async (req, res) => {
     if (existingUser) {
       return res.render('register', {
         error: 'Email or username already taken',
-        step: 'join'
+        step: 'join',
+        username, email
       });
     }
 
@@ -54,6 +69,7 @@ const postRegister = async (req, res) => {
       email,
       password,
       isVerified: true,
+      termsAcceptedAt: new Date(),
       authMethod: 'password',
       referredBy: referredBy || null,
       referralCode: username.toLowerCase().replace(/\s+/g, '-')

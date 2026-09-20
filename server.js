@@ -96,7 +96,8 @@ passport.use(new GoogleStrategy({
           email: profile.emails[0].value,
           googleId: profile.id,
           authMethod: 'google',
-          isVerified: true
+          isVerified: true,
+          termsAcceptedAt: new Date()
         });
         await sendWelcomeEmail(user.email, user.username);
       }

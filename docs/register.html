@@ -217,19 +217,21 @@
         </svg>
         Continue with Google
       </a>
+      <div class="k-oauthnote">By continuing with Google you accept our <a class="k-link" href="terms.html" target="_blank" rel="noopener">Terms of Service</a> and <a class="k-link" href="privacy.html" target="_blank" rel="noopener">Privacy Policy</a>.</div>
 
       <div class="k-oauthdiv"><span>or email</span></div>
 
       
 
       <form action="/auth/register" method="POST" class="k-authform">
+        <input type="hidden" name="ref" value="">
         <div class="k-field">
           <label class="k-fieldlabel" for="username">Username</label>
-          <input class="k-input" type="text" id="username" name="username" required placeholder="your_trader_name">
+          <input class="k-input" type="text" id="username" name="username" required placeholder="your_trader_name" value="">
         </div>
         <div class="k-field">
           <label class="k-fieldlabel" for="email">Email</label>
-          <input class="k-input" type="email" id="email" name="email" required placeholder="your@email.com">
+          <input class="k-input" type="email" id="email" name="email" required placeholder="your@email.com" value="">
         </div>
         <div class="k-field">
           <label class="k-fieldlabel" for="password">Password</label>
@@ -238,6 +240,13 @@
         <div class="k-field">
           <label class="k-fieldlabel" for="confirmPassword">Confirm password</label>
           <input class="k-input" type="password" id="confirmPassword" name="confirmPassword" required placeholder="Repeat your password">
+        </div>
+
+        <div class="k-field k-termscheck">
+          <label class="k-check" for="terms">
+            <input type="checkbox" id="terms" name="terms" value="1" required>
+            <span>I have read and accept the <a href="terms.html" target="_blank" rel="noopener" onclick="event.stopPropagation()">Terms of Service</a> and <a href="privacy.html" target="_blank" rel="noopener" onclick="event.stopPropagation()">Privacy Policy</a>.</span>
+          </label>
         </div>
         <button type="submit" class="k-btn k-btn-primary k-btn-block">Create Account</button>
       </form>
