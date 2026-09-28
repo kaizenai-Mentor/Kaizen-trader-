@@ -1,0 +1,31 @@
+<% // Site-wide announcement ticker (config/CoreLoop.js Part 3, locked).
+   // Renders ONLY when an announcement is active (res.locals.announcement,
+   // set by server middleware). Megaphone at the right — the side the text
+   // enters from — scrolling right→left. × dismisses for the session. %>
+<% if (typeof announcement !== 'undefined' && announcement) { %>
+<div class="k-ticker" id="k-ticker" role="region" aria-label="Announcement">
+  <button type="button" class="k-ticker-close" onclick="dismissTicker()" aria-label="Dismiss announcement">×</button>
+  <div class="k-ticker-track">
+    <span class="k-ticker-text"><%- announcement.message %></span>
+  </div>
+  <div class="k-ticker-badge">
+    <div class="k-ticker-megaphone"><i data-feather="megaphone" width="12" height="12"></i></div>
+    <span>Update</span>
+  </div>
+</div>
+<script>
+  (function () {
+    try {
+      if (sessionStorage.getItem('kaizen-ticker-dismissed') === '1') {
+        var t = document.getElementById('k-ticker');
+        if (t) t.style.display = 'none';
+      }
+    } catch (e) { /* private mode: keep showing */ }
+  })();
+  function dismissTicker() {
+    var t = document.getElementById('k-ticker');
+    if (t) t.style.display = 'none';
+    try { sessionStorage.setItem('kaizen-ticker-dismissed', '1'); } catch (e) {}
+  }
+</script>
+<% } %>

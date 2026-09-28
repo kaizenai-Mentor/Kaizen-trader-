@@ -140,7 +140,7 @@
   <%- include('partials/footer') %>
   <script src="/js/app.js"></script>
   <script>
-    feather.replace();
+    if (window.feather) feather.replace();
     function toggleMemory(id) {
       const el = document.getElementById('memory-' + id);
       const icon = document.getElementById('icon-' + id);
@@ -148,7 +148,7 @@
         const open = el.style.display === 'block';
         el.style.display = open ? 'none' : 'block';
         if (icon) icon.setAttribute('data-feather', open ? 'chevron-down' : 'chevron-up');
-        feather.replace();
+        if (window.feather) feather.replace();
       }
     }
   </script>

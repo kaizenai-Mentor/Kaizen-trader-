@@ -259,7 +259,7 @@
   <%- include('partials/footer') %>
   <script src="/js/app.js"></script>
   <script>
-    feather.replace();
+    if (window.feather) feather.replace();
 
     function copyProfile() {
       const url = window.location.href;
@@ -268,12 +268,12 @@
         btn.innerHTML = '<i data-feather="check" width="11" height="11"></i> Copied!';
         btn.style.color = '#4ADE80';
         btn.style.borderColor = 'rgba(52,211,153,0.3)';
-        feather.replace();
+        if (window.feather) feather.replace();
         setTimeout(() => {
           btn.innerHTML = '<i data-feather="share-2" width="11" height="11"></i> Share Profile';
           btn.style.color = 'var(--ash)';
           btn.style.borderColor = 'var(--border)';
-          feather.replace();
+          if (window.feather) feather.replace();
         }, 2000);
       });
     }
