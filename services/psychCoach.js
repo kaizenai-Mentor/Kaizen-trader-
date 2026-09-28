@@ -20,7 +20,7 @@
  * - No mention of anti-gaming/integrity mechanics anywhere (rule 9).
  */
 
-const https = require('https');
+const llm = require('./llm');
 
 // ── Crisis language (checked before anything else) ───────────────
 const CRISIS_RE = /suicid|kill(ing)? myself|end(ing)? (it all|my life)|self.?harm|harm(ing)? myself|hurt(ing)? myself|don'?t want to (be here|live|go on)|do not want to (be here|live|go on)|no reason to (live|go on)|better off dead/i;
@@ -256,7 +256,7 @@ async function converse({ user, system, sessions, mindState, threadMessages = []
     };
   }
 
-  if (process.env.ANTHROPIC_API_KEY) {
+  if (llm.available()) {
     try {
       // Thread context: the last 12 messages keep the conversation coherent.
       const history = (threadMessages || []).slice(-12).map(m =>
@@ -264,7 +264,7 @@ async function converse({ user, system, sessions, mindState, threadMessages = []
       const systemPrompt = buildSystemPrompt({ user, system, sessions, mindState });
       const content = (history ? `CONVERSATION SO FAR:\n${history}\n\nTHEY JUST SAID:\n${userMessage}` : userMessage);
 
-      const raw = await callClaude(systemPrompt, content, 700);
+      const raw = await llm.callLLM(systemPrompt, content, { maxTokens: 700 });
       return { reply: stripPsychState(raw), psychState: parsePsychState(raw) };
     } catch (err) {
       console.error('psychCoach API error:', err.message);
@@ -278,52 +278,38 @@ async function converse({ user, system, sessions, mindState, threadMessages = []
   };
 }
 
-function callClaude(systemPrompt, messageContent, maxTokens) {
-  return new Promise((resolve, reject) => {
-    const payload = JSON.stringify({
-      model: 'claude-3-5-sonnet-20241022',
-      max_tokens: maxTokens || 700,
-      system: systemPrompt,
-      messages: [{ role: 'user', content: messageContent }]
-    });
-    const options = {
-      hostname: 'api.anthropic.com',
-      path: '/v1/messages',
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': process.env.ANTHROPIC_API_KEY,
-        'anthropic-version': '2023-06-01',
-        'Content-Length': Buffer.byteLength(payload)
-      }
-    };
-    const req = https.request(options, (res) => {
-      let data = '';
-      res.on('data', (chunk) => { data += chunk; });
-      res.on('end', () => {
-        try {
-          const parsed = JSON.parse(data);
-          if (parsed.content && parsed.content[0] && parsed.content[0].text) {
-            resolve(parsed.content[0].text);
-          } else {
-            reject(new Error('Unexpected Anthropic response shape'));
-          }
-        } catch (e) { reject(e); }
-      });
-    });
-    req.on('error', reject);
-    req.setTimeout(20000, () => { req.destroy(); reject(new Error('Timeout')); });
-    req.write(payload);
-    req.end();
-  });
+/**
+ * Streaming variant of converse - yields reply text chunks. The PSYCH-STATE:
+ * tail may arrive at the end; the caller holds it back with
+ * llm.createTailHoldback and parses it with parsePsychState. Without a
+ * provider key the deterministic fallback yields in one chunk (the caller
+ * applies deterministicState for the MindState).
+ */
+async function* streamConverse({ user, system, sessions, mindState, threadMessages = [], userMessage }) {
+  if (CRISIS_RE.test(userMessage || '')) {
+    yield CRISIS_RESPONSE;
+    return;
+  }
+  if (llm.available()) {
+    const history = (threadMessages || []).slice(-12).map(m =>
+      `${m.role === 'user' ? 'THEM' : 'YOU'}: ${m.text}`).join('\n');
+    const systemPrompt = buildSystemPrompt({ user, system, sessions, mindState });
+    const content = (history ? `CONVERSATION SO FAR:\n${history}\n\nTHEY JUST SAID:\n${userMessage}` : userMessage);
+    yield* llm.streamLLM(systemPrompt, content, { maxTokens: 700 });
+    return;
+  }
+  yield buildFallback({ userMessage, mindState, sessions });
 }
+
 
 module.exports = {
   converse,
+  streamConverse,
   parsePsychState,
   stripPsychState,
   applyPsychState,
   buildFallback,
+  deterministicState,
   CRISIS_RESPONSE,
   CRISIS_RE
 };

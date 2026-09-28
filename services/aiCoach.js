@@ -12,46 +12,7 @@
  * - Falls back to honest deterministic coaching when no API key is set.
  */
 
-const https = require('https');
-
-function callClaude(systemPrompt, messageContent) {
-  return new Promise((resolve, reject) => {
-    const payload = JSON.stringify({
-      model: 'claude-3-5-sonnet-20241022',
-      max_tokens: 900,
-      system: systemPrompt,
-      messages: [{ role: 'user', content: messageContent }]
-    });
-    const options = {
-      hostname: 'api.anthropic.com',
-      path: '/v1/messages',
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': process.env.ANTHROPIC_API_KEY,
-        'anthropic-version': '2023-06-01',
-        'Content-Length': Buffer.byteLength(payload)
-      }
-    };
-    const req = https.request(options, (res) => {
-      let data = '';
-      res.on('data', (chunk) => { data += chunk; });
-      res.on('end', () => {
-        try {
-          const parsed = JSON.parse(data);
-          if (parsed.content && parsed.content[0] && parsed.content[0].text) {
-            resolve(parsed.content[0].text);
-          } else {
-            reject(new Error('Unexpected Anthropic response shape'));
-          }
-        } catch (e) { reject(e); }
-      });
-    });
-    req.on('error', reject);
-    req.write(payload);
-    req.end();
-  });
-}
+const llm = require('./llm');
 
 function planSummary(session) {
   const p = session.plan || {};
@@ -176,20 +137,39 @@ function stripExtracted(text) {
  * stripped for display; parse it first via parseExtracted).
  */
 async function analyzeSession({ session, user, system, recentSessions }) {
+  if (!llm.available()) {
+    return buildFallback(session);
+  }
+  const prep = prepareAnalysis({ session, user, system, recentSessions });
+  return llm.callLLM(prep.systemPrompt, prep.messageContent, { maxTokens: 900 });
+}
+
+/** Shared prompt construction for analyzeSession / streamAnalysis. */
+function prepareAnalysis({ session, user, system, recentSessions }) {
   const recentHistory = (recentSessions || []).slice(-10).reverse().map(s =>
     `- ${new Date(s.createdAt).toISOString().slice(0, 10)} [${s.sessionType}] ${s.outcome || ''}: ${(s.notes || '').slice(0, 140)}`
   ).join('\n');
 
   const scoreBrief = 'Score computed separately by the engine.';
-
-  if (!process.env.ANTHROPIC_API_KEY) {
-    return buildFallback(session);
-  }
-
   const messageContent = [{ type: 'text', text: 'Analyze this completed session.' }];
   // (chart image vision support arrives with the record stage upload wiring)
   const systemPrompt = buildSystemPrompt({ user, system, session, recentHistory, scoreBrief });
-  return callClaude(systemPrompt, messageContent);
+  return { systemPrompt, messageContent };
+}
+
+/**
+ * Streaming variant of analyzeSession - yields coaching text chunks.
+ * Same contract; without a provider key it yields the fallback in one chunk.
+ * The EXTRACTED: tail may still arrive - the caller holds it back
+ * (llm.createTailHoldback) and parses it.
+ */
+async function* streamAnalysis({ session, user, system, recentSessions }) {
+  if (!llm.available()) {
+    yield buildFallback(session);
+    return;
+  }
+  const prep = prepareAnalysis({ session, user, system, recentSessions });
+  yield* llm.streamLLM(prep.systemPrompt, prep.messageContent, { maxTokens: 900 });
 }
 
 /**
@@ -245,11 +225,12 @@ WRITE THE LETTER with exactly these sections, no headers needed:
 const DIMENSION_ORDER = ['process', 'risk', 'execution', 'behavior', 'learning'];
 
 async function writeWeeklyLetter({ user, system, weekSessions, movement, mindState }) {
-  if (process.env.ANTHROPIC_API_KEY) {
+  if (llm.available()) {
     try {
-      const raw = await callClaude(
+      const raw = await llm.callLLM(
         buildWeeklyLetterPrompt({ user, system, weekSessions, movement, mindState }),
-        'Write this week\'s letter.'
+        'Write this week\'s letter.',
+        { maxTokens: 900 }
       );
       return raw.trim();
     } catch (err) {
@@ -288,4 +269,4 @@ function buildWeeklyFallback({ weekSessions, movement, mindState }) {
   return parts.join('\n\n');
 }
 
-module.exports = { analyzeSession, parseExtracted, stripExtracted, buildFallback, writeWeeklyLetter, buildWeeklyFallback };
+module.exports = { analyzeSession, streamAnalysis, parseExtracted, stripExtracted, buildFallback, writeWeeklyLetter, buildWeeklyFallback };

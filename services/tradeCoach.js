@@ -20,7 +20,7 @@
  * - No integrity-mechanics talk (rule 9).
  */
 
-const https = require('https');
+const llm = require('./llm');
 const { CRISIS_RE, CRISIS_RESPONSE } = require('./psychCoach');
 
 // Signal-seeking language — declined and redirected to process.
@@ -130,6 +130,28 @@ function buildFallback({ userMessage, system, sessions, imageAttached }) {
   return parts.join('\n\n');
 }
 
+/** Shared prompt construction for converse / streamConverse. */
+function prepareConverse({ system, sessions, threadMessages, userMessage, imageDataUrl, mode }) {
+  const history = (threadMessages || []).slice(-12).map(m =>
+    `${m.role === 'user' ? 'THEM' : 'YOU'}: ${m.text}`).join('\n');
+
+  const systemPrompt = mode === 'quiz'
+    ? buildQuizPrompt({ user, system, sessions })
+    : buildSystemPrompt({ user, system, sessions });
+
+  let content;
+  if (imageDataUrl) {
+    content = [
+      { type: 'image', dataUrl: imageDataUrl },
+      { type: 'text', text: (history ? `CONVERSATION SO FAR:\n${history}\n\n` : '') + (userMessage || 'Review this chart against my rules.') }
+    ];
+  }
+  if (!content) {
+    content = (history ? `CONVERSATION SO FAR:\n${history}\n\nTHEY JUST SAID:\n` : '') + (userMessage || '');
+  }
+  return { systemPrompt, content };
+}
+
 // ── Conversation entry point ─────────────────────────────────────
 
 async function converse({ user, system, sessions, threadMessages = [], userMessage, imageDataUrl, mode }) {
@@ -138,30 +160,10 @@ async function converse({ user, system, sessions, threadMessages = [], userMessa
     return { reply: CRISIS_RESPONSE };
   }
 
-  if (process.env.ANTHROPIC_API_KEY) {
+  const prepared = prepareConverse({ system, sessions, threadMessages, userMessage, imageDataUrl, mode });
+  if (llm.available() && prepared) {
     try {
-      const history = (threadMessages || []).slice(-12).map(m =>
-        `${m.role === 'user' ? 'THEM' : 'YOU'}: ${m.text}`).join('\n');
-
-      const systemPrompt = mode === 'quiz'
-        ? buildQuizPrompt({ user, system, sessions })
-        : buildSystemPrompt({ user, system, sessions });
-
-      let content;
-      if (imageDataUrl) {
-        const mm = imageDataUrl.match(/^data:(image\/[a-zA-Z+]+);base64,(.+)$/);
-        if (mm) {
-          content = [
-            { type: 'image', source: { type: 'base64', media_type: mm[1], data: mm[2] } },
-            { type: 'text', text: (history ? `CONVERSATION SO FAR:\n${history}\n\n` : '') + (userMessage || 'Review this chart against my rules.') }
-          ];
-        }
-      }
-      if (!content) {
-        content = (history ? `CONVERSATION SO FAR:\n${history}\n\nTHEY JUST SAID:\n` : '') + (userMessage || '');
-      }
-
-      const raw = await callClaude(systemPrompt, content, 700);
+      const raw = await llm.callLLM(prepared.systemPrompt, prepared.content, { maxTokens: 700 });
       return { reply: raw.trim() };
     } catch (err) {
       console.error('tradeCoach API error:', err.message);
@@ -174,48 +176,30 @@ async function converse({ user, system, sessions, threadMessages = [], userMessa
   };
 }
 
-function callClaude(systemPrompt, content, maxTokens) {
-  return new Promise((resolve, reject) => {
-    const payload = JSON.stringify({
-      model: 'claude-3-5-sonnet-20241022',
-      max_tokens: maxTokens || 700,
-      system: systemPrompt,
-      messages: [{ role: 'user', content }]
-    });
-    const options = {
-      hostname: 'api.anthropic.com',
-      path: '/v1/messages',
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': process.env.ANTHROPIC_API_KEY,
-        'anthropic-version': '2023-06-01',
-        'Content-Length': Buffer.byteLength(payload)
-      }
-    };
-    const req = https.request(options, (res) => {
-      let data = '';
-      res.on('data', (chunk) => { data += chunk; });
-      res.on('end', () => {
-        try {
-          const parsed = JSON.parse(data);
-          if (parsed.content && parsed.content[0] && parsed.content[0].text) {
-            resolve(parsed.content[0].text);
-          } else {
-            reject(new Error('Unexpected Anthropic response shape'));
-          }
-        } catch (e) { reject(e); }
-      });
-    });
-    req.on('error', reject);
-    req.setTimeout(20000, () => { req.destroy(); reject(new Error('Timeout')); });
-    req.write(payload);
-    req.end();
+/**
+ * Streaming variant of converse - yields reply text chunks. Crisis lane and
+ * no-key fallback yield in a single chunk.
+ */
+async function* streamConverse(args) {
+  if (CRISIS_RE.test(args.userMessage || '')) {
+    yield CRISIS_RESPONSE;
+    return;
+  }
+  const prepared = prepareConverse(args);
+  if (llm.available() && prepared) {
+    yield* llm.streamLLM(prepared.systemPrompt, prepared.content, { maxTokens: 700 });
+    return;
+  }
+  yield buildFallback({
+    userMessage: args.userMessage, system: args.system,
+    sessions: args.sessions, imageAttached: !!args.imageDataUrl
   });
 }
 
+
 module.exports = {
   converse,
+  streamConverse,
   buildFallback,
   digestSystem,
   digestSessions,
