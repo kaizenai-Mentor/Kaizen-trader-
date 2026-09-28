@@ -239,21 +239,63 @@ async function postReflect(req, res) {
   });
 
   // Machine 2 — the coach (改): explains, never scores
-  let coaching = '';
-  try {
-    coaching = await aiCoach.analyzeSession({
-      session: session.toObject(), user: userDoc, system,
-      recentSessions: recentSessions.filter(s => String(s._id) !== String(session._id))
-    });
-    const ex = aiCoach.parseExtracted(coaching);
+  const coachArgs = {
+    session: session.toObject(), user: userDoc, system,
+    recentSessions: recentSessions.filter(s => String(s._id) !== String(session._id))
+  };
+  const applyExtracted = (text) => {
+    const ex = aiCoach.parseExtracted(text);
     if (ex) {
       if (['Win', 'Loss', 'Breakeven', 'No Trade'].includes(ex.outcome) && session.outcome === 'Pending') {
         session.outcome = ex.outcome;
       }
       if (ex.rr && ex.rr !== 'N/A' && !session.rrAchieved) session.rrAchieved = ex.rr;
       if (ex.pips && ex.pips !== 'N/A' && !session.pipsGained) session.pipsGained = ex.pips;
-      coaching = aiCoach.stripExtracted(coaching);
     }
+    return aiCoach.stripExtracted(text);
+  };
+
+  // Streaming path (SSE): the analysis arrives as it is written; the
+  // EXTRACTED: tail is held back and applied server-side.
+  if (String(req.body.stream) === '1') {
+    const llm = require('../services/llm');
+    res.writeHead(200, {
+      'Content-Type': 'text/event-stream',
+      'Cache-Control': 'no-cache, no-transform',
+      'X-Accel-Buffering': 'no'
+    });
+    if (res.flushHeaders) res.flushHeaders();
+    const send = (o) => res.write('data: ' + JSON.stringify(o) + '\n\n');
+    send({ type: 'meta', sessionId: String(session._id) });
+    const holdback = llm.createTailHoldback('EXTRACTED:');
+    let full = '';
+    let emitted = false;
+    try {
+      for await (const chunk of aiCoach.streamAnalysis(coachArgs)) {
+        full += chunk;
+        const safe = holdback.push(chunk);
+        if (safe) { emitted = true; send({ type: 'delta', text: safe }); }
+      }
+      const flushed = holdback.flush();
+      if (flushed.rest) send({ type: 'delta', text: flushed.rest });
+    } catch (e) {
+      console.error('AI coach stream error:', e.message);
+      if (!emitted) {
+        full = aiCoach.buildFallback(session);
+        send({ type: 'delta', text: full });
+      }
+    }
+    const visible = applyExtracted(full);
+    session.aiAnalysis = visible;
+    session.state = 'ANALYZED';
+    await session.save();
+    send({ type: 'done', sessionId: String(session._id) });
+    return res.end();
+  }
+
+  let coaching = '';
+  try {
+    coaching = applyExtracted(await aiCoach.analyzeSession(coachArgs));
   } catch (e) {
     console.error('AI coach error:', e.message);
     coaching = aiCoach.buildFallback(session);

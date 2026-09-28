@@ -703,3 +703,31 @@ eight-stage internals.
 2026 vision, specced for build. All four owner decisions locked (D1–D4 above).
 Terms of Service signal-list trimmed per rule 9. Nothing merges to `main` until
 the owner's final review.*
+
+---
+
+# 9. AI PROVIDER LAYER & LIVE STREAMING (added 18 Sep 2026, owner directive)
+
+**services/llm.js is the one door for every AI surface.** Provider priority:
+`ANTHROPIC_API_KEY` → `GEMINI_API_KEY` → `OPENROUTER_API_KEY` — the first key
+set wins, failures fail over to the next configured provider (streams only
+fail over before the first chunk). ANY ONE key is enough; zero keys keeps the
+honest deterministic fallbacks. Keys live only in env vars (local `.env` /
+Render dashboard) — never in chat, files, or history. Base-URL and model
+overrides: `*_BASE_URL`, `*_MODEL`.
+
+**Streaming is real now, everywhere the coach speaks:**
+- Psychology chat (in-thread), KAIZEN AI chat (in-thread): SSE deltas as
+  KAIZEN writes; `PSYCH-STATE:` tails are held back server-side and applied
+  to the MindState, never shown.
+- Reflect ANALYZE: the analysis streams in place on the session page;
+  `EXTRACTED:` tails held back and applied (outcome / RR / pips).
+- The shared front-end helper is `window.kaizenStream` (public/js/app.js);
+  every surface falls back to the old JSON path when streaming is not
+  available, and to a plain POST on network failure. First messages in a
+  new chat still land via redirect into their own thread page.
+
+**Acceptance.** Any single provider key produces working replies on all
+three surfaces; no key produces the deterministic fallbacks; tests cover
+provider priority, failover, payload shapes, SSE parsing, and tail
+holdback (test/llm.test.js).

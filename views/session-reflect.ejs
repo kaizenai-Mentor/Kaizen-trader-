@@ -94,6 +94,52 @@
         panel.hidden = false; typingEl.hidden = false;
         try { panel.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (err) {}
         var data = new URLSearchParams(new FormData(form));
+
+        function handleJson(res) {
+          typingEl.hidden = true;
+          if (!res || res.error) {
+            out.textContent = (res && res.error) || 'Something went wrong — try again.';
+            after.hidden = false; btn.disabled = false; btn.textContent = 'Finish Session';
+            return;
+          }
+          var text = res.analysis || '';
+          var reduced = window.matchMedia &&
+            window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+          if (reduced) { out.textContent = text; after.hidden = false; return; }
+          var i = 0;
+          (function type() {
+            i += 3;
+            out.textContent = text.slice(0, i);
+            if (i < text.length) { setTimeout(type, 12); return; }
+            out.textContent = text;
+            after.hidden = false;
+          })();
+        }
+
+        // True streaming: KAIZEN's analysis arrives as it is written.
+        // Falls back to the JSON + typewriter path when streaming is not
+        // available, and to a plain form POST on network failure.
+        if (window.kaizenStream) {
+          var payload = {};
+          data.forEach(function (v, k) { payload[k] = v; });
+          payload.stream = '1';
+          window.kaizenStream(form.action, payload, {
+            onDelta: function (t) { typingEl.hidden = true; out.textContent += t; },
+            onDone: function () {
+              typingEl.hidden = true;
+              after.hidden = false;
+              btn.textContent = 'Done';
+            },
+            onError: function (msg) {
+              typingEl.hidden = true;
+              out.textContent = msg || 'Something went wrong — try again.';
+              after.hidden = false; btn.disabled = false; btn.textContent = 'Finish Session';
+            },
+            onJson: handleJson
+          }).catch(function () { form.submit(); }); // network issue: plain POST
+          return;
+        }
+
         data.append('json', '1');
         fetch(form.action, {
           method: 'POST',
@@ -102,26 +148,7 @@
           credentials: 'same-origin'
         })
           .then(function (r) { return r.json(); })
-          .then(function (res) {
-            typingEl.hidden = true;
-            if (!res || res.error) {
-              out.textContent = (res && res.error) || 'Something went wrong — try again.';
-              after.hidden = false; btn.disabled = false; btn.textContent = 'Finish Session';
-              return;
-            }
-            var text = res.analysis || '';
-            var reduced = window.matchMedia &&
-              window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-            if (reduced) { out.textContent = text; after.hidden = false; return; }
-            var i = 0;
-            (function type() {
-              i += 3;
-              out.textContent = text.slice(0, i);
-              if (i < text.length) { setTimeout(type, 12); return; }
-              out.textContent = text;
-              after.hidden = false;
-            })();
-          })
+          .then(handleJson)
           .catch(function () { form.submit(); }); // network issue: plain POST
       });
     })();

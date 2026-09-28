@@ -123,6 +123,65 @@ async function postAsk(req, res) {
     if (!ctx) return res.status(401).json({ error: 'Not logged in.' });
 
     const tradeCoach = require('../services/tradeCoach');
+
+    // ── Streaming path (SSE): the reply arrives as it is written ──
+    if (String(req.body.stream) === '1') {
+      res.writeHead(200, {
+        'Content-Type': 'text/event-stream',
+        'Cache-Control': 'no-cache, no-transform',
+        'X-Accel-Buffering': 'no'
+      });
+      if (res.flushHeaders) res.flushHeaders();
+      const send = (o) => res.write('data: ' + JSON.stringify(o) + '\n\n');
+      send({ type: 'meta', threadId: String(thread._id), title: thread.title, newThread: !req.body.threadId });
+
+      let full = '';
+      let emitted = false;
+      const persist = async (visible) => {
+        thread.messages.push({ role: 'kaizen', text: visible, createdAt: new Date() });
+        thread.messageCount = thread.messages.length;
+        thread.lastMessageAt = new Date();
+        await thread.save();
+        try {
+          const Memory = require('../models/Memory');
+          await Memory.create({
+            userId, type: 'trading',
+            sessionData: (message || '(chart attached)').substring(0, 300),
+            response: visible, asset: 'KAIZEN AI', sessionScore: 0
+          });
+        } catch (memErr) {
+          console.error('KAIZEN AI archive error:', memErr.message);
+        }
+      };
+      try {
+        for await (const chunk of tradeCoach.streamConverse({
+          user: ctx.user, system: ctx.system, sessions: ctx.sessions,
+          threadMessages: thread.messages.slice(0, -1),
+          userMessage: mode === 'quiz' ? 'Quiz me on my rules.' : message,
+          imageDataUrl, mode
+        })) {
+          full += chunk;
+          emitted = true;
+          send({ type: 'delta', text: chunk });
+        }
+        await persist(full.trim());
+        send({ type: 'done', threadId: String(thread._id), messageCount: thread.messageCount });
+      } catch (err) {
+        console.error('KAIZEN AI stream error:', err.message);
+        if (emitted) {
+          try {
+            await persist(full.trim() || '…');
+            send({ type: 'done', threadId: String(thread._id), messageCount: thread.messageCount, partial: true });
+          } catch (e2) {
+            send({ type: 'done', partial: true });
+          }
+        } else {
+          send({ type: 'error', error: 'KAIZEN could not respond. Try again in a moment.' });
+        }
+      }
+      return res.end();
+    }
+
     const { reply } = await tradeCoach.converse({
       user: ctx.user, system: ctx.system, sessions: ctx.sessions,
       threadMessages: thread.messages.slice(0, -1),

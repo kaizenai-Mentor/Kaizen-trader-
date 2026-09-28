@@ -188,6 +188,7 @@
         }
         log.appendChild(wrap);
         scrollBottom();
+        return t;
       }
 
       var busy = false;
@@ -201,6 +202,45 @@
         attachMeta.hidden = true;
         if (typing) typing.hidden = false;
         scrollBottom();
+
+        function finish() {
+          busy = false;
+          send.disabled = false;
+          if (typing) typing.hidden = true;
+          input.focus();
+        }
+
+        // Live streaming (thread view). The first message still lands via
+        // redirect into its own thread page.
+        if (threadId && window.kaizenStream) {
+          var live = addMsg('kaizen', '');
+          window.kaizenStream('/kaizen-ai/ask', Object.assign({ threadId: threadId, stream: 1 }, payload), {
+            onDelta: function (t) {
+              if (typing) typing.hidden = true;
+              if (live) live.textContent += t;
+              scrollBottom();
+            },
+            onDone: finish,
+            onError: function (msg) {
+              if (typing) typing.hidden = true;
+              if (live && !live.textContent) {
+                live.textContent = msg || 'KAIZEN could not respond. Try again in a moment.';
+              }
+              finish();
+            },
+            onJson: function (data) {
+              if (typing) typing.hidden = true;
+              if (data && data.error) addMsg('kaizen', data.error);
+              else if (data && data.reply) addMsg('kaizen', data.reply);
+              finish();
+            }
+          }).catch(function () {
+            if (typing) typing.hidden = true;
+            addMsg('kaizen', 'Connection dropped. Your message was sent — refresh in a moment.');
+            finish();
+          });
+          return;
+        }
 
         fetch('/kaizen-ai/ask', {
           method: 'POST',
@@ -216,12 +256,7 @@
           .catch(function () {
             addMsg('kaizen', 'Connection dropped. Your message was sent — refresh in a moment.');
           })
-          .finally(function () {
-            busy = false;
-            send.disabled = false;
-            if (typing) typing.hidden = true;
-            input.focus();
-          });
+          .finally(finish);
       }
 
       function sendMsg() {

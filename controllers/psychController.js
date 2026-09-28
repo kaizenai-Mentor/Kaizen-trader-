@@ -147,6 +147,87 @@ async function postAsk(req, res) {
 
     const { user, sessions, system, mindState } = await loadContext(userId);
     const psychCoach = require('../services/psychCoach');
+
+    // ── Streaming path (SSE): KAIZEN's reply arrives as it is written.
+    // The PSYCH-STATE: tail never reaches the browser — it is held back,
+    // parsed, and applied to the MindState server-side.
+    if (String(req.body.stream) === '1') {
+      const llm = require('../services/llm');
+      res.writeHead(200, {
+        'Content-Type': 'text/event-stream',
+        'Cache-Control': 'no-cache, no-transform',
+        'X-Accel-Buffering': 'no'
+      });
+      if (res.flushHeaders) res.flushHeaders();
+      const send = (o) => res.write('data: ' + JSON.stringify(o) + '\n\n');
+      send({ type: 'meta', threadId: String(thread._id), title: thread.title, newThread: !req.body.threadId });
+
+      const holdback = llm.createTailHoldback('PSYCH-STATE:');
+      let full = '';
+      let emitted = false;
+
+      const persist = async (visible, tailText) => {
+        thread.messages.push({ role: 'kaizen', text: visible, createdAt: new Date() });
+        thread.messageCount = thread.messages.length;
+        thread.lastMessageAt = new Date();
+        await thread.save();
+        let psychState = null;
+        if (tailText) {
+          psychState = psychCoach.parsePsychState(tailText);
+        } else if (psychCoach.CRISIS_RE.test(message)) {
+          psychState = { summary: '', themes: [{ name: 'Crisis — professional support recommended', status: 'active', note: 'Pointed to real human help.' }], triggers: [], helps: [] };
+        } else if (!llm.available()) {
+          psychState = psychCoach.deterministicState(message);
+        }
+        if (psychState) {
+          psychCoach.applyPsychState(mindState, psychState);
+          await mindState.save();
+        }
+        try {
+          const Memory = require('../models/Memory');
+          await Memory.create({
+            userId, type: 'psychology',
+            sessionData: message.substring(0, 300),
+            response: visible, asset: 'Psychology', sessionScore: 0
+          });
+        } catch (memErr) {
+          console.error('Psychology archive error:', memErr.message);
+        }
+      };
+
+      try {
+        for await (const chunk of psychCoach.streamConverse({
+          user, system, sessions, mindState,
+          threadMessages: thread.messages.slice(0, -1), userMessage: message
+        })) {
+          full += chunk;
+          const safe = holdback.push(chunk);
+          if (safe) { emitted = true; send({ type: 'delta', text: safe }); }
+        }
+        const flushed = holdback.flush();
+        if (flushed.rest) { emitted = true; send({ type: 'delta', text: flushed.rest }); }
+        const idx = full.indexOf('PSYCH-STATE:');
+        const visible = (idx >= 0 ? full.slice(0, idx) : full).trim();
+        await persist(visible, idx >= 0 ? full.slice(idx) : null);
+        send({ type: 'done', threadId: String(thread._id), messageCount: thread.messageCount });
+      } catch (err) {
+        console.error('Psychology stream error:', err.message);
+        if (emitted) {
+          // Keep the partial reply — it is honest and it is theirs.
+          try {
+            const visible = psychCoach.stripPsychState(full).trim() || '…';
+            await persist(visible, null);
+            send({ type: 'done', threadId: String(thread._id), messageCount: thread.messageCount, partial: true });
+          } catch (e2) {
+            send({ type: 'done', partial: true });
+          }
+        } else {
+          send({ type: 'error', error: 'KAIZEN could not respond. Try again in a moment.' });
+        }
+      }
+      return res.end();
+    }
+
     const { reply, psychState } = await psychCoach.converse({
       user, system, sessions, mindState,
       threadMessages: thread.messages.slice(0, -1),
