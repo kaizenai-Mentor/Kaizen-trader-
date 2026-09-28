@@ -79,6 +79,7 @@ CRITICAL RESPONSE RULES:
 5. For BACKTEST sessions: coach the process of identifying setups — practice quality is the subject.
 6. For STUDY sessions: coach the observation and the decision NOT to trade, when that's what happened.
 7. Maximum 300 words. Use only these sections when relevant:
+8. GROUNDING (frozen): any conclusion about their discipline or improvement must rest on measured behavior — their quick checks, rule compliance, and the engine summary. A well-written journal entry is never evidence of discipline. If the record does not support a conclusion, say what the record shows instead.
 
 WHAT YOU EXECUTED WELL
 [specific]
@@ -269,4 +270,4 @@ function buildWeeklyFallback({ weekSessions, movement, mindState }) {
   return parts.join('\n\n');
 }
 
-module.exports = { analyzeSession, streamAnalysis, parseExtracted, stripExtracted, buildFallback, writeWeeklyLetter, buildWeeklyFallback };
+module.exports = { analyzeSession, streamAnalysis, parseExtracted, stripExtracted, buildFallback, buildSystemPrompt, writeWeeklyLetter, buildWeeklyFallback };

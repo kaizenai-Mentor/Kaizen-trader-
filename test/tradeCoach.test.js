@@ -115,3 +115,11 @@ test('image attach without vision gets an honest answer, not a fake one', async 
   assert.match(out.reply, /cannot see the image/i);
   assert.match(out.reply, /will not pretend/i);
 });
+
+
+test('the prompt forbids discipline verdicts from prose alone (anti-gaming)', () => {
+  const { buildSystemPrompt } = require('../services/tradeCoach');
+  const p = buildSystemPrompt({ user: { username: 'T' }, system: null, sessions: [] });
+  assert.match(p, /Never tell them they are disciplined because their message sounded committed/);
+  assert.match(p, /the record is/);
+});

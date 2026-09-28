@@ -731,3 +731,18 @@ overrides: `*_BASE_URL`, `*_MODEL`.
 three surfaces; no key produces the deterministic fallbacks; tests cover
 provider priority, failover, payload shapes, SSE parsing, and tail
 holdback (test/llm.test.js).
+
+**9.1 THE AI FUNCTION SPEC — config/AiFunctions.js (owner directive,
+18 Sep 2026).** The ten AI functions with a live status map: pattern
+detection (engine core exists — after-loss window with exact counts),
+personalized coaching (exists), trade/journaling analysis (exists — the
+ANALYZE stage), weekly review (exists; monthly later), score explanation
+(principle frozen; AI narration surface later), daily brief (not built),
+plan assistant (exists, conversational — the trader owns every rule),
+goal tracking (not built), Ask KAIZEN over structured data (partial),
+opportunity matching (LOCKED per docs/VISION.md). The loop is frozen:
+trader activity → structured data → deterministic engine → pattern
+engine → AI interpretation → coaching → improvement → new data → score
+changes. NEVER AI → score. The anti-gaming rule is enforced in the
+prompts and tested: the AI may never call a trader disciplined because
+their journal read well — conclusions ride on measured behavior only.
