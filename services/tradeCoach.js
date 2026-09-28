@@ -131,7 +131,7 @@ function buildFallback({ userMessage, system, sessions, imageAttached }) {
 }
 
 /** Shared prompt construction for converse / streamConverse. */
-function prepareConverse({ system, sessions, threadMessages, userMessage, imageDataUrl, mode }) {
+function prepareConverse({ user, system, sessions, threadMessages, userMessage, imageDataUrl, mode }) {
   const history = (threadMessages || []).slice(-12).map(m =>
     `${m.role === 'user' ? 'THEM' : 'YOU'}: ${m.text}`).join('\n');
 
@@ -160,7 +160,7 @@ async function converse({ user, system, sessions, threadMessages = [], userMessa
     return { reply: CRISIS_RESPONSE };
   }
 
-  const prepared = prepareConverse({ system, sessions, threadMessages, userMessage, imageDataUrl, mode });
+  const prepared = prepareConverse({ user, system, sessions, threadMessages, userMessage, imageDataUrl, mode });
   if (llm.available() && prepared) {
     try {
       const raw = await llm.callLLM(prepared.systemPrompt, prepared.content, { maxTokens: 700 });

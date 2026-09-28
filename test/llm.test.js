@@ -81,14 +81,20 @@ test('tail holdback hides a marker — whole, split across chunks, and absent', 
   assert.strictEqual(h.push(' more tail'), '');
   assert.deepStrictEqual(h.flush(), { rest: '', tail: 'EXTRACTED: outcome=Win more tail', tailFound: true });
 
-  // split across chunks
+  // split across chunks: the first push emits only a safe prefix (the rest
+  // is held until the marker position is known), the marker never leaks
+  let visible = '';
   h = llm.createTailHoldback('EXTRACTED:');
-  assert.strictEqual(h.push('Part one. EXTRA'), 'Part one. ');
-  assert.strictEqual(h.push('CTED: outcome=Loss'), '');
+  visible += h.push('Part one. EXTRA');
+  assert.ok(!visible.includes('EXTRACTED'), 'marker fragment must not leak');
+  visible += h.push('CTED: outcome=Loss');
+  assert.ok(!visible.includes('EXTRACTED'), 'marker must not leak once located');
   assert.strictEqual(h.push(' tail'), '');
   const f2 = h.flush();
   assert.strictEqual(f2.tailFound, true);
-  assert.match(f2.tail, /^EXTRACTED: outcome=Loss tail$/);
+  assert.strictEqual(visible, 'Part one. ', 'full pre-marker text recovered');
+  assert.strictEqual(f2.rest, '');
+  assert.strictEqual(f2.tail, 'EXTRACTED: outcome=Loss tail');
 
   // absent
   h = llm.createTailHoldback('PSYCH-STATE:');
