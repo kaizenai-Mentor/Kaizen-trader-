@@ -125,16 +125,23 @@
  *   marketing that writes itself.
  *
  * ============================================================================
- * PRIVACY NOTE — ACTION PENDING (owner decision)
+ * PRIVACY NOTE — OWNER DECISION (29 Sep 2026)
  * ============================================================================
- * The raw response files contain respondent email addresses and sit in
- * this repository, which feeds a public GitHub Pages site — meaning the
- * repo itself is publicly readable. The emails were given voluntarily for
- * launch notification (legitimate to USE), but publishing them in a public
- * repo is a different exposure. RECOMMENDED: move the raw survey files to
- * private storage and keep only anonymized aggregates (like this file) in
- * the repo. Deleting the files from main removes them going forward, but
- * git history retains them — the owner should decide the level of cleanup
- * (file removal now vs. history rewrite). Until decided: do not copy
- * respondent emails into any other file, doc, or chat.
+ * The raw response files contain respondent email addresses and sit on
+ * main of a publicly readable repo. OWNER DECISION, recorded verbatim in
+ * substance: the raw files STAY on main until response collection is
+ * complete, then the owner removes them personally. In this research
+ * record, respondents are ALWAYS anonymous (R1–R5 labels; Round 2
+ * continues R6, R7, …). Emails are never copied into this file, any
+ * other repo file, docs, or chat.
+ *
+ * Verified 29 Sep 2026: no "@" character exists anywhere in this file,
+ * and no respondent address appears in any tracked file on this branch.
+ *
+ * FOR REMOVAL DAY (when the owner deletes the raw files from main):
+ * deleting the files removes them going forward, but git history retains
+ * them. If stronger cleanup is wanted then, the options are a history
+ * rewrite (needs force-push and coordination) or, simplest, rotating any
+ * sensitive value — none is more sensitive than the emails themselves.
+ * Decide then; nothing to do now.
  */
