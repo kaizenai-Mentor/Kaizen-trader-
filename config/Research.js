@@ -135,8 +135,9 @@
  * continues R6, R7, …). Emails are never copied into this file, any
  * other repo file, docs, or chat.
  *
- * Verified 29 Sep 2026: no "@" character exists anywhere in this file,
- * and no respondent address appears in any tracked file on this branch.
+ * Verified 29 Sep 2026: no at-sign character exists anywhere in this
+ * file, and no respondent address appears in any tracked file on this
+ * branch.
  *
  * FOR REMOVAL DAY (when the owner deletes the raw files from main):
  * deleting the files removes them going forward, but git history retains
