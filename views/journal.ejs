@@ -19,7 +19,7 @@
         <h1 style="font-size:1.6rem;font-weight:700;color:var(--text-primary);margin-bottom:4px;">My Journal</h1>
         <p style="font-size:0.82rem;color:var(--ash);font-style:italic;">Write honestly. KAIZEN learns from everything you record.</p>
       </div>
-      <a href="/dashboard" style="display:inline-flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);border:1px solid var(--border);padding:10px 16px;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.color='var(--gold)';this.style.borderColor='rgba(201,168,76,0.3)'" onmouseout="this.style.color='var(--ash)';this.style.borderColor='var(--border)'">
+      <a href="/dashboard" style="display:inline-flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);border:1px solid var(--border);padding:10px 16px;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.color='var(--gold)';this.style.borderColor='rgba(245,197,24,0.3)'" onmouseout="this.style.color='var(--ash)';this.style.borderColor='var(--border)'">
         <i data-feather="arrow-left" width="12" height="12"></i>
         Dashboard
       </a>
@@ -33,7 +33,7 @@
         ['eye','Journal no-trades too','The setups you skipped teach KAIZEN as much as the ones you took.']
       ].forEach(function(t) { %>
         <div style="background:var(--bg-card);border:1px solid var(--border);padding:14px 16px;display:flex;gap:10px;align-items:flex-start;">
-          <div style="width:24px;height:24px;min-width:24px;border:1px solid rgba(201,168,76,0.2);background:rgba(201,168,76,0.04);display:flex;align-items:center;justify-content:center;color:var(--gold);margin-top:1px;">
+          <div style="width:24px;height:24px;min-width:24px;border:1px solid rgba(245,197,24,0.2);background:rgba(245,197,24,0.04);display:flex;align-items:center;justify-content:center;color:var(--gold);margin-top:1px;">
             <i data-feather="<%= t[0] %>" width="12" height="12"></i>
           </div>
           <div>
@@ -45,11 +45,11 @@
     </div>
 
     <!-- NEW SESSION FORM -->
-    <div style="background:var(--bg-card);border:1px solid rgba(201,168,76,0.2);padding:24px;margin-bottom:16px;">
+    <div style="background:var(--bg-card);border:1px solid rgba(245,197,24,0.2);padding:24px;margin-bottom:16px;">
 
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
         <div style="display:flex;align-items:center;gap:10px;">
-          <div style="width:28px;height:28px;border:1px solid rgba(201,168,76,0.25);background:rgba(201,168,76,0.06);display:flex;align-items:center;justify-content:center;color:var(--gold);">
+          <div style="width:28px;height:28px;border:1px solid rgba(245,197,24,0.25);background:rgba(245,197,24,0.06);display:flex;align-items:center;justify-content:center;color:var(--gold);">
             <i data-feather="file-text" width="13" height="13"></i>
           </div>
           <div>
@@ -57,7 +57,7 @@
             <div style="font-size:0.72rem;color:var(--ash);">Write freely. KAIZEN AI reads every word</div>
           </div>
         </div>
-        <span style="font-family:'DM Mono',monospace;font-size:0.52rem;letter-spacing:0.12em;text-transform:uppercase;color:rgba(201,168,76,0.4);border:1px solid rgba(201,168,76,0.12);padding:3px 8px;">Write Freely</span>
+        <span style="font-family:'DM Mono',monospace;font-size:0.52rem;letter-spacing:0.12em;text-transform:uppercase;color:rgba(245,197,24,0.4);border:1px solid rgba(245,197,24,0.12);padding:3px 8px;">Write Freely</span>
       </div>
 
       <form action="/dashboard/journal" method="POST" id="journal-form" enctype="multipart/form-data">
@@ -125,7 +125,7 @@ What would you do differently?"></textarea>
       <input type="radio" name="outcome" value="Loss">
       <span style="font-family:'DM Mono',monospace;font-size:0.7rem;font-weight:700;color:#F87171;">Loss</span>
     </label>
-    <label style="display:flex;align-items:center;justify-content:center;gap:6px;padding:10px;background:rgba(201,168,76,0.04);border:1px solid rgba(201,168,76,0.15);cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background='rgba(201,168,76,0.1)'" onmouseout="this.style.background='rgba(201,168,76,0.04)'">
+    <label style="display:flex;align-items:center;justify-content:center;gap:6px;padding:10px;background:rgba(245,197,24,0.04);border:1px solid rgba(245,197,24,0.15);cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background='rgba(245,197,24,0.1)'" onmouseout="this.style.background='rgba(245,197,24,0.04)'">
       <input type="radio" name="outcome" value="Breakeven">
       <span style="font-family:'DM Mono',monospace;font-size:0.7rem;font-weight:700;color:var(--gold);">Breakeven</span>
     </label>
@@ -147,7 +147,7 @@ What would you do differently?"></textarea>
         padding:10px 12px;outline:none;box-sizing:border-box;
         transition:border-color 0.2s;
       " placeholder="e.g. 1:2.5"
-      onfocus="this.style.borderColor='rgba(201,168,76,0.4)'"
+      onfocus="this.style.borderColor='rgba(245,197,24,0.4)'"
       onblur="this.style.borderColor='var(--border)'">
     </div>
     <div>
@@ -160,7 +160,7 @@ What would you do differently?"></textarea>
         padding:10px 12px;outline:none;box-sizing:border-box;
         transition:border-color 0.2s;
       " placeholder="e.g. +45 or -20"
-      onfocus="this.style.borderColor='rgba(201,168,76,0.4)'"
+      onfocus="this.style.borderColor='rgba(245,197,24,0.4)'"
       onblur="this.style.borderColor='var(--border)'">
     </div>
   </div>
@@ -183,7 +183,7 @@ What would you do differently?"></textarea>
     padding:24px;text-align:center;
     cursor:pointer;transition:border-color 0.2s;
   " onclick="document.getElementById('chartImage').click()"
-     onmouseover="this.style.borderColor='rgba(201,168,76,0.4)'"
+     onmouseover="this.style.borderColor='rgba(245,197,24,0.4)'"
      onmouseout="this.style.borderColor='var(--border)'">
     <i data-feather="upload" width="20" height="20" style="color:var(--ash);margin-bottom:8px;display:block;margin-left:auto;margin-right:auto;"></i>
     <div style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);">
@@ -201,14 +201,14 @@ What would you do differently?"></textarea>
       max-height:280px;
       object-fit:contain;
       background:var(--bg-surface);
-      border:1px solid rgba(201,168,76,0.3);
+      border:1px solid rgba(245,197,24,0.3);
       display:block;
     ">
     <!-- Overlay badge -->
     <div style="
       position:absolute;top:8px;left:8px;
       background:rgba(0,0,0,0.7);
-      border:1px solid rgba(201,168,76,0.3);
+      border:1px solid rgba(245,197,24,0.3);
       padding:4px 10px;
       display:flex;align-items:center;gap:6px;
     ">
@@ -233,8 +233,8 @@ What would you do differently?"></textarea>
     </button>
     <!-- File info bar -->
     <div style="
-      background:rgba(201,168,76,0.06);
-      border:1px solid rgba(201,168,76,0.15);
+      background:rgba(245,197,24,0.06);
+      border:1px solid rgba(245,197,24,0.15);
       border-top:none;
       padding:8px 12px;
       display:flex;align-items:center;gap:8px;
@@ -263,13 +263,13 @@ What would you do differently?"></textarea>
           cursor:pointer;
           display:flex;align-items:center;justify-content:center;gap:8px;
           transition:background 0.2s;
-        " onmouseover="this.style.background='#E2C46A'" onmouseout="this.style.background='var(--gold)'">
+        " onmouseover="this.style.background='#FFD84D'" onmouseout="this.style.background='var(--gold)'">
           <i data-feather="send" width="14" height="14"></i>
           Save Session Get KAIZEN AI Analysis
         </button>
 
         <!-- Responding state -->
-        <div id="responding-state" style="display:none;text-align:center;padding:28px 16px;border:1px solid rgba(201,168,76,0.2);background:rgba(201,168,76,0.03);margin-top:12px;">
+        <div id="responding-state" style="display:none;text-align:center;padding:28px 16px;border:1px solid rgba(245,197,24,0.2);background:rgba(245,197,24,0.03);margin-top:12px;">
           <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:8px;">
             <div style="width:6px;height:6px;border-radius:50%;background:var(--gold);animation:pulse 1.2s infinite;"></div>
             <div id="responding-text" style="font-family:'DM Mono',monospace;font-size:0.72rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);">KAIZEN AI IS RESPONDING...</div>
@@ -329,7 +329,7 @@ What would you do differently?"></textarea>
       <% } else { %>
         <div style="background:var(--bg-card);border:1px solid var(--border);padding:32px;text-align:center;">
           <p style="font-size:0.85rem;color:var(--ash);">Could not load journal entries.</p>
-          <a href="/dashboard" style="display:inline-block;margin-top:12px;font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(201,168,76,0.25);padding:8px 16px;text-decoration:none;">Back to Dashboard</a>
+          <a href="/dashboard" style="display:inline-block;margin-top:12px;font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(245,197,24,0.25);padding:8px 16px;text-decoration:none;">Back to Dashboard</a>
         </div>
       <% } %>
     </div>

@@ -124,7 +124,7 @@
 
     var html = creds.map(function (c) {
       var date = new Date(c.issuedAt).toLocaleDateString();
-      return '<div style="background:var(--bg-surface);border:1px solid rgba(201,168,76,0.15);padding:16px;position:relative;overflow:hidden;">'
+      return '<div style="background:var(--bg-surface);border:1px solid rgba(245,197,24,0.15);padding:16px;position:relative;overflow:hidden;">'
         + '<div style="position:absolute;top:-10px;right:-10px;opacity:0.05;transform:rotate(15deg);"><i data-feather="award" width="60" height="60"></i></div>'
         + '<div style="font-family:\'DM Mono\',monospace;font-size:0.5rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:8px;">' + c.credentialType.replace('_', ' ') + '</div>'
         + '<div style="font-weight:700;font-size:0.9rem;color:var(--text-primary);margin-bottom:6px;">' + c.name + '</div>'

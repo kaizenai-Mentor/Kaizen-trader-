@@ -18,7 +18,7 @@
         <h1 style="font-size:1.6rem;font-weight:700;color:var(--text-primary);margin-bottom:4px;">Memories</h1>
         <p style="font-size:0.82rem;color:var(--ash);font-style:italic;">Every KAIZEN AI response — saved permanently for reflection.</p>
       </div>
-      <a href="/kaizen-ai" style="display:inline-flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);border:1px solid var(--border);padding:10px 16px;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.color='var(--gold)';this.style.borderColor='rgba(201,168,76,0.3)'" onmouseout="this.style.color='var(--ash)';this.style.borderColor='var(--border)'">
+      <a href="/kaizen-ai" style="display:inline-flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);border:1px solid var(--border);padding:10px 16px;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.color='var(--gold)';this.style.borderColor='rgba(245,197,24,0.3)'" onmouseout="this.style.color='var(--ash)';this.style.borderColor='var(--border)'">
         KAIZEN AI
         <i data-feather="arrow-right" width="12" height="12"></i>
       </a>
@@ -28,7 +28,7 @@
 
       <!-- Stats row -->
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:2px;margin-bottom:16px;">
-        <div style="background:var(--bg-card);border:1px solid rgba(201,168,76,0.15);padding:16px;">
+        <div style="background:var(--bg-card);border:1px solid rgba(245,197,24,0.15);padding:16px;">
           <div style="font-family:'DM Mono',monospace;font-size:0.52rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--ash);margin-bottom:6px;display:flex;align-items:center;gap:5px;">
             <i data-feather="archive" width="10" height="10"></i> Total Saved
           </div>
@@ -67,12 +67,12 @@
           <div style="
             background:var(--bg-card);
             border:1px solid <%= isPsych ? 'rgba(59,130,246,0.15)' : 'var(--border)' %>;
-            border-left:2px solid <%= isPsych ? 'rgba(59,130,246,0.4)' : 'rgba(201,168,76,0.3)' %>;
+            border-left:2px solid <%= isPsych ? 'rgba(59,130,246,0.4)' : 'rgba(245,197,24,0.3)' %>;
             padding:20px;
             cursor:pointer;
             transition:border-color 0.2s;
           " onclick="toggleMemory('<%= memory._id %>')"
-             onmouseover="this.style.borderColor='rgba(201,168,76,0.3)'"
+             onmouseover="this.style.borderColor='rgba(245,197,24,0.3)'"
              onmouseout="this.style.borderColor='<%= isPsych ? 'rgba(59,130,246,0.15)' : 'var(--border)' %>'">
 
             <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;">
@@ -108,7 +108,7 @@
                 <%= memory.response %>
               </div>
               <% if (memory.sessionData) { %>
-                <div style="padding:14px 16px;background:var(--bg-surface);border:1px solid var(--border);border-left:2px solid rgba(201,168,76,0.2);">
+                <div style="padding:14px 16px;background:var(--bg-surface);border:1px solid var(--border);border-left:2px solid rgba(245,197,24,0.2);">
                   <div style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);margin-bottom:8px;">Your Session Entry</div>
                   <p style="font-size:0.82rem;color:var(--ash);line-height:1.7;margin:0;font-style:italic;">"<%= memory.sessionData %>"</p>
                 </div>
@@ -122,7 +122,7 @@
     <% } else { %>
 
       <div style="background:var(--bg-card);border:1px solid var(--border);padding:80px 32px;text-align:center;">
-        <div style="font-family:'DM Mono',monospace;font-size:4rem;color:rgba(201,168,76,0.1);margin-bottom:20px;">改</div>
+        <div style="font-family:'DM Mono',monospace;font-size:4rem;color:rgba(245,197,24,0.1);margin-bottom:20px;">改</div>
         <h2 style="font-size:1.1rem;font-weight:700;color:var(--text-primary);margin-bottom:8px;">No memories yet</h2>
         <p style="font-size:0.88rem;color:var(--ash);max-width:380px;margin:0 auto 24px;line-height:1.8;">
           Log a session in My Journal and KAIZEN AI will analyze it. The response is saved here automatically — permanently.

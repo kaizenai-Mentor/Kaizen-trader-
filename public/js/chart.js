@@ -37,12 +37,12 @@ const KAIZEN_CHART = {
       crosshair: {
         mode: LightweightCharts.CrosshairMode.Normal,
         vertLine: {
-          color: 'rgba(201,168,76,0.4)',
-          labelBackgroundColor: '#C9A84C'
+          color: 'rgba(245,197,24,0.4)',
+          labelBackgroundColor: '#F5C518'
         },
         horzLine: {
-          color: 'rgba(201,168,76,0.4)',
-          labelBackgroundColor: '#C9A84C'
+          color: 'rgba(245,197,24,0.4)',
+          labelBackgroundColor: '#F5C518'
         }
       },
       rightPriceScale: {
@@ -58,7 +58,7 @@ const KAIZEN_CHART = {
       watermark: {
         visible: true,
         text: '改 KAIZEN',
-        color: 'rgba(201,168,76,0.04)',
+        color: 'rgba(245,197,24,0.04)',
         fontSize: 48,
         fontFamily: 'monospace'
       }
@@ -294,7 +294,7 @@ const KAIZEN_CHART = {
   addHorizontalLine(price) {
     const line = this.candleSeries.createPriceLine({
       price: price,
-      color: '#C9A84C',
+      color: '#F5C518',
       lineWidth: 1,
       lineStyle: LightweightCharts.LineStyle.Dashed,
       axisLabelVisible: true,
@@ -338,7 +338,7 @@ const KAIZEN_CHART = {
 
   addFibonacci(price1, price2, startTime) {
     const levels = [0, 0.236, 0.382, 0.5, 0.618, 0.786, 1];
-    const colors = ['#C9A84C', '#A8A09A', '#3B82F6', '#F87171', '#3B82F6', '#A8A09A', '#C9A84C'];
+    const colors = ['#F5C518', '#A8A09A', '#3B82F6', '#F87171', '#3B82F6', '#A8A09A', '#F5C518'];
     const diff = price2 - price1;
 
     levels.forEach((level, i) => {
@@ -409,7 +409,7 @@ const KAIZEN_CHART = {
           if (d.type === 'hline' && d.price) {
             const line = this.candleSeries.createPriceLine({
               price: d.price,
-              color: '#C9A84C',
+              color: '#F5C518',
               lineWidth: 1,
               lineStyle: LightweightCharts.LineStyle.Dashed,
               axisLabelVisible: true,
@@ -433,7 +433,7 @@ const KAIZEN_CHART = {
           } else if (d.type === 'fib' && d.price) {
             const line = this.candleSeries.createPriceLine({
               price: d.price,
-              color: '#C9A84C',
+              color: '#F5C518',
               lineWidth: 1,
               lineStyle: LightweightCharts.LineStyle.Dotted,
               axisLabelVisible: true,
@@ -451,7 +451,7 @@ const KAIZEN_CHART = {
     if (!el) return;
     const colors = {
       live: '#34D399',
-      loading: '#C9A84C',
+      loading: '#F5C518',
       error: '#F87171'
     };
     el.textContent = text;

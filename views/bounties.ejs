@@ -18,7 +18,7 @@
         <h1 style="font-size:1.6rem;font-weight:700;color:var(--text-primary);margin-bottom:4px;">Discipline Challenges</h1>
         <p style="font-size:0.82rem;color:var(--ash);font-style:italic;">Earn on-chain reputation by completing challenges.</p>
       </div>
-      <a href="/dashboard" style="display:inline-flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);border:1px solid var(--border);padding:10px 16px;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.color='var(--gold)';this.style.borderColor='rgba(201,168,76,0.3)'" onmouseout="this.style.color='var(--ash)';this.style.borderColor='var(--border)'">
+      <a href="/dashboard" style="display:inline-flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);border:1px solid var(--border);padding:10px 16px;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.color='var(--gold)';this.style.borderColor='rgba(245,197,24,0.3)'" onmouseout="this.style.color='var(--ash)';this.style.borderColor='var(--border)'">
         <i data-feather="arrow-left" width="12" height="12"></i>
         Dashboard
       </a>
@@ -44,10 +44,10 @@
         <% bounties.forEach(function(bounty) {
           var isClosed = bounty.bountyCompleted || bounty.status === 'Closed' || bounty.status === 'Completed' || bounty.isExpired || bounty.daysRemaining === 0;
         %>
-          <div style="background:var(--bg-card);border:1px solid <%= isClosed ? 'var(--border)' : 'rgba(201,168,76,0.18)' %>;padding:22px;display:flex;flex-direction:column;">
+          <div style="background:var(--bg-card);border:1px solid <%= isClosed ? 'var(--border)' : 'rgba(245,197,24,0.18)' %>;padding:22px;display:flex;flex-direction:column;">
 
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
-              <span style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(201,168,76,0.2);padding:3px 8px;display:flex;align-items:center;gap:4px;">
+              <span style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(245,197,24,0.2);padding:3px 8px;display:flex;align-items:center;gap:4px;">
                 <i data-feather="shield" width="9" height="9"></i>
                 ZA Challenge
               </span>
@@ -78,7 +78,7 @@
                   Open
                 </span>
               <% } %>
-              <a href="/za/bounties/<%= bounty.id || bounty._id %>" style="display:inline-flex;align-items:center;gap:5px;font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(201,168,76,0.25);padding:7px 14px;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.background='rgba(201,168,76,0.08)'" onmouseout="this.style.background='transparent'">
+              <a href="/za/bounties/<%= bounty.id || bounty._id %>" style="display:inline-flex;align-items:center;gap:5px;font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(245,197,24,0.25);padding:7px 14px;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.background='rgba(245,197,24,0.08)'" onmouseout="this.style.background='transparent'">
                 View
                 <i data-feather="arrow-right" width="10" height="10"></i>
               </a>

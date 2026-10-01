@@ -69,7 +69,7 @@ motion so the page responds to the visitor.
 
 STAYS (the brand spine):
 - Near-black base + warm off-white text
-- Gold #C9A84C as the primary accent
+- Gold #F5C518 (Electric Gold) as the primary accent
 - DM Mono for eyebrows/labels/metrics, Outfit for body and headlines
 - Sharp corners, 1px hairline borders — no rounded corners, ever
 - Feather icons (thin line set)
@@ -123,13 +123,15 @@ connecting, a pattern appearing), never for entertainment.
 ================================================================================
 
 DARK (default)                              LIGHT
---bg-base:     #080808  (unchanged)         #F5F3EF
+--bg-base:     #0A0A0A  Crispy Black        #F4F8FB  Ocean White
 --bg-card:     #101010  (was #111)          #FFFFFF
---bg-elevated: #181818  (NEW level)         #FAF8F5
---bg-surface:  #161616  (was, now 4th)      #F0EDE8
+--bg-elevated: #181818  (NEW level)         #F8FAFC
+--bg-surface:  #161616  (was, now 4th)      #EDF2F7
 
---gold:        #C9A84C  (unchanged)         #B8960C
---gold-light:  #E2C46A  (unchanged)         —
+--gold:        #F5C518  Electric Gold       #B8960C
+--gold-light:  #FFD84D  (hover/gradient)    —
+--navy:        #1A2F4A  Burnt Blue — brand secondary (containers, badges,
+                       chips). NEVER text on dark: 1.5:1, unreadable.
 --vermillion:  #C0392B  (NEW)               #A93226
 --vermillion-pale: rgba(192,57,43,0.08)     (NEW)
 --vermillion-border: rgba(192,57,43,0.30)   (NEW)
@@ -160,7 +162,7 @@ GOLD TEXT RULE (owner, 15 Sep 2026 — both themes, frozen):
 Gold text belongs to the BRAND and to DATA. Everything else speaks in
 the page's reading color.
 
-GOLD TEXT (dark: #C9A84C · light: #B8960C):
+GOLD TEXT (dark: #F5C518 Electric Gold · light: #B8960C):
 - The logo mark and wordmark (改 KAIZEN — navbar, footer, anywhere)
 - The word "KAIZEN" inside titles ("About KAIZEN") — one accent word max
 - Eyebrows / section kickers / group labels (mono, tracked)
@@ -168,7 +170,7 @@ GOLD TEXT (dark: #C9A84C · light: #B8960C):
 - Instrument values: dial numbers, meter fills, metric figures
 - Active nav item, hover accents, links on hover
 
-READING COLOR (dark: #F5F3EF · light: near-black #1B1B1B):
+READING COLOR (dark: #F4F8FB Ocean White · light: #0A0A0A Crispy Black):
 - Headlines (except the single accent word), all body copy,
   descriptions, form inputs, table text, legal text
 
@@ -458,3 +460,30 @@ under this design system, in this order:
   5. Footer/navbar string updates
 Review of the direction in this document (and the four mockups) is the
 gate. On approval, code begins.
+
+================================================================================
+BRAND PALETTE v2 (owner, 29 Sep 2026 — applied same day)
+================================================================================
+Ocean White   #F4F8FB — cool off-white (light bg + dark-theme reading text)
+Crispy Black  #0A0A0A — near-pure black (dark bg + light-theme reading text)
+Electric Gold #F5C518 — the dark-theme brand gold (about 12:1 on Crispy Black)
+Burnt Blue    #1A2F4A — brand secondary for containers and badges
+
+Owner's recorded alternatives: Ocean White #F0F7FA (cooler) / #F8FAFC
+(brighter); Crispy Black #000000 (pure) / #111111 (softer); Electric Gold
+#FFD700 (classic) / #FFC107 (more yellow); Burnt Blue #0F1C2E (darker) /
+#1E3A5F (brighter navy).
+
+Two professional adjustments, applied transparently:
+1. LIGHT-THEME GOLD STAYS #B8960C. Electric Gold on Ocean White is
+   unreadable (about 1.6:1). #B8960C is the same yellow hue darkened to
+   reading weight — it IS Electric Gold's light-theme form. This is why
+   the system has always carried two golds.
+2. BURNT BLUE IS A CONTAINER COLOR. At 1.5:1 on Crispy Black it cannot
+   be text. It enters as --navy (badges, chips, tints). The small
+   utility blue remains for readable informational text — same status
+   as green/red. First live use: the ON-CHAIN badge on Wallets &
+   Verification (solid Burnt Blue, Ocean White text).
+
+Bigger navy surfaces (hero panel, footer, verification cards) wait for a
+both-themes mockup and owner approval, per the standing both-themes rule.

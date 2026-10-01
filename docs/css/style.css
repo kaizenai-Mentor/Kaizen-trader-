@@ -6,50 +6,53 @@
 }
 
 :root {
-  --black: #080808;
+  --black: #0A0A0A;
   --black-card: #111111;
   --black-surface: #161616;
-  --gold: #C9A84C;
-  --gold-light: #E2C46A;
-  --gold-pale: rgba(201, 168, 76, 0.1);
-  --gold-border: rgba(201, 168, 76, 0.25);
+  --gold: #F5C518;
+  --gold-light: #FFD84D;
+  --gold-pale: rgba(245, 197, 24, 0.1);
+  --gold-border: rgba(245, 197, 24, 0.25);
   --vermillion: #C0392B;
   --vermillion-pale: rgba(192, 57, 43, 0.08);
   --vermillion-border: rgba(192, 57, 43, 0.30);
   --blue: #3B82F6;
   --blue-pale: rgba(59, 130, 246, 0.1);
   --blue-border: rgba(59, 130, 246, 0.2);
+  --navy: #1A2F4A;
+  --navy-pale: rgba(26, 47, 74, 0.18);
+  --navy-border: rgba(26, 47, 74, 0.65);
   --ash: #A8A09A;
   --ash-light: #C8C0BA;
-  --white: #F5F3EF;
+  --white: #F4F8FB;
   --green: #34D399;
   --red: #F87171;
   --border: rgba(255, 255, 255, 0.07);
   --border-strong: rgba(255, 255, 255, 0.14);
-  --ghost: rgba(245, 243, 239, 0.08);
+  --ghost: rgba(244, 248, 251, 0.08);
   --font-body: 'Outfit', sans-serif;
   --font-mono: 'DM Mono', monospace;
   --font-cjk: 'Hiragino Mincho ProN', 'Yu Mincho', 'Noto Serif CJK JP', 'Noto Serif JP', serif;
-  --bg: #080808;
-  --bg-base: #080808;     
+  --bg: #0A0A0A;
+  --bg-base: #0A0A0A;     
   --bg-card: #101010;
   --bg-elevated: #181818;
   --bg-surface: #161616;
-  --text-primary: #F5F3EF;
+  --text-primary: #F4F8FB;
   --text-secondary: #A8A09A;
   --text-faint: #6B655F;
-  --nav-bg: rgba(8, 8, 8, 0.92);
+  --nav-bg: rgba(10, 10, 10, 0.92);
   --popup-bg: #131313;
   --input-bg: #161616;
 }
 
 [data-theme="light"] {
-  --bg: #F5F3EF;
-  --bg-base: #F5F3EF;
+  --bg: #F4F8FB;
+  --bg-base: #F4F8FB;
   --bg-card: #FFFFFF;
-  --bg-elevated: #FAF8F5;
-  --bg-surface: #F0EDE8;
-  --text-primary: #1B1B1B;
+  --bg-elevated: #F8FAFC;
+  --bg-surface: #EDF2F7;
+  --text-primary: #0A0A0A;
   --text-secondary: #5B5550;
   --ash: #7A7470;
   --ash-light: #5B5550;
@@ -62,7 +65,7 @@
   --ghost: rgba(0,0,0,0.07);
   --text-faint: #8A847E;
   --blue: #2563EB;
-  --nav-bg: rgba(245, 243, 239, 0.92);
+  --nav-bg: rgba(244, 248, 251, 0.92);
   --popup-bg: #FFFFFF;
   --input-bg: #FFFFFF;
 }
@@ -127,8 +130,8 @@ img { max-width: 100%; }
 
 /* GLOW EFFECTS */
 .glow-gold {
-  box-shadow: 0 0 20px rgba(201, 168, 76, 0.15),
-              0 0 60px rgba(201, 168, 76, 0.05);
+  box-shadow: 0 0 20px rgba(245, 197, 24, 0.15),
+              0 0 60px rgba(245, 197, 24, 0.05);
 }
 
 /* ── NAVBAR ── */
@@ -423,7 +426,7 @@ img { max-width: 100%; }
 }
 
 .btn-primary:hover::before { transform: scaleX(1); }
-.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 20px rgba(201,168,76,0.3); }
+.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 20px rgba(245,197,24,0.3); }
 
 .btn-outline {
   display: inline-block;
@@ -504,7 +507,7 @@ img { max-width: 100%; }
   width: 800px;
   height: 500px;
   background: radial-gradient(ellipse,
-    rgba(201, 168, 76, 0.07),
+    rgba(245, 197, 24, 0.07),
     transparent 70%);
   pointer-events: none;
 }
@@ -770,7 +773,7 @@ img { max-width: 100%; }
 
 .form-input:focus {
   border-color: var(--gold);
-  box-shadow: 0 0 0 3px rgba(201,168,76,0.08);
+  box-shadow: 0 0 0 3px rgba(245,197,24,0.08);
 }
 
 .form-input::placeholder { color: rgba(168, 160, 154, 0.4); }
@@ -821,7 +824,7 @@ select.form-input { cursor: pointer; }
   max-height: 90vh;
   overflow-y: auto;
   position: relative;
-  box-shadow: 0 0 60px rgba(201,168,76,0.1);
+  box-shadow: 0 0 60px rgba(245,197,24,0.1);
 }
 
 .onboarding-card::before {
@@ -984,7 +987,7 @@ select.form-input { cursor: pointer; }
   height: 100%;
   background: linear-gradient(90deg, var(--gold), var(--gold-light));
   transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 0 8px rgba(201,168,76,0.4);
+  box-shadow: 0 0 8px rgba(245,197,24,0.4);
 }
 
 /* ── CARDS ── */
@@ -1650,8 +1653,8 @@ select.form-input { cursor: pointer; }
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(rgba(245, 243, 239, 0.016) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(245, 243, 239, 0.016) 1px, transparent 1px);
+    linear-gradient(rgba(244, 248, 251, 0.016) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(244, 248, 251, 0.016) 1px, transparent 1px);
   background-size: 48px 48px;
   -webkit-mask-image: radial-gradient(ellipse at center, black 25%, transparent 72%);
   mask-image: radial-gradient(ellipse at center, black 25%, transparent 72%);
@@ -1681,7 +1684,7 @@ select.form-input { cursor: pointer; }
 .k-card--featured {
   background: var(--bg-elevated);
   border: 1px solid var(--gold-border);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 0 40px rgba(201, 168, 76, 0.06);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 0 40px rgba(245, 197, 24, 0.06);
 }
 .k-card--hover {
   transition: transform 200ms ease-out, box-shadow 200ms ease-out, border-color 200ms ease-out;
@@ -1715,7 +1718,7 @@ select.form-input { cursor: pointer; }
 }
 .btn-seal:hover {
   background: var(--vermillion);
-  color: #F5F3EF;
+  color: #F4F8FB;
 }
 
 /* ── The KAIZEN Dial (§7.1) ── */
@@ -1907,7 +1910,7 @@ select.form-input { cursor: pointer; }
 .k-step--featured {
   background: var(--bg-elevated);
   border-color: var(--gold-border);
-  box-shadow: 0 0 32px rgba(201, 168, 76, 0.07);
+  box-shadow: 0 0 32px rgba(245, 197, 24, 0.07);
 }
 .k-step-num {
   font-family: var(--font-mono);
@@ -2220,7 +2223,7 @@ html.k-anim [data-reveal].is-in {
 /* Final CTA */
 .k-final-cta {
   border: 1px solid var(--gold-border);
-  background: linear-gradient(135deg, rgba(201, 168, 76, 0.05), rgba(59, 130, 246, 0.015));
+  background: linear-gradient(135deg, rgba(245, 197, 24, 0.05), rgba(59, 130, 246, 0.015));
   padding: 64px 40px;
   text-align: center;
   position: relative;
@@ -2234,7 +2237,7 @@ html.k-anim [data-reveal].is-in {
   transform: translateX(-50%);
   width: 480px;
   height: 320px;
-  background: radial-gradient(ellipse, rgba(201, 168, 76, 0.1), transparent 70%);
+  background: radial-gradient(ellipse, rgba(245, 197, 24, 0.1), transparent 70%);
   pointer-events: none;
 }
 .k-final-cta .k-eyebrow { position: relative; }
@@ -2296,7 +2299,7 @@ html.k-anim [data-reveal].is-in {
 /* Problem panel */
 .k-problem {
   border: 1px solid rgba(248, 113, 113, 0.16);
-  background: linear-gradient(135deg, rgba(248, 113, 113, 0.05), rgba(201, 168, 76, 0.03));
+  background: linear-gradient(135deg, rgba(248, 113, 113, 0.05), rgba(245, 197, 24, 0.03));
   padding: 40px 36px;
   position: relative;
   overflow: hidden;
@@ -2431,7 +2434,7 @@ html.k-anim [data-reveal].is-in {
 /* Mission quote */
 .k-quote {
   border: 1px solid var(--gold-border);
-  background: linear-gradient(135deg, rgba(201, 168, 76, 0.05), rgba(59, 130, 246, 0.015));
+  background: linear-gradient(135deg, rgba(245, 197, 24, 0.05), rgba(59, 130, 246, 0.015));
   padding: 52px 40px;
   text-align: center;
   margin-bottom: 48px;
@@ -3059,7 +3062,7 @@ select.k-input { cursor: pointer; }
 .k-authglow {
   position: fixed; top: 20%; left: 50%; transform: translateX(-50%);
   width: 600px; height: 400px; max-width: 100vw;
-  background: radial-gradient(ellipse, rgba(201,168,76,0.05), transparent 70%);
+  background: radial-gradient(ellipse, rgba(245,197,24,0.05), transparent 70%);
   pointer-events: none;
 }
 .k-authwrap { width: 100%; max-width: 460px; position: relative; z-index: 1; }

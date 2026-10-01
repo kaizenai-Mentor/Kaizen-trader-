@@ -15,13 +15,13 @@
     <!-- PROFILE HEADER -->
     <div style="
       background:var(--bg-card);
-      border:1px solid rgba(201,168,76,0.2);
+      border:1px solid rgba(245,197,24,0.2);
       padding:32px;
       margin-bottom:2px;
       position:relative;
       overflow:hidden;
     ">
-      <div style="position:absolute;top:0;right:0;width:200px;height:200px;background:radial-gradient(circle,rgba(201,168,76,0.05),transparent 70%);pointer-events:none;"></div>
+      <div style="position:absolute;top:0;right:0;width:200px;height:200px;background:radial-gradient(circle,rgba(245,197,24,0.05),transparent 70%);pointer-events:none;"></div>
 
       <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;">
 
@@ -29,8 +29,8 @@
           <!-- Avatar -->
           <div style="
             width:60px;height:60px;
-            border:2px solid rgba(201,168,76,0.3);
-            background:rgba(201,168,76,0.06);
+            border:2px solid rgba(245,197,24,0.3);
+            background:rgba(245,197,24,0.06);
             display:flex;align-items:center;justify-content:center;
             font-family:'DM Mono',monospace;
             font-size:1.6rem;
@@ -62,7 +62,7 @@
           color:var(--ash);border:1px solid var(--border);
           background:transparent;padding:8px 14px;cursor:pointer;
           transition:all 0.2s;
-        " onmouseover="this.style.color='var(--gold)';this.style.borderColor='rgba(201,168,76,0.3)'"
+        " onmouseover="this.style.color='var(--gold)';this.style.borderColor='rgba(245,197,24,0.3)'"
            onmouseout="this.style.color='var(--ash)';this.style.borderColor='var(--border)'"
            id="share-btn">
           <i data-feather="share-2" width="11" height="11"></i>
@@ -74,8 +74,8 @@
 
     <!-- DISCIPLINE SCORE HERO -->
     <div style="
-      background:linear-gradient(135deg,rgba(201,168,76,0.08),rgba(201,168,76,0.02));
-      border:1px solid rgba(201,168,76,0.2);
+      background:linear-gradient(135deg,rgba(245,197,24,0.08),rgba(245,197,24,0.02));
+      border:1px solid rgba(245,197,24,0.2);
       padding:28px;
       margin-bottom:2px;
     ">
@@ -93,8 +93,8 @@
             font-family:'DM Mono',monospace;font-size:0.68rem;font-weight:700;
             letter-spacing:0.15em;text-transform:uppercase;
             padding:6px 14px;
-            border:1px solid rgba(201,168,76,0.3);
-            color:var(--gold);background:rgba(201,168,76,0.06);
+            border:1px solid rgba(245,197,24,0.3);
+            color:var(--gold);background:rgba(245,197,24,0.06);
           ">
             <%= profileUser.disciplineScore >= 80 ? 'ELITE' :
                 profileUser.disciplineScore >= 60 ? 'CONSISTENT' :
@@ -103,8 +103,8 @@
         </div>
       </div>
 
-      <div style="height:6px;background:rgba(201,168,76,0.1);margin-bottom:8px;">
-        <div style="height:100%;background:linear-gradient(to right,var(--gold),rgba(201,168,76,0.6));width:<%= profileUser.disciplineScore %>%;transition:width 1.2s ease;"></div>
+      <div style="height:6px;background:rgba(245,197,24,0.1);margin-bottom:8px;">
+        <div style="height:100%;background:linear-gradient(to right,var(--gold),rgba(245,197,24,0.6));width:<%= profileUser.disciplineScore %>%;transition:width 1.2s ease;"></div>
       </div>
 
       <div style="font-size:0.75rem;color:var(--ash);">
@@ -185,13 +185,13 @@
       <div style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--ash);margin-bottom:16px;display:flex;align-items:center;gap:6px;">
         <i data-feather="award" width="12" height="12" style="color:var(--gold);"></i>
         Achievements
-        <span style="color:var(--gold);border:1px solid rgba(201,168,76,0.2);padding:2px 7px;"><%= profileUser.badges.length %></span>
+        <span style="color:var(--gold);border:1px solid rgba(245,197,24,0.2);padding:2px 7px;"><%= profileUser.badges.length %></span>
       </div>
       <div style="display:flex;flex-wrap:wrap;gap:6px;">
         <% profileUser.badges.forEach(function(badge) { %>
           <div title="<%= badge.description %>" style="
             background:var(--bg-surface);
-            border:1px solid rgba(201,168,76,0.12);
+            border:1px solid rgba(245,197,24,0.12);
             padding:6px 12px;
             font-size:0.78rem;
             color:var(--text-primary);
@@ -212,7 +212,7 @@
         On-Chain Reputation
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:2px;">
-        <div style="background:var(--bg-surface);border:1px solid rgba(201,168,76,0.1);padding:14px;">
+        <div style="background:var(--bg-surface);border:1px solid rgba(245,197,24,0.1);padding:14px;">
           <div style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-bottom:6px;">ZA DAO · Stacks</div>
           <% if (profileUser.zaUserId) { %>
             <a href="https://zeroauthoritydao.com/profile/<%= profileUser.zaUserId %>" target="_blank" style="display:inline-flex;align-items:center;gap:5px;font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--gold);text-decoration:none;">
@@ -233,7 +233,7 @@
 
     <!-- CTA — if viewing someone else's profile -->
     <% if (!isOwnProfile) { %>
-    <div style="background:rgba(201,168,76,0.03);border:1px solid rgba(201,168,76,0.12);padding:24px;text-align:center;">
+    <div style="background:rgba(245,197,24,0.03);border:1px solid rgba(245,197,24,0.12);padding:24px;text-align:center;">
       <p style="font-size:0.88rem;color:var(--ash);margin-bottom:16px;line-height:1.7;">
         Want to build your own verifiable discipline record?
       </p>
