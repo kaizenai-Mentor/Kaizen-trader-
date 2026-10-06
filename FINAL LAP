@@ -1,0 +1,281 @@
+Yes. I went back through the product-reset decisions and everything we've discussed since then, rather than just the last couple of conversations.
+
+The good news is: a lot has already been finalized. But I would not call V2 100% ready until you check a few specific items.
+
+What I found
+
+🔴 1. Wallet connection — make sure it's removed
+
+We explicitly decided that wallet connection is NOT part of the current onboarding/dashboard.
+
+Wallet infrastructure can remain for future:
+
+verified accounts
+
+opportunities
+
+rewards
+
+payouts
+
+credentials
+
+
+But the current user experience should not require connecting a wallet.
+
+If wallet connection is still visible anywhere in V2 onboarding/dashboard, remove it.
+
+
+---
+
+🔴 2. V2 score — verify the five dimensions
+
+The V2 score was frozen around these five dimensions:
+
+1. Process
+
+
+2. Risk
+
+
+3. Execution
+
+
+4. Behavior
+
+
+5. Learning & Consistency
+
+
+
+The score should be off-chain.
+
+Also, we specifically wanted to avoid a score that can be gamed through simple self-reporting. It should eventually consider multiple signals, consistency, contradictions and improvement over time.
+
+So check whether the current V2 actually reflects these five dimensions.
+
+
+---
+
+🔴 3. The core loop needs to remain intact
+
+We defined the KAIZEN loop as:
+
+PLAN → TRADE → REFLECT → ANALYZE → IMPROVE → REPEAT
+
+Make sure V2 still communicates and supports this loop.
+
+That is more important than adding another feature.
+
+
+---
+
+🟠 4. AI functions — verify the agreed scope
+
+The initial AI scope was finalized as:
+
+Pattern Detection & Explanation
+
+Personalized Coaching
+
+Performance Analysis
+
+Mistake Identification
+
+Reflection
+
+Progress Feedback
+
+Context-Aware Conversation
+
+Explaining the KAIZEN Score
+
+
+Improvement Recommendations and Goal Guidance were deliberately deferred.
+
+So if V2 currently contains those deferred functions, I'd remove/hide them rather than pretending they're ready.
+
+
+---
+
+🔴 5. Charting is now the biggest architectural item
+
+This one has evolved significantly since the reset.
+
+We decided that KAIZEN's chart cannot just be:
+
+> Entry → SL → TP.
+
+
+
+The eventual chart needs to support actual market study:
+
+timeframes
+
+drawings
+
+indicators
+
+support/resistance
+
+analysis
+
+thesis
+
+replay
+
+backtesting/simulation
+
+chart activity
+
+connection between chart analysis and trade
+
+connection between trade and reflection
+
+
+And importantly:
+
+> Journaling alone isn't enough.
+
+
+
+We want KAIZEN to understand how the trader studied the market and arrived at the decision.
+
+However, I would NOT make the full chart a V2 launch blocker now.
+
+TradingView is still handling the Advanced Charts request, while we've already decided the native chart will eventually be KAIZEN-owned.
+
+
+---
+
+🟠 6. Replay/backtesting
+
+We also established that replay should eventually be a KAIZEN-owned feature, rather than depending on TradingView.
+
+And you wanted replay to be free.
+
+If V2 currently advertises replay/backtesting but doesn't actually work, don't market it as available yet.
+
+
+---
+
+🟠 7. Trader profile / "Personal KAIZEN"
+
+This was one of the bigger product ideas from the reset.
+
+KAIZEN shouldn't simply know:
+
+> "You lost a trade."
+
+
+
+It should eventually understand:
+
+> "This is how you trade, these are your recurring behaviours, these are the mistakes you repeatedly make, and this is how you're changing."
+
+
+
+That requires the underlying trader profile/data model.
+
+If you've already implemented the profile foundation, good.
+
+If not, the architecture should at least be designed now, even if the full intelligence comes later.
+
+
+---
+
+🟠 8. Trading-plan / rules data
+
+We also identified the need for structured information about a trader's:
+
+trading rules
+
+strategy/system
+
+risk rules
+
+planned behaviour
+
+
+Otherwise KAIZEN can't properly distinguish:
+
+> "You lost."
+
+
+
+from:
+
+> "You broke your own rule and that's part of a recurring pattern."
+
+
+
+This is important for the Behavior and Process dimensions of the score.
+
+
+---
+
+🟢 9. Survey — this part is effectively done
+
+You wanted real trader feedback before rebuilding.
+
+You've now got enough responses to make the V2 decision, and you've finalized the direction.
+
+We also added the useful question around:
+
+> “When reviewing a trade, what do you currently use to analyze your decision?”
+
+
+
+That was specifically intended to determine whether traders are actually studying/analyzing charts rather than simply logging trades.
+
+So I wouldn't hold V2 for more survey responses.
+
+
+---
+
+🟢 10. Product direction is now much clearer
+
+One major change we've made is that KAIZEN isn't being positioned as simply:
+
+AI + Trading Journal.
+
+The direction is now closer to:
+
+Chart analysis → decision → execution → reflection → behavioural understanding → improvement.
+
+And eventually the chart itself becomes a major source of behavioural intelligence.
+
+That's a significant product reset.
+
+
+---
+
+What I would check before Wednesday/Thursday
+
+If you want to ship V2 midweek, I'd do one V2 launch audit around these exact questions:
+
+Area	V2 status to verify
+
+Wallet connection	❌ Should be removed
+Five score dimensions	🔍 Verify
+Off-chain score	🔍 Verify
+PLAN → TRADE → REFLECT → ANALYZE → IMPROVE → REPEAT	🔍 Verify
+8 agreed AI functions	🔍 Verify
+Deferred AI functions hidden	🔍 Verify
+Trader rules/system	🔍 Verify
+Trader profile foundation	🔍 Verify
+Journal	🔍 Verify
+Chart direction	🟠 Architecture/future work
+Replay	🟠 Future/own KAIZEN system
+Advanced Charts	⏳ Waiting on TradingView
+Survey research	✅ Enough to ship
+V2 product direction	✅ Finalized
+
+
+My biggest concern isn't TradingView.
+
+It's whether the current V2 implementation actually reflects the decisions we made during the reset.
+
+If you want, the smartest next step is for us to do a proper V2 pre-launch audit: you show me the current V2 screens/features, and I'll compare them against this reset and mark each item ✅ implemented / ⚠️ needs adjustment / ❌ missing / 🟠 intentionally deferred.
+
+That would tell us whether Wednesday or Thursday is actually the right launch date.
