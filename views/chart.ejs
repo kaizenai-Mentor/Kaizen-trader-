@@ -610,6 +610,18 @@
     });
   </script>
 
+  <script>
+    // Graceful fallback: if the TradingView script cannot load (blocked or
+    // unreachable network), say so instead of showing a blank frame.
+    window.addEventListener('load', function () {
+      setTimeout(function () {
+        if (!window.TradingView) {
+          var c = document.getElementById('tv-chart-container');
+          if (c) c.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;font-family:\'DM Mono\',monospace;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);text-align:center;padding:20px;">Chart could not load — the TradingView feed is unreachable on this network.</div>';
+        }
+      }, 4000);
+    });
+  </script>
   <script src="/js/app.js"></script>
 </body>
 </html>
