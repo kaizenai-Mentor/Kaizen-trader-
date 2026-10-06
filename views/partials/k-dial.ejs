@@ -1,0 +1,17 @@
+<%
+  // KAIZEN Dial — V2 signature component (config/Design.js §7.1)
+  // Usage: include('partials/k-dial', { value: 76, size: 200, label: 'KAIZEN Score' })
+  var kV = Math.max(0, Math.min(100, Math.round(typeof value !== 'undefined' ? Number(value) : 0)));
+  var kSize = typeof size !== 'undefined' ? Number(size) : 200;
+  var kLabel = typeof label !== 'undefined' ? label : 'KAIZEN Score';
+%>
+<div class="k-dial" data-dial="<%= kV %>" style="width:<%= kSize %>px;" role="img" aria-label="<%= kLabel %> <%= kV %> of 100">
+  <svg viewBox="0 0 120 120" aria-hidden="true" focusable="false">
+    <circle class="k-dial-track" cx="60" cy="60" r="54"></circle>
+    <circle class="k-dial-arc" cx="60" cy="60" r="54"></circle>
+  </svg>
+  <div class="k-dial-center">
+    <div class="k-dial-value" style="font-size:<%= Math.max(18, Math.round(kSize * 0.24)) %>px;"><%= kV %></div>
+    <div class="k-dial-label"><%= kLabel %></div>
+  </div>
+</div>

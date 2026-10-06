@@ -4,10 +4,14 @@
   <%- include('partials/head') %>
   <title>KAIZEN — Sign In</title>
 </head>
-<body class="welcome-page" style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;background:var(--bg-base);color:var(--text-primary);">
+<body class="welcome-page" style="background:var(--bg-base);color:var(--text-primary);">
+
+  <%- include('partials/navbar') %>
+
+  <div style="min-height:calc(100vh - 64px);display:flex;align-items:center;justify-content:center;padding:24px;">
 
   <!-- Background glow -->
-  <div style="position:fixed;top:20%;left:50%;transform:translateX(-50%);width:600px;height:400px;background:radial-gradient(ellipse,rgba(201,168,76,0.05),transparent 70%);pointer-events:none;"></div>
+  <div style="position:fixed;top:20%;left:50%;transform:translateX(-50%);width:600px;height:400px;background:radial-gradient(ellipse,rgba(245,197,24,0.05),transparent 70%);pointer-events:none;"></div>
 
   <div style="width:100%;max-width:420px;position:relative;z-index:1;">
 
@@ -21,11 +25,11 @@
     </div>
 
     <!-- Card -->
-    <div style="background:var(--bg-card);border:1px solid rgba(201,168,76,0.18);padding:36px;">
+    <div style="background:var(--bg-card);border:1px solid rgba(245,197,24,0.18);padding:36px;">
 
       <div style="text-align:center;margin-bottom:28px;">
         <h1 style="font-size:1.3rem;font-weight:700;color:var(--text-primary);margin-bottom:6px;">Welcome back</h1>
-        <p style="font-size:0.82rem;color:var(--ash);">Your discipline record is waiting.</p>
+        <p style="font-size:0.82rem;color:var(--ash);">Your improvement record is waiting.</p>
       </div>
 
       <!-- Google Login -->
@@ -44,7 +48,7 @@
         transition:all 0.2s;
         width:100%;
         box-sizing:border-box;
-      " onmouseover="this.style.borderColor='rgba(201,168,76,0.3)';this.style.color='var(--gold)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-primary)'">
+      " onmouseover="this.style.borderColor='rgba(245,197,24,0.3)';this.style.color='var(--gold)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-primary)'">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
           <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
           <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
@@ -53,6 +57,7 @@
         </svg>
         Continue with Google
       </a>
+      <div class="k-oauthnote">By continuing with Google you accept our <a class="k-link" href="/terms" target="_blank" rel="noopener">Terms of Service</a> and <a class="k-link" href="/privacy" target="_blank" rel="noopener">Privacy Policy</a>.</div>
 
       <div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;">
         <div style="flex:1;height:1px;background:var(--border);"></div>
@@ -81,7 +86,7 @@
             padding:12px 14px;outline:none;box-sizing:border-box;
             transition:border-color 0.2s;
           " placeholder="your@email.com"
-          onfocus="this.style.borderColor='rgba(201,168,76,0.4)'"
+          onfocus="this.style.borderColor='rgba(245,197,24,0.4)'"
           onblur="this.style.borderColor='var(--border)'">
         </div>
 
@@ -97,7 +102,7 @@
             padding:12px 14px;outline:none;box-sizing:border-box;
             transition:border-color 0.2s;
           " placeholder="••••••••"
-          onfocus="this.style.borderColor='rgba(201,168,76,0.4)'"
+          onfocus="this.style.borderColor='rgba(245,197,24,0.4)'"
           onblur="this.style.borderColor='var(--border)'">
         </div>
 
@@ -109,7 +114,7 @@
           padding:14px;cursor:pointer;
           display:flex;align-items:center;justify-content:center;gap:6px;
           transition:background 0.2s;margin-top:4px;
-        " onmouseover="this.style.background='#E2C46A'" onmouseout="this.style.background='var(--gold)'">
+        " onmouseover="this.style.background='#FFD84D'" onmouseout="this.style.background='var(--gold)'">
           <i data-feather="arrow-right" width="13" height="13"></i>
           Sign In
         </button>
@@ -123,32 +128,18 @@
 
     </div>
 
-<!-- Theme toggle -->
-<div style="position:fixed;top:16px;right:16px;z-index:100;">
-  <button onclick="toggleTheme()" style="
-    background:rgba(201,168,76,0.08);
-    border:1px solid rgba(201,168,76,0.2);
-    color:var(--gold);
-    width:36px;height:36px;
-    display:flex;align-items:center;justify-content:center;
-    cursor:pointer;
-  ">
-        <span id="themeIcon">◐</span>
-  </button>
-</div>
-
     <!-- Bottom note -->
     <div style="text-align:center;margin-top:20px;">
       <p style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:rgba(168,160,154,0.35);">
-        改善 · Discipline is the edge
+        改善 · Improvement, every day
       </p>
     </div>
 
   </div>
 
-  <script>feather.replace();</script>
-<script src="/js/app.js"></script>
+  </div>
 
-</script>
+  <script>if (window.feather) feather.replace();</script>
+  <script src="/js/app.js"></script>
 </body>
 </html>

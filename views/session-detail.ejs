@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <%- include('partials/head') %>
+  <title>KAIZEN — Session</title>
+</head>
+<body class="app-page">
+  <%- include('partials/navbar') %>
+
+  <main class="k-flow">
+
+    <div class="k-stepstrip">
+      <span class="is-done">Plan ✓</span><b>—</b>
+      <span class="is-done">Record ✓</span><b>—</b>
+      <span class="is-done">Reflect ✓</span><b>—</b>
+      <span class="is-active">Analyzed</span>
+    </div>
+
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:18px;">
+      <span class="k-chip"><%= session.state %></span>
+      <span class="k-type-tag k-type-tag--<%= String(session.sessionType||'LIVE').toLowerCase() %>"><%= session.sessionType || 'LIVE' %></span>
+      <% if (session.outcome && session.outcome !== 'Pending') { %>
+        <span style="font-family:var(--font-mono);font-size:0.68rem;color:<%= session.outcome === 'Win' ? 'var(--green)' : session.outcome === 'Loss' ? 'var(--red)' : 'var(--ash)' %>;"><%= session.outcome.toUpperCase() %></span>
+      <% } %>
+      <span style="font-family:var(--font-mono);font-size:0.6rem;color:var(--text-faint);letter-spacing:0.08em;margin-left:auto;">
+        <%= new Date(session.createdAt).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) %>
+      </span>
+    </div>
+
+    <h1 style="font-size:clamp(1.4rem,3vw,2rem);font-weight:700;color:var(--text-primary);margin:0 0 20px;">
+      <%= session.asset %> — the session, closed.
+    </h1>
+
+    <div style="display:grid;grid-template-columns:1.25fr 0.75fr;gap:14px;align-items:start;" class="k-detail-grid">
+
+      <!-- LEFT: the coach's response -->
+      <div class="k-card k-card--featured">
+        <div class="k-panel-title" style="margin-bottom:16px;"><span class="k-kanji k-kanji--sm">改</span> KAIZEN RESPONDS</div>
+        <div style="font-size:0.9rem;color:var(--text-primary);line-height:1.85;white-space:pre-wrap;"><%= session.aiAnalysis %></div>
+      </div>
+
+      <!-- RIGHT: the engine's numbers -->
+      <% if (score) { %>
+        <div class="k-card k-card--elevated">
+          <div class="k-metric-label" style="margin-bottom:14px;">THE ENGINE — AFTER THIS SESSION</div>
+          <% if (score.overall !== null && score.overall !== undefined) { %>
+            <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:16px;">
+              <span style="font-family:var(--font-mono);font-size:2.4rem;color:var(--gold);font-weight:500;line-height:1;"><%= score.overall %></span>
+              <span style="font-family:var(--font-mono);font-size:0.58rem;letter-spacing:0.14em;color:var(--text-faint);">KAIZEN SCORE</span>
+            </div>
+            <% if (score.overallState === 'PARTIAL') { %>
+              <div class="k-fieldhint" style="margin-bottom:12px;">Partially estimated — from your written history.</div>
+            <% } %>
+            <div class="k-meters">
+              <% ['process','risk','execution','behavior','learning'].forEach(function(k){ %>
+                <% var d = score.dimensions && score.dimensions[k]; if (d && d.score !== null && d.score !== undefined) { %>
+                  <div class="k-meter" data-meter="<%= d.score %>">
+                    <span class="k-meter-label"><%= dimensionLabels[k] %></span>
+                    <span class="k-meter-track"><span class="k-meter-fill"></span></span>
+                    <span class="k-meter-value"><%= d.score %></span>
+                  </div>
+                <% } %>
+              <% }); %>
+            </div>
+            <% var anyReasons = ['process','risk','execution','behavior','learning'].some(function(k){ return score.dimensions && score.dimensions[k] && score.dimensions[k].reasons && score.dimensions[k].reasons.length; }); %>
+            <% if (anyReasons) { %>
+              <div style="border-top:1px solid var(--border);margin-top:16px;padding-top:14px;">
+                <div class="k-metric-label" style="margin-bottom:10px;">WHY</div>
+                <% ['process','risk','execution','behavior','learning'].forEach(function(k){ %>
+                  <% var d = score.dimensions && score.dimensions[k]; if (d && d.reasons && d.reasons.length) { %>
+                    <p style="font-size:0.76rem;color:var(--text-secondary);line-height:1.7;margin:0 0 8px;">
+                      <span class="k-gold" style="font-family:var(--font-mono);font-size:0.62rem;"><%= dimensionLabels[k].toUpperCase() %></span> — <%= d.reasons[0] %>
+                    </p>
+                  <% } %>
+                <% }); %>
+              </div>
+            <% } %>
+          <% } else { %>
+            <p style="font-size:0.82rem;color:var(--text-secondary);line-height:1.75;margin:0;">
+              Building baseline — your score appears once there's enough evidence. Keep logging; the engine is watching your plan → record → reflect loop, not the clock.
+            </p>
+          <% } %>
+          <div style="border-top:1px solid var(--border);margin-top:14px;padding-top:12px;">
+            <a href="/dashboard" style="font-family:var(--font-mono);font-size:0.62rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);text-decoration:underline;">How is this scored? →</a>
+          </div>
+        </div>
+      <% } %>
+
+    </div>
+
+    <!-- The record + reflection, for the record -->
+    <div class="k-card" style="margin-top:14px;">
+      <div class="k-metric-label" style="margin-bottom:10px;">YOUR RECORD</div>
+      <div style="font-size:0.86rem;color:var(--text-secondary);line-height:1.85;white-space:pre-wrap;"><%= session.notes %></div>
+    </div>
+
+    <% if (session.reflection && (session.reflection.learned || session.reflection.wouldChange)) { %>
+      <div class="k-card" style="margin-top:14px;">
+        <div class="k-metric-label" style="margin-bottom:10px;">YOUR REFLECTION</div>
+        <% if (session.reflection.whatHappened) { %><p style="font-size:0.84rem;color:var(--text-secondary);line-height:1.8;margin:0 0 10px;"><span class="k-gold">What happened:</span> <%= session.reflection.whatHappened %></p><% } %>
+        <% if (session.reflection.learned) { %><p style="font-size:0.84rem;color:var(--text-secondary);line-height:1.8;margin:0 0 10px;"><span class="k-gold">Learned:</span> <%= session.reflection.learned %></p><% } %>
+        <% if (session.reflection.wouldChange) { %><p style="font-size:0.84rem;color:var(--text-secondary);line-height:1.8;margin:0;"><span class="k-gold">Would change:</span> <%= session.reflection.wouldChange %></p><% } %>
+      </div>
+    <% } %>
+
+    <div class="k-actions" style="margin-top:24px;">
+      <a href="/dashboard/sessions/new" class="btn-outline k-btn-lg">+ New Session</a>
+      <a href="/dashboard/sessions" style="font-family:var(--font-mono);font-size:0.68rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);text-decoration:underline;">All sessions</a>
+    </div>
+
+  </main>
+
+  <%- include('partials/footer') %>
+  <script src="/js/app.js"></script>
+  <script src="/js/v2-reveal.js"></script>
+  <script>if (window.feather) feather.replace();</script>
+</body>
+</html>

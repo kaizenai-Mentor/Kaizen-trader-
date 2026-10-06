@@ -18,7 +18,7 @@
         <h1 style="font-size:1.6rem;font-weight:700;color:var(--text-primary);margin-bottom:4px;">Trading Style</h1>
         <p style="font-size:0.82rem;color:var(--ash);font-style:italic;">Update your rules as you evolve. KAIZEN tracks every version.</p>
       </div>
-      <a href="/dashboard" style="display:inline-flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);border:1px solid var(--border);padding:10px 16px;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.color='var(--gold)';this.style.borderColor='rgba(201,168,76,0.3)'" onmouseout="this.style.color='var(--ash)';this.style.borderColor='var(--border)'">
+      <a href="/dashboard" style="display:inline-flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);border:1px solid var(--border);padding:10px 16px;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.color='var(--gold)';this.style.borderColor='rgba(245,197,24,0.3)'" onmouseout="this.style.color='var(--ash)';this.style.borderColor='var(--border)'">
         <i data-feather="arrow-left" width="12" height="12"></i>
         Dashboard
       </a>
@@ -31,9 +31,9 @@
       </div>
     <% } %>
 
-    <div style="background:var(--bg-card);border:1px solid rgba(201,168,76,0.18);padding:28px;">
+    <div style="background:var(--bg-card);border:1px solid rgba(245,197,24,0.18);padding:28px;">
 
-      <div style="padding:14px 16px;background:rgba(201,168,76,0.04);border:1px solid rgba(201,168,76,0.12);margin-bottom:24px;display:flex;gap:10px;align-items:flex-start;">
+      <div style="padding:14px 16px;background:rgba(245,197,24,0.04);border:1px solid rgba(245,197,24,0.12);margin-bottom:24px;display:flex;gap:10px;align-items:flex-start;">
         <i data-feather="cpu" width="14" height="14" style="color:var(--gold);flex-shrink:0;margin-top:1px;"></i>
         <p style="font-size:0.82rem;color:var(--ash-light);line-height:1.75;margin:0;">
           Your trading style evolves as you improve. Update it whenever your strategy, rules, or risk parameters change. KAIZEN stores your history so it can track how you've grown.
@@ -48,14 +48,14 @@
               <i data-feather="percent" width="10" height="10" style="display:inline;margin-right:4px;"></i>
               Risk Per Trade (%)
             </label>
-            <input type="text" name="riskPerTrade" value="<%= user.tradingStyle?.riskPerTrade || '' %>" style="width:100%;background:var(--bg-surface);border:1px solid var(--border);color:var(--text-primary);font-family:'Outfit',sans-serif;font-size:0.9rem;padding:12px 14px;outline:none;box-sizing:border-box;transition:border-color 0.2s;" placeholder="e.g. 1" onfocus="this.style.borderColor='rgba(201,168,76,0.4)'" onblur="this.style.borderColor='var(--border)'">
+            <input type="text" name="riskPerTrade" value="<%= user.tradingStyle?.riskPerTrade || '' %>" style="width:100%;background:var(--bg-surface);border:1px solid var(--border);color:var(--text-primary);font-family:'Outfit',sans-serif;font-size:0.9rem;padding:12px 14px;outline:none;box-sizing:border-box;transition:border-color 0.2s;" placeholder="e.g. 1" onfocus="this.style.borderColor='rgba(245,197,24,0.4)'" onblur="this.style.borderColor='var(--border)'">
           </div>
           <div>
             <label style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);display:block;margin-bottom:6px;">
               <i data-feather="trending-down" width="10" height="10" style="display:inline;margin-right:4px;"></i>
               Daily Drawdown Limit (%)
             </label>
-            <input type="text" name="dailyDrawdown" value="<%= user.tradingStyle?.dailyDrawdown || '' %>" style="width:100%;background:var(--bg-surface);border:1px solid var(--border);color:var(--text-primary);font-family:'Outfit',sans-serif;font-size:0.9rem;padding:12px 14px;outline:none;box-sizing:border-box;transition:border-color 0.2s;" placeholder="e.g. 3" onfocus="this.style.borderColor='rgba(201,168,76,0.4)'" onblur="this.style.borderColor='var(--border)'">
+            <input type="text" name="dailyDrawdown" value="<%= user.tradingStyle?.dailyDrawdown || '' %>" style="width:100%;background:var(--bg-surface);border:1px solid var(--border);color:var(--text-primary);font-family:'Outfit',sans-serif;font-size:0.9rem;padding:12px 14px;outline:none;box-sizing:border-box;transition:border-color 0.2s;" placeholder="e.g. 3" onfocus="this.style.borderColor='rgba(245,197,24,0.4)'" onblur="this.style.borderColor='var(--border)'">
           </div>
         </div>
 
@@ -64,7 +64,7 @@
             <i data-feather="target" width="10" height="10" style="display:inline;margin-right:4px;"></i>
             Trading Edge / Strategy
           </label>
-          <input type="text" name="tradingEdge" value="<%= user.tradingStyle?.tradingEdge || '' %>" style="width:100%;background:var(--bg-surface);border:1px solid var(--border);color:var(--text-primary);font-family:'Outfit',sans-serif;font-size:0.9rem;padding:12px 14px;outline:none;box-sizing:border-box;transition:border-color 0.2s;" placeholder="e.g. Daily Candlestick Liquidity (DCL)" onfocus="this.style.borderColor='rgba(201,168,76,0.4)'" onblur="this.style.borderColor='var(--border)'">
+          <input type="text" name="tradingEdge" value="<%= user.tradingStyle?.tradingEdge || '' %>" style="width:100%;background:var(--bg-surface);border:1px solid var(--border);color:var(--text-primary);font-family:'Outfit',sans-serif;font-size:0.9rem;padding:12px 14px;outline:none;box-sizing:border-box;transition:border-color 0.2s;" placeholder="e.g. Daily Candlestick Liquidity (DCL)" onfocus="this.style.borderColor='rgba(245,197,24,0.4)'" onblur="this.style.borderColor='var(--border)'">
         </div>
 
         <div>
@@ -72,7 +72,7 @@
             <i data-feather="log-in" width="10" height="10" style="display:inline;margin-right:4px;"></i>
             Entry Rule
           </label>
-          <textarea name="entryRule" rows="2" style="width:100%;background:var(--bg-surface);border:1px solid var(--border);color:var(--text-primary);font-family:'Outfit',sans-serif;font-size:0.88rem;padding:12px 14px;outline:none;box-sizing:border-box;resize:none;line-height:1.6;transition:border-color 0.2s;" placeholder="e.g. Weekly/Daily sweep → 4H MSS → 4H sweep → 30min MSS entry" onfocus="this.style.borderColor='rgba(201,168,76,0.4)'" onblur="this.style.borderColor='var(--border)'"><%= user.tradingStyle?.entryRule || '' %></textarea>
+          <textarea name="entryRule" rows="2" style="width:100%;background:var(--bg-surface);border:1px solid var(--border);color:var(--text-primary);font-family:'Outfit',sans-serif;font-size:0.88rem;padding:12px 14px;outline:none;box-sizing:border-box;resize:none;line-height:1.6;transition:border-color 0.2s;" placeholder="e.g. Weekly/Daily sweep → 4H MSS → 4H sweep → 30min MSS entry" onfocus="this.style.borderColor='rgba(245,197,24,0.4)'" onblur="this.style.borderColor='var(--border)'"><%= user.tradingStyle?.entryRule || '' %></textarea>
         </div>
 
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
@@ -81,14 +81,14 @@
               <i data-feather="shield-off" width="10" height="10" style="display:inline;margin-right:4px;"></i>
               Stop Loss Rule
             </label>
-            <input type="text" name="stopLossRule" value="<%= user.tradingStyle?.stopLossRule || '' %>" style="width:100%;background:var(--bg-surface);border:1px solid var(--border);color:var(--text-primary);font-family:'Outfit',sans-serif;font-size:0.9rem;padding:12px 14px;outline:none;box-sizing:border-box;transition:border-color 0.2s;" placeholder="e.g. Above last swing high" onfocus="this.style.borderColor='rgba(201,168,76,0.4)'" onblur="this.style.borderColor='var(--border)'">
+            <input type="text" name="stopLossRule" value="<%= user.tradingStyle?.stopLossRule || '' %>" style="width:100%;background:var(--bg-surface);border:1px solid var(--border);color:var(--text-primary);font-family:'Outfit',sans-serif;font-size:0.9rem;padding:12px 14px;outline:none;box-sizing:border-box;transition:border-color 0.2s;" placeholder="e.g. Above last swing high" onfocus="this.style.borderColor='rgba(245,197,24,0.4)'" onblur="this.style.borderColor='var(--border)'">
           </div>
           <div>
             <label style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);display:block;margin-bottom:6px;">
               <i data-feather="target" width="10" height="10" style="display:inline;margin-right:4px;"></i>
               Take Profit Rule
             </label>
-            <input type="text" name="takeProfitRule" value="<%= user.tradingStyle?.takeProfitRule || '' %>" style="width:100%;background:var(--bg-surface);border:1px solid var(--border);color:var(--text-primary);font-family:'Outfit',sans-serif;font-size:0.9rem;padding:12px 14px;outline:none;box-sizing:border-box;transition:border-color 0.2s;" placeholder="e.g. Minimum 1:2 RR" onfocus="this.style.borderColor='rgba(201,168,76,0.4)'" onblur="this.style.borderColor='var(--border)'">
+            <input type="text" name="takeProfitRule" value="<%= user.tradingStyle?.takeProfitRule || '' %>" style="width:100%;background:var(--bg-surface);border:1px solid var(--border);color:var(--text-primary);font-family:'Outfit',sans-serif;font-size:0.9rem;padding:12px 14px;outline:none;box-sizing:border-box;transition:border-color 0.2s;" placeholder="e.g. Minimum 1:2 RR" onfocus="this.style.borderColor='rgba(245,197,24,0.4)'" onblur="this.style.borderColor='var(--border)'">
           </div>
         </div>
 
@@ -97,7 +97,7 @@
             <i data-feather="zap" width="10" height="10" style="display:inline;margin-right:4px;"></i>
             Emotional Triggers to Watch
           </label>
-          <input type="text" name="emotionalTriggers" value="<%= user.tradingStyle?.emotionalTriggers || '' %>" style="width:100%;background:var(--bg-surface);border:1px solid var(--border);color:var(--text-primary);font-family:'Outfit',sans-serif;font-size:0.9rem;padding:12px 14px;outline:none;box-sizing:border-box;transition:border-color 0.2s;" placeholder="e.g. FOMO, revenge trading, moving SL" onfocus="this.style.borderColor='rgba(201,168,76,0.4)'" onblur="this.style.borderColor='var(--border)'">
+          <input type="text" name="emotionalTriggers" value="<%= user.tradingStyle?.emotionalTriggers || '' %>" style="width:100%;background:var(--bg-surface);border:1px solid var(--border);color:var(--text-primary);font-family:'Outfit',sans-serif;font-size:0.9rem;padding:12px 14px;outline:none;box-sizing:border-box;transition:border-color 0.2s;" placeholder="e.g. FOMO, revenge trading, moving SL" onfocus="this.style.borderColor='rgba(245,197,24,0.4)'" onblur="this.style.borderColor='var(--border)'">
         </div>
 
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
@@ -106,14 +106,14 @@
               <i data-feather="hash" width="10" height="10" style="display:inline;margin-right:4px;"></i>
               Max Daily Trades
             </label>
-            <input type="text" name="maxDailyTrades" value="<%= user.tradingStyle?.maxDailyTrades || '' %>" style="width:100%;background:var(--bg-surface);border:1px solid var(--border);color:var(--text-primary);font-family:'Outfit',sans-serif;font-size:0.9rem;padding:12px 14px;outline:none;box-sizing:border-box;transition:border-color 0.2s;" placeholder="e.g. 3" onfocus="this.style.borderColor='rgba(201,168,76,0.4)'" onblur="this.style.borderColor='var(--border)'">
+            <input type="text" name="maxDailyTrades" value="<%= user.tradingStyle?.maxDailyTrades || '' %>" style="width:100%;background:var(--bg-surface);border:1px solid var(--border);color:var(--text-primary);font-family:'Outfit',sans-serif;font-size:0.9rem;padding:12px 14px;outline:none;box-sizing:border-box;transition:border-color 0.2s;" placeholder="e.g. 3" onfocus="this.style.borderColor='rgba(245,197,24,0.4)'" onblur="this.style.borderColor='var(--border)'">
           </div>
           <div>
             <label style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);display:block;margin-bottom:6px;">
               <i data-feather="maximize-2" width="10" height="10" style="display:inline;margin-right:4px;"></i>
               Max Position Size (%)
             </label>
-            <input type="text" name="maxPositionSize" value="<%= user.tradingStyle?.maxPositionSize || '' %>" style="width:100%;background:var(--bg-surface);border:1px solid var(--border);color:var(--text-primary);font-family:'Outfit',sans-serif;font-size:0.9rem;padding:12px 14px;outline:none;box-sizing:border-box;transition:border-color 0.2s;" placeholder="e.g. 5" onfocus="this.style.borderColor='rgba(201,168,76,0.4)'" onblur="this.style.borderColor='var(--border)'">
+            <input type="text" name="maxPositionSize" value="<%= user.tradingStyle?.maxPositionSize || '' %>" style="width:100%;background:var(--bg-surface);border:1px solid var(--border);color:var(--text-primary);font-family:'Outfit',sans-serif;font-size:0.9rem;padding:12px 14px;outline:none;box-sizing:border-box;transition:border-color 0.2s;" placeholder="e.g. 5" onfocus="this.style.borderColor='rgba(245,197,24,0.4)'" onblur="this.style.borderColor='var(--border)'">
           </div>
         </div>
 
@@ -122,10 +122,10 @@
             <i data-feather="globe" width="10" height="10" style="display:inline;margin-right:4px;"></i>
             Markets Traded
           </label>
-          <input type="text" name="markets" value="<%= user.tradingStyle?.markets || '' %>" style="width:100%;background:var(--bg-surface);border:1px solid var(--border);color:var(--text-primary);font-family:'Outfit',sans-serif;font-size:0.9rem;padding:12px 14px;outline:none;box-sizing:border-box;transition:border-color 0.2s;" placeholder="e.g. Forex, Crypto, Indices" onfocus="this.style.borderColor='rgba(201,168,76,0.4)'" onblur="this.style.borderColor='var(--border)'">
+          <input type="text" name="markets" value="<%= user.tradingStyle?.markets || '' %>" style="width:100%;background:var(--bg-surface);border:1px solid var(--border);color:var(--text-primary);font-family:'Outfit',sans-serif;font-size:0.9rem;padding:12px 14px;outline:none;box-sizing:border-box;transition:border-color 0.2s;" placeholder="e.g. Forex, Crypto, Indices" onfocus="this.style.borderColor='rgba(245,197,24,0.4)'" onblur="this.style.borderColor='var(--border)'">
         </div>
 
-        <button type="submit" style="width:100%;background:var(--gold);color:#000;border:none;font-family:'DM Mono',monospace;font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;font-weight:700;padding:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:background 0.2s;margin-top:6px;" onmouseover="this.style.background='#E2C46A'" onmouseout="this.style.background='var(--gold)'">
+        <button type="submit" style="width:100%;background:var(--gold);color:#000;border:none;font-family:'DM Mono',monospace;font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;font-weight:700;padding:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:background 0.2s;margin-top:6px;" onmouseover="this.style.background='#FFD84D'" onmouseout="this.style.background='var(--gold)'">
           <i data-feather="save" width="14" height="14"></i>
           Update Trading Style
         </button>
@@ -137,6 +137,6 @@
 
   <%- include('partials/footer') %>
   <script src="/js/app.js"></script>
-  <script>feather.replace();</script>
+  <script>if (window.feather) feather.replace();</script>
 </body>
 </html>
