@@ -1,0 +1,278 @@
+/* ══════════════════════════════════════════════════════════════════
+   PREVIEW-ONLY LAYOUT COMPANIONS (public/preview/preview.css)
+   These styles exercise the REAL design system (public/css/style.css)
+   with preview-scoped layout (p- prefix). In Step 5 the useful ones
+   get promoted into style.css as k-* classes; nothing here ships to
+   production pages as-is.
+   ══════════════════════════════════════════════════════════════════ */
+
+/* ── Announcement ticker (locked spec: above navbar, megaphone right,
+      text travels right→left, dismiss ×, only when active) ── */
+.p-ticker {
+  display: flex;
+  align-items: stretch;
+  border-bottom: 1px solid var(--gold-border);
+  background: var(--gold-pale);
+  height: 34px;
+  font-family: var(--font-mono);
+}
+.p-ticker-close {
+  width: 34px;
+  min-width: 34px;
+  border: none;
+  border-right: 1px solid var(--border);
+  background: transparent;
+  color: var(--ash);
+  cursor: pointer;
+  font-size: 0.9rem;
+  line-height: 1;
+}
+.p-ticker-close:hover { color: var(--gold); }
+.p-ticker-track {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  mask-image: linear-gradient(90deg, transparent 0, black 4%, black 88%, transparent 100%);
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, black 4%, black 88%, transparent 100%);
+}
+.p-ticker-text {
+  display: inline-block;
+  white-space: nowrap;
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  padding-left: 100%;
+  animation: p-ticker-scroll 38s linear infinite;
+}
+.p-ticker-text b { color: var(--gold); font-weight: 500; }
+@keyframes p-ticker-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-100%); }
+}
+.p-ticker-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 14px;
+  border-left: 1px solid var(--gold-border);
+  color: var(--gold);
+  background: var(--gold-pale);
+}
+.p-ticker-badge .p-megaphone {
+  width: 20px;
+  height: 20px;
+  border: 1px solid var(--gold-border);
+  background: var(--bg-card);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.p-ticker-badge span {
+  font-size: 0.55rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+@media (prefers-reduced-motion: reduce) {
+  .p-ticker-text { animation: none; padding-left: 24px; }
+}
+
+/* ── Cockpit layout ── */
+.p-main { max-width: 1200px; margin: 0 auto; padding: 32px 40px 80px; }
+.p-cockpit-grid {
+  display: grid;
+  grid-template-columns: 7fr 5fr;
+  gap: 14px;
+  align-items: start;
+}
+.p-col { display: flex; flex-direction: column; gap: 14px; }
+.p-essentials {
+  display: grid;
+  grid-template-columns: 1.4fr 0.8fr 0.8fr;
+  gap: 14px;
+  margin-top: 14px;
+}
+.p-score-panel { display: flex; align-items: center; gap: 32px; flex-wrap: wrap; }
+.p-score-panel .k-meters { flex: 1 1 240px; }
+.p-greeting-h1 {
+  font-family: var(--font-body);
+  font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.1;
+  margin: 0 0 6px;
+  letter-spacing: -0.01em;
+}
+.p-panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.p-panel-title {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.p-today-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.9rem;
+  color: var(--text-primary);
+}
+.p-today-item:last-child { border-bottom: none; }
+.p-check {
+  width: 20px;
+  height: 20px;
+  min-width: 20px;
+  border: 1px solid var(--gold-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--gold);
+}
+.p-today-item.is-done { color: var(--text-faint); text-decoration: line-through; }
+.p-session-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.85rem;
+}
+.p-session-row:last-child { border-bottom: none; }
+.p-session-row .p-asset { font-weight: 700; color: var(--text-primary); min-width: 64px; }
+.p-type-tag {
+  font-family: var(--font-mono);
+  font-size: 0.5rem;
+  letter-spacing: 0.12em;
+  padding: 3px 7px;
+  border: 1px solid var(--border);
+  color: var(--ash);
+  margin-left: auto;
+}
+.p-type-tag--live { border-color: var(--gold-border); color: var(--gold); }
+.p-type-tag--backtest { border-color: var(--blue-border); color: var(--blue); }
+.p-milestone-strip {
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gold);
+  border: 1px solid var(--gold-border);
+  background: var(--gold-pale);
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.p-stat-big {
+  font-family: var(--font-mono);
+  font-size: 1.9rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  line-height: 1;
+  margin: 8px 0 4px;
+  font-variant-numeric: tabular-nums;
+}
+.p-stat-sub { font-size: 0.72rem; color: var(--ash); }
+
+/* ── Reflect stage ── */
+.p-flow { max-width: 680px; margin: 0 auto; padding: 40px 24px 80px; }
+.p-step-strip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  margin-bottom: 28px;
+}
+.p-step-strip .is-active { color: var(--gold); }
+.p-step-strip .is-done { color: var(--gold); opacity: 0.7; }
+.p-step-strip b { color: var(--text-faint); font-weight: 400; }
+.p-prompt { margin-bottom: 18px; }
+.p-prompt-focus { border-color: var(--gold-border); }
+.p-prompt textarea {
+  width: 100%;
+  min-height: 74px;
+  background: var(--input-bg);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  line-height: 1.7;
+  padding: 14px;
+  resize: vertical;
+}
+.p-prompt textarea:focus { outline: none; border-color: var(--gold-border); }
+.p-actions { display: flex; align-items: center; gap: 18px; margin-top: 26px; }
+
+/* ── My Trading System ── */
+.p-system-grid {
+  display: grid;
+  grid-template-columns: 1.6fr 0.9fr;
+  gap: 24px;
+  align-items: start;
+}
+.p-field { margin-bottom: 14px; }
+.p-field input {
+  width: 100%;
+  background: var(--input-bg);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  padding: 11px 12px;
+}
+.p-field input:focus { outline: none; border-color: var(--gold-border); }
+.p-list-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  background: var(--bg-surface);
+  font-size: 0.85rem;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+.p-list-item i { color: var(--gold); }
+.p-steppers {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+.p-version-dot {
+  display: flex;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+.p-version-dot:last-child { border-bottom: none; }
+.p-vdot {
+  width: 10px;
+  height: 10px;
+  min-width: 10px;
+  border: 1px solid var(--border-strong);
+  margin-top: 4px;
+}
+.p-vdot--active { background: var(--gold); border-color: var(--gold); }
+
+@media (max-width: 900px) {
+  .p-cockpit-grid, .p-system-grid { grid-template-columns: 1fr; }
+  .p-essentials { grid-template-columns: 1fr; }
+  .p-main { padding: 24px 20px 60px; }
+}

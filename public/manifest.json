@@ -6,8 +6,8 @@
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
-  "background_color": "#080808",
-  "theme_color": "#C9A84C",
+  "background_color": "#0A0A0A",
+  "theme_color": "#F5C518",
   "icons": [
     {
       "src": "/images/kaizen-icon.png",

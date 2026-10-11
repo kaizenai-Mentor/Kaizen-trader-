@@ -18,14 +18,14 @@
         <h1 style="font-size:1.6rem;font-weight:700;color:var(--text-primary);margin-bottom:4px;">Market News</h1>
         <p style="font-size:0.82rem;color:var(--ash);font-style:italic;">Stay informed. Trade with context.</p>
       </div>
-      <a href="/dashboard" style="display:inline-flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);border:1px solid var(--border);padding:10px 16px;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.color='var(--gold)';this.style.borderColor='rgba(201,168,76,0.3)'" onmouseout="this.style.color='var(--ash)';this.style.borderColor='var(--border)'">
+      <a href="/dashboard" style="display:inline-flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);border:1px solid var(--border);padding:10px 16px;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.color='var(--gold)';this.style.borderColor='rgba(245,197,24,0.3)'" onmouseout="this.style.color='var(--ash)';this.style.borderColor='var(--border)'">
         <i data-feather="arrow-left" width="12" height="12"></i>
         Dashboard
       </a>
     </div>
 
     <!-- WARNING BANNER -->
-    <div style="background:rgba(201,168,76,0.04);border:1px solid rgba(201,168,76,0.15);padding:14px 18px;margin-bottom:16px;display:flex;align-items:center;gap:10px;">
+    <div style="background:rgba(245,197,24,0.04);border:1px solid rgba(245,197,24,0.15);padding:14px 18px;margin-bottom:16px;display:flex;align-items:center;gap:10px;">
       <i data-feather="alert-circle" width="13" height="13" style="color:var(--gold);flex-shrink:0;"></i>
       <p style="font-size:0.78rem;color:var(--ash);margin:0;line-height:1.6;">
         News is for context only — not trading signals. Always apply your own analysis before making decisions.
@@ -43,7 +43,7 @@
             text-decoration:none;
             display:block;
             transition:border-color 0.2s;
-          " onmouseover="this.style.borderColor='rgba(201,168,76,0.3)'" onmouseout="this.style.borderColor='var(--border)'">
+          " onmouseover="this.style.borderColor='rgba(245,197,24,0.3)'" onmouseout="this.style.borderColor='var(--border)'">
 
             <div style="display:flex;align-items:flex-start;gap:16px;">
 
@@ -60,7 +60,7 @@
               <div style="flex:1;min-width:0;">
                 <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap;">
                   <% if (article.source_id || article.source?.name) { %>
-                    <span style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(201,168,76,0.2);padding:2px 7px;"><%= article.source_id || article.source?.name %></span>
+                    <span style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(245,197,24,0.2);padding:2px 7px;"><%= article.source_id || article.source?.name %></span>
                   <% } %>
                   <span style="font-family:'DM Mono',monospace;font-size:0.52rem;color:var(--ash);">
                     <%= article.pubDate ? new Date(article.pubDate).toLocaleDateString('en-US',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}) : article.publishedAt ? new Date(article.publishedAt).toLocaleDateString('en-US',{month:'short',day:'numeric'}) : '' %>
@@ -104,6 +104,6 @@
 
   <%- include('partials/footer') %>
   <script src="/js/app.js"></script>
-  <script>feather.replace();</script>
+  <script>if (window.feather) feather.replace();</script>
 </body>
 </html>

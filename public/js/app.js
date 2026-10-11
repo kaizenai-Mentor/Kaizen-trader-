@@ -136,3 +136,51 @@ function togglePassword(inputId, btn) {
     btn.style.color = '';
   }
 }
+
+/* ── KAIZEN streaming helper ─────────────────────────────────────
+   POST JSON to `url`; when the server answers with an SSE stream the
+   handlers fire as text arrives: onMeta, onDelta, onDone, onError.
+   A plain JSON response goes to onJson instead (graceful fallback).
+   Shared by the Psychology chat, the KAIZEN AI chat, and the Reflect
+   analysis reveal. No jQuery, no dependencies. */
+window.kaizenStream = function (url, body, h) {
+  return fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+    credentials: 'same-origin'
+  }).then(function (res) {
+    var ct = res.headers.get('Content-Type') || '';
+    if (ct.indexOf('text/event-stream') < 0 || !res.body || !res.body.getReader) {
+      return res.json().then(function (data) { if (h.onJson) h.onJson(data); },
+                             function () { if (h.onError) h.onError('Bad response.'); });
+    }
+    var reader = res.body.getReader();
+    var dec = new TextDecoder();
+    var buf = '';
+    function handleEvent(raw) {
+      var payload;
+      try { payload = JSON.parse(raw); } catch (e) { return; }
+      if (payload.type === 'meta' && h.onMeta) h.onMeta(payload);
+      else if (payload.type === 'delta' && h.onDelta) h.onDelta(payload.text || '');
+      else if (payload.type === 'done' && h.onDone) h.onDone(payload);
+      else if (payload.type === 'error' && h.onError) h.onError(payload.error);
+    }
+    function pump() {
+      return reader.read().then(function (r) {
+        if (r.done) { if (h.onDone) h.onDone(); return; }
+        buf += dec.decode(r.value, { stream: true });
+        var parts = buf.split('\n\n');
+        buf = parts.pop();
+        for (var i = 0; i < parts.length; i++) {
+          var lines = parts[i].split('\n');
+          for (var j = 0; j < lines.length; j++) {
+            if (lines[j].indexOf('data:') === 0) handleEvent(lines[j].slice(5).trim());
+          }
+        }
+        return pump();
+      });
+    }
+    return pump();
+  });
+};

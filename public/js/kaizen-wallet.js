@@ -124,7 +124,7 @@
 
     var html = creds.map(function (c) {
       var date = new Date(c.issuedAt).toLocaleDateString();
-      return '<div style="background:var(--bg-surface);border:1px solid rgba(201,168,76,0.15);padding:16px;position:relative;overflow:hidden;">'
+      return '<div style="background:var(--bg-surface);border:1px solid rgba(245,197,24,0.15);padding:16px;position:relative;overflow:hidden;">'
         + '<div style="position:absolute;top:-10px;right:-10px;opacity:0.05;transform:rotate(15deg);"><i data-feather="award" width="60" height="60"></i></div>'
         + '<div style="font-family:\'DM Mono\',monospace;font-size:0.5rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:8px;">' + c.credentialType.replace('_', ' ') + '</div>'
         + '<div style="font-weight:700;font-size:0.9rem;color:var(--text-primary);margin-bottom:6px;">' + c.name + '</div>'
@@ -268,9 +268,13 @@
     // Xverse injects both BitcoinProvider and StacksProvider under
     // window.XverseProviders in its extension AND mobile in-app browser.
     // Leather uses window.LeatherProvider / window.StacksProvider.
+    // An injected-but-EMPTY provider object (left behind by some
+    // browsers/webviews) cannot sign anything — it must not count as a
+    // real injection, or we'd skip the connect step and strand the user.
     if (
       (window.XverseProviders &&
-        (window.XverseProviders.StacksProvider || window.XverseProviders.BitcoinProvider)) ||
+        (providerCanRequest(window.XverseProviders.StacksProvider) ||
+          providerCanRequest(window.XverseProviders.BitcoinProvider))) ||
       window.LeatherProvider ||
       window.StacksProvider ||
       window.BlockstackProvider
@@ -297,6 +301,13 @@
       /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent || '') ||
       (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
     );
+  }
+
+  // An injected wallet provider is only real if it can handle requests.
+  // Some browsers/webviews leave an empty provider object behind — that is
+  // not a usable provider and must never steer the connection flow.
+  function providerCanRequest(provider) {
+    return !!(provider && typeof provider.request === 'function');
   }
 
   function isXverseMobileBrowser() {
@@ -350,9 +361,12 @@ async function signWithWallet(message, network) {
     // Detect already-injected provider (Xverse / Leather in-app webview). When
     // present, skip StacksConnect.connect() — it tries to open a wallet-select
     // modal that doesn't exist inside the webview and hangs forever.
+    // A provider only counts if it can actually handle requests: an
+    // injected-but-empty object must NOT skip connect() (it can't sign, and
+    // skipping connect() loses the public key the verify step needs).
     var directProvider =
-            (window.XverseProviders && (window.XverseProviders.StacksProvider || window.XverseProviders.BitcoinProvider)) ||
-      window.BlockstackProvider;
+            (window.XverseProviders && (providerCanRequest(window.XverseProviders.StacksProvider) || providerCanRequest(window.XverseProviders.BitcoinProvider))) ||
+            providerCanRequest(window.BlockstackProvider) && window.BlockstackProvider;
 
     var publicKey = '';
 

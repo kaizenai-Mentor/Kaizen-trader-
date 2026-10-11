@@ -33,6 +33,10 @@ const UserSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
+  termsAcceptedAt: {
+    type: Date,
+    default: null
+  },
   otp: {
     code: { type: String, default: null },
     expiresAt: { type: Date, default: null }
@@ -71,6 +75,28 @@ const UserSchema = new mongoose.Schema({
     default: true
   },
   streakFreezeUsedAt: {
+    type: Date,
+    default: null
+  },
+  // ── V2 fields (additive; config/App.js B6 transition mechanics) ──
+  v1CutoverAt: {
+    type: Date,
+    default: null
+  },
+  v1ExtractedAt: {
+    type: Date,
+    default: null
+  },
+  v1Evidence: {
+    type: mongoose.Schema.Types.Mixed,
+    default: null
+  },
+  scoreCutoverShownAt: {
+    type: Date,
+    default: null
+  },
+  // D1: one-time "How your KAIZEN Score works" intro for V2-era accounts
+  scoreIntroShownAt: {
     type: Date,
     default: null
   },
