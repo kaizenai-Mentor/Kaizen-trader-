@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#F5C518">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="images/kaizen-icon.png" type="image/png">
+<link rel="apple-touch-icon" href="images/kaizen-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<script src="js/feather.min.js"></script>
+<script>
+  // KAIZEN custom icon: "brain" for Psychology. Feather ships no brain glyph,
+  // so it is registered here in the same stroke style as the rest of the set
+  // (paths from the ISC-licensed lucide brain icon) and renders through the
+  // normal data-feather="brain" mechanism. Must run before feather.replace().
+  (function () {
+    try {
+      if (!window.feather || !feather.icons || !feather.icons.activity) return;
+      var Icon = feather.icons.activity.constructor;
+      feather.icons.brain = new Icon('brain',
+        '<path d="M12 18V5"/>' +
+        '<path d="M15 13a4.17 4.17 0 0 1-3-4 4.17 4.17 0 0 1-3 4"/>' +
+        '<path d="M17.598 6.5A3 3 0 1 0 12 5a3 3 0 1 0-5.598 1.5"/>' +
+        '<path d="M17.997 5.125a4 4 0 0 1 2.526 5.77"/>' +
+        '<path d="M18 18a4 4 0 0 0 2-7.464"/>' +
+        '<path d="M19.967 17.483A4 4 0 1 1 12 18a4 4 0 1 1-7.967-.517"/>' +
+        '<path d="M6 18a4 4 0 0 1-2-7.464"/>' +
+        '<path d="M6.003 5.125a4 4 0 0 0-2.526 5.77"/>');
+    } catch (e) { /* brain icon unavailable: Psychology links still work */ }
+  })();
+</script>
+<script>
+  // Apply saved theme BEFORE first paint to avoid a flash of the wrong theme
+  (function () {
+    try {
+      var t = localStorage.getItem('kaizen-theme');
+      if (!t) {
+        t = (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches)
+          ? 'light' : 'dark';
+      }
+      if (t !== 'dark' && t !== 'light') t = 'dark';
+      document.documentElement.setAttribute('data-theme', t);
+    } catch (e) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+  })();
+</script>
+
+<script>
+(function(){try{var u=new URL(window.location.href);if(u.searchParams.has('wallet')){u.searchParams.delete('wallet');window.history.replaceState({},document.title,u.toString());}}catch(e){}})();
+</script>
+
+  <title>KAIZEN — L&#39;Enregistrement</title>
+</head>
+<body class="app-page">
+  <!-- POPUP OVERLAY -->
+<div class="popup-overlay" id="popupOverlay" onclick="closePopup()"></div>
+
+<!-- SIDE POPUP MENU -->
+<div class="nav-popup" id="navPopup">
+  <div class="popup-header">
+    <span class="popup-logo">改 KAIZEN</span>
+    <button class="popup-close" onclick="closePopup()">×</button>
+  </div>
+
+  
+    <!-- IMPROVE -->
+    <div class="popup-section">
+      <div class="popup-section-label">Progresser</div>
+      <a href="dashboard-fr.html" class="popup-item"><span class="popup-item-icon"><i data-feather="activity" width="14" height="14"></i></span> Cockpit</a>
+      <a href="sessions-fr.html" class="popup-item"><span class="popup-item-icon"><i data-feather="list" width="14" height="14"></i></span> Sessions</a>
+      <a href="leaderboard-fr.html" class="popup-item"><span class="popup-item-icon"><i data-feather="trending-up" width="14" height="14"></i></span> Mes Progrès</a>
+    </div>
+
+    <!-- COACH -->
+    <div class="popup-section">
+      <div class="popup-section-label">Coach</div>
+      <a href="kaizen-ai-fr.html" class="popup-item"><span class="popup-item-icon"><i data-feather="message-circle" width="14" height="14"></i></span> KAIZEN AI</a>
+      <a href="psychology-fr.html" class="popup-item"><span class="popup-item-icon"><i data-feather="brain" width="14" height="14"></i></span> Psychologie</a>
+      <a href="memories-fr.html" class="popup-item"><span class="popup-item-icon"><i data-feather="book-open" width="14" height="14"></i></span> Souvenirs</a>
+    </div>
+
+    <!-- TOOLS -->
+    <div class="popup-section">
+      <div class="popup-section-label">Outils</div>
+      <a href="/chart" class="popup-item"><span class="popup-item-icon"><i data-feather="bar-chart-2" width="14" height="14"></i></span> Graphique</a>
+      <a href="weekly-summary-fr.html" class="popup-item"><span class="popup-item-icon"><i data-feather="file-text" width="14" height="14"></i></span> Rapport Hebdomadaire</a>
+      <a href="/news" class="popup-item"><span class="popup-item-icon"><i data-feather="globe" width="14" height="14"></i></span> Actualités</a>
+    </div>
+
+    <!-- IDENTITY -->
+    <div class="popup-section">
+      <div class="popup-section-label">Identité</div>
+      <a href="reputation-fr.html" class="popup-item"><span class="popup-item-icon"><i data-feather="award" width="14" height="14"></i></span> Réputation</a>
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="popup-section">
+      <div class="popup-section-label">Paramètres</div>
+      <a href="trading-system-fr.html" class="popup-item"><span class="popup-item-icon"><i data-feather="sliders" width="14" height="14"></i></span> Mon Système de Trading</a>
+    </div>
+
+    <!-- INFO -->
+    <div class="popup-section">
+      <div class="popup-section-label">Infos</div>
+      <a href="support-fr.html" class="popup-item">
+        <span class="popup-item-icon"><i data-feather="life-buoy" width="14" height="14"></i></span> Assistance
+      </a>
+      <a href="about-fr.html" class="popup-item">
+        <span class="popup-item-icon"><i data-feather="info" width="14" height="14"></i></span> À propos de Kaizen
+      </a>
+      <a href="whitepaper-fr.html" class="popup-item">
+        <span class="popup-item-icon"><i data-feather="book" width="14" height="14"></i></span> Livre blanc
+      </a>
+      <a href="services-fr.html" class="popup-item">
+        <span class="popup-item-icon"><i data-feather="grid" width="14" height="14"></i></span> Services
+      </a>
+      <a href="help-fr.html" class="popup-item">
+        <span class="popup-item-icon"><i data-feather="help-circle" width="14" height="14"></i></span> Centre d&#39;aide
+      </a>
+    </div>
+
+    <!-- LANGUAGE (owner directive 13 Oct 2026) -->
+    <div class="popup-section">
+      <div class="popup-section-label">Langue</div>
+      <div style="padding:4px 14px 10px;">
+        <!-- Language switcher (owner directive 13 Oct 2026): on every page in the
+     navbar, and on the onboarding bar. Sticky via cookie; stored values
+     never change language. -->
+<select class="k-input lang-switch" style="width:auto;padding:6px 30px 6px 10px;font-size:0.78rem;" onchange="document.cookie='kaizen_lang='+this.value+'; Path=/; Max-Age=31536000; SameSite=Lax'; location.reload();">
+  <option value="en" >English</option>
+  <option value="fr" selected>Français</option>
+  <option value="zh" >中文</option>
+  <option value="ja" >日本語</option>
+  <option value="af" >Afrikaans</option>
+</select>
+
+      </div>
+    </div>
+
+    <div class="popup-section">
+      <a href="index-fr.html" class="popup-item" style="color:var(--red);">
+        <span class="popup-item-icon"><i data-feather="log-out" width="14" height="14"></i></span> Se déconnecter
+      </a>
+    </div>
+
+    <!-- USER FOOTER -->
+    <div class="popup-footer">
+      <div class="popup-user">
+        <div class="popup-avatar">
+          K
+        </div>
+        <div>
+          <div class="popup-username">Kaizen</div>
+          <div class="popup-user-email">kaizen@example.com</div>
+        </div>
+      </div>
+      <div class="popup-socials">
+        <a href="https://x.com/kaizenaibot"
+          target="_blank" class="popup-social-link" title="X (Twitter)">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+
+  
+</div>
+
+<!-- MAIN NAVBAR -->
+<nav class="navbar">
+  <a href="dashboard-fr.html" class="nav-logo">改 KAIZEN</a>
+  <div class="nav-right">
+    <div class="nav-lang" style="margin-right:6px;display:flex;align-items:center;">
+      <!-- Language switcher (owner directive 13 Oct 2026): on every page in the
+     navbar, and on the onboarding bar. Sticky via cookie; stored values
+     never change language. -->
+<select class="k-input lang-switch" style="width:auto;padding:6px 30px 6px 10px;font-size:0.78rem;" onchange="document.cookie='kaizen_lang='+this.value+'; Path=/; Max-Age=31536000; SameSite=Lax'; location.reload();">
+  <option value="en" >English</option>
+  <option value="fr" selected>Français</option>
+  <option value="zh" >中文</option>
+  <option value="ja" >日本語</option>
+  <option value="af" >Afrikaans</option>
+</select>
+
+    </div>
+    <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
+      <span id="themeIcon">◐</span>
+    </button>
+    <button class="three-dot-btn" onclick="togglePopup()" title="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+
+
+<div class="k-ticker" id="k-ticker" role="region" aria-label="Mise à jour">
+  <button type="button" class="k-ticker-close" onclick="dismissTicker()" aria-label="Masquer l&#39;annonce">×</button>
+  <div class="k-ticker-track">
+    <span class="k-ticker-text"><b>KAIZEN V2 IS COMING</b> — the score gets five dimensions · plan → record → reflect sessions · your own Trading System · rolling out over the next 30 days</span>
+  </div>
+  <div class="k-ticker-badge">
+    <div class="k-ticker-megaphone"><i data-feather="megaphone" width="12" height="12"></i></div>
+    <span>Mise à jour</span>
+  </div>
+</div>
+<script>
+  (function () {
+    try {
+      if (sessionStorage.getItem('kaizen-ticker-dismissed') === '1') {
+        var t = document.getElementById('k-ticker');
+        if (t) t.style.display = 'none';
+      }
+    } catch (e) { /* private mode: keep showing */ }
+  })();
+  function dismissTicker() {
+    var t = document.getElementById('k-ticker');
+    if (t) t.style.display = 'none';
+    try { sessionStorage.setItem('kaizen-ticker-dismissed', '1'); } catch (e) {}
+  }
+</script>
+
+
+
+<!-- SECURITY MODAL -->
+<div class="modal-overlay" id="securityModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Sécurité</h3>
+      <button class="modal-close" onclick="closeModal('securityModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="security-section">
+        <h4>Changer le mot de passe</h4>
+        <form action="/auth/change-password" method="POST"
+          style="display:flex;flex-direction:column;gap:12px;">
+          <div class="form-group">
+            <label class="form-label">Mot de passe actuel</label>
+            <input type="password" name="currentPassword"
+              class="form-input" placeholder="Entrez le mot de passe actuel">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Nouveau mot de passe</label>
+            <input type="password" name="newPassword"
+              class="form-input" placeholder="Entrez le nouveau mot de passe">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Confirmer le mot de passe</label>
+            <input type="password" name="confirmPassword"
+              class="form-input" placeholder="Confirmez le nouveau mot de passe">
+          </div>
+          <button type="submit" class="btn-primary">Mettre à jour le mot de passe</button>
+        </form>
+      </div>
+      <div class="security-section" style="margin-top:24px;padding-top:24px;border-top:1px solid var(--border);">
+        <h4>Authentification à deux facteurs</h4>
+        <p style="font-size:0.85rem;color:var(--ash);margin-bottom:14px;">
+          Ajoutez une couche de sécurité supplémentaire à votre compte.
+        </p>
+        <button class="btn-outline btn-full">Activer la 2FA — Bientôt disponible</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+  <main class="k-flow">
+
+    <div class="k-stepstrip">
+      <span class="is-done">Le Plan ✓</span><b>—</b>
+      <span class="is-active">L&#39;Enregistrement</span><b>—</b>
+      <span>Reflect</span>
+    </div>
+
+    <div class="k-eyebrow" style="margin-bottom:10px;">The Record — LIVE</div>
+    <h1 style="font-size:clamp(1.5rem,3.5vw,2.1rem);font-weight:700;color:var(--text-primary);line-height:1.15;margin:0 0 8px;">
+      Write what actually happened.
+    </h1>
+    <p style="font-size:0.88rem;color:var(--text-secondary);line-height:1.75;margin:0 0 24px;">
+      The quick checks catch what your notes don't mention.
+    </p>
+
+    
+      <div class="k-card" style="margin-bottom:18px;border-color:var(--gold-border);">
+        <div class="k-metric-label" style="margin-bottom:10px;">LE PLAN</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;font-size:0.8rem;color:var(--text-secondary);">
+          <div><span class="k-gold">Setup:</span> 4H sweep → 30min MSS</div>
+          <div><span class="k-gold">Entry:</span> MSS close after liquidity sweep</div>
+          <div><span class="k-gold">Invalidation:</span> Sweep fails below range low</div>
+          <div><span class="k-gold">Risk:</span> 1% — 2 lots max</div>
+        </div>
+      </div>
+    
+
+    <form action="/dashboard/sessions/plan1/record" method="POST" enctype="multipart/form-data">
+
+      <div class="k-card k-formcard" style="margin-bottom:14px;">
+        <div class="k-metric-label" style="margin-bottom:10px;">CE QUI S&#39;EST PASSÉ</div>
+        <textarea name="notes" id="notes" class="k-input" rows="7" required
+          placeholder="Took the EURUSD short off the 4H sweep. Entry was clean but I moved my invalidation twice when price squeezed — that was fear, not strategy. Sized in properly at 1%..."></textarea>
+        <div id="autodetect" class="k-fieldhint" style="margin-top:8px;"></div>
+        <input type="hidden" name="asset" id="asset" value="">
+        <input type="hidden" name="timeframe" id="timeframe" value="N/A">
+      </div>
+
+      
+        <div class="k-card k-formcard" style="margin-bottom:14px;">
+          <div class="k-metric-label" style="margin-bottom:14px;">VÉRIFICATIONS RAPIDES</div>
+
+          
+            <div class="k-checkrow">
+              <span class="k-checklabel">Avez-vous suivi votre plan ?</span>
+              <div class="k-checkopts">
+                <label class="k-opt"><input type="radio" name="followedPlan" value="YES"><span>Oui</span></label>
+                <label class="k-opt"><input type="radio" name="followedPlan" value="NO"><span>Non</span></label>
+              </div>
+            </div>
+            <div class="k-checkrow">
+              <span class="k-checklabel">Within your entry criteria?</span>
+              <div class="k-checkopts">
+                <label class="k-opt"><input type="radio" name="withinEntryCriteria" value="YES"><span>Oui</span></label>
+                <label class="k-opt"><input type="radio" name="withinEntryCriteria" value="NO"><span>Non</span></label>
+              </div>
+            </div>
+          
+
+          <div class="k-checkrow">
+            <span class="k-checklabel">Avez-vous respecté le risque prévu ?</span>
+            <div class="k-checkopts">
+              <label class="k-opt"><input type="radio" name="respectedRisk" value="YES"><span>Oui</span></label>
+              <label class="k-opt"><input type="radio" name="respectedRisk" value="NO"><span>Non</span></label>
+            </div>
+          </div>
+
+          <div class="k-checkrow">
+            <span class="k-checklabel">Résultat</span>
+            <div class="k-checkopts">
+              
+                <label class="k-opt"><input type="radio" name="outcome" value="Win"><span>WIN</span></label>
+              
+                <label class="k-opt"><input type="radio" name="outcome" value="Loss"><span>LOSS</span></label>
+              
+                <label class="k-opt"><input type="radio" name="outcome" value="Breakeven"><span>BREAKEVEN</span></label>
+              
+                <label class="k-opt"><input type="radio" name="outcome" value="No Trade"><span>NO TRADE</span></label>
+              
+            </div>
+          </div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px;">
+            <div class="k-field" style="margin:0;">
+              <label class="k-fieldlabel">R ATTEINT</label>
+              <input type="text" name="rrAchieved" class="k-input" placeholder="e.g. 1:2.5">
+            </div>
+            <div class="k-field" style="margin:0;">
+              <label class="k-fieldlabel">PIPS</label>
+              <input type="text" name="pipsGained" class="k-input" placeholder="e.g. +45">
+            </div>
+          </div>
+        </div>
+      
+
+      <div class="k-card k-formcard" style="margin-bottom:18px;">
+        <div class="k-metric-label" style="margin-bottom:10px;">GRAPHIQUE</div>
+        <input type="file" name="chartImage" accept="image/*" class="k-input" style="padding:10px;">
+      </div>
+
+      <div class="k-actions">
+        <button type="submit" class="btn-primary k-btn-lg">Enregistrer ce qui s’est passé</button>
+      </div>
+    </form>
+
+  </main>
+
+  <footer class="footer">
+  <div class="footer-inner">
+    <span class="footer-logo">改 KAIZEN</span>
+    <div style="display:flex;gap:20px;flex-wrap:wrap;align-items:center;">
+      <a href="privacy-fr.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Politique de confidentialité</a>
+      <a href="terms-fr.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Conditions d&#39;utilisation</a>
+      <a href="about-fr.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">À propos de Kaizen</a>
+      <a href="whitepaper-fr.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Livre blanc</a>
+      <a href="help-fr.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Centre d&#39;aide</a>
+      <a href="support-fr.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Assistance</a>
+    </div>
+    <span class="footer-right">© 2026 KAIZEN. Tous droits réservés.</span>
+  </div>
+</footer>
+<script>if (window.feather) feather.replace();</script>
+
+  <script src="js/app.js"></script>
+  <script>
+    if (window.feather) if (window.feather) feather.replace();
+    // Auto-detect asset/timeframe from notes (V1 precedent, kept)
+    (function () {
+      var notes = document.getElementById('notes');
+      var out = document.getElementById('autodetect');
+      var assetEl = document.getElementById('asset');
+      var tfEl = document.getElementById('timeframe');
+      var ASSETS = /\b(EURUSD|GBPUSD|USDJPY|AUDJPY|USDCAD|XAUUSD|NAS100|SPX500|BTCUSD|ETHUSD|XAU|DXY)\b/i;
+      var TFS = /\b(1m|5m|15m|30m|1h|4h|1d|1w|M1|M5|M15|M30|H1|H4|D1|W1)\b/i;
+      function detect() {
+        var t = notes.value || '';
+        var a = t.match(ASSETS), f = t.match(TFS);
+        var parts = [];
+        if (a) { assetEl.value = a[1].toUpperCase(); parts.push(a[1].toUpperCase()); }
+        if (f) { tfEl.value = f[1].toUpperCase(); parts.push(f[1].toUpperCase()); }
+        out.textContent = parts.length ? parts.join(' · ') + ' — detected from your notes ✓' : '';
+      }
+      notes.addEventListener('input', detect);
+      detect();
+    })();
+  </script>
+</body>
+</html>

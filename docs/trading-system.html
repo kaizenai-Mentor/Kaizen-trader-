@@ -94,7 +94,7 @@
     <!-- IDENTITY -->
     <div class="popup-section">
       <div class="popup-section-label">Identity</div>
-      <a href="reputation.html" class="popup-item"><span class="popup-item-icon"><i data-feather="link" width="14" height="14"></i></span> Wallets &amp; Verification</a>
+      <a href="reputation.html" class="popup-item"><span class="popup-item-icon"><i data-feather="award" width="14" height="14"></i></span> Reputation</a>
     </div>
 
     <!-- SETTINGS -->
@@ -121,6 +121,24 @@
       <a href="help.html" class="popup-item">
         <span class="popup-item-icon"><i data-feather="help-circle" width="14" height="14"></i></span> Help Center
       </a>
+    </div>
+
+    <!-- LANGUAGE (owner directive 13 Oct 2026) -->
+    <div class="popup-section">
+      <div class="popup-section-label">Language</div>
+      <div style="padding:4px 14px 10px;">
+        <!-- Language switcher (owner directive 13 Oct 2026): on every page in the
+     navbar, and on the onboarding bar. Sticky via cookie; stored values
+     never change language. -->
+<select class="k-input lang-switch" style="width:auto;padding:6px 30px 6px 10px;font-size:0.78rem;" onchange="document.cookie='kaizen_lang='+this.value+'; Path=/; Max-Age=31536000; SameSite=Lax'; location.reload();">
+  <option value="en" selected>English</option>
+  <option value="fr" >Français</option>
+  <option value="zh" >中文</option>
+  <option value="ja" >日本語</option>
+  <option value="af" >Afrikaans</option>
+</select>
+
+      </div>
     </div>
 
     <div class="popup-section">
@@ -157,6 +175,19 @@
 <nav class="navbar">
   <a href="dashboard.html" class="nav-logo">改 KAIZEN</a>
   <div class="nav-right">
+    <div class="nav-lang" style="margin-right:6px;display:flex;align-items:center;">
+      <!-- Language switcher (owner directive 13 Oct 2026): on every page in the
+     navbar, and on the onboarding bar. Sticky via cookie; stored values
+     never change language. -->
+<select class="k-input lang-switch" style="width:auto;padding:6px 30px 6px 10px;font-size:0.78rem;" onchange="document.cookie='kaizen_lang='+this.value+'; Path=/; Max-Age=31536000; SameSite=Lax'; location.reload();">
+  <option value="en" selected>English</option>
+  <option value="fr" >Français</option>
+  <option value="zh" >中文</option>
+  <option value="ja" >日本語</option>
+  <option value="af" >Afrikaans</option>
+</select>
+
+    </div>
     <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
       <span id="themeIcon">◐</span>
     </button>
@@ -168,7 +199,7 @@
 
 
 
-<div class="k-ticker" id="k-ticker" role="region" aria-label="Announcement">
+<div class="k-ticker" id="k-ticker" role="region" aria-label="Update">
   <button type="button" class="k-ticker-close" onclick="dismissTicker()" aria-label="Dismiss announcement">×</button>
   <div class="k-ticker-track">
     <span class="k-ticker-text"><b>KAIZEN V2 IS COMING</b> — the score gets five dimensions · plan → record → reflect sessions · your own Trading System · rolling out over the next 30 days</span>
@@ -211,17 +242,17 @@
           <div class="form-group">
             <label class="form-label">Current Password</label>
             <input type="password" name="currentPassword"
-              class="form-input" placeholder="Enter current Password">
+              class="form-input" placeholder="Enter current password">
           </div>
           <div class="form-group">
             <label class="form-label">New Password</label>
             <input type="password" name="newPassword"
-              class="form-input" placeholder="Enter New Password">
+              class="form-input" placeholder="Enter new password">
           </div>
           <div class="form-group">
             <label class="form-label">Confirm Password</label>
             <input type="password" name="confirmPassword"
-              class="form-input" placeholder="Confirm New Password">
+              class="form-input" placeholder="Confirm new password">
           </div>
           <button type="submit" class="btn-primary">Update Password</button>
         </form>
@@ -323,7 +354,7 @@ Range fakeout</textarea>
             <textarea class="k-input" id="noTradeConditions" name="noTradeConditions" rows="3" placeholder="e.g.&#10;During red-folder news&#10;After two losses in a day&#10;Less than 6 hours of sleep">News within 30min</textarea>
           </div>
           <div class="k-field">
-            <label class="k-fieldlabel" for="psychologicalRules">Psychological rules — one per line</label>
+            <label class="k-fieldlabel" for="psychologicalRules">Psychological Rules — one per line</label>
             <textarea class="k-input" id="psychologicalRules" name="psychologicalRules" rows="3" placeholder="e.g.&#10;No entries in the first 10 minutes&#10;Journal before the next trade, win or lose&#10;Stop after a 2R loss">No trading after two losses</textarea>
           </div>
         </section>
@@ -342,7 +373,7 @@ Range fakeout</textarea>
             <input class="k-input" type="text" id="changeNote" name="changeNote" maxlength="140" placeholder="e.g. Cut max daily trades from 5 to 3 — overtrading on losses">
           </div>
           <div class="k-actions">
-            <button type="submit" class="k-btn k-btn-primary">Save as new version</button>
+            <button type="submit" class="k-btn k-btn-primary">Save version</button>
             <a class="k-btn k-btn-ghost" href="dashboard.html">Back to Cockpit</a>
           </div>
           <div class="k-fieldhint">Nothing is deleted. Your previous version stays on record, and sessions logged before this save stay measured against the rules you had then.</div>
@@ -356,14 +387,14 @@ Range fakeout</textarea>
   <div class="footer-inner">
     <span class="footer-logo">改 KAIZEN</span>
     <div style="display:flex;gap:20px;flex-wrap:wrap;align-items:center;">
-      <a href="privacy.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Privacy</a>
-      <a href="terms.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Terms</a>
-      <a href="about.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">About</a>
+      <a href="privacy.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Privacy Policy</a>
+      <a href="terms.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Terms of Service</a>
+      <a href="about.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">About Kaizen</a>
       <a href="whitepaper.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Whitepaper</a>
       <a href="help.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Help Center</a>
       <a href="support.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Support</a>
     </div>
-    <span class="footer-right">© 2026 KAIZEN</span>
+    <span class="footer-right">© 2026 KAIZEN. All rights reserved.</span>
   </div>
 </footer>
 <script>if (window.feather) feather.replace();</script>

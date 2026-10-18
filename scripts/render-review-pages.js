@@ -14,6 +14,7 @@ const fs = require('fs');
 const ROOT = path.join(__dirname, '..');
 const VIEWS = path.join(ROOT, 'views');
 const OUT = process.argv[2] || '/tmp/app-pages';
+const LANG = process.argv[3] || 'en';
 fs.mkdirSync(OUT, { recursive: true });
 
 // ── demo sessions (shape mirrors test/scoreEngine.test.js factory) ──
@@ -202,7 +203,20 @@ const memories = [
 
 pages['session-record'] = { user, session: plannedSession, title: 'The Record' };
 pages['session-reflect'] = { user, session: recordedSession, title: 'The Reflection' };
-pages['session-detail'] = { user, session: Object.assign({}, analyzedSession, { aiAnalysis: 'Your entry timing improved on this one — the confirmation candle closed before you acted, and that patience is what moved Execution up. The loss itself is noise; the process that produced it is signal. One thing to watch: your confidence was a 7 pre-session but your reflection says you almost added size at +1.5R. That gap between declared confidence and in-trade impulses is exactly what the after-loss window tracks. Keep logging that urge honestly — it is the raw material for the next improvement.' }), score: scoreEngine.computeScore([analyzedSession], null, null), title: 'Session' };
+pages['session-detail'] = { user, session: Object.assign({}, analyzedSession, { hasChartImage: true, aiAnalysis: 'Your entry timing improved on this one — the confirmation candle closed before you acted, and that patience is what moved Execution up. The loss itself is noise; the process that produced it is signal. One thing to watch: your confidence was a 7 pre-session but your reflection says you almost added size at +1.5R. That gap between declared confidence and in-trade impulses is exactly what the after-loss window tracks. Keep logging that urge honestly — it is the raw material for the next improvement.' }), score: scoreEngine.computeScore([analyzedSession], null, null), title: 'Session' };
+pages['news'] = {
+  user,
+  articles: [
+    { title: 'Dollar steadies as markets await fresh inflation print', url: '#', description: 'The dollar held its ground in quiet trade as traders positioned for this week\'s inflation data, with policy expectations little changed.', image_url: null, urlToImage: null, publishedAt: new Date(Date.now() - 2 * 36e5).toISOString(), pubDate: new Date(Date.now() - 2 * 36e5).toISOString(), source: 'Market Wire', source_id: 'market-wire' },
+    { title: 'Gold eases from highs as risk appetite returns', url: '#', description: 'Bullion pulled back from the week\'s high as equities rallied, though demand for haven assets stayed firm.', image_url: null, urlToImage: null, publishedAt: new Date(Date.now() - 5 * 36e5).toISOString(), pubDate: new Date(Date.now() - 5 * 36e5).toISOString(), source: 'Desk Report', source_id: 'desk-report' },
+    { title: 'Central banks keep rates on hold — what it means for your sessions', url: '#', description: 'Policy unchanged across major banks this month. The message is patience — the same skill your record keeps asking of you.', image_url: null, urlToImage: null, publishedAt: new Date(Date.now() - 9 * 36e5).toISOString(), pubDate: new Date(Date.now() - 9 * 36e5).toISOString(), source: 'Macro Daily', source_id: 'macro-daily' }
+  ],
+  events: [
+    { date: new Date(Date.now() + 3 * 864e5).toISOString(), impact: 'HIGH', title: 'US CPI (YoY)', note: 'Inflation print — expect volatility' },
+    { date: new Date(Date.now() + 6 * 864e5).toISOString(), impact: 'MED', title: 'ECB Rate Decision', note: '' }
+  ],
+  title: 'Market News'
+};
 pages['memories'] = { user, memories, title: 'Memories' };
 
 const ANNOUNCEMENT = {
@@ -217,9 +231,9 @@ const ANNOUNCEMENT = {
         path.join(VIEWS, name + '.ejs'),
         Object.assign({
           announcement: ANNOUNCEMENT,
-          lang: 'en',
+          lang: LANG,
           langs: require(path.join(ROOT, 'config', 'locales')).LANGS,
-          t: (key, params) => require(path.join(ROOT, 'config', 'locales')).t('en', key, params)
+          t: (key, params) => require(path.join(ROOT, 'config', 'locales')).t(LANG, key, params)
         }, data)
       );
       fs.writeFileSync(path.join(OUT, name + '.html'), html);

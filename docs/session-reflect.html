@@ -94,7 +94,7 @@
     <!-- IDENTITY -->
     <div class="popup-section">
       <div class="popup-section-label">Identity</div>
-      <a href="reputation.html" class="popup-item"><span class="popup-item-icon"><i data-feather="link" width="14" height="14"></i></span> Wallets &amp; Verification</a>
+      <a href="reputation.html" class="popup-item"><span class="popup-item-icon"><i data-feather="award" width="14" height="14"></i></span> Reputation</a>
     </div>
 
     <!-- SETTINGS -->
@@ -121,6 +121,24 @@
       <a href="help.html" class="popup-item">
         <span class="popup-item-icon"><i data-feather="help-circle" width="14" height="14"></i></span> Help Center
       </a>
+    </div>
+
+    <!-- LANGUAGE (owner directive 13 Oct 2026) -->
+    <div class="popup-section">
+      <div class="popup-section-label">Language</div>
+      <div style="padding:4px 14px 10px;">
+        <!-- Language switcher (owner directive 13 Oct 2026): on every page in the
+     navbar, and on the onboarding bar. Sticky via cookie; stored values
+     never change language. -->
+<select class="k-input lang-switch" style="width:auto;padding:6px 30px 6px 10px;font-size:0.78rem;" onchange="document.cookie='kaizen_lang='+this.value+'; Path=/; Max-Age=31536000; SameSite=Lax'; location.reload();">
+  <option value="en" selected>English</option>
+  <option value="fr" >Français</option>
+  <option value="zh" >中文</option>
+  <option value="ja" >日本語</option>
+  <option value="af" >Afrikaans</option>
+</select>
+
+      </div>
     </div>
 
     <div class="popup-section">
@@ -157,6 +175,19 @@
 <nav class="navbar">
   <a href="dashboard.html" class="nav-logo">改 KAIZEN</a>
   <div class="nav-right">
+    <div class="nav-lang" style="margin-right:6px;display:flex;align-items:center;">
+      <!-- Language switcher (owner directive 13 Oct 2026): on every page in the
+     navbar, and on the onboarding bar. Sticky via cookie; stored values
+     never change language. -->
+<select class="k-input lang-switch" style="width:auto;padding:6px 30px 6px 10px;font-size:0.78rem;" onchange="document.cookie='kaizen_lang='+this.value+'; Path=/; Max-Age=31536000; SameSite=Lax'; location.reload();">
+  <option value="en" selected>English</option>
+  <option value="fr" >Français</option>
+  <option value="zh" >中文</option>
+  <option value="ja" >日本語</option>
+  <option value="af" >Afrikaans</option>
+</select>
+
+    </div>
     <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
       <span id="themeIcon">◐</span>
     </button>
@@ -168,7 +199,7 @@
 
 
 
-<div class="k-ticker" id="k-ticker" role="region" aria-label="Announcement">
+<div class="k-ticker" id="k-ticker" role="region" aria-label="Update">
   <button type="button" class="k-ticker-close" onclick="dismissTicker()" aria-label="Dismiss announcement">×</button>
   <div class="k-ticker-track">
     <span class="k-ticker-text"><b>KAIZEN V2 IS COMING</b> — the score gets five dimensions · plan → record → reflect sessions · your own Trading System · rolling out over the next 30 days</span>
@@ -211,17 +242,17 @@
           <div class="form-group">
             <label class="form-label">Current Password</label>
             <input type="password" name="currentPassword"
-              class="form-input" placeholder="Enter current Password">
+              class="form-input" placeholder="Enter current password">
           </div>
           <div class="form-group">
             <label class="form-label">New Password</label>
             <input type="password" name="newPassword"
-              class="form-input" placeholder="Enter New Password">
+              class="form-input" placeholder="Enter new password">
           </div>
           <div class="form-group">
             <label class="form-label">Confirm Password</label>
             <input type="password" name="confirmPassword"
-              class="form-input" placeholder="Confirm New Password">
+              class="form-input" placeholder="Confirm new password">
           </div>
           <button type="submit" class="btn-primary">Update Password</button>
         </form>
@@ -241,9 +272,9 @@
   <main class="k-flow">
 
     <div class="k-stepstrip">
-      <span class="is-done">Plan ✓</span><b>—</b>
-      <span class="is-done">Record ✓</span><b>—</b>
-      <span class="is-active">Reflect</span>
+      <span class="is-done">The Plan ✓</span><b>—</b>
+      <span class="is-done">The Record ✓</span><b>—</b>
+      <span class="is-active">The Reflection</span>
     </div>
 
     <div class="k-eyebrow" style="margin-bottom:10px;">The Reflection</div>
@@ -255,7 +286,7 @@
     </p>
 
     <div class="k-card" style="margin-bottom:18px;">
-      <div class="k-metric-label" style="margin-bottom:8px;">YOUR SESSION — XAUUSD</div>
+      <div class="k-metric-label" style="margin-bottom:8px;">Sessions — XAUUSD</div>
       <div style="font-size:0.84rem;color:var(--text-secondary);line-height:1.75;max-height:110px;overflow:hidden;position:relative;">
         Waited for the London sweep, MSS confirmed on the 30min, entered on the retest. Held through the squeeze to 2R. Felt the urge to add at +1.5R but sized in properly at the start, so no add.
         <div style="position:absolute;bottom:0;left:0;right:0;height:44px;background:linear-gradient(transparent,var(--bg-card));"></div>
@@ -265,27 +296,27 @@
     <form action="/dashboard/sessions/rec1/reflect" method="POST">
 
       <div class="k-card k-formcard k-prompt">
-        <label class="k-fieldlabel">WHAT ACTUALLY HAPPENED?</label>
+        <label class="k-fieldlabel">What happened?</label>
         <textarea name="whatHappened" class="k-input" rows="3" placeholder="In your own words..."></textarea>
       </div>
 
       <div class="k-card k-formcard k-prompt">
-        <label class="k-fieldlabel">DID YOU FOLLOW YOUR PROCESS?</label>
+        <label class="k-fieldlabel">Did you follow your process?</label>
         <textarea name="followedProcess" class="k-input" rows="3" placeholder="Honest answer — this is where improvement starts..."></textarea>
       </div>
 
       <div class="k-card k-formcard k-prompt">
-        <label class="k-fieldlabel">WHAT DID YOU LEARN?</label>
+        <label class="k-fieldlabel">What did you learn?</label>
         <textarea name="learned" class="k-input" rows="3" placeholder="The same mistake, seen twice, becomes a decision..."></textarea>
       </div>
 
       <div class="k-card k-formcard k-prompt">
-        <label class="k-fieldlabel">WHAT WOULD YOU CHANGE?</label>
+        <label class="k-fieldlabel">What would you change?</label>
         <textarea name="wouldChange" class="k-input" rows="3" placeholder="One concrete thing..."></textarea>
       </div>
 
       <div class="k-actions">
-        <button type="submit" class="btn-primary k-btn-lg" id="k-finish">Finish Session</button>
+        <button type="submit" class="btn-primary k-btn-lg" id="k-finish">Reflect</button>
       </div>
       <p style="font-size:0.72rem;color:var(--ash);line-height:1.7;margin:14px 0 0;">
         On finish, the engine scores your session and 改 KAIZEN responds to your reflection.
@@ -311,14 +342,14 @@
   <div class="footer-inner">
     <span class="footer-logo">改 KAIZEN</span>
     <div style="display:flex;gap:20px;flex-wrap:wrap;align-items:center;">
-      <a href="privacy.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Privacy</a>
-      <a href="terms.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Terms</a>
-      <a href="about.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">About</a>
+      <a href="privacy.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Privacy Policy</a>
+      <a href="terms.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Terms of Service</a>
+      <a href="about.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">About Kaizen</a>
       <a href="whitepaper.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Whitepaper</a>
       <a href="help.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Help Center</a>
       <a href="support.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Support</a>
     </div>
-    <span class="footer-right">© 2026 KAIZEN</span>
+    <span class="footer-right">© 2026 KAIZEN. All rights reserved.</span>
   </div>
 </footer>
 <script>if (window.feather) feather.replace();</script>
