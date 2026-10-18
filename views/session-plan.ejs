@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <%- include('partials/head') %>
-  <title>KAIZEN — New Session</title>
+  <title><%= t('title.newSession') %></title>
 </head>
 <body class="app-page">
   <%- include('partials/navbar') %>
@@ -10,7 +10,7 @@
   <main class="k-flow">
 
     <div class="k-stepstrip">
-      <span class="is-active">Plan</span><b>—</b>
+      <span class="is-active"><%= t('plan.title') %></span><b>—</b>
       <span>Record</span><b>—</b>
       <span>Reflect</span>
     </div>
@@ -42,7 +42,7 @@
       <% if (type !== 'STUDY') { %>
         <div class="k-card k-formcard">
           <div class="k-field">
-            <label class="k-fieldlabel">SETUP <span style="color:var(--text-faint);text-transform:none;letter-spacing:0;">— from your Trading System</span></label>
+            <label class="k-fieldlabel"><%= t('plan.setup') %> <span style="color:var(--text-faint);text-transform:none;letter-spacing:0;">— from your Trading System</span></label>
             <% if (system.setups && system.setups.length) { %>
               <select name="setup" class="k-input">
                 <% system.setups.forEach(function(s){ %>
@@ -57,29 +57,50 @@
           </div>
 
           <div class="k-field">
-            <label class="k-fieldlabel">ENTRY CONDITION</label>
+            <label class="k-fieldlabel"><%= t('plan.entry') %></label>
             <input type="text" name="entryCondition" class="k-input" placeholder="Price retests the demand zone">
           </div>
 
           <div class="k-field">
-            <label class="k-fieldlabel">INVALIDATION</label>
+            <label class="k-fieldlabel"><%= t('plan.invalidation') %></label>
             <input type="text" name="invalidation" class="k-input" placeholder="Below the 4H swing low">
           </div>
 
           <div class="k-field">
-            <label class="k-fieldlabel">RISK</label>
+            <label class="k-fieldlabel"><%= t('plan.risk') %></label>
             <% if (system.riskRules && system.riskRules.riskPerTrade) { %>
-              <select name="predefinedRisk" class="k-input">
-                <option value="<%= system.riskRules.riskPerTrade %>%"><%= system.riskRules.riskPerTrade %>% — from your system</option>
-                <option value="">Different this time (say it in the record)</option>
+              <select name="predefinedRisk" id="risk-select" class="k-input">
+                <option value="<%= system.riskRules.riskPerTrade %>%"><%= t('plan.riskFromSystem', { value: system.riskRules.riskPerTrade }) %></option>
+                <option value="CUSTOM"><%= t('plan.riskCustom') %></option>
+                <option value=""><%= t('plan.riskDifferent') %></option>
               </select>
+              <div id="risk-custom-box" style="display:none;margin-top:8px;padding:12px;border:1px solid rgba(245,197,24,0.25);background:rgba(245,197,24,0.04);">
+                <label class="k-fieldlabel" style="margin-bottom:6px;"><%= t('plan.customRiskLabel') %></label>
+                <input type="text" name="customRisk" id="risk-custom-input" class="k-input" placeholder="e.g. 0.5%">
+                <p style="font-size:0.72rem;color:var(--ash);margin:8px 0 0;"><%= t('plan.customRiskHint') %></p>
+              </div>
+              <script>
+                (function () {
+                  var sel = document.getElementById('risk-select');
+                  var box = document.getElementById('risk-custom-box');
+                  var input = document.getElementById('risk-custom-input');
+                  function sync() {
+                    var custom = sel.value === 'CUSTOM';
+                    box.style.display = custom ? 'block' : 'none';
+                    input.required = custom;
+                    if (!custom) input.value = '';
+                  }
+                  sel.addEventListener('change', sync);
+                  sync();
+                })();
+              </script>
             <% } else { %>
               <input type="text" name="predefinedRisk" class="k-input" placeholder="e.g. 1%">
             <% } %>
           </div>
 
           <div class="k-field">
-            <label class="k-fieldlabel">EMOTIONAL STATE</label>
+            <label class="k-fieldlabel"><%= t('plan.emotion') %></label>
             <div class="k-chiprow">
               <% ['CALM','FOCUSED','ANXIOUS','FOMO','REVENGE'].forEach(function(e){ %>
                 <label class="k-emochip"><input type="radio" name="emotionalState" value="<%= e %>" <%= e==='CALM'?'checked':'' %>><span><%= e %></span></label>
@@ -88,7 +109,7 @@
           </div>
 
           <div class="k-field">
-            <label class="k-fieldlabel">CONFIDENCE — <span id="conf-val" class="k-gold">7</span>/10</label>
+            <label class="k-fieldlabel"><%= t('plan.confidence') %> — <span id="conf-val" class="k-gold">7</span>/10</label>
             <input type="range" name="confidence" min="1" max="10" value="7" class="k-slider" oninput="document.getElementById('conf-val').textContent=this.value">
           </div>
         </div>
@@ -99,7 +120,7 @@
             <input type="text" name="setup" class="k-input" placeholder="e.g. London open behavior on EURUSD">
           </div>
           <div class="k-field">
-            <label class="k-fieldlabel">EMOTIONAL STATE</label>
+            <label class="k-fieldlabel"><%= t('plan.emotion') %></label>
             <div class="k-chiprow">
               <% ['CALM','FOCUSED','ANXIOUS','FOMO','REVENGE'].forEach(function(e){ %>
                 <label class="k-emochip"><input type="radio" name="emotionalState" value="<%= e %>" <%= e==='CALM'?'checked':'' %>><span><%= e %></span></label>
@@ -110,8 +131,8 @@
       <% } %>
 
       <div class="k-actions">
-        <button type="submit" class="btn-primary k-btn-lg">Save Plan</button>
-        <button type="submit" name="skip" value="1" class="btn-outline k-btn-lg">Skip — trade without a plan</button>
+        <button type="submit" class="btn-primary k-btn-lg"><%= t('plan.submit') %></button>
+        <button type="submit" name="skip" value="1" class="btn-outline k-btn-lg"><%= t('plan.skip') %></button>
       </div>
       <p style="font-size:0.72rem;color:var(--ash);line-height:1.7;margin:14px 0 0;">
         Skipping is allowed — this session will carry less Process evidence. KAIZEN will nudge you to plan next time.

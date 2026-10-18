@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <%- include('partials/head') %>
-  <title>KAIZEN — Sign In</title>
+  <title><%= t('title.signin') %></title>
 </head>
 <body class="welcome-page" style="background:var(--bg-base);color:var(--text-primary);">
 
@@ -28,7 +28,7 @@
     <div style="background:var(--bg-card);border:1px solid rgba(245,197,24,0.18);padding:36px;">
 
       <div style="text-align:center;margin-bottom:28px;">
-        <h1 style="font-size:1.3rem;font-weight:700;color:var(--text-primary);margin-bottom:6px;">Welcome back</h1>
+        <h1 style="font-size:1.3rem;font-weight:700;color:var(--text-primary);margin-bottom:6px;"><%= t('auth.loginTitle') %></h1>
         <p style="font-size:0.82rem;color:var(--ash);">Your improvement record is waiting.</p>
       </div>
 
@@ -77,7 +77,7 @@
         <div>
           <label style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);display:block;margin-bottom:6px;">
             <i data-feather="mail" width="10" height="10" style="display:inline;margin-right:4px;"></i>
-            Email
+            <%= t('auth.email') %>
           </label>
           <input type="email" name="email" required style="
             width:100%;background:var(--bg-surface);
@@ -93,7 +93,7 @@
         <div>
           <label style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);display:block;margin-bottom:6px;">
             <i data-feather="lock" width="10" height="10" style="display:inline;margin-right:4px;"></i>
-            Password
+            <%= t('auth.password') %>
           </label>
           <input type="password" name="password" required style="
             width:100%;background:var(--bg-surface);
@@ -116,14 +116,14 @@
           transition:background 0.2s;margin-top:4px;
         " onmouseover="this.style.background='#FFD84D'" onmouseout="this.style.background='var(--gold)'">
           <i data-feather="arrow-right" width="13" height="13"></i>
-          Sign In
+          <%= t('auth.loginBtn') %>
         </button>
 
       </form>
 
       <div style="text-align:center;margin-top:20px;padding-top:20px;border-top:1px solid var(--border);">
-        <span style="font-size:0.82rem;color:var(--ash);">No account? </span>
-        <a href="/auth/register" style="font-size:0.82rem;color:var(--gold);text-decoration:none;font-weight:600;">Create one free</a>
+        <span style="font-size:0.82rem;color:var(--ash);"><%= t('auth.noAccount') %> </span>
+        <a href="/auth/register" style="font-size:0.82rem;color:var(--gold);text-decoration:none;font-weight:600;"><%= t('nav.signup') %></a>
       </div>
 
     </div>

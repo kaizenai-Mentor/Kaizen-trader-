@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <%- include('partials/head') %>
-  <title>KAIZEN — Sessions</title>
+  <title><%= t('title.sessions') %></title>
 </head>
 <body class="app-page">
   <%- include('partials/navbar') %>
@@ -19,7 +19,7 @@
           Plan before you enter. Write what happened. Learn from it.
         </p>
       </div>
-      <a href="/dashboard/sessions/new" class="btn-primary k-btn-lg">+ New Session</a>
+      <a href="/dashboard/sessions/new" class="btn-primary k-btn-lg">+ <%= t('sessions.new') %></a>
     </div>
 
     <% if (openPlan) { %>
@@ -38,7 +38,7 @@
       <div class="k-card" style="text-align:center;padding:56px 24px;margin-top:24px;">
         <span class="k-kanji k-kanji--md" style="margin:0 auto 16px;">改</span>
         <p style="font-size:0.9rem;color:var(--text-secondary);line-height:1.8;margin:0 0 20px;">
-          No sessions yet. Your first one starts with a plan.
+          <%= t('sessions.empty') %>
         </p>
         <a href="/dashboard/sessions/new" class="btn-primary">Make Your First Plan</a>
       </div>

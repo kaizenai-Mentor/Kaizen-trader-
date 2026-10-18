@@ -127,3 +127,36 @@ test('fallback flags violations pattern from sessions without judging', async ()
   assert.match(out.reply, /3 of your last five sessions/);
   assert.match(out.reply, /the rules are rarely the problem/);
 });
+
+// ── Coach rules (owner directive, 16 Oct 2026) ──────────────────
+
+const psychUser = { username: 'T' };
+
+test('CONSENT-BASED QUESTIONS: offered, never required; none once asked to stop', () => {
+  const { buildSystemPrompt } = require('../services/psychCoach');
+  const p = buildSystemPrompt({ user: psychUser, system: null, sessions: [], mindState: null });
+  assert.match(p, /CONSENT-BASED QUESTIONS/);
+  assert.match(p, /ask nothing further this conversation until they invite one/);
+  assert.match(p, /A reply with no question at all is a complete reply/);
+});
+
+test('PSYCH-STATE stays English in every language (parser contract)', () => {
+  const { buildSystemPrompt, parsePsychState } = require('../services/psychCoach');
+  const p = buildSystemPrompt({ user: psychUser, system: null, sessions: [], mindState: null });
+  assert.match(p, /always write it in English, even when the reply itself is in another language/);
+  const parsed = parsePsychState('Réponse en français.\nPSYCH-STATE:\nSUMMARY: Calm and focused.');
+  assert.strictEqual(parsed.summary, 'Calm and focused.');
+});
+
+test("LANGUAGE: the psychology room replies in the trader's language", () => {
+  const { buildSystemPrompt } = require('../services/psychCoach');
+  const p = buildSystemPrompt({ user: psychUser, system: null, sessions: [], mindState: null });
+  assert.match(p, /Reply in their language/);
+  assert.match(p, /Only the PSYCH-STATE block stays in its fixed English format/);
+});
+
+test('deeper-question rule still caps at one question', () => {
+  const { buildSystemPrompt } = require('../services/psychCoach');
+  const p = buildSystemPrompt({ user: psychUser, system: null, sessions: [], mindState: null });
+  assert.match(p, /Ask ONE question that goes deeper\. Never more than one/);
+});

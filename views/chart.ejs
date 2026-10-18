@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <%- include('partials/head') %>
-  <title>KAIZEN — Chart</title>
+  <title><%= t('title.chart') %></title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -420,34 +420,34 @@
 
     <div class="popup-section">
       <div class="popup-section-label">Navigation</div>
-      <a href="/dashboard" class="popup-item">▪ Dashboard</a>
-      <a href="/chart" class="popup-item popup-item-active">▪ Chart</a>
-      <a href="/journal" class="popup-item">▪ My Journal</a>
-      <a href="/kaizen-ai" class="popup-item">▪ Kaizen AI</a>
-      <a href="/memories" class="popup-item">▪ Memories</a>
+      <a href="/dashboard" class="popup-item">▪ <%= t('nav.cockpit') %></a>
+      <a href="/chart" class="popup-item popup-item-active">▪ <%= t('nav.chart') %></a>
+      <a href="/journal" class="popup-item">▪ <%= t('nav.journal') %></a>
+      <a href="/kaizen-ai" class="popup-item">▪ <%= t('nav.kaizenAI') %></a>
+      <a href="/memories" class="popup-item">▪ <%= t('nav.memories') %></a>
       <a href="/za/bounties" class="popup-item">▪ Bounties</a>
-      <a href="/za/reputation/<%= user.id %>" class="popup-item">▪ Reputation</a>
+      <a href="/za/reputation/<%= user.id %>" class="popup-item">▪ <%= t('nav.reputation') %></a>
     </div>
 
     <div class="popup-section">
-      <div class="popup-section-label">Settings</div>
+      <div class="popup-section-label"><%= t('nav.settings') %></div>
       <button class="popup-item"
         onclick="toggleTheme();closePopup()">
         ▪ Dark / Light Mode
       </button>
       <button class="popup-item"
         onclick="openModal('securityModal');closePopup()">
-        ▪ Security
+        ▪ <%= t('nav.security') %>
       </button>
     </div>
 
     <div class="popup-section">
-      <div class="popup-section-label">Info</div>
-      <a href="/about" class="popup-item">▪ About KAIZEN</a>
-      <a href="/help" class="popup-item">▪ Help Center</a>
-      <a href="/support" class="popup-item">▪ Support</a>
-      <a href="/privacy" class="popup-item">▪ Privacy Policy</a>
-      <a href="/terms" class="popup-item">▪ Terms of Service</a>
+      <div class="popup-section-label"><%= t('nav.info') %></div>
+      <a href="/about" class="popup-item">▪ <%= t('nav.about') %></a>
+      <a href="/help" class="popup-item">▪ <%= t('nav.helpCenter') %></a>
+      <a href="/support" class="popup-item">▪ <%= t('nav.support') %></a>
+      <a href="/privacy" class="popup-item">▪ <%= t('footer.privacy') %></a>
+      <a href="/terms" class="popup-item">▪ <%= t('footer.terms') %></a>
     </div>
 
     <div class="popup-section">

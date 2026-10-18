@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <%- include('partials/head') %>
-  <title>KAIZEN — Market News</title>
+  <title><%= t('title.news') %></title>
 </head>
 <body class="app-page">
   <%- include('partials/navbar') %>
@@ -15,7 +15,7 @@
           <span style="width:16px;height:1px;background:var(--gold);display:inline-block;"></span>
           Market Intelligence
         </div>
-        <h1 style="font-size:1.6rem;font-weight:700;color:var(--text-primary);margin-bottom:4px;">Market News</h1>
+        <h1 style="font-size:1.6rem;font-weight:700;color:var(--text-primary);margin-bottom:4px;"><%= t('news.title') %></h1>
         <p style="font-size:0.82rem;color:var(--ash);font-style:italic;">Stay informed. Trade with context.</p>
       </div>
       <a href="/dashboard" style="display:inline-flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);border:1px solid var(--border);padding:10px 16px;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.color='var(--gold)';this.style.borderColor='rgba(245,197,24,0.3)'" onmouseout="this.style.color='var(--ash)';this.style.borderColor='var(--border)'">
@@ -30,6 +30,28 @@
       <p style="font-size:0.78rem;color:var(--ash);margin:0;line-height:1.6;">
         News is for context only — not trading signals. Always apply your own analysis before making decisions.
       </p>
+    </div>
+
+    <!-- UPCOMING EVENTS -->
+    <div style="background:var(--bg-card);border:1px solid var(--border);padding:18px 20px;margin-bottom:16px;">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+        <i data-feather="calendar" width="13" height="13" style="color:var(--gold);"></i>
+        <div style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);"><%= t('news.upcomingEvents') %></div>
+      </div>
+      <% if (typeof events !== 'undefined' && events && events.length > 0) { %>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <% events.forEach(function(ev) { %>
+            <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:10px 12px;border:1px solid var(--border);">
+              <span style="font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--text-primary);white-space:nowrap;"><%= new Date(ev.date).toLocaleDateString('en-US',{month:'short',day:'numeric'}) %></span>
+              <span style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;border:1px solid rgba(245,197,24,0.25);color:var(--gold);padding:2px 8px;"><%= ev.impact %></span>
+              <span style="font-size:0.82rem;color:var(--text-primary);font-weight:600;"><%= ev.title %></span>
+              <% if (ev.note) { %><span style="font-size:0.75rem;color:var(--ash);"><%= ev.note %></span><% } %>
+            </div>
+          <% }); %>
+        </div>
+      <% } else { %>
+        <p style="font-size:0.78rem;color:var(--ash);margin:0;line-height:1.6;"><%= t('news.noEvents') %></p>
+      <% } %>
     </div>
 
     <% if (typeof articles !== 'undefined' && articles && articles.length > 0) { %>

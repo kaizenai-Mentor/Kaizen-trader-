@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <%- include('partials/head') %>
-  <title>KAIZEN — Session</title>
+  <title><%= t('title.session') %></title>
 </head>
 <body class="app-page">
   <%- include('partials/navbar') %>
@@ -10,10 +10,10 @@
   <main class="k-flow">
 
     <div class="k-stepstrip">
-      <span class="is-done">Plan ✓</span><b>—</b>
-      <span class="is-done">Record ✓</span><b>—</b>
-      <span class="is-done">Reflect ✓</span><b>—</b>
-      <span class="is-active">Analyzed</span>
+      <span class="is-done"><%= t('plan.title') %> ✓</span><b>—</b>
+      <span class="is-done"><%= t('record.title') %> ✓</span><b>—</b>
+      <span class="is-done"><%= t('reflect.title') %> ✓</span><b>—</b>
+      <span class="is-active"><%= t('sessions.stageAnalyzed') %></span>
     </div>
 
     <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:18px;">
@@ -90,22 +90,32 @@
 
     <!-- The record + reflection, for the record -->
     <div class="k-card" style="margin-top:14px;">
-      <div class="k-metric-label" style="margin-bottom:10px;">YOUR RECORD</div>
+      <div class="k-metric-label" style="margin-bottom:10px;"><%= t('detail.yourRecord') %></div>
       <div style="font-size:0.86rem;color:var(--text-secondary);line-height:1.85;white-space:pre-wrap;"><%= session.notes %></div>
     </div>
 
+    <% if (session.hasChartImage) { %>
+      <!-- The chart as it was at record time — owner-only, not a live feed -->
+      <div class="k-card" style="margin-top:14px;">
+        <div class="k-metric-label" style="margin-bottom:10px;"><%= t('detail.theChart') %></div>
+        <img src="/dashboard/sessions/<%= session._id %>/chart-image" alt="<%= t('detail.theChart') %>"
+             style="width:100%;max-height:520px;object-fit:contain;border:1px solid var(--border);background:rgba(0,0,0,0.2);">
+        <p style="font-size:0.72rem;color:var(--ash);margin:10px 0 0;"><%= t('detail.chartCaption') %></p>
+      </div>
+    <% } %>
+
     <% if (session.reflection && (session.reflection.learned || session.reflection.wouldChange)) { %>
       <div class="k-card" style="margin-top:14px;">
-        <div class="k-metric-label" style="margin-bottom:10px;">YOUR REFLECTION</div>
-        <% if (session.reflection.whatHappened) { %><p style="font-size:0.84rem;color:var(--text-secondary);line-height:1.8;margin:0 0 10px;"><span class="k-gold">What happened:</span> <%= session.reflection.whatHappened %></p><% } %>
-        <% if (session.reflection.learned) { %><p style="font-size:0.84rem;color:var(--text-secondary);line-height:1.8;margin:0 0 10px;"><span class="k-gold">Learned:</span> <%= session.reflection.learned %></p><% } %>
-        <% if (session.reflection.wouldChange) { %><p style="font-size:0.84rem;color:var(--text-secondary);line-height:1.8;margin:0;"><span class="k-gold">Would change:</span> <%= session.reflection.wouldChange %></p><% } %>
+        <div class="k-metric-label" style="margin-bottom:10px;"><%= t('detail.yourReflection') %></div>
+        <% if (session.reflection.whatHappened) { %><p style="font-size:0.84rem;color:var(--text-secondary);line-height:1.8;margin:0 0 10px;"><span class="k-gold"><%= t('detail.whatHappened') %></span> <%= session.reflection.whatHappened %></p><% } %>
+        <% if (session.reflection.learned) { %><p style="font-size:0.84rem;color:var(--text-secondary);line-height:1.8;margin:0 0 10px;"><span class="k-gold"><%= t('detail.learned') %></span> <%= session.reflection.learned %></p><% } %>
+        <% if (session.reflection.wouldChange) { %><p style="font-size:0.84rem;color:var(--text-secondary);line-height:1.8;margin:0;"><span class="k-gold"><%= t('detail.wouldChange') %></span> <%= session.reflection.wouldChange %></p><% } %>
       </div>
     <% } %>
 
     <div class="k-actions" style="margin-top:24px;">
-      <a href="/dashboard/sessions/new" class="btn-outline k-btn-lg">+ New Session</a>
-      <a href="/dashboard/sessions" style="font-family:var(--font-mono);font-size:0.68rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);text-decoration:underline;">All sessions</a>
+      <a href="/dashboard/sessions/new" class="btn-outline k-btn-lg">+ <%= t('sessions.new') %></a>
+      <a href="/dashboard/sessions" style="font-family:var(--font-mono);font-size:0.68rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);text-decoration:underline;"><%= t('nav.sessions') %></a>
     </div>
 
   </main>

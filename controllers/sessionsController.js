@@ -63,6 +63,10 @@ async function postPlan(req, res) {
   const system = await TradingSystem.ensureForUser(userDoc);
   const type = ['LIVE', 'BACKTEST', 'STUDY'].includes(req.body.sessionType) ? req.body.sessionType : 'LIVE';
   const skipped = req.body.skip === '1';
+  // Custom-risk reveal box: 'CUSTOM' swaps to the revealed free-text value.
+  const predefinedRisk = req.body.predefinedRisk === 'CUSTOM'
+    ? (req.body.customRisk || '')
+    : (req.body.predefinedRisk || '');
 
   const session = new Journal({
     userId: req.session.user.id,
@@ -72,7 +76,7 @@ async function postPlan(req, res) {
       setup: skipped ? '' : (req.body.setup || ''),
       entryCondition: skipped ? '' : (req.body.entryCondition || ''),
       invalidation: skipped ? '' : (req.body.invalidation || ''),
-      predefinedRisk: skipped ? '' : (req.body.predefinedRisk || ''),
+      predefinedRisk: skipped ? '' : predefinedRisk,
       emotionalState: skipped ? '' : (req.body.emotionalState || ''),
       confidence: skipped ? null : (parseInt(req.body.confidence, 10) || null),
       skipped,
@@ -123,7 +127,9 @@ async function postRecord(req, res) {
   if (req.body.rrAchieved) session.rrAchieved = req.body.rrAchieved;
   if (req.body.pipsGained) session.pipsGained = req.body.pipsGained;
   if (req.file) {
-    session.hasChartImage = true; // image bytes handled by existing image pipeline when attached
+    // Owner-only screenshot: bytes stored on the session document itself.
+    session.hasChartImage = true;
+    session.chartImage = { data: req.file.buffer, contentType: req.file.mimetype };
   }
 
   const q = session.quickChecks || {};
@@ -328,8 +334,21 @@ async function getDetail(req, res) {
   });
 }
 
+// ── CHART SCREENSHOT ("THE CHART — AS RECORDED") ─────────────────
+// Owner-only: loadOwned enforces session ownership; bytes never touch
+// the public static dir.
+async function getChartImage(req, res) {
+  const session = await loadOwned(req, res);
+  if (!session || !session.chartImage || !session.chartImage.data) {
+    return res.status(404).send('No chart recorded');
+  }
+  res.set('Content-Type', session.chartImage.contentType || 'image/png');
+  res.set('Cache-Control', 'private, max-age=86400');
+  res.send(session.chartImage.data);
+}
+
 module.exports = {
   upload,
   getSessions, getPlan, postPlan, getRecord, postRecord,
-  getReflect, postReflect, getDetail
+  getReflect, postReflect, getDetail, getChartImage
 };

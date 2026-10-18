@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <%- include('partials/head') %>
-  <title>KAIZEN — Support</title>
+  <title><%= t('title.support') %></title>
 </head>
 <body class="app-page">
   <%- include('partials/navbar') %>
@@ -15,7 +15,7 @@
           <span style="width:16px;height:1px;background:var(--gold);display:inline-block;"></span>
           We're Here to Help
         </div>
-        <h1 style="font-size:1.6rem;font-weight:700;color:var(--text-primary);margin-bottom:4px;">Support</h1>
+        <h1 style="font-size:1.6rem;font-weight:700;color:var(--text-primary);margin-bottom:4px;"><%= t('support.title') %></h1>
         <p style="font-size:0.82rem;color:var(--ash);font-style:italic;">Usually respond within 24 hours.</p>
       </div>
       <a href="/dashboard" style="display:inline-flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);border:1px solid var(--border);padding:10px 16px;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.color='var(--gold)';this.style.borderColor='rgba(245,197,24,0.3)'" onmouseout="this.style.color='var(--ash)';this.style.borderColor='var(--border)'">
@@ -32,7 +32,7 @@
           <div style="width:28px;height:28px;border:1px solid rgba(245,197,24,0.25);background:rgba(245,197,24,0.06);display:flex;align-items:center;justify-content:center;color:var(--gold);">
             <i data-feather="mail" width="13" height="13"></i>
           </div>
-          <div style="font-weight:700;font-size:0.95rem;color:var(--text-primary);">Send a Message</div>
+          <div style="font-weight:700;font-size:0.95rem;color:var(--text-primary);"><%= t('support.sub') %></div>
         </div>
 
         <form style="display:flex;flex-direction:column;gap:16px;">
@@ -41,20 +41,20 @@
             <input type="text" style="width:100%;background:var(--bg-surface);border:1px solid var(--border);color:var(--text-primary);font-family:'Outfit',sans-serif;font-size:0.9rem;padding:12px 14px;outline:none;box-sizing:border-box;transition:border-color 0.2s;" placeholder="Your name" onfocus="this.style.borderColor='rgba(245,197,24,0.4)'" onblur="this.style.borderColor='var(--border)'">
           </div>
           <div>
-            <label style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);display:block;margin-bottom:6px;">Email</label>
+            <label style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);display:block;margin-bottom:6px;"><%= t('support.email') %></label>
             <input type="email" style="width:100%;background:var(--bg-surface);border:1px solid var(--border);color:var(--text-primary);font-family:'Outfit',sans-serif;font-size:0.9rem;padding:12px 14px;outline:none;box-sizing:border-box;transition:border-color 0.2s;" placeholder="you@example.com" onfocus="this.style.borderColor='rgba(245,197,24,0.4)'" onblur="this.style.borderColor='var(--border)'">
           </div>
           <div>
-            <label style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);display:block;margin-bottom:6px;">Issue Type</label>
-            <select style="width:100%;background:var(--bg-surface);border:1px solid var(--border);color:var(--text-primary);font-family:'Outfit',sans-serif;font-size:0.9rem;padding:12px 14px;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='rgba(245,197,24,0.4)'" onblur="this.style.borderColor='var(--border)'">
-              <option>Account issue</option>
-              <option>Journal not loading</option>
-              <option>Bounties not showing</option>
-              <option>Score not updating</option>
-              <option>Chart request</option>
-              <option>Feature request</option>
-              <option>Bug report</option>
-              <option>Other</option>
+            <label style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);display:block;margin-bottom:6px;"><%= t('support.issueType') %></label>
+            <select class="k-input" style="width:100%;box-sizing:border-box;">
+              <option><%= t('support.account') %></option>
+              <option><%= t('support.journal') %></option>
+              <option><%= t('support.bounties') %></option>
+              <option><%= t('support.score') %></option>
+              <option><%= t('support.chartRequest') %></option>
+              <option><%= t('support.feature') %></option>
+              <option><%= t('support.bug') %></option>
+              <option><%= t('support.other') %></option>
             </select>
           </div>
           <div>
@@ -63,7 +63,7 @@
           </div>
           <button type="submit" style="width:100%;background:var(--gold);color:#000;border:none;font-family:'DM Mono',monospace;font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;font-weight:700;padding:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:background 0.2s;" onmouseover="this.style.background='#FFD84D'" onmouseout="this.style.background='var(--gold)'">
             <i data-feather="send" width="13" height="13"></i>
-            Send Message
+            <%= t('support.submit') %>
           </button>
         </form>
       </div>

@@ -123,3 +123,39 @@ test('the prompt forbids discipline verdicts from prose alone (anti-gaming)', ()
   assert.match(p, /Never tell them they are disciplined because their message sounded committed/);
   assert.match(p, /the record is/);
 });
+
+// ── Coach rules (owner directive, 16 Oct 2026) ──────────────────
+
+const tradeUser = { username: 'T' };
+
+test('IMAGE RULE: silent context — the chart informs without being narrated', () => {
+  const { buildSystemPrompt } = require('../services/tradeCoach');
+  const p = buildSystemPrompt({ user: tradeUser, system, sessions: [] });
+  assert.match(p, /THE IMAGE RULE/);
+  assert.match(p, /SILENT CONTEXT/);
+  assert.match(p, /without being narrated back unprompted/);
+});
+
+test('IMAGE RULE: correspondence-only and frozen vocabulary — no direction calls', () => {
+  const { buildSystemPrompt } = require('../services/tradeCoach');
+  const p = buildSystemPrompt({ user: tradeUser, system, sessions: [] });
+  assert.match(p, /CORRESPONDENCE-ONLY/);
+  assert.match(p, /vocabulary is FROZEN: structure, levels, zones, trend, their rule references/);
+  assert.match(p, /Direction calls, predictions, and "setup" language never appear/);
+});
+
+test('CONSENT-BASED QUESTIONS: quiz mode dies the moment consent is withdrawn', () => {
+  const { buildSystemPrompt, buildQuizPrompt } = require('../services/tradeCoach');
+  const p = buildSystemPrompt({ user: tradeUser, system, sessions: [] });
+  assert.match(p, /CONSENT-BASED QUESTIONS/);
+  assert.match(p, /Quiz mode dies the moment they withdraw consent/);
+  const q = buildQuizPrompt({ user: tradeUser, system, sessions: [] });
+  assert.match(q, /THEY JUST ASKED TO BE QUIZZED/);
+});
+
+test("LANGUAGE: the trading room replies in the trader's language", () => {
+  const { buildSystemPrompt } = require('../services/tradeCoach');
+  const p = buildSystemPrompt({ user: tradeUser, system, sessions: [] });
+  assert.match(p, /Reply in their language/);
+  assert.match(p, /Machine blocks stay in their fixed English format/);
+});

@@ -29,6 +29,13 @@ const UserSchema = new mongoose.Schema({
     enum: ['password', 'google', 'email-link'],
     default: 'password'
   },
+  // UI language (owner directive 13 Oct 2026). Stored VALUES stay English;
+  // this only picks the interface language.
+  preferredLang: {
+    type: String,
+    enum: ['en', 'fr', 'zh', 'ja', 'af'],
+    default: 'en'
+  },
   isVerified: {
     type: Boolean,
     default: false

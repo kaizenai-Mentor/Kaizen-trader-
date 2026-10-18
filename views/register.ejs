@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <%- include('partials/head') %>
-  <title>KAIZEN — Join</title>
+  <title><%= t('title.join') %></title>
 </head>
 <body class="k-auth" style="display:block;">
   <%- include('partials/navbar') %>
@@ -25,7 +25,7 @@
     <!-- ═══ STEP: JOIN ═══ -->
     <div class="k-card k-formcard k-authcard">
       <div class="k-stepstrip" style="margin-bottom:22px;">
-        <span class="is-active">Join</span><b>—</b>
+        <span class="is-active"><%= t('nav.signup') %></span><b>—</b>
         <span>Rules</span><b>—</b>
         <span>Plan</span><b>—</b>
         <span>Log</span>
@@ -54,34 +54,34 @@
       <form action="/auth/register" method="POST" class="k-authform">
         <input type="hidden" name="ref" value="<%= typeof query !== 'undefined' && query && query.ref ? query.ref : '' %>">
         <div class="k-field">
-          <label class="k-fieldlabel" for="username">Username</label>
+          <label class="k-fieldlabel" for="username"><%= t('auth.username') %></label>
           <input class="k-input" type="text" id="username" name="username" required placeholder="your_trader_name" value="<%= typeof username !== 'undefined' ? username : '' %>">
         </div>
         <div class="k-field">
-          <label class="k-fieldlabel" for="email">Email</label>
+          <label class="k-fieldlabel" for="email"><%= t('auth.email') %></label>
           <input class="k-input" type="email" id="email" name="email" required placeholder="your@email.com" value="<%= typeof email !== 'undefined' ? email : '' %>">
         </div>
         <div class="k-field">
-          <label class="k-fieldlabel" for="password">Password</label>
+          <label class="k-fieldlabel" for="password"><%= t('auth.password') %></label>
           <input class="k-input" type="password" id="password" name="password" required minlength="6" placeholder="At least 6 characters">
         </div>
         <div class="k-field">
-          <label class="k-fieldlabel" for="confirmPassword">Confirm password</label>
+          <label class="k-fieldlabel" for="confirmPassword"><%= t('auth.confirmPassword') %></label>
           <input class="k-input" type="password" id="confirmPassword" name="confirmPassword" required placeholder="Repeat your password">
         </div>
 
         <div class="k-field k-termscheck">
           <label class="k-check" for="terms">
             <input type="checkbox" id="terms" name="terms" value="1" required>
-            <span>I have read and accept the <a href="/terms" target="_blank" rel="noopener" onclick="event.stopPropagation()">Terms of Service</a> and <a href="/privacy" target="_blank" rel="noopener" onclick="event.stopPropagation()">Privacy Policy</a>.</span>
+            <span><%= t('auth.termsLabel') %> <a href="/terms" target="_blank" rel="noopener" onclick="event.stopPropagation()"><%= t('footer.terms') %></a> · <a href="/privacy" target="_blank" rel="noopener" onclick="event.stopPropagation()"><%= t('footer.privacy') %></a>.</span>
           </label>
         </div>
-        <button type="submit" class="k-btn k-btn-primary k-btn-block">Create Account</button>
+        <button type="submit" class="k-btn k-btn-primary k-btn-block"><%= t('auth.registerBtn') %></button>
       </form>
 
       <div class="k-authfoot">
-        <span>Already have an account?</span>
-        <a href="/auth/login">Sign in</a>
+        <span><%= t('auth.haveAccount') %></span>
+        <a href="/auth/login"><%= t('nav.login') %></a>
       </div>
     </div>
 
@@ -90,8 +90,8 @@
     <!-- ═══ STEP: RULES — build your first Trading System ═══ -->
     <div class="k-card k-formcard k-authcard">
       <div class="k-stepstrip" style="margin-bottom:22px;">
-        <span class="is-done">Join ✓</span><b>—</b>
-        <span class="is-active">Rules</span><b>—</b>
+        <span class="is-done"><%= t('nav.signup') %> ✓</span><b>—</b>
+        <span class="is-active"><%= t('system.entryRules') %></span><b>—</b>
         <span>Plan</span><b>—</b>
         <span>Log</span>
       </div>

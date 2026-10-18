@@ -95,7 +95,7 @@
             <textarea class="k-input" id="noTradeConditions" name="noTradeConditions" rows="3" placeholder="e.g.&#10;During red-folder news&#10;After two losses in a day&#10;Less than 6 hours of sleep"><%= (system.noTradeConditions || []).join('\n') %></textarea>
           </div>
           <div class="k-field">
-            <label class="k-fieldlabel" for="psychologicalRules">Psychological rules — one per line</label>
+            <label class="k-fieldlabel" for="psychologicalRules"><%= t('system.psychRules') %> — one per line</label>
             <textarea class="k-input" id="psychologicalRules" name="psychologicalRules" rows="3" placeholder="e.g.&#10;No entries in the first 10 minutes&#10;Journal before the next trade, win or lose&#10;Stop after a 2R loss"><%= (system.psychologicalRules || []).join('\n') %></textarea>
           </div>
         </section>
@@ -114,7 +114,7 @@
             <input class="k-input" type="text" id="changeNote" name="changeNote" maxlength="140" placeholder="e.g. Cut max daily trades from 5 to 3 — overtrading on losses">
           </div>
           <div class="k-actions">
-            <button type="submit" class="k-btn k-btn-primary">Save as new version</button>
+            <button type="submit" class="k-btn k-btn-primary"><%= t('system.save') %></button>
             <a class="k-btn k-btn-ghost" href="/dashboard">Back to Cockpit</a>
           </div>
           <div class="k-fieldhint">Nothing is deleted. Your previous version stays on record, and sessions logged before this save stay measured against the rules you had then.</div>

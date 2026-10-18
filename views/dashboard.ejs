@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <%- include('partials/head') %>
-  <title>KAIZEN — Cockpit</title>
+  <title><%= t('title.cockpit') %></title>
 </head>
 <body class="app-page">
   <%- include('partials/navbar') %>
@@ -76,7 +76,7 @@
 
       <!-- ═══ TODAY ═══ -->
       <section class="k-card k-todaycard">
-        <div class="k-panel-title">TODAY</div>
+        <div class="k-panel-title"><%= t('dash.today') %></div>
         <% if (!todayActions.length) { %>
           <p class="k-todaydone">Today is complete. Rest is also discipline — come back tomorrow.</p>
         <% } else { %>

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <%- include('partials/head') %>
-  <title>KAIZEN — The Reflection</title>
+  <title><%= t('title.reflection') %></title>
 </head>
 <body class="app-page">
   <%- include('partials/navbar') %>
@@ -10,9 +10,9 @@
   <main class="k-flow">
 
     <div class="k-stepstrip">
-      <span class="is-done">Plan ✓</span><b>—</b>
-      <span class="is-done">Record ✓</span><b>—</b>
-      <span class="is-active">Reflect</span>
+      <span class="is-done"><%= t('plan.title') %> ✓</span><b>—</b>
+      <span class="is-done"><%= t('record.title') %> ✓</span><b>—</b>
+      <span class="is-active"><%= t('reflect.title') %></span>
     </div>
 
     <div class="k-eyebrow" style="margin-bottom:10px;">The Reflection</div>
@@ -24,7 +24,7 @@
     </p>
 
     <div class="k-card" style="margin-bottom:18px;">
-      <div class="k-metric-label" style="margin-bottom:8px;">YOUR SESSION — <%= session.asset %></div>
+      <div class="k-metric-label" style="margin-bottom:8px;"><%= t('nav.sessions') %> — <%= session.asset %></div>
       <div style="font-size:0.84rem;color:var(--text-secondary);line-height:1.75;max-height:110px;overflow:hidden;position:relative;">
         <%= session.notes %>
         <div style="position:absolute;bottom:0;left:0;right:0;height:44px;background:linear-gradient(transparent,var(--bg-card));"></div>
@@ -34,27 +34,27 @@
     <form action="/dashboard/sessions/<%= session._id %>/reflect" method="POST">
 
       <div class="k-card k-formcard k-prompt">
-        <label class="k-fieldlabel">WHAT ACTUALLY HAPPENED?</label>
+        <label class="k-fieldlabel"><%= t('reflect.whatHappened') %></label>
         <textarea name="whatHappened" class="k-input" rows="3" placeholder="In your own words..."></textarea>
       </div>
 
       <div class="k-card k-formcard k-prompt">
-        <label class="k-fieldlabel">DID YOU FOLLOW YOUR PROCESS?</label>
+        <label class="k-fieldlabel"><%= t('reflect.followed') %></label>
         <textarea name="followedProcess" class="k-input" rows="3" placeholder="Honest answer — this is where improvement starts..."></textarea>
       </div>
 
       <div class="k-card k-formcard k-prompt">
-        <label class="k-fieldlabel">WHAT DID YOU LEARN?</label>
+        <label class="k-fieldlabel"><%= t('reflect.learned') %></label>
         <textarea name="learned" class="k-input" rows="3" placeholder="The same mistake, seen twice, becomes a decision..."></textarea>
       </div>
 
       <div class="k-card k-formcard k-prompt">
-        <label class="k-fieldlabel">WHAT WOULD YOU CHANGE?</label>
+        <label class="k-fieldlabel"><%= t('reflect.wouldChange') %></label>
         <textarea name="wouldChange" class="k-input" rows="3" placeholder="One concrete thing..."></textarea>
       </div>
 
       <div class="k-actions">
-        <button type="submit" class="btn-primary k-btn-lg" id="k-finish">Finish Session</button>
+        <button type="submit" class="btn-primary k-btn-lg" id="k-finish"><%= t('reflect.submit') %></button>
       </div>
       <p style="font-size:0.72rem;color:var(--ash);line-height:1.7;margin:14px 0 0;">
         On finish, the engine scores your session and 改 KAIZEN responds to your reflection.

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <%- include('partials/head') %>
-  <title>KAIZEN — The Record</title>
+  <title><%= t('title.record') %></title>
 </head>
 <body class="app-page">
   <%- include('partials/navbar') %>
@@ -10,8 +10,8 @@
   <main class="k-flow">
 
     <div class="k-stepstrip">
-      <span class="is-done">Plan ✓</span><b>—</b>
-      <span class="is-active">Record</span><b>—</b>
+      <span class="is-done"><%= t('plan.title') %> ✓</span><b>—</b>
+      <span class="is-active"><%= t('record.title') %></span><b>—</b>
       <span>Reflect</span>
     </div>
 
@@ -25,7 +25,7 @@
 
     <% if (session.plan && !session.plan.skipped) { %>
       <div class="k-card" style="margin-bottom:18px;border-color:var(--gold-border);">
-        <div class="k-metric-label" style="margin-bottom:10px;">YOUR DECLARED PLAN</div>
+        <div class="k-metric-label" style="margin-bottom:10px;"><%= t('detail.thePlan') %></div>
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;font-size:0.8rem;color:var(--text-secondary);">
           <div><span class="k-gold">Setup:</span> <%= session.plan.setup || '—' %></div>
           <div><span class="k-gold">Entry:</span> <%= session.plan.entryCondition || '—' %></div>
@@ -38,7 +38,7 @@
     <form action="/dashboard/sessions/<%= session._id %>/record" method="POST" enctype="multipart/form-data">
 
       <div class="k-card k-formcard" style="margin-bottom:14px;">
-        <div class="k-metric-label" style="margin-bottom:10px;">WHAT HAPPENED? — WHAT CHANGED DURING AND AFTER THE TRADE</div>
+        <div class="k-metric-label" style="margin-bottom:10px;"><%= t('record.notes') %></div>
         <textarea name="notes" id="notes" class="k-input" rows="7" required
           placeholder="Took the EURUSD short off the 4H sweep. Entry was clean but I moved my invalidation twice when price squeezed — that was fear, not strategy. Sized in properly at 1%..."></textarea>
         <div id="autodetect" class="k-fieldhint" style="margin-top:8px;"></div>
@@ -48,35 +48,35 @@
 
       <% if (session.sessionType !== 'STUDY') { %>
         <div class="k-card k-formcard" style="margin-bottom:14px;">
-          <div class="k-metric-label" style="margin-bottom:14px;">QUICK CHECKS — ONLY WHAT YOUR NOTES DON'T MENTION</div>
+          <div class="k-metric-label" style="margin-bottom:14px;"><%= t('record.quickChecks') %></div>
 
           <% if (session.plan && !session.plan.skipped) { %>
             <div class="k-checkrow">
-              <span class="k-checklabel">Followed your plan?</span>
+              <span class="k-checklabel"><%= t('record.followedPlan') %></span>
               <div class="k-checkopts">
-                <label class="k-opt"><input type="radio" name="followedPlan" value="YES"><span>YES</span></label>
-                <label class="k-opt"><input type="radio" name="followedPlan" value="NO"><span>NO</span></label>
+                <label class="k-opt"><input type="radio" name="followedPlan" value="YES"><span><%= t('common.yes') %></span></label>
+                <label class="k-opt"><input type="radio" name="followedPlan" value="NO"><span><%= t('common.no') %></span></label>
               </div>
             </div>
             <div class="k-checkrow">
               <span class="k-checklabel">Within your entry criteria?</span>
               <div class="k-checkopts">
-                <label class="k-opt"><input type="radio" name="withinEntryCriteria" value="YES"><span>YES</span></label>
-                <label class="k-opt"><input type="radio" name="withinEntryCriteria" value="NO"><span>NO</span></label>
+                <label class="k-opt"><input type="radio" name="withinEntryCriteria" value="YES"><span><%= t('common.yes') %></span></label>
+                <label class="k-opt"><input type="radio" name="withinEntryCriteria" value="NO"><span><%= t('common.no') %></span></label>
               </div>
             </div>
           <% } %>
 
           <div class="k-checkrow">
-            <span class="k-checklabel">Respected your risk?</span>
+            <span class="k-checklabel"><%= t('record.stuckToRisk') %></span>
             <div class="k-checkopts">
-              <label class="k-opt"><input type="radio" name="respectedRisk" value="YES"><span>YES</span></label>
-              <label class="k-opt"><input type="radio" name="respectedRisk" value="NO"><span>NO</span></label>
+              <label class="k-opt"><input type="radio" name="respectedRisk" value="YES"><span><%= t('common.yes') %></span></label>
+              <label class="k-opt"><input type="radio" name="respectedRisk" value="NO"><span><%= t('common.no') %></span></label>
             </div>
           </div>
 
           <div class="k-checkrow">
-            <span class="k-checklabel">Outcome</span>
+            <span class="k-checklabel"><%= t('sessions.outcome') %></span>
             <div class="k-checkopts">
               <% ['WIN','LOSS','BREAKEVEN','NO TRADE'].forEach(function(o){ %>
                 <label class="k-opt"><input type="radio" name="outcome" value="<%= o === 'WIN' ? 'Win' : o === 'LOSS' ? 'Loss' : o === 'BREAKEVEN' ? 'Breakeven' : 'No Trade' %>"><span><%= o %></span></label>
@@ -86,11 +86,11 @@
 
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px;">
             <div class="k-field" style="margin:0;">
-              <label class="k-fieldlabel">RR ACHIEVED (OPTIONAL)</label>
+              <label class="k-fieldlabel"><%= t('record.rr') %></label>
               <input type="text" name="rrAchieved" class="k-input" placeholder="e.g. 1:2.5">
             </div>
             <div class="k-field" style="margin:0;">
-              <label class="k-fieldlabel">PIPS / POINTS (OPTIONAL)</label>
+              <label class="k-fieldlabel"><%= t('record.pips') %></label>
               <input type="text" name="pipsGained" class="k-input" placeholder="e.g. +45">
             </div>
           </div>
@@ -98,12 +98,12 @@
       <% } %>
 
       <div class="k-card k-formcard" style="margin-bottom:18px;">
-        <div class="k-metric-label" style="margin-bottom:10px;">CHART IMAGE (OPTIONAL)</div>
+        <div class="k-metric-label" style="margin-bottom:10px;"><%= t('record.chart') %></div>
         <input type="file" name="chartImage" accept="image/*" class="k-input" style="padding:10px;">
       </div>
 
       <div class="k-actions">
-        <button type="submit" class="btn-primary k-btn-lg">Save &amp; Reflect →</button>
+        <button type="submit" class="btn-primary k-btn-lg"><%= t('record.submit') %></button>
       </div>
     </form>
 

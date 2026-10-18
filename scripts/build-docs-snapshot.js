@@ -85,7 +85,10 @@ const REWRITES = [
       user: null,
       announcement: ANNOUNCEMENT,
       deleted: null,
-      error: null
+      error: null,
+      lang: 'en',
+      langs: require(path.join(ROOT, 'config', 'locales')).LANGS,
+      t: (key, params) => require(path.join(ROOT, 'config', 'locales')).t('en', key, params)
     });
     fs.writeFileSync(path.join(TMP, out), html);
     console.log('OK   ' + view + ' -> docs/' + out);

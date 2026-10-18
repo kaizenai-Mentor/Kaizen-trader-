@@ -22,9 +22,9 @@
 
       <div class="k-hero-copy" data-reveal>
         <h1 class="k-hero-h1">
-          Most traders know<br>
-          their rules.<br>
-          <span class="k-gold">Few follow them.</span>
+          <%= t('welcome.hero1') %><br>
+          <%= t('welcome.hero2') %><br>
+          <span class="k-gold"><%= t('welcome.hero3') %></span>
         </h1>
 
         <p class="k-hero-sub">
@@ -41,8 +41,15 @@
         </p>
 
         <div class="k-hero-ctas">
-          <a href="/auth/register" class="btn-primary k-btn-lg">Start Improving</a>
-          <a href="#how-it-works" class="btn-outline k-btn-lg">See How It Works</a>
+          <a href="/auth/register" class="btn-primary k-btn-lg"><%= t('welcome.ctaStart') %></a>
+          <a href="#how-it-works" class="btn-outline k-btn-lg"><%= t('welcome.ctaHow') %></a>
+        </div>
+
+        <!-- Onboarding language bar (owner directive 13 Oct 2026) -->
+        <div class="k-hero-sub2" style="margin-top:18px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+          <span style="font-family:var(--font-mono);font-size:0.62rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);"><%= t('welcome.chooseLanguage') %></span>
+          <%- include('partials/lang-switch') %>
+          <span style="font-size:0.72rem;color:var(--ash);"><%= t('welcome.onboardingBar') %></span>
         </div>
       </div>
 

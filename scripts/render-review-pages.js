@@ -215,7 +215,12 @@ const ANNOUNCEMENT = {
     try {
       const html = await ejs.renderFile(
         path.join(VIEWS, name + '.ejs'),
-        Object.assign({ announcement: ANNOUNCEMENT }, data)
+        Object.assign({
+          announcement: ANNOUNCEMENT,
+          lang: 'en',
+          langs: require(path.join(ROOT, 'config', 'locales')).LANGS,
+          t: (key, params) => require(path.join(ROOT, 'config', 'locales')).t('en', key, params)
+        }, data)
       );
       fs.writeFileSync(path.join(OUT, name + '.html'), html);
       results.push('OK   ' + name);

@@ -80,6 +80,7 @@ CRITICAL RESPONSE RULES:
 6. For STUDY sessions: coach the observation and the decision NOT to trade, when that's what happened.
 7. Maximum 300 words. Use only these sections when relevant:
 8. GROUNDING (frozen): any conclusion about their discipline or improvement must rest on measured behavior — their quick checks, rule compliance, and the engine summary. A well-written journal entry is never evidence of discipline. If the record does not support a conclusion, say what the record shows instead.
+9. LANGUAGE: write the analysis in the language their entry is written in. The EXTRACTED line stays English regardless (rule below) — it must remain parseable.
 
 WHAT YOU EXECUTED WELL
 [specific]
@@ -93,7 +94,7 @@ THE PATTERN KAIZEN IS TRACKING
 ONE THING TO FOCUS ON
 [single specific action — must vary every session]
 
-At the very end add this line with facts extracted from their writing (or N/A):
+At the very end add this line with facts extracted from their writing (or N/A). It is machine-parsed: always write this line in English and in exactly this format, whatever language the analysis is in:
 EXTRACTED: outcome=[Win/Loss/Breakeven/No Trade] rr=[e.g. 1:2.5 or N/A] pips=[e.g. +45 or N/A]`;
 }
 

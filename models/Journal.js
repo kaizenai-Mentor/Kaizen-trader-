@@ -16,8 +16,10 @@ const JournalSchema = new mongoose.Schema({
     default: 'N/A'
   },
   notes: {
+    // Two-stage document: the PLAN stage saves the doc before any notes
+    // exist — notes are enforced at the RECORD stage (controller), not here.
     type: String,
-    required: true
+    default: ''
   },
   emotion: {
     type: String,
@@ -56,6 +58,13 @@ const JournalSchema = new mongoose.Schema({
   hasChartImage: {
     type: Boolean,
     default: false
+  },
+  // Owner-only screenshot ("THE CHART — AS RECORDED"): bytes live inside the
+  // session document and are served only through the owner-gated route —
+  // never via the public static dir.
+  chartImage: {
+    data: { type: Buffer, default: null },
+    contentType: { type: String, default: null }
   },
 
   // ── V2 SESSION EXTENSION (config/App.js B5) ─────────────────────

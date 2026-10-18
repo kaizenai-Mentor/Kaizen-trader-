@@ -36,3 +36,41 @@ test('EXTRACTED tail round-trip: parse then strip', () => {
   assert.strictEqual(stripExtracted(raw), 'WHAT YOU EXECUTED WELL\nDone.');
   assert.strictEqual(parseExtracted('no tail here'), null);
 });
+
+// ── Coach rules (owner directive, 16 Oct 2026) ──────────────────
+
+test("LANGUAGE: the analysis follows the trader's language", () => {
+  const { buildSystemPrompt } = require('../services/aiCoach');
+  const p = buildSystemPrompt({
+    user: { username: 'T' }, system: null,
+    session: { notes: 'test', plan: {}, outcome: 'Win' },
+    recentHistory: '', scoreBrief: ''
+  });
+  assert.match(p, /LANGUAGE: write the analysis in the language their entry is written in/);
+});
+
+test('EXTRACTED stays parseable: fixed English format in every language', () => {
+  const { buildSystemPrompt, parseExtracted, stripExtracted } = require('../services/aiCoach');
+  const p = buildSystemPrompt({
+    user: { username: 'T' }, system: null,
+    session: { notes: 'test', plan: {}, outcome: 'Win' },
+    recentHistory: '', scoreBrief: ''
+  });
+  assert.match(p, /always write this line in English and in exactly this format/);
+  assert.match(p, /EXTRACTED: outcome=\[Win\/Loss\/Breakeven\/No Trade\]/);
+  // The parser is language-proof: the line parses the same wherever it appears
+  const fr = 'Bonne exécution ce jour-là.\nEXTRACTED: outcome=Win rr=1:2 pips=+30';
+  assert.deepStrictEqual(parseExtracted(fr), { outcome: 'Win', rr: '1:2', pips: '+30' });
+  assert.ok(!stripExtracted(fr).includes('EXTRACTED'));
+});
+
+test('the record is the teacher: no conclusion without measured behavior', () => {
+  const { buildSystemPrompt } = require('../services/aiCoach');
+  const p = buildSystemPrompt({
+    user: { username: 'T' }, system: null,
+    session: { notes: 'test', plan: {}, outcome: 'Win' },
+    recentHistory: '', scoreBrief: ''
+  });
+  assert.match(p, /GROUNDING \(frozen\)/);
+  assert.match(p, /never evidence of discipline/);
+});

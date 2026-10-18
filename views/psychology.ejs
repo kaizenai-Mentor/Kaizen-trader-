@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <%- include('partials/head') %>
-  <title>KAIZEN — Psychology</title>
+  <title><%= t('title.psychology') %></title>
 </head>
 <body class="app-page k-chatbody">
   <%- include('partials/navbar') %>
@@ -14,7 +14,7 @@
     <div class="k-cockpit-head">
       <div>
         <div class="k-eyebrow">COACH · 改</div>
-        <h1 class="k-page-title">Psychology</h1>
+        <h1 class="k-page-title"><%= t('psych.title') %></h1>
         <p class="k-page-sub">The room with no scoreboard. Most of the time it is not the rules — it is the state. Work on the state here.</p>
       </div>
     </div>
@@ -50,8 +50,8 @@
         </div>
       <% } %>
       <div class="k-composer">
-        <textarea id="psych-input" rows="2" placeholder="Tell KAIZEN what is going on…"></textarea>
-        <button type="button" id="psych-send" class="k-btn k-btn-primary">Send</button>
+        <textarea id="psych-input" rows="2" placeholder="<%= t('psych.placeholder') %>"></textarea>
+        <button type="button" id="psych-send" class="k-btn k-btn-primary"><%= t('ai.send') %></button>
       </div>
     </section>
 
@@ -84,7 +84,7 @@
   <!-- ═══ ONE CONVERSATION ═══ -->
   <main class="k-flow k-flow--wide k-chatmain">
     <div class="k-chathead">
-      <a class="k-backlink" href="/psychology">← Psychology</a>
+      <a class="k-backlink" href="/psychology">← <%= t('psych.title') %></a>
       <span class="k-chattitle"><%= thread.title %></span>
     </div>
 
@@ -116,8 +116,8 @@
     <% } %>
 
     <div class="k-composer k-composer--sticky">
-      <textarea id="psych-input" rows="2" placeholder="Reply to KAIZEN…"></textarea>
-      <button type="button" id="psych-send" class="k-btn k-btn-primary">Send</button>
+      <textarea id="psych-input" rows="2" placeholder="<%= t('psych.placeholder') %>"></textarea>
+      <button type="button" id="psych-send" class="k-btn k-btn-primary"><%= t('ai.send') %></button>
     </div>
   </main>
 
