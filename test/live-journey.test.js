@@ -106,12 +106,14 @@ test('whole-site journey: register → plan(custom risk) → record(screenshot) 
     });
     absorb(res);
 
-    // DETAIL: the chart is visible as THE CHART — AS RECORDED
+    // DETAIL: the chart is visible as THE CHART — AS RECORDED (any language
+    // the picker is on — this journey registers with the French picker active)
     res = await fetch(base + '/dashboard/sessions/' + sessionId, {
       headers: { cookie: cookieHeader() }
     });
     let body = await res.text();
-    assert.ok(body.includes('THE CHART — AS RECORDED'), 'chart block missing');
+    const chartLabels = ['THE CHART — AS RECORDED', 'LE GRAPHIQUE — TEL QU', '图表——如记录当时', 'チャート — 記録当時のまま', 'DIE GRAFIEK — SOOS OPGETEKEN'];
+    assert.ok(chartLabels.some((l) => body.includes(l)), 'chart block missing');
     assert.ok(body.includes('/chart-image'), 'chart image not wired');
 
     // The screenshot is served owner-only
