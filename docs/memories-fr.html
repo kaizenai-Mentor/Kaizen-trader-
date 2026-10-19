@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -274,11 +274,9 @@
     <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:24px;flex-wrap:wrap;">
       <div>
         <div style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:6px;display:flex;align-items:center;gap:8px;">
-          <span style="width:16px;height:1px;background:var(--gold);display:inline-block;"></span>
-          Session Archive
-        </div>
-        <h1 style="font-size:1.6rem;font-weight:700;color:var(--text-primary);margin-bottom:4px;">Memories</h1>
-        <p style="font-size:0.82rem;color:var(--ash);font-style:italic;">Every KAIZEN AI response — saved permanently for reflection.</p>
+          <span style="width:16px;height:1px;background:var(--gold);display:inline-block;"></span>Archive des sessions</div>
+        <h1 style="font-size:1.6rem;font-weight:700;color:var(--text-primary);margin-bottom:4px;">Souvenirs</h1>
+        <p style="font-size:0.82rem;color:var(--ash);font-style:italic;">Chaque réponse de KAIZEN AI — enregistrée en permanence pour la réflexion.</p>
       </div>
       <a href="kaizen-ai-fr.html" style="display:inline-flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);border:1px solid var(--border);padding:10px 16px;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.color='var(--gold)';this.style.borderColor='rgba(245,197,24,0.3)'" onmouseout="this.style.color='var(--ash)';this.style.borderColor='var(--border)'">
         KAIZEN AI
@@ -292,30 +290,26 @@
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:2px;margin-bottom:16px;">
         <div style="background:var(--bg-card);border:1px solid rgba(245,197,24,0.15);padding:16px;">
           <div style="font-family:'DM Mono',monospace;font-size:0.52rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--ash);margin-bottom:6px;display:flex;align-items:center;gap:5px;">
-            <i data-feather="archive" width="10" height="10"></i> Total Saved
-          </div>
+            <i data-feather="archive" width="10" height="10"></i>Total enregistré</div>
           <div style="font-family:'DM Mono',monospace;font-size:1.6rem;font-weight:700;color:var(--gold);">3</div>
         </div>
         <div style="background:var(--bg-card);border:1px solid var(--border);padding:16px;">
           <div style="font-family:'DM Mono',monospace;font-size:0.52rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--ash);margin-bottom:6px;display:flex;align-items:center;gap:5px;">
-            <i data-feather="edit-3" width="10" height="10"></i> Journal
-          </div>
+            <i data-feather="edit-3" width="10" height="10"></i>Journal</div>
           <div style="font-family:'DM Mono',monospace;font-size:1.6rem;font-weight:700;color:var(--text-primary);">
             3
           </div>
         </div>
         <div style="background:var(--bg-card);border:1px solid var(--border);padding:16px;">
           <div style="font-family:'DM Mono',monospace;font-size:0.52rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--ash);margin-bottom:6px;display:flex;align-items:center;gap:5px;">
-            <i data-feather="cpu" width="10" height="10"></i> Psychology
-          </div>
+            <i data-feather="cpu" width="10" height="10"></i>Psychologie</div>
           <div style="font-family:'DM Mono',monospace;font-size:1.6rem;font-weight:700;color:var(--text-primary);">
             0
           </div>
         </div>
         <div style="background:var(--bg-card);border:1px solid var(--border);padding:16px;">
           <div style="font-family:'DM Mono',monospace;font-size:0.52rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--ash);margin-bottom:6px;display:flex;align-items:center;gap:5px;">
-            <i data-feather="calendar" width="10" height="10"></i> Latest
-          </div>
+            <i data-feather="calendar" width="10" height="10"></i>Plus récent</div>
           <div style="font-family:'DM Mono',monospace;font-size:0.85rem;font-weight:700;color:var(--text-primary);">
             Oct 17
           </div>
@@ -358,9 +352,7 @@
                 </p>
               </div>
               <div style="display:flex;align-items:center;gap:5px;font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--ash);flex-shrink:0;">
-                <i data-feather="chevron-down" width="12" height="12" id="icon-"></i>
-                Expand
-              </div>
+                <i data-feather="chevron-down" width="12" height="12" id="icon-"></i>Développer</div>
             </div>
 
             <div id="memory-" style="display:none;margin-top:20px;padding-top:20px;border-top:1px solid var(--border);">
@@ -369,7 +361,7 @@
               </div>
               
                 <div style="padding:14px 16px;background:var(--bg-surface);border:1px solid var(--border);border-left:2px solid rgba(245,197,24,0.2);">
-                  <div style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);margin-bottom:8px;">Your Session Entry</div>
+                  <div style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);margin-bottom:8px;">Votre entrée de session</div>
                   <p style="font-size:0.82rem;color:var(--ash);line-height:1.7;margin:0;font-style:italic;">"London sweep + MSS, entered on retest, held to 2R."</p>
                 </div>
               
@@ -411,9 +403,7 @@
                 </p>
               </div>
               <div style="display:flex;align-items:center;gap:5px;font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--ash);flex-shrink:0;">
-                <i data-feather="chevron-down" width="12" height="12" id="icon-"></i>
-                Expand
-              </div>
+                <i data-feather="chevron-down" width="12" height="12" id="icon-"></i>Développer</div>
             </div>
 
             <div id="memory-" style="display:none;margin-top:20px;padding-top:20px;border-top:1px solid var(--border);">
@@ -422,7 +412,7 @@
               </div>
               
                 <div style="padding:14px 16px;background:var(--bg-surface);border:1px solid var(--border);border-left:2px solid rgba(245,197,24,0.2);">
-                  <div style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);margin-bottom:8px;">Your Session Entry</div>
+                  <div style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);margin-bottom:8px;">Votre entrée de session</div>
                   <p style="font-size:0.82rem;color:var(--ash);line-height:1.7;margin:0;font-style:italic;">"Entered before MSS confirmation."</p>
                 </div>
               
@@ -460,9 +450,7 @@
                 </p>
               </div>
               <div style="display:flex;align-items:center;gap:5px;font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--ash);flex-shrink:0;">
-                <i data-feather="chevron-down" width="12" height="12" id="icon-"></i>
-                Expand
-              </div>
+                <i data-feather="chevron-down" width="12" height="12" id="icon-"></i>Développer</div>
             </div>
 
             <div id="memory-" style="display:none;margin-top:20px;padding-top:20px;border-top:1px solid var(--border);">
@@ -471,7 +459,7 @@
               </div>
               
                 <div style="padding:14px 16px;background:var(--bg-surface);border:1px solid var(--border);border-left:2px solid rgba(245,197,24,0.2);">
-                  <div style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);margin-bottom:8px;">Your Session Entry</div>
+                  <div style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);margin-bottom:8px;">Votre entrée de session</div>
                   <p style="font-size:0.82rem;color:var(--ash);line-height:1.7;margin:0;font-style:italic;">"Froze before clicking on a perfect setup."</p>
                 </div>
               
