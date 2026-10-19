@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh">
 <head>
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -202,7 +202,7 @@
 <div class="k-ticker" id="k-ticker" role="region" aria-label="更新">
   <button type="button" class="k-ticker-close" onclick="dismissTicker()" aria-label="关闭公告">×</button>
   <div class="k-ticker-track">
-    <span class="k-ticker-text"><b>KAIZEN V2 IS COMING</b> — the score gets five dimensions · plan → record → reflect sessions · your own Trading System · rolling out over the next 30 days</span>
+    <span class="k-ticker-text"><b>KAIZEN V2 即将上线</b> — 评分升级为五个维度 · 计划 → 记录 → 复盘 · 你自己的交易系统 · 未来 30 天内逐步推出</span>
   </div>
   <div class="k-ticker-badge">
     <div class="k-ticker-megaphone"><i data-feather="megaphone" width="12" height="12"></i></div>
@@ -273,21 +273,17 @@
 
     <div class="k-stepstrip">
       <span class="is-active">计划</span><b>—</b>
-      <span>Record</span><b>—</b>
-      <span>Reflect</span>
+      <span>记录</span><b>—</b>
+      <span>复盘</span>
     </div>
 
-    <div class="k-eyebrow" style="margin-bottom:10px;">New Session — The Plan</div>
-    <h1 style="font-size:clamp(1.5rem,3.5vw,2.1rem);font-weight:700;color:var(--text-primary);line-height:1.15;margin:0 0 8px;">
-      Declare it before you do it.
-    </h1>
-    <p style="font-size:0.88rem;color:var(--text-secondary);line-height:1.75;margin:0 0 24px;">
-      This is what KAIZEN measures you against. Under a minute.
-    </p>
+    <div class="k-eyebrow" style="margin-bottom:10px;">计划</div>
+    <h1 style="font-size:clamp(1.5rem,3.5vw,2.1rem);font-weight:700;color:var(--text-primary);line-height:1.15;margin:0 0 8px;">先声明，再行动。</h1>
+    <p style="font-size:0.88rem;color:var(--text-secondary);line-height:1.75;margin:0 0 24px;">这就是 KAIZEN 衡量你的依据。不到一分钟。</p>
 
     <!-- Session type -->
     <div class="k-card" style="margin-bottom:14px;">
-      <div class="k-metric-label" style="margin-bottom:12px;">SESSION TYPE</div>
+      <div class="k-metric-label" style="margin-bottom:12px;">交易类型</div>
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">
         
           <a href="session-plan-zh.html" class="k-typecard is-active">
@@ -314,7 +310,7 @@
       
         <div class="k-card k-formcard">
           <div class="k-field">
-            <label class="k-fieldlabel">形态 <span style="color:var(--text-faint);text-transform:none;letter-spacing:0;">— from your Trading System</span></label>
+            <label class="k-fieldlabel">形态 <span style="color:var(--text-faint);text-transform:none;letter-spacing:0;">——来自你的交易系统</span></label>
             
               <select name="setup" class="k-input">
                 
@@ -322,19 +318,19 @@
                 
                   <option value="Range fakeout">Range fakeout</option>
                 
-                <option value="">Other / ad-hoc</option>
+                <option value="">其他 / 临时</option>
               </select>
             
           </div>
 
           <div class="k-field">
             <label class="k-fieldlabel">入场条件</label>
-            <input type="text" name="entryCondition" class="k-input" placeholder="Price retests the demand zone">
+            <input type="text" name="entryCondition" class="k-input" placeholder="价格回踩需求区">
           </div>
 
           <div class="k-field">
             <label class="k-fieldlabel">失效条件</label>
-            <input type="text" name="invalidation" class="k-input" placeholder="Below the 4H swing low">
+            <input type="text" name="invalidation" class="k-input" placeholder="跌破 4H 摆动低点">
           </div>
 
           <div class="k-field">
@@ -396,9 +392,7 @@
         <button type="submit" class="btn-primary k-btn-lg">锁定计划</button>
         <button type="submit" name="skip" value="1" class="btn-outline k-btn-lg">跳过计划（请诚实——这会对你不利）</button>
       </div>
-      <p style="font-size:0.72rem;color:var(--ash);line-height:1.7;margin:14px 0 0;">
-        Skipping is allowed — this session will carry less Process evidence. KAIZEN will nudge you to plan next time.
-      </p>
+      <p style="font-size:0.72rem;color:var(--ash);line-height:1.7;margin:14px 0 0;">允许跳过——这场交易的过程证据会更少。下次 KAIZEN 会提醒你做计划。</p>
     </form>
 
   </main>

@@ -278,12 +278,8 @@
     </div>
 
     <div class="k-eyebrow" style="margin-bottom:10px;">The Reflection</div>
-    <h1 style="font-size:clamp(1.5rem,3.5vw,2.1rem);font-weight:700;color:var(--text-primary);line-height:1.15;margin:0 0 8px;">
-      A session becomes a lesson here.
-    </h1>
-    <p style="font-size:0.88rem;color:var(--text-secondary);line-height:1.75;margin:0 0 24px;">
-      Four short answers. Yours, not KAIZEN's — the AI responds after you finish.
-    </p>
+    <h1 style="font-size:clamp(1.5rem,3.5vw,2.1rem);font-weight:700;color:var(--text-primary);line-height:1.15;margin:0 0 8px;">A session becomes a lesson here.</h1>
+    <p style="font-size:0.88rem;color:var(--text-secondary);line-height:1.75;margin:0 0 24px;">Four short answers. Yours, not KAIZEN&#39;s — the AI responds after you finish.</p>
 
     <div class="k-card" style="margin-bottom:18px;">
       <div class="k-metric-label" style="margin-bottom:8px;">Sessions — XAUUSD</div>
@@ -318,14 +314,12 @@
       <div class="k-actions">
         <button type="submit" class="btn-primary k-btn-lg" id="k-finish">Reflect</button>
       </div>
-      <p style="font-size:0.72rem;color:var(--ash);line-height:1.7;margin:14px 0 0;">
-        On finish, the engine scores your session and 改 KAIZEN responds to your reflection.
-      </p>
+      <p style="font-size:0.72rem;color:var(--ash);line-height:1.7;margin:14px 0 0;">On finish, the engine scores your session and 改 KAIZEN responds to your reflection.</p>
     </form>
 
     <!-- KAIZEN's response — revealed in place (streamed, Psychology-style) -->
     <div class="k-card k-card--featured" id="k-response" hidden style="margin-top:18px;">
-      <div class="k-panel-title" style="margin-bottom:14px;"><span class="k-kanji k-kanji--sm">改</span> KAIZEN RESPONDS</div>
+      <div class="k-panel-title" style="margin-bottom:14px;"><span class="k-kanji k-kanji--sm">改</span>KAIZEN RESPONDS</div>
       <div class="k-typing" id="k-responding" hidden>
         <span class="k-kanji k-kanji--sm">改</span>
         <div class="k-msg-text k-typingdots"><span></span><span></span><span></span></div>
@@ -367,7 +361,7 @@
         var typingEl = document.getElementById('k-responding');
         var out = document.getElementById('k-analysis');
         var after = document.getElementById('k-after');
-        btn.disabled = true; btn.textContent = 'Analyzing…';
+        btn.disabled = true; btn.textContent = "Analyzing…";
         panel.hidden = false; typingEl.hidden = false;
         try { panel.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (err) {}
         var data = new URLSearchParams(new FormData(form));
@@ -376,7 +370,7 @@
           typingEl.hidden = true;
           if (!res || res.error) {
             out.textContent = (res && res.error) || 'Something went wrong — try again.';
-            after.hidden = false; btn.disabled = false; btn.textContent = 'Finish Session';
+            after.hidden = false; btn.disabled = false; btn.textContent = "Finish Session";
             return;
           }
           var text = res.analysis || '';
@@ -405,12 +399,12 @@
             onDone: function () {
               typingEl.hidden = true;
               after.hidden = false;
-              btn.textContent = 'Done';
+              btn.textContent = "Done";
             },
             onError: function (msg) {
               typingEl.hidden = true;
               out.textContent = msg || 'Something went wrong — try again.';
-              after.hidden = false; btn.disabled = false; btn.textContent = 'Finish Session';
+              after.hidden = false; btn.disabled = false; btn.textContent = "Finish Session";
             },
             onJson: handleJson
           }).catch(function () { form.submit(); }); // network issue: plain POST

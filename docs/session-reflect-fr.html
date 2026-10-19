@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -70,8 +70,8 @@
     <!-- IMPROVE -->
     <div class="popup-section">
       <div class="popup-section-label">Progresser</div>
-      <a href="dashboard-fr.html" class="popup-item"><span class="popup-item-icon"><i data-feather="activity" width="14" height="14"></i></span> Cockpit</a>
-      <a href="sessions-fr.html" class="popup-item"><span class="popup-item-icon"><i data-feather="list" width="14" height="14"></i></span> Sessions</a>
+      <a href="dashboard-fr.html" class="popup-item"><span class="popup-item-icon"><i data-feather="activity" width="14" height="14"></i></span> Tableau de bord</a>
+      <a href="sessions-fr.html" class="popup-item"><span class="popup-item-icon"><i data-feather="list" width="14" height="14"></i></span> Séances</a>
       <a href="leaderboard-fr.html" class="popup-item"><span class="popup-item-icon"><i data-feather="trending-up" width="14" height="14"></i></span> Mes Progrès</a>
     </div>
 
@@ -202,7 +202,7 @@
 <div class="k-ticker" id="k-ticker" role="region" aria-label="Mise à jour">
   <button type="button" class="k-ticker-close" onclick="dismissTicker()" aria-label="Masquer l&#39;annonce">×</button>
   <div class="k-ticker-track">
-    <span class="k-ticker-text"><b>KAIZEN V2 IS COMING</b> — the score gets five dimensions · plan → record → reflect sessions · your own Trading System · rolling out over the next 30 days</span>
+    <span class="k-ticker-text"><b>KAIZEN V2 ARRIVE</b> — le score passe à cinq dimensions · planifier → enregistrer → réfléchir · votre propre Trading System · déploiement sur les 30 prochains jours</span>
   </div>
   <div class="k-ticker-badge">
     <div class="k-ticker-megaphone"><i data-feather="megaphone" width="12" height="12"></i></div>
@@ -277,16 +277,12 @@
       <span class="is-active">La Réflexion</span>
     </div>
 
-    <div class="k-eyebrow" style="margin-bottom:10px;">The Reflection</div>
-    <h1 style="font-size:clamp(1.5rem,3.5vw,2.1rem);font-weight:700;color:var(--text-primary);line-height:1.15;margin:0 0 8px;">
-      A session becomes a lesson here.
-    </h1>
-    <p style="font-size:0.88rem;color:var(--text-secondary);line-height:1.75;margin:0 0 24px;">
-      Four short answers. Yours, not KAIZEN's — the AI responds after you finish.
-    </p>
+    <div class="k-eyebrow" style="margin-bottom:10px;">La Réflexion</div>
+    <h1 style="font-size:clamp(1.5rem,3.5vw,2.1rem);font-weight:700;color:var(--text-primary);line-height:1.15;margin:0 0 8px;">C&#39;est ici qu&#39;une session devient une leçon.</h1>
+    <p style="font-size:0.88rem;color:var(--text-secondary);line-height:1.75;margin:0 0 24px;">Quatre réponses courtes. Les vôtres, pas celles de KAIZEN — l&#39;IA répond après.</p>
 
     <div class="k-card" style="margin-bottom:18px;">
-      <div class="k-metric-label" style="margin-bottom:8px;">Sessions — XAUUSD</div>
+      <div class="k-metric-label" style="margin-bottom:8px;">Séances — XAUUSD</div>
       <div style="font-size:0.84rem;color:var(--text-secondary);line-height:1.75;max-height:110px;overflow:hidden;position:relative;">
         Waited for the London sweep, MSS confirmed on the 30min, entered on the retest. Held through the squeeze to 2R. Felt the urge to add at +1.5R but sized in properly at the start, so no add.
         <div style="position:absolute;bottom:0;left:0;right:0;height:44px;background:linear-gradient(transparent,var(--bg-card));"></div>
@@ -297,42 +293,40 @@
 
       <div class="k-card k-formcard k-prompt">
         <label class="k-fieldlabel">Que s’est-il passé ?</label>
-        <textarea name="whatHappened" class="k-input" rows="3" placeholder="In your own words..."></textarea>
+        <textarea name="whatHappened" class="k-input" rows="3" placeholder="En vos propres mots..."></textarea>
       </div>
 
       <div class="k-card k-formcard k-prompt">
         <label class="k-fieldlabel">Avez-vous suivi votre processus ?</label>
-        <textarea name="followedProcess" class="k-input" rows="3" placeholder="Honest answer — this is where improvement starts..."></textarea>
+        <textarea name="followedProcess" class="k-input" rows="3" placeholder="Réponse honnête — c&#39;est là que commence l&#39;amélioration..."></textarea>
       </div>
 
       <div class="k-card k-formcard k-prompt">
         <label class="k-fieldlabel">Qu’avez-vous appris ?</label>
-        <textarea name="learned" class="k-input" rows="3" placeholder="The same mistake, seen twice, becomes a decision..."></textarea>
+        <textarea name="learned" class="k-input" rows="3" placeholder="La même erreur, vue deux fois, devient une décision..."></textarea>
       </div>
 
       <div class="k-card k-formcard k-prompt">
         <label class="k-fieldlabel">Que changeriez-vous ?</label>
-        <textarea name="wouldChange" class="k-input" rows="3" placeholder="One concrete thing..."></textarea>
+        <textarea name="wouldChange" class="k-input" rows="3" placeholder="Une chose concrète..."></textarea>
       </div>
 
       <div class="k-actions">
         <button type="submit" class="btn-primary k-btn-lg" id="k-finish">Réfléchir</button>
       </div>
-      <p style="font-size:0.72rem;color:var(--ash);line-height:1.7;margin:14px 0 0;">
-        On finish, the engine scores your session and 改 KAIZEN responds to your reflection.
-      </p>
+      <p style="font-size:0.72rem;color:var(--ash);line-height:1.7;margin:14px 0 0;">À la fin, le moteur note votre session et 改 KAIZEN répond à votre réflexion.</p>
     </form>
 
     <!-- KAIZEN's response — revealed in place (streamed, Psychology-style) -->
     <div class="k-card k-card--featured" id="k-response" hidden style="margin-top:18px;">
-      <div class="k-panel-title" style="margin-bottom:14px;"><span class="k-kanji k-kanji--sm">改</span> KAIZEN RESPONDS</div>
+      <div class="k-panel-title" style="margin-bottom:14px;"><span class="k-kanji k-kanji--sm">改</span>KAIZEN RÉPOND</div>
       <div class="k-typing" id="k-responding" hidden>
         <span class="k-kanji k-kanji--sm">改</span>
         <div class="k-msg-text k-typingdots"><span></span><span></span><span></span></div>
       </div>
       <div id="k-analysis" style="font-size:0.9rem;color:var(--text-primary);line-height:1.85;white-space:pre-wrap;"></div>
       <div id="k-after" hidden style="margin-top:18px;">
-        <a class="btn-primary k-btn-lg" href="session-detail-fr.html">Open the analyzed session</a>
+        <a class="btn-primary k-btn-lg" href="session-detail-fr.html">Ouvrir la session analysée</a>
       </div>
     </div>
 
@@ -367,7 +361,7 @@
         var typingEl = document.getElementById('k-responding');
         var out = document.getElementById('k-analysis');
         var after = document.getElementById('k-after');
-        btn.disabled = true; btn.textContent = 'Analyzing…';
+        btn.disabled = true; btn.textContent = "Analyse en cours…";
         panel.hidden = false; typingEl.hidden = false;
         try { panel.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (err) {}
         var data = new URLSearchParams(new FormData(form));
@@ -376,7 +370,7 @@
           typingEl.hidden = true;
           if (!res || res.error) {
             out.textContent = (res && res.error) || 'Something went wrong — try again.';
-            after.hidden = false; btn.disabled = false; btn.textContent = 'Finish Session';
+            after.hidden = false; btn.disabled = false; btn.textContent = "Terminer la session";
             return;
           }
           var text = res.analysis || '';
@@ -405,12 +399,12 @@
             onDone: function () {
               typingEl.hidden = true;
               after.hidden = false;
-              btn.textContent = 'Done';
+              btn.textContent = "Terminé";
             },
             onError: function (msg) {
               typingEl.hidden = true;
               out.textContent = msg || 'Something went wrong — try again.';
-              after.hidden = false; btn.disabled = false; btn.textContent = 'Finish Session';
+              after.hidden = false; btn.disabled = false; btn.textContent = "Terminer la session";
             },
             onJson: handleJson
           }).catch(function () { form.submit(); }); // network issue: plain POST

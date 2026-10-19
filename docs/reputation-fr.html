@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -53,7 +53,7 @@
 (function(){try{var u=new URL(window.location.href);if(u.searchParams.has('wallet')){u.searchParams.delete('wallet');window.history.replaceState({},document.title,u.toString());}}catch(e){}})();
 </script>
 
-  <title>KAIZEN — Reputation</title>
+  <title>KAIZEN — Réputation</title>
 </head>
 <body class="app-page">
   <!-- POPUP OVERLAY -->
@@ -70,8 +70,8 @@
     <!-- IMPROVE -->
     <div class="popup-section">
       <div class="popup-section-label">Progresser</div>
-      <a href="dashboard-fr.html" class="popup-item"><span class="popup-item-icon"><i data-feather="activity" width="14" height="14"></i></span> Cockpit</a>
-      <a href="sessions-fr.html" class="popup-item"><span class="popup-item-icon"><i data-feather="list" width="14" height="14"></i></span> Sessions</a>
+      <a href="dashboard-fr.html" class="popup-item"><span class="popup-item-icon"><i data-feather="activity" width="14" height="14"></i></span> Tableau de bord</a>
+      <a href="sessions-fr.html" class="popup-item"><span class="popup-item-icon"><i data-feather="list" width="14" height="14"></i></span> Séances</a>
       <a href="leaderboard-fr.html" class="popup-item"><span class="popup-item-icon"><i data-feather="trending-up" width="14" height="14"></i></span> Mes Progrès</a>
     </div>
 
@@ -202,7 +202,7 @@
 <div class="k-ticker" id="k-ticker" role="region" aria-label="Mise à jour">
   <button type="button" class="k-ticker-close" onclick="dismissTicker()" aria-label="Masquer l&#39;annonce">×</button>
   <div class="k-ticker-track">
-    <span class="k-ticker-text"><b>KAIZEN V2 IS COMING</b> — the score gets five dimensions · plan → record → reflect sessions · your own Trading System · rolling out over the next 30 days</span>
+    <span class="k-ticker-text"><b>KAIZEN V2 ARRIVE</b> — le score passe à cinq dimensions · planifier → enregistrer → réfléchir · votre propre Trading System · déploiement sur les 30 prochains jours</span>
   </div>
   <div class="k-ticker-badge">
     <div class="k-ticker-megaphone"><i data-feather="megaphone" width="12" height="12"></i></div>
@@ -274,16 +274,12 @@
     <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:24px;flex-wrap:wrap;">
       <div>
         <div style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:6px;display:flex;align-items:center;gap:8px;">
-          <span style="width:16px;height:1px;background:var(--gold);display:inline-block;"></span>
-          On-Chain Identity
-        </div>
-        <h1 style="font-size:1.6rem;font-weight:700;color:var(--text-primary);margin-bottom:4px;">Reputation</h1>
-        <p style="font-size:0.82rem;color:var(--ash);font-style:italic;">Your discipline record — verified on two blockchains.</p>
+          <span style="width:16px;height:1px;background:var(--gold);display:inline-block;"></span>Identité on-chain</div>
+        <h1 style="font-size:1.6rem;font-weight:700;color:var(--text-primary);margin-bottom:4px;">Réputation</h1>
+        <p style="font-size:0.82rem;color:var(--ash);font-style:italic;">Votre historique de discipline — vérifié sur deux blockchains.</p>
       </div>
       <a href="dashboard-fr.html" style="display:inline-flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);border:1px solid var(--border);padding:10px 16px;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.color='var(--gold)';this.style.borderColor='rgba(245,197,24,0.3)'" onmouseout="this.style.color='var(--ash)';this.style.borderColor='var(--border)'">
-        <i data-feather="arrow-left" width="12" height="12"></i>
-        Dashboard
-      </a>
+        <i data-feather="arrow-left" width="12" height="12"></i>Tableau de bord</a>
     </div>
 
     <!-- KAIZEN DISCIPLINE SCORE -->
@@ -291,9 +287,7 @@
       <div style="position:absolute;top:0;right:0;width:160px;height:160px;background:radial-gradient(circle,rgba(245,197,24,0.06),transparent 70%);pointer-events:none;"></div>
 
       <div style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--ash);margin-bottom:16px;display:flex;align-items:center;gap:8px;">
-        <i data-feather="bar-chart-2" width="12" height="12" style="color:var(--gold);"></i>
-        KAIZEN Discipline Score
-      </div>
+        <i data-feather="bar-chart-2" width="12" height="12" style="color:var(--gold);"></i>Score de discipline KAIZEN</div>
 
       <div style="display:flex;align-items:flex-end;gap:16px;margin-bottom:16px;flex-wrap:wrap;">
         <div>
@@ -318,9 +312,7 @@
           ">
             CONSISTENT
           </div>
-          <div style="font-size:0.75rem;color:var(--ash);margin-top:8px;">
-            Based on 48 sessions logged
-          </div>
+          <div style="font-size:0.75rem;color:var(--ash);margin-top:8px;">Basé sur48sessions enregistrées</div>
         </div>
       </div>
 
@@ -332,7 +324,7 @@
         </div>
         <div style="background:var(--bg-surface);border:1px solid var(--border);padding:12px;text-align:center;">
           <div style="font-family:'DM Mono',monospace;font-size:1.2rem;font-weight:700;color:var(--text-primary);">6</div>
-          <div style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-top:3px;">Day Streak</div>
+          <div style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-top:3px;">Jours d&#39;affilée</div>
         </div>
         <div style="background:var(--bg-surface);border:1px solid var(--border);padding:12px;text-align:center;">
           <div style="font-family:'DM Mono',monospace;font-size:1.2rem;font-weight:700;color:var(--text-primary);">
@@ -345,10 +337,8 @@
       <!-- DANGER ZONE -->
       <div style="margin-top:24px;padding-top:20px;border-top:1px solid var(--border);">
         <div style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.15em;text-transform:uppercase;color:#F87171;margin-bottom:10px;display:flex;align-items:center;gap:6px;">
-          <i data-feather="alert-triangle" width="11" height="11"></i>
-          Danger Zone
-        </div>
-        <button onclick="if(confirm('Delete your account permanently? This cannot be undone.')) window.location='/auth/delete'" style="
+          <i data-feather="alert-triangle" width="11" height="11"></i>Zone de danger</div>
+        <button onclick="if(confirm(&quot;Supprimer définitivement votre compte ? Cette action est irréversible.&quot;)) window.location='/auth/delete'" style="
           background:transparent;
           border:1px solid rgba(248,113,113,0.3);
           color:#F87171;
@@ -361,9 +351,7 @@
           display:flex;align-items:center;gap:6px;
           transition:all 0.2s;
         " onmouseover="this.style.background='rgba(248,113,113,0.06)'" onmouseout="this.style.background='transparent'">
-          <i data-feather="trash-2" width="12" height="12"></i>
-          Delete Account
-        </button>
+          <i data-feather="trash-2" width="12" height="12"></i>Supprimer le compte</button>
       </div>
     </div>
 
@@ -375,39 +363,37 @@
             <i data-feather="link" width="13" height="13"></i>
           </div>
           <div>
-            <div style="font-weight:700;font-size:0.95rem;color:var(--text-primary);">Mantle AI Benchmark</div>
-            <div style="font-size:0.72rem;color:var(--ash);">Mantle blockchain · AI performance record</div>
+            <div style="font-weight:700;font-size:0.95rem;color:var(--text-primary);">Benchmark IA Mantle</div>
+            <div style="font-size:0.72rem;color:var(--ash);">Blockchain Mantle · registre de performance IA</div>
           </div>
         </div>
         <span style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;background:var(--navy);color:#F4F8FB;border:1px solid rgba(244,248,251,0.12);padding:4px 10px;">ON-CHAIN</span>
       </div>
 
-      <p style="font-size:0.85rem;color:var(--text-secondary);line-height:1.8;margin-bottom:20px;">
-        Every significant KAIZEN AI output about your account is permanently recorded on Mantle blockchain — discipline score changes, pattern detections, and milestones. Verifiable by anyone. Tamper-proof.
-      </p>
+      <p style="font-size:0.85rem;color:var(--text-secondary);line-height:1.8;margin-bottom:20px;">Chaque sortie significative de KAIZEN AI concernant votre compte est enregistrée en permanence sur la blockchain Mantle — changements de score de discipline, détections de schémas et jalons. Vérifiable par tous. Incorruptible.</p>
 
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:2px;margin-bottom:20px;">
         <div style="background:var(--bg-surface);border:1px solid rgba(59,130,246,0.1);padding:16px;text-align:center;">
           <div style="font-family:'DM Mono',monospace;font-size:1.4rem;font-weight:700;color:var(--gold);">72%</div>
-          <div style="font-family:'DM Mono',monospace;font-size:0.48rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-top:4px;">On-Chain Score</div>
+          <div style="font-family:'DM Mono',monospace;font-size:0.48rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-top:4px;">Score on-chain</div>
         </div>
         <div style="background:var(--bg-surface);border:1px solid rgba(59,130,246,0.1);padding:16px;text-align:center;">
           <div style="font-family:'DM Mono',monospace;font-size:1.4rem;font-weight:700;color:var(--blue);">48</div>
-          <div style="font-family:'DM Mono',monospace;font-size:0.48rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-top:4px;">Sessions Logged</div>
+          <div style="font-family:'DM Mono',monospace;font-size:0.48rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-top:4px;">Sessions enregistrées</div>
         </div>
         <div style="background:var(--bg-surface);border:1px solid rgba(59,130,246,0.1);padding:16px;text-align:center;">
           <div style="font-family:'DM Mono',monospace;font-size:1.4rem;font-weight:700;color:var(--text-primary);">2</div>
-          <div style="font-family:'DM Mono',monospace;font-size:0.48rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-top:4px;">Milestones</div>
+          <div style="font-family:'DM Mono',monospace;font-size:0.48rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-top:4px;">Jalons</div>
         </div>
         <div style="background:var(--bg-surface);border:1px solid rgba(59,130,246,0.1);padding:16px;text-align:center;">
           <div style="font-family:'DM Mono',monospace;font-size:1.4rem;font-weight:700;color:var(--text-primary);">[object Object]</div>
-          <div style="font-family:'DM Mono',monospace;font-size:0.48rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-top:4px;">Total Network Events</div>
+          <div style="font-family:'DM Mono',monospace;font-size:0.48rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-top:4px;">Événements réseau au total</div>
         </div>
       </div>
 
       
         <div style="margin-bottom:20px;">
-          <div style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);margin-bottom:10px;">Recent On-Chain Records</div>
+          <div style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);margin-bottom:10px;">Enregistrements on-chain récents</div>
           
             <div style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);flex-wrap:wrap;">
               <span style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.1em;color:var(--blue);border:1px solid rgba(59,130,246,0.25);padding:2px 7px;"></span>
@@ -431,19 +417,14 @@
               
             </div>
           
-          <div style="font-family:'DM Mono',monospace;font-size:0.52rem;letter-spacing:0.06em;color:var(--ash);margin-top:8px;line-height:1.6;">
-            Each record links to its immutable transaction — the same words are written on-chain, where they cannot be edited.
-          </div>
+          <div style="font-family:'DM Mono',monospace;font-size:0.52rem;letter-spacing:0.06em;color:var(--ash);margin-top:8px;line-height:1.6;">Chaque enregistrement renvoie à sa transaction immuable — les mêmes mots sont écrits on-chain, où personne ne peut les modifier.</div>
         </div>
       
 
-      <a href="https://sepolia.mantlescan.xyz/address/0x65fe9Ccd1701C680fb137dD9f0D571d9045c5A0E/address/" target="_blank" style="display:inline-flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--blue);border:1px solid rgba(59,130,246,0.2);background:rgba(59,130,246,0.04);padding:10px 18px;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.background='rgba(59,130,246,0.1)'" onmouseout="this.style.background='rgba(59,130,246,0.04)'">
-        View on Mantle Explorer
-        <i data-feather="external-link" width="11" height="11"></i>
+      <a href="https://sepolia.mantlescan.xyz/address/0x65fe9Ccd1701C680fb137dD9f0D571d9045c5A0E/address/" target="_blank" style="display:inline-flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--blue);border:1px solid rgba(59,130,246,0.2);background:rgba(59,130,246,0.04);padding:10px 18px;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.background='rgba(59,130,246,0.1)'" onmouseout="this.style.background='rgba(59,130,246,0.04)'">Voir sur Mantle Explorer<i data-feather="external-link" width="11" height="11"></i>
       </a>
 
-      <p style="font-family:'DM Mono',monospace;font-size:0.52rem;letter-spacing:0.08em;color:rgba(245,197,24,0.3);margin-top:12px;text-transform:uppercase;">
-        Powered by KaizenBenchmark.sol · Mantle Sepolia (testnet)
+      <p style="font-family:'DM Mono',monospace;font-size:0.52rem;letter-spacing:0.08em;color:rgba(245,197,24,0.3);margin-top:12px;text-transform:uppercase;">Propulsé par KaizenBenchmark.sol ·Mantle Sepolia (testnet)
       </p>
     </div>
 

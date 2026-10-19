@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh">
 <head>
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -202,7 +202,7 @@
 <div class="k-ticker" id="k-ticker" role="region" aria-label="更新">
   <button type="button" class="k-ticker-close" onclick="dismissTicker()" aria-label="关闭公告">×</button>
   <div class="k-ticker-track">
-    <span class="k-ticker-text"><b>KAIZEN V2 IS COMING</b> — the score gets five dimensions · plan → record → reflect sessions · your own Trading System · rolling out over the next 30 days</span>
+    <span class="k-ticker-text"><b>KAIZEN V2 即将上线</b> — 评分升级为五个维度 · 计划 → 记录 → 复盘 · 你自己的交易系统 · 未来 30 天内逐步推出</span>
   </div>
   <div class="k-ticker-badge">
     <div class="k-ticker-megaphone"><i data-feather="megaphone" width="12" height="12"></i></div>
@@ -277,13 +277,9 @@
       <span class="is-active">反思</span>
     </div>
 
-    <div class="k-eyebrow" style="margin-bottom:10px;">The Reflection</div>
-    <h1 style="font-size:clamp(1.5rem,3.5vw,2.1rem);font-weight:700;color:var(--text-primary);line-height:1.15;margin:0 0 8px;">
-      A session becomes a lesson here.
-    </h1>
-    <p style="font-size:0.88rem;color:var(--text-secondary);line-height:1.75;margin:0 0 24px;">
-      Four short answers. Yours, not KAIZEN's — the AI responds after you finish.
-    </p>
+    <div class="k-eyebrow" style="margin-bottom:10px;">反思</div>
+    <h1 style="font-size:clamp(1.5rem,3.5vw,2.1rem);font-weight:700;color:var(--text-primary);line-height:1.15;margin:0 0 8px;">一场交易在这里变成一堂课。</h1>
+    <p style="font-size:0.88rem;color:var(--text-secondary);line-height:1.75;margin:0 0 24px;">四个简短回答。是你的回答，不是 KAIZEN 的——AI 在你完成后才回应。</p>
 
     <div class="k-card" style="margin-bottom:18px;">
       <div class="k-metric-label" style="margin-bottom:8px;">交易时段 — XAUUSD</div>
@@ -297,42 +293,40 @@
 
       <div class="k-card k-formcard k-prompt">
         <label class="k-fieldlabel">发生了什么？</label>
-        <textarea name="whatHappened" class="k-input" rows="3" placeholder="In your own words..."></textarea>
+        <textarea name="whatHappened" class="k-input" rows="3" placeholder="用你自己的话……"></textarea>
       </div>
 
       <div class="k-card k-formcard k-prompt">
         <label class="k-fieldlabel">你遵守了自己的流程吗？</label>
-        <textarea name="followedProcess" class="k-input" rows="3" placeholder="Honest answer — this is where improvement starts..."></textarea>
+        <textarea name="followedProcess" class="k-input" rows="3" placeholder="诚实回答——进步从这里开始……"></textarea>
       </div>
 
       <div class="k-card k-formcard k-prompt">
         <label class="k-fieldlabel">你学到了什么？</label>
-        <textarea name="learned" class="k-input" rows="3" placeholder="The same mistake, seen twice, becomes a decision..."></textarea>
+        <textarea name="learned" class="k-input" rows="3" placeholder="同一个错误出现两次，就成了一个决定……"></textarea>
       </div>
 
       <div class="k-card k-formcard k-prompt">
         <label class="k-fieldlabel">你会改变什么？</label>
-        <textarea name="wouldChange" class="k-input" rows="3" placeholder="One concrete thing..."></textarea>
+        <textarea name="wouldChange" class="k-input" rows="3" placeholder="一件具体的事……"></textarea>
       </div>
 
       <div class="k-actions">
         <button type="submit" class="btn-primary k-btn-lg" id="k-finish">提交反思</button>
       </div>
-      <p style="font-size:0.72rem;color:var(--ash);line-height:1.7;margin:14px 0 0;">
-        On finish, the engine scores your session and 改 KAIZEN responds to your reflection.
-      </p>
+      <p style="font-size:0.72rem;color:var(--ash);line-height:1.7;margin:14px 0 0;">完成后，引擎为你的交易评分，改 KAIZEN 回应你的复盘。</p>
     </form>
 
     <!-- KAIZEN's response — revealed in place (streamed, Psychology-style) -->
     <div class="k-card k-card--featured" id="k-response" hidden style="margin-top:18px;">
-      <div class="k-panel-title" style="margin-bottom:14px;"><span class="k-kanji k-kanji--sm">改</span> KAIZEN RESPONDS</div>
+      <div class="k-panel-title" style="margin-bottom:14px;"><span class="k-kanji k-kanji--sm">改</span>KAIZEN 回应</div>
       <div class="k-typing" id="k-responding" hidden>
         <span class="k-kanji k-kanji--sm">改</span>
         <div class="k-msg-text k-typingdots"><span></span><span></span><span></span></div>
       </div>
       <div id="k-analysis" style="font-size:0.9rem;color:var(--text-primary);line-height:1.85;white-space:pre-wrap;"></div>
       <div id="k-after" hidden style="margin-top:18px;">
-        <a class="btn-primary k-btn-lg" href="session-detail-zh.html">Open the analyzed session</a>
+        <a class="btn-primary k-btn-lg" href="session-detail-zh.html">打开已分析的交易</a>
       </div>
     </div>
 
@@ -367,7 +361,7 @@
         var typingEl = document.getElementById('k-responding');
         var out = document.getElementById('k-analysis');
         var after = document.getElementById('k-after');
-        btn.disabled = true; btn.textContent = 'Analyzing…';
+        btn.disabled = true; btn.textContent = "分析中……";
         panel.hidden = false; typingEl.hidden = false;
         try { panel.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (err) {}
         var data = new URLSearchParams(new FormData(form));
@@ -376,7 +370,7 @@
           typingEl.hidden = true;
           if (!res || res.error) {
             out.textContent = (res && res.error) || 'Something went wrong — try again.';
-            after.hidden = false; btn.disabled = false; btn.textContent = 'Finish Session';
+            after.hidden = false; btn.disabled = false; btn.textContent = "完成交易";
             return;
           }
           var text = res.analysis || '';
@@ -405,12 +399,12 @@
             onDone: function () {
               typingEl.hidden = true;
               after.hidden = false;
-              btn.textContent = 'Done';
+              btn.textContent = "完成";
             },
             onError: function (msg) {
               typingEl.hidden = true;
               out.textContent = msg || 'Something went wrong — try again.';
-              after.hidden = false; btn.disabled = false; btn.textContent = 'Finish Session';
+              after.hidden = false; btn.disabled = false; btn.textContent = "完成交易";
             },
             onJson: handleJson
           }).catch(function () { form.submit(); }); // network issue: plain POST

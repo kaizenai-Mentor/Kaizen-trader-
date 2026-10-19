@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh">
 <head>
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -202,7 +202,7 @@
 <div class="k-ticker" id="k-ticker" role="region" aria-label="更新">
   <button type="button" class="k-ticker-close" onclick="dismissTicker()" aria-label="关闭公告">×</button>
   <div class="k-ticker-track">
-    <span class="k-ticker-text"><b>KAIZEN V2 IS COMING</b> — the score gets five dimensions · plan → record → reflect sessions · your own Trading System · rolling out over the next 30 days</span>
+    <span class="k-ticker-text"><b>KAIZEN V2 即将上线</b> — 评分升级为五个维度 · 计划 → 记录 → 复盘 · 你自己的交易系统 · 未来 30 天内逐步推出</span>
   </div>
   <div class="k-ticker-badge">
     <div class="k-ticker-megaphone"><i data-feather="megaphone" width="12" height="12"></i></div>
@@ -274,25 +274,21 @@
     <div class="k-stepstrip">
       <span class="is-done">计划 ✓</span><b>—</b>
       <span class="is-active">记录</span><b>—</b>
-      <span>Reflect</span>
+      <span>复盘</span>
     </div>
 
-    <div class="k-eyebrow" style="margin-bottom:10px;">The Record — LIVE</div>
-    <h1 style="font-size:clamp(1.5rem,3.5vw,2.1rem);font-weight:700;color:var(--text-primary);line-height:1.15;margin:0 0 8px;">
-      Write what actually happened.
-    </h1>
-    <p style="font-size:0.88rem;color:var(--text-secondary);line-height:1.75;margin:0 0 24px;">
-      The quick checks catch what your notes don't mention.
-    </p>
+    <div class="k-eyebrow" style="margin-bottom:10px;">记录 —LIVE</div>
+    <h1 style="font-size:clamp(1.5rem,3.5vw,2.1rem);font-weight:700;color:var(--text-primary);line-height:1.15;margin:0 0 8px;">写下实际发生了什么。</h1>
+    <p style="font-size:0.88rem;color:var(--text-secondary);line-height:1.75;margin:0 0 24px;">快速检查会捕捉你笔记里没提到的东西。</p>
 
     
       <div class="k-card" style="margin-bottom:18px;border-color:var(--gold-border);">
         <div class="k-metric-label" style="margin-bottom:10px;">计划</div>
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;font-size:0.8rem;color:var(--text-secondary);">
-          <div><span class="k-gold">Setup:</span> 4H sweep → 30min MSS</div>
-          <div><span class="k-gold">Entry:</span> MSS close after liquidity sweep</div>
-          <div><span class="k-gold">Invalidation:</span> Sweep fails below range low</div>
-          <div><span class="k-gold">Risk:</span> 1% — 2 lots max</div>
+          <div><span class="k-gold">设置：</span> 4H sweep → 30min MSS</div>
+          <div><span class="k-gold">进场：</span> MSS close after liquidity sweep</div>
+          <div><span class="k-gold">失效：</span> Sweep fails below range low</div>
+          <div><span class="k-gold">风险：</span> 1% — 2 lots max</div>
         </div>
       </div>
     
@@ -321,7 +317,7 @@
               </div>
             </div>
             <div class="k-checkrow">
-              <span class="k-checklabel">Within your entry criteria?</span>
+              <span class="k-checklabel">符合你的进场标准吗？</span>
               <div class="k-checkopts">
                 <label class="k-opt"><input type="radio" name="withinEntryCriteria" value="YES"><span>是</span></label>
                 <label class="k-opt"><input type="radio" name="withinEntryCriteria" value="NO"><span>否</span></label>
@@ -355,11 +351,11 @@
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px;">
             <div class="k-field" style="margin:0;">
               <label class="k-fieldlabel">实际盈亏比</label>
-              <input type="text" name="rrAchieved" class="k-input" placeholder="e.g. 1:2.5">
+              <input type="text" name="rrAchieved" class="k-input" placeholder="例如 1:2.5">
             </div>
             <div class="k-field" style="margin:0;">
               <label class="k-fieldlabel">点数</label>
-              <input type="text" name="pipsGained" class="k-input" placeholder="e.g. +45">
+              <input type="text" name="pipsGained" class="k-input" placeholder="例如 +45">
             </div>
           </div>
         </div>
