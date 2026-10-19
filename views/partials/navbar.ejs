@@ -67,9 +67,7 @@
 
     <!-- LANGUAGE (owner directive 13 Oct 2026) -->
     <div class="popup-section">
-      <div class="popup-section-label"><%= t('nav.language') %></div>
       <div style="padding:4px 14px 10px;">
-        <%- include('lang-switch') %>
       </div>
     </div>
 
@@ -112,9 +110,7 @@
 
     <!-- LANGUAGE (owner directive 13 Oct 2026) -->
     <div class="popup-section">
-      <div class="popup-section-label"><%= t('nav.language') %></div>
       <div style="padding:4px 14px 10px;">
-        <%- include('lang-switch') %>
       </div>
     </div>
 
@@ -141,7 +137,6 @@
   <a href="<%= user ? '/dashboard' : '/' %>" class="nav-logo">改 KAIZEN</a>
   <div class="nav-right">
     <div class="nav-lang" style="margin-right:6px;display:flex;align-items:center;">
-      <%- include('lang-switch') %>
     </div>
     <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
       <span id="themeIcon">◐</span>

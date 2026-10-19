@@ -1,45 +1,38 @@
 /**
- * Locale tests — the five-dictionary contract (docs/I18N.md):
- * key parity across en/fr/zh/ja/af, fallbacks, interpolation.
+ * Locale tests — the English-only contract (owner directive, 19 Oct
+ * 2026): one dictionary, `t()` as the UI string registry, no language
+ * negotiation. Unknown languages normalize to English.
  */
 const test = require('node:test');
 const assert = require('node:assert');
 const { LANGS, dictionaries, t, normalize, keySet } = require('../config/locales');
 
-test('all five dictionaries load', () => {
-  assert.deepStrictEqual(LANGS, ['en', 'fr', 'zh', 'ja', 'af']);
-  for (const l of LANGS) {
-    assert.ok(Object.keys(dictionaries[l]).length > 100, l + ' dictionary too small');
-  }
+test('English is the only dictionary', () => {
+  assert.deepStrictEqual(LANGS, ['en']);
+  assert.deepStrictEqual(Object.keys(dictionaries), ['en']);
+  assert.ok(Object.keys(dictionaries.en).length > 100, 'en dictionary too small');
 });
 
-test('key parity: every English key exists in every language, no extras', () => {
-  const en = keySet('en');
-  for (const l of LANGS) {
-    const ks = keySet(l);
-    const missing = en.filter((k) => !ks.includes(k));
-    const extra = ks.filter((k) => !en.includes(k));
-    assert.deepStrictEqual(missing, [], l + ' missing keys: ' + missing.join(','));
-    assert.deepStrictEqual(extra, [], l + ' extra keys: ' + extra.join(','));
-  }
-});
-
-test('no dictionary stores an empty translation', () => {
-  for (const l of LANGS) {
-    for (const [k, v] of Object.entries(dictionaries[l])) {
-      assert.ok(typeof v === 'string' && v.length > 0, l + '.' + k + ' empty');
-    }
+test('no string is stored empty', () => {
+  for (const [k, v] of Object.entries(dictionaries.en)) {
+    assert.ok(typeof v === 'string' && v.length > 0, 'en.' + k + ' empty');
   }
 });
 
 test('t() interpolates {{params}} and falls back sanely', () => {
-  assert.strictEqual(t('fr', 'dash.greeting', { name: 'Ada' }), 'Bon retour, Ada');
+  assert.strictEqual(t('en', 'dash.greeting', { name: 'Ada' }), 'Welcome back, Ada');
   assert.strictEqual(t('zz', 'nav.login'), dictionaries.en['nav.login']);
+  assert.strictEqual(t('fr', 'nav.login'), dictionaries.en['nav.login']);
   assert.strictEqual(t('en', 'no.such.key'), 'no.such.key');
 });
 
-test('normalize maps anything to a supported language', () => {
-  assert.strictEqual(normalize('FR'), 'fr');
-  assert.strictEqual(normalize('zh-CN'), 'zh');
-  assert.strictEqual(normalize('klingon'), 'en');
+test('normalize() is English-only: every input becomes en', () => {
+  for (const input of ['fr', 'zh', 'ja', 'af', 'FR', 'de', '', null, undefined, 'zz']) {
+    assert.strictEqual(normalize(input), 'en');
+  }
+});
+
+test('keySet() lists the English registry', () => {
+  assert.deepStrictEqual(keySet('en'), Object.keys(dictionaries.en));
+  assert.strictEqual(keySet('fr').length, keySet('en').length);
 });

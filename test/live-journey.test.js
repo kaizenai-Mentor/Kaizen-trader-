@@ -22,7 +22,7 @@ test('journey test refuses to run against the production database', () => {
   assert.ok(true);
 });
 
-test('whole-site journey: register → plan(custom risk) → record(screenshot) → detail → five languages', {
+test('whole-site journey: register → plan(custom risk) → record(screenshot) → detail → English-only', {
   skip: TEST_URI ? false : 'TEST_MONGODB_URI not set (throwaway DB required)'
 }, async (t) => {
   assert.notStrictEqual(TEST_URI, PROD_URI, 'refusing production database');
@@ -106,14 +106,13 @@ test('whole-site journey: register → plan(custom risk) → record(screenshot) 
     });
     absorb(res);
 
-    // DETAIL: the chart is visible as THE CHART — AS RECORDED (any language
-    // the picker is on — this journey registers with the French picker active)
+    // DETAIL: the chart is visible as THE CHART — AS RECORDED (stale
+    // language cookies are ignored — this journey registers with one)
     res = await fetch(base + '/dashboard/sessions/' + sessionId, {
       headers: { cookie: cookieHeader() }
     });
     let body = await res.text();
-    const chartLabels = ['THE CHART — AS RECORDED', 'LE GRAPHIQUE — TEL QU', '图表——如记录当时', 'チャート — 記録当時のまま', 'DIE GRAFIEK — SOOS OPGETEKEN'];
-    assert.ok(chartLabels.some((l) => body.includes(l)), 'chart block missing');
+    assert.ok(body.includes('THE CHART — AS RECORDED'), 'chart block missing');
     assert.ok(body.includes('/chart-image'), 'chart image not wired');
 
     // The screenshot is served owner-only
@@ -123,14 +122,22 @@ test('whole-site journey: register → plan(custom risk) → record(screenshot) 
     assert.strictEqual(res.status, 200);
     assert.match(res.headers.get('content-type') || '', /image\/png/);
 
-    // WHOLE-SITE LANGUAGE under auth: the five dictionaries actually render
-    for (const [lang, marker] of [['en', 'Cockpit'], ['fr', 'Cockpit'], ['zh', '驾驶舱'], ['ja', 'コックピット'], ['af', 'Kajuit']]) {
+    // ENGLISH-ONLY under auth (owner directive 19 Oct 2026): stale
+    // language cookies and ?lang= queries do nothing; the switcher is gone.
+    for (const tail of ['', '; kaizen_lang=fr', '; kaizen_lang=zh']) {
       res = await fetch(base + '/dashboard', {
-        headers: { cookie: cookieHeader() + '; kaizen_lang=' + lang }
+        headers: { cookie: cookieHeader() + tail }
       });
       body = await res.text();
-      assert.ok(body.includes(marker), 'dashboard chrome not in ' + lang);
+      assert.ok(body.includes('Cockpit'), 'dashboard chrome not English (cookie: ' + (tail || 'none') + ')');
+      assert.ok(!body.includes('lang-switch'), 'language switcher must be removed');
     }
+    res = await fetch(base + '/dashboard?lang=zh', {
+      headers: { cookie: cookieHeader() }
+    });
+    body = await res.text();
+    assert.ok(body.includes('Cockpit'), 'dashboard chrome not English (?lang=zh)');
+    assert.ok(!body.includes('驾驶舱'), 'Chinese chrome leaked through ?lang=');
   } finally {
     server.close();
     await mongoose.connection.dropDatabase();

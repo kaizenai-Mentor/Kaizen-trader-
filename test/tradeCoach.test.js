@@ -153,9 +153,9 @@ test('CONSENT-BASED QUESTIONS: quiz mode dies the moment consent is withdrawn', 
   assert.match(q, /THEY JUST ASKED TO BE QUIZZED/);
 });
 
-test("LANGUAGE: the trading room replies in the trader's language", () => {
+test('LANGUAGE: the trading room is English-only (owner directive 19 Oct 2026)', () => {
   const { buildSystemPrompt } = require('../services/tradeCoach');
   const p = buildSystemPrompt({ user: tradeUser, system, sessions: [] });
-  assert.match(p, /Reply in their language/);
+  assert.match(p, /Always reply in English/);
   assert.match(p, /Machine blocks stay in their fixed English format/);
 });

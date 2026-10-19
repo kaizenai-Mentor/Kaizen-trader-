@@ -1,35 +1,28 @@
 /**
- * config/locales/index.js — the five dictionaries (owner directive,
- * 13 Oct 2026): English, French, Chinese (Simplified), Japanese,
- * Afrikaans. Whole-site UI strings live here.
+ * config/locales/index.js — English-only string registry.
  *
- * CONTRACTS (docs/I18N.md):
+ * Owner directive, 19 Oct 2026: the product ships in English only.
+ * The five-dictionary era is retired; `t()` remains as the UI string
+ * registry so views keep one source of truth per string.
+ *
+ * CONTRACTS:
  *  - Stored VALUES stay English (journal text, rule text, DB content).
- *  - Machine blocks (EXTRACTED:, PSYCH-STATE:) stay English in every
- *    language so they remain parseable.
- *  - Long-form legal/prose pages are an owner-curated translation pass
- *    (docs/I18N.md) — titles and short copy are localized now.
+ *  - Machine blocks (EXTRACTED:, PSYCH-STATE:) stay English and
+ *    parseable.
  */
 const dictionaries = {
-  en: require('./en'),
-  fr: require('./fr'),
-  zh: require('./zh'),
-  ja: require('./ja'),
-  af: require('./af')
+  en: require('./en')
 };
 
-const LANGS = ['en', 'fr', 'zh', 'ja', 'af'];
+const LANGS = ['en'];
 
-function normalize(lang) {
-  const l = String(lang || '').toLowerCase().slice(0, 2);
-  return LANGS.includes(l) ? l : 'en';
+function normalize() {
+  return 'en';
 }
 
-/** t('fr', 'nav.sessions') → string; unknown key → en fallback → key itself. */
+/** t(_, 'nav.sessions') → string; unknown key → the key itself. */
 function t(lang, key, params) {
-  const l = normalize(lang);
-  let s = dictionaries[l][key];
-  if (s === undefined) s = dictionaries.en[key];
+  let s = dictionaries.en[key];
   if (s === undefined) return key;
   if (params) {
     for (const [k, v] of Object.entries(params)) {
@@ -39,9 +32,8 @@ function t(lang, key, params) {
   return s;
 }
 
-/** Every key present in English must exist in every dictionary (tested). */
-function keySet(lang) {
-  return Object.keys(dictionaries[normalize(lang)]);
+function keySet() {
+  return Object.keys(dictionaries.en);
 }
 
 module.exports = { LANGS, dictionaries, normalize, t, keySet };

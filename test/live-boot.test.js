@@ -35,39 +35,34 @@ test('the server listens and answers on a real TCP port', async () => {
   assert.strictEqual(res.status, 200);
 });
 
-test('welcome page carries the five-language picker', async () => {
+test('welcome page is English-only — no language picker (19 Oct 2026)', async () => {
   const { body } = await get('/');
-  for (const code of ['en', 'fr', 'zh', 'ja', 'af']) {
-    assert.ok(body.includes('value="' + code + '"'), 'picker missing ' + code);
-  }
+  assert.ok(!body.includes('lang-switch'), 'language switcher must be gone');
+  assert.ok(!body.includes('Choose your language') && !body.includes('Choisissez'), 'picker label must be gone');
 });
 
-test('login page carries the picker', async () => {
+test('login page carries no picker', async () => {
   const { res, body } = await get('/auth/login');
   assert.strictEqual(res.status, 200);
-  assert.ok(body.includes('value="ja"'));
+  assert.ok(!body.includes('lang-switch'), 'language switcher must be gone');
 });
 
-test('register page carries the picker', async () => {
+test('register page carries no picker', async () => {
   const { res, body } = await get('/auth/register');
   assert.strictEqual(res.status, 200);
-  assert.ok(body.includes('value="af"'));
+  assert.ok(!body.includes('lang-switch'), 'language switcher must be gone');
 });
 
-test('?lang=fr sets the sticky language cookie', async () => {
-  const { res } = await get('/?lang=fr');
+test('?lang=fr sets no language cookie and stays English', async () => {
+  const { res, body } = await get('/?lang=fr');
   const setCookie = res.headers.get('set-cookie') || '';
-  assert.match(setCookie, /kaizen_lang=fr/);
+  assert.ok(!/kaizen_lang/.test(setCookie), 'no sticky language cookie anymore');
+  assert.ok(!body.includes('Choisissez votre langue'), 'French chrome must be gone');
 });
 
-test('?lang=fr renders French chrome', async () => {
-  const { body } = await get('/?lang=fr');
-  assert.ok(body.includes('Choisissez votre langue'), 'welcome picker label not French');
-});
-
-test('the language cookie is honored on later requests', async () => {
+test('stale language cookies are ignored — chrome stays English', async () => {
   const { body } = await get('/auth/login', { cookie: 'kaizen_lang=zh' });
-  assert.ok(body.includes('登录') || body.includes('欢迎回来'), 'login not in Chinese');
+  assert.ok(!body.includes('登录') && !body.includes('欢迎回来'), 'Chinese chrome must be gone');
 });
 
 test('news page sits behind the auth wall for anonymous visitors', async () => {

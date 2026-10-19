@@ -64,9 +64,6 @@ const postRegister = async (req, res) => {
 
     const referredBy = req.body.ref || null;
 
-    // Remember the interface language they signed up in (i18n).
-    const preferredLang = (res.locals && res.locals.lang) || 'en';
-
     const user = await User.create({
       username,
       email,
@@ -74,7 +71,6 @@ const postRegister = async (req, res) => {
       isVerified: true,
       termsAcceptedAt: new Date(),
       authMethod: 'password',
-      preferredLang,
       referredBy: referredBy || null,
       referralCode: username.toLowerCase().replace(/\s+/g, '-')
     });
@@ -100,7 +96,7 @@ const postRegister = async (req, res) => {
       email: user.email,
       disciplineScore: user.disciplineScore,
       streak: user.streak,
-      preferredLang: user.preferredLang || preferredLang
+      lang: 'en'
     };
 
     // JOIN done → RULES next (PRG)
@@ -207,7 +203,7 @@ const postLogin = async (req, res) => {
       email: user.email,
       disciplineScore: user.disciplineScore,
       streak: user.streak,
-      preferredLang: user.preferredLang || 'en'
+      lang: 'en'
     };
 
     res.redirect('/dashboard');

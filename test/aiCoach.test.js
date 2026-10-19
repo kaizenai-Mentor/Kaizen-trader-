@@ -39,14 +39,18 @@ test('EXTRACTED tail round-trip: parse then strip', () => {
 
 // ── Coach rules (owner directive, 16 Oct 2026) ──────────────────
 
-test("LANGUAGE: the analysis follows the trader's language", () => {
-  const { buildSystemPrompt } = require('../services/aiCoach');
+test('LANGUAGE: the analysis is English-only (owner directive 19 Oct 2026)', () => {
+  const { buildSystemPrompt, buildFallback } = require('../services/aiCoach');
   const p = buildSystemPrompt({
     user: { username: 'T' }, system: null,
     session: { notes: 'test', plan: {}, outcome: 'Win' },
     recentHistory: '', scoreBrief: ''
   });
-  assert.match(p, /LANGUAGE: write the analysis in the language their entry is written in/);
+  assert.match(p, /LANGUAGE: always write the analysis in English/);
+  // Deterministic fallbacks are English regardless of any lang argument.
+  const fb = buildFallback({ notes: 'Moved my stop after the sweep.', asset: 'XAUUSD', plan: {}, outcome: 'Loss' }, 'fr');
+  assert.match(fb, /your/);
+  assert.ok(!/votre|Vous avez/.test(fb), 'fallback must not speak French');
 });
 
 test('EXTRACTED stays parseable: fixed English format in every language', () => {

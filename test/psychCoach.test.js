@@ -148,11 +148,11 @@ test('PSYCH-STATE stays English in every language (parser contract)', () => {
   assert.strictEqual(parsed.summary, 'Calm and focused.');
 });
 
-test("LANGUAGE: the psychology room replies in the trader's language", () => {
+test('LANGUAGE: the psychology room is English-only (owner directive 19 Oct 2026)', () => {
   const { buildSystemPrompt } = require('../services/psychCoach');
   const p = buildSystemPrompt({ user: psychUser, system: null, sessions: [], mindState: null });
-  assert.match(p, /Reply in their language/);
-  assert.match(p, /Only the PSYCH-STATE block stays in its fixed English format/);
+  assert.match(p, /Always reply in English/);
+  assert.match(p, /PSYCH-STATE block stays in its fixed English format/);
 });
 
 test('deeper-question rule still caps at one question', () => {
