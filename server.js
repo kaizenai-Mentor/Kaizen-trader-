@@ -334,6 +334,34 @@ app.get('/improve', (req, res) => {
   if (!req.session.user) return res.redirect('/auth/login');
   improveController.getIndex(req, res);
 });
+
+// Goal Guidance — set, track and adapt improvement goals (owner
+// directive 19 Oct 2026).
+const goalsController = require('./controllers/goalsController');
+app.get('/goals', (req, res) => {
+  if (!req.session.user) return res.redirect('/auth/login');
+  goalsController.getList(req, res);
+});
+app.post('/goals', (req, res) => {
+  if (!req.session.user) return res.redirect('/auth/login');
+  goalsController.postCreate(req, res);
+});
+app.get('/goals/:id', (req, res) => {
+  if (!req.session.user) return res.redirect('/auth/login');
+  goalsController.getDetail(req, res);
+});
+app.post('/goals/:id/log', (req, res) => {
+  if (!req.session.user) return res.redirect('/auth/login');
+  goalsController.postLog(req, res);
+});
+app.post('/goals/:id/status', (req, res) => {
+  if (!req.session.user) return res.redirect('/auth/login');
+  goalsController.postStatus(req, res);
+});
+app.post('/goals/:id/adapt', (req, res) => {
+  if (!req.session.user) return res.redirect('/auth/login');
+  goalsController.postAdapt(req, res);
+});
 app.post('/psychology/ask', (req, res) => {
   if (!req.session.user) return res.status(401).json({ error: 'Not logged in.' });
   psychController.postAsk(req, res);

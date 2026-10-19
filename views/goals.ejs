@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="<%= lang %>">
+<head>
+  <%- include('partials/head') %>
+  <title><%= t('title.goals') %></title>
+</head>
+<body class="app-page">
+  <%- include('partials/navbar') %>
+
+  <main class="app-main">
+
+    <div style="margin-bottom:24px;">
+      <div style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:6px;display:flex;align-items:center;gap:8px;">
+        <span style="width:16px;height:1px;background:var(--gold);display:inline-block;"></span><%= t('goals.eyebrow') %></div>
+      <h1 style="font-size:1.6rem;font-weight:700;color:var(--text-primary);margin-bottom:4px;"><%= t('goals.h1') %></h1>
+      <p style="font-size:0.82rem;color:var(--ash);font-style:italic;"><%= t('goals.sub') %></p>
+    </div>
+
+    <% if (suggestions && suggestions.length) { %>
+      <div class="k-card" style="margin-bottom:20px;">
+        <div class="k-panel-title" style="margin-bottom:12px;"><%= t('goals.suggested') %></div>
+        <% suggestions.forEach(function (s) { %>
+          <div style="border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:10px;">
+            <div style="font-weight:700;color:var(--text-primary);margin-bottom:6px;"><%= s.title %></div>
+            <p style="font-size:0.82rem;line-height:1.6;color:var(--ash);margin-bottom:10px;"><%= s.rationale %></p>
+            <form method="POST" action="/goals">
+              <input type="hidden" name="title" value="<%= s.title %>">
+              <input type="hidden" name="metric" value="<%= s.metric %>">
+              <input type="hidden" name="target" value="<%= s.target %>">
+              <input type="hidden" name="unit" value="<%= s.unit %>">
+              <input type="hidden" name="cadence" value="<%= s.cadence %>">
+              <input type="hidden" name="rationale" value="<%= s.rationale %>">
+              <button type="submit" class="k-btn" style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;"><%= t('goals.adopt') %></button>
+            </form>
+          </div>
+        <% }); %>
+      </div>
+    <% } %>
+
+    <div class="k-card" style="margin-bottom:20px;">
+      <div class="k-panel-title" style="margin-bottom:12px;"><%= t('goals.yours') %></div>
+      <% if (!goals.length) { %>
+        <p style="font-size:0.84rem;color:var(--ash);font-style:italic;"><%= t('goals.empty') %></p>
+      <% } %>
+      <% goals.forEach(function (g) { %>
+        <a href="/goals/<%= g._id %>" style="display:flex;justify-content:space-between;align-items:center;gap:12px;border:1px solid var(--border);border-radius:10px;padding:12px 16px;margin-bottom:8px;text-decoration:none;">
+          <div>
+            <div style="font-weight:700;color:var(--text-primary);font-size:0.92rem;"><%= g.title %></div>
+            <div style="font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--ash);margin-top:3px;"><%= g.metric %> <% if (g.target != null) { %>· <%= t('goals.target') %> <%= g.target %><%= g.unit || '' %><% } %> · <%= g.cadence %></div>
+          </div>
+          <span class="k-chip" style="padding:3px 9px;font-size:0.52rem;"><%= g.status %></span>
+        </a>
+      <% }); %>
+    </div>
+
+    <div class="k-card">
+      <div class="k-panel-title" style="margin-bottom:12px;"><%= t('goals.new') %></div>
+      <form method="POST" action="/goals">
+        <label style="display:block;font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);margin-bottom:6px;"><%= t('goals.titleLabel') %></label>
+        <input class="k-input" name="title" required maxlength="140" style="margin-bottom:12px;" placeholder="<%= t('goals.titlePh') %>">
+        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px;">
+          <div>
+            <label style="display:block;font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);margin-bottom:6px;"><%= t('goals.metricLabel') %></label>
+            <select class="k-input" name="metric">
+              <% metrics.forEach(function (m) { %>
+                <option value="<%= m %>"><%= m %></option>
+              <% }); %>
+            </select>
+          </div>
+          <div>
+            <label style="display:block;font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);margin-bottom:6px;"><%= t('goals.target') %></label>
+            <input class="k-input" name="target" type="number" step="any" style="width:110px;">
+          </div>
+          <div>
+            <label style="display:block;font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);margin-bottom:6px;"><%= t('goals.cadenceLabel') %></label>
+            <select class="k-input" name="cadence">
+              <option value="WEEKLY">WEEKLY</option>
+              <option value="MONTHLY">MONTHLY</option>
+            </select>
+          </div>
+        </div>
+        <button type="submit" class="k-btn" style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;"><%= t('goals.create') %></button>
+      </form>
+    </div>
+
+    <div style="margin-top:24px;">
+      <a href="/dashboard" class="k-btn k-btn--ghost" style="font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.12em;text-transform:uppercase;"><%= t('goals.back') %></a>
+    </div>
+
+  </main>
+  <script src="/js/app.js"></script>
+</body>
+</html>
