@@ -18,8 +18,20 @@ const METRIC_LABELS = {
   SESSIONS_PER_WEEK: 'sessions logged per week',
   RISK_LIMIT: 'sessions that respected your risk limits',
   JOURNAL_STREAK: 'journal days in a row',
+  PROP_FIRM: 'evaluation sessions inside your limits',
   CUSTOM: 'logged progress points'
 };
+
+/** Prop-firm goals (owner directive 19 Oct 2026): KAIZEN coaches the
+ *  discipline and accountability an evaluation measures — NEVER trading
+ *  insights, signals, or market opinions. */
+const PROP_FIRM_RE = /\b(prop\s*firm|propfirm|evaluation|challenge|funded|funding|ftmo|the5ers|myforex|e8\s*markets|surge|trueforex|audacity|alpha\s*capital|funded\s*trader|get\s*funded)\b/i;
+
+function isPropFirmGoal(goal) {
+  if (!goal) return false;
+  if (goal.metric === 'PROP_FIRM') return true;
+  return PROP_FIRM_RE.test(String(goal.title || '') + ' ' + String(goal.rationale || ''));
+}
 
 function metricLabel(m) {
   return METRIC_LABELS[m] || METRIC_LABELS.CUSTOM;
@@ -78,6 +90,16 @@ function currentValue(goal, sessions, now = new Date()) {
     }
     case 'JOURNAL_STREAK':
       return journalStreak(sessions, now);
+    case 'PROP_FIRM': {
+      // The accountable behaviour: recent sessions inside their risk
+      // limits (respect-risk answers first, the rule answer as fallback).
+      const recent = lastSessions(sessions, 10);
+      const risk = recent.filter(s => s && s.quickChecks && s.quickChecks.respectedRisk);
+      if (risk.length) {
+        return Math.round((risk.filter(s => s.quickChecks.respectedRisk === 'YES').length / risk.length) * 100);
+      }
+      return complianceRate(recent).value;
+    }
     default: {
       const last = (goal.progressLog || [])[goal.progressLog.length - 1];
       return last ? last.value : null;
@@ -174,6 +196,22 @@ function guide({ goal, user, system, sessions, movement, mindState, now = new Da
   let assessment;
   let nextStep;
 
+  if (isPropFirmGoal(goal)) {
+    // Discipline and accountability only — the boundary is the product.
+    const riskNow = currentValue({ metric: 'PROP_FIRM' }, sessions, now);
+    const compNow = complianceRate(recent);
+    if (riskNow == null) {
+      assessment = `"${goal.title}" is an evaluation goal — and evaluations are passed by discipline, not by ideas: the daily loss limit, the max drawdown, and your own written rules. The record needs sessions with the risk question answered before the tracking is honest.`;
+      nextStep = 'Log your next session with the risk question answered — inside the limit or not, say so. Accountability starts with one honest entry. One rule at a time.';
+    } else {
+      assessment = `"${goal.title}" — funded accounts are earned by staying inside the limits when it hurts: the daily loss limit, the max drawdown, and your own written rules. Your recent record: ${riskNow}% of your checked sessions held those limits${compNow.checked ? ` — ${compNow.kept} of your last ${compNow.checked} stayed inside your rules overall` : ''}. I coach the discipline and accountability your evaluation measures — never what to trade.`;
+      nextStep = goal.metric === 'PROP_FIRM' && goal.target != null && riskNow >= goal.target
+        ? `You are meeting this goal. Hold the standard: pre-set the daily loss limit before the next session and end the day when it hits — that habit is what funding desks actually evaluate. One rule at a time.`
+        : 'In the next session, the job is not profit — it is finishing inside the daily loss limit and your entry rule. Write the plan first, log it either way. One rule at a time.';
+    }
+    return { assessment, nextStep };
+  }
+
   if (current == null || target == null) {
     assessment = `"${goal.title}" has no readable number yet — the record needs sessions measured against it before guidance can be honest.`;
     nextStep = 'Log the next session with the rule question answered, and the tracking starts itself. One rule at a time.';
@@ -200,7 +238,7 @@ function guide({ goal, user, system, sessions, movement, mindState, now = new Da
 function buildGuidePrompt({ goal, user, system, sessions, movement, mindState }) {
   return `You are KAIZEN, the goal coach inside a trader's improvement journal. English only.
 
-VOICE: second person, their numbers and their words, warm and honest. Goals are behaviour targets — never profit targets. No market predictions. One rule at a time: the next step must be doable in the very next session.
+VOICE: second person, their numbers and their words, warm and honest. Goals are behaviour targets — never profit targets. No market predictions, no trading insights, no signals, no market opinions — for prop-firm goals KAIZEN coaches ONLY the discipline and accountability the evaluation measures (daily loss limit, max drawdown, consistency, the trader's own written rules). One rule at a time: the next step must be doable in the very next session.
 
 GOAL: ${goal.title} (metric: ${goal.metric}, target: ${goal.target}${goal.unit || ''}, cadence: ${goal.cadence}, status: ${goal.status})
 RECENT SESSIONS:
@@ -235,6 +273,7 @@ async function guideAsync(ctx) {
 }
 
 module.exports = {
+  isPropFirmGoal,
   suggest,
   guide,
   guideAsync,

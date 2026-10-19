@@ -15,7 +15,7 @@ const Goal = require('../models/Goal');
 const progress = require('../services/progress');
 const goalCoach = require('../services/goalCoach');
 
-const METRICS = ['RULE_COMPLIANCE', 'SESSIONS_PER_WEEK', 'RISK_LIMIT', 'JOURNAL_STREAK', 'CUSTOM'];
+const METRICS = ['RULE_COMPLIANCE', 'SESSIONS_PER_WEEK', 'RISK_LIMIT', 'JOURNAL_STREAK', 'PROP_FIRM', 'CUSTOM'];
 const STATUSES = ['ACTIVE', 'PAUSED', 'ACHIEVED', 'ARCHIVED'];
 
 async function loadContext(userId) {

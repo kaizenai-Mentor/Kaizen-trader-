@@ -111,3 +111,66 @@ test('parseGuide reads the ASSESSMENT/NEXT shape', () => {
   assert.strictEqual(parsed.assessment, 'You are at 40% on the goal.');
   assert.strictEqual(parsed.nextStep, 'Protect one rule in the next session.');
 });
+
+// ── Prop-firm goals (owner directive 19 Oct 2026) ──────────────────
+// A trader's goal can be to pass a prop firm evaluation and get
+// funded. KAIZEN coaches the DISCIPLINE and ACCOUNTABILITY that
+// evaluations measure — daily loss limit, drawdown, consistency, the
+// trader's own rules. It never gives trading insights, signals, or
+// market opinions. That boundary is the product.
+
+const { isPropFirmGoal } = require('../services/goalCoach');
+
+test('prop-firm goals are recognized by metric or by their words', () => {
+  assert.ok(isPropFirmGoal({ metric: 'PROP_FIRM', title: 'Anything' }));
+  assert.ok(isPropFirmGoal({ metric: 'CUSTOM', title: 'Pass my prop firm challenge' }));
+  assert.ok(isPropFirmGoal({ metric: 'CUSTOM', title: 'Get funded this quarter' }));
+  assert.ok(isPropFirmGoal({ metric: 'CUSTOM', title: 'Pass the evaluation', rationale: '' }));
+  assert.ok(!isPropFirmGoal({ metric: 'CUSTOM', title: 'Journal every day' }));
+});
+
+test('prop-firm guidance is discipline + accountability, with their numbers', () => {
+  const goal = {
+    title: 'Pass my prop firm evaluation and get funded',
+    metric: 'PROP_FIRM', target: 80, unit: '%', cadence: 'WEEKLY', status: 'ACTIVE',
+    progressLog: []
+  };
+  const g = guide({ goal, user, system, sessions, movement: null, mindState });
+  assert.match(g.assessment, /passed by discipline, not by ideas|earned by staying inside the limits/);
+  assert.match(g.assessment, /daily loss limit/);
+  assert.match(g.assessment, /never what to trade/);
+  assert.match(g.assessment, /2 of your last 5/); // their own record stays in the loop
+  assert.match(g.nextStep, /One rule at a time/);
+});
+
+test('prop-firm guidance never leaks trading insights or signals', () => {
+  const goal = {
+    title: 'Pass my prop firm evaluation and get funded',
+    metric: 'PROP_FIRM', target: 80, unit: '%', cadence: 'WEEKLY', status: 'ACTIVE',
+    progressLog: []
+  };
+  const g = guide({ goal, user, system, sessions, movement: null, mindState });
+  const text = g.assessment + ' ' + g.nextStep;
+  assert.ok(!/\b(buy|sell|long|short|entry point|take profit|stop hunt|breakout|market will|price (will|target))\b/i.test(text),
+    'prop-firm guidance must stay out of trading insights: ' + text);
+});
+
+test('prop-firm guidance with no measurements asks for one honest check-in', () => {
+  const goal = {
+    title: 'Get funded with the challenge',
+    metric: 'PROP_FIRM', target: 80, unit: '%', cadence: 'WEEKLY', status: 'ACTIVE',
+    progressLog: []
+  };
+  const g = guide({ goal, user, system: null, sessions: [], movement: null, mindState: null });
+  assert.match(g.assessment, /evaluation goal/);
+  assert.match(g.nextStep, /risk question answered/);
+  assert.match(g.nextStep, /One rule at a time|Accountability starts with one honest entry/);
+});
+
+test('the goal prompt states the boundary for the LLM path too', () => {
+  const { buildGuidePrompt } = require('../services/goalCoach');
+  const goal = { title: 'Pass my evaluation', metric: 'PROP_FIRM', target: 80, unit: '%', cadence: 'WEEKLY', status: 'ACTIVE' };
+  const p = buildGuidePrompt({ goal, user, system, sessions, movement: null, mindState });
+  assert.match(p, /no trading insights, no signals, no market opinions/);
+  assert.match(p, /discipline and accountability the evaluation measures/);
+});

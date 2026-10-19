@@ -983,4 +983,5 @@ module.exports = {
   "goals.yours": "Your goals",
   "nav.goals": "Goals",
   "title.goals": "KAIZEN — Goal Guidance",
+  "goals.propHint": "A prop firm goal works too — \"Pass my evaluation and get funded\", \"Stay funded\". KAIZEN coaches the discipline and accountability your evaluation measures: the daily loss limit, the drawdown, your own rules. Never trading advice or market insights.",
 };

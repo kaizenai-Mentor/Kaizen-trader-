@@ -13,7 +13,7 @@ const goalSchema = new Schema({
   title: { type: String, required: true },
   metric: {
     type: String,
-    enum: ['RULE_COMPLIANCE', 'SESSIONS_PER_WEEK', 'RISK_LIMIT', 'JOURNAL_STREAK', 'CUSTOM'],
+    enum: ['RULE_COMPLIANCE', 'SESSIONS_PER_WEEK', 'RISK_LIMIT', 'JOURNAL_STREAK', 'PROP_FIRM', 'CUSTOM'],
     default: 'CUSTOM'
   },
   target: { type: Number, default: null },
