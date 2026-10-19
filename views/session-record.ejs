@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="<%= lang %>">
 <head>
   <%- include('partials/head') %>
   <title><%= t('title.record') %></title>
@@ -12,25 +12,21 @@
     <div class="k-stepstrip">
       <span class="is-done"><%= t('plan.title') %> ✓</span><b>—</b>
       <span class="is-active"><%= t('record.title') %></span><b>—</b>
-      <span>Reflect</span>
+      <span><%= t('plan.stepReflect') %></span>
     </div>
 
-    <div class="k-eyebrow" style="margin-bottom:10px;">The Record — <%= session.sessionType %></div>
-    <h1 style="font-size:clamp(1.5rem,3.5vw,2.1rem);font-weight:700;color:var(--text-primary);line-height:1.15;margin:0 0 8px;">
-      Write what actually happened.
-    </h1>
-    <p style="font-size:0.88rem;color:var(--text-secondary);line-height:1.75;margin:0 0 24px;">
-      The quick checks catch what your notes don't mention.
-    </p>
+    <div class="k-eyebrow" style="margin-bottom:10px;"><%= t('record.titlePre') %><%= session.sessionType %></div>
+    <h1 style="font-size:clamp(1.5rem,3.5vw,2.1rem);font-weight:700;color:var(--text-primary);line-height:1.15;margin:0 0 8px;"><%= t('record.writeWhat') %></h1>
+    <p style="font-size:0.88rem;color:var(--text-secondary);line-height:1.75;margin:0 0 24px;"><%= t('record.quickNote') %></p>
 
     <% if (session.plan && !session.plan.skipped) { %>
       <div class="k-card" style="margin-bottom:18px;border-color:var(--gold-border);">
         <div class="k-metric-label" style="margin-bottom:10px;"><%= t('detail.thePlan') %></div>
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;font-size:0.8rem;color:var(--text-secondary);">
-          <div><span class="k-gold">Setup:</span> <%= session.plan.setup || '—' %></div>
-          <div><span class="k-gold">Entry:</span> <%= session.plan.entryCondition || '—' %></div>
-          <div><span class="k-gold">Invalidation:</span> <%= session.plan.invalidation || '—' %></div>
-          <div><span class="k-gold">Risk:</span> <%= session.plan.predefinedRisk || '—' %></div>
+          <div><span class="k-gold"><%= t('record.lblSetup') %></span> <%= session.plan.setup || '—' %></div>
+          <div><span class="k-gold"><%= t('record.lblEntry') %></span> <%= session.plan.entryCondition || '—' %></div>
+          <div><span class="k-gold"><%= t('record.lblInv') %></span> <%= session.plan.invalidation || '—' %></div>
+          <div><span class="k-gold"><%= t('record.lblRisk') %></span> <%= session.plan.predefinedRisk || '—' %></div>
         </div>
       </div>
     <% } %>
@@ -59,7 +55,7 @@
               </div>
             </div>
             <div class="k-checkrow">
-              <span class="k-checklabel">Within your entry criteria?</span>
+              <span class="k-checklabel"><%= t('record.withinEntry') %></span>
               <div class="k-checkopts">
                 <label class="k-opt"><input type="radio" name="withinEntryCriteria" value="YES"><span><%= t('common.yes') %></span></label>
                 <label class="k-opt"><input type="radio" name="withinEntryCriteria" value="NO"><span><%= t('common.no') %></span></label>
@@ -87,11 +83,11 @@
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px;">
             <div class="k-field" style="margin:0;">
               <label class="k-fieldlabel"><%= t('record.rr') %></label>
-              <input type="text" name="rrAchieved" class="k-input" placeholder="e.g. 1:2.5">
+              <input type="text" name="rrAchieved" class="k-input" placeholder="<%= t('record.rrPh') %>">
             </div>
             <div class="k-field" style="margin:0;">
               <label class="k-fieldlabel"><%= t('record.pips') %></label>
-              <input type="text" name="pipsGained" class="k-input" placeholder="e.g. +45">
+              <input type="text" name="pipsGained" class="k-input" placeholder="<%= t('record.pipsPh') %>">
             </div>
           </div>
         </div>

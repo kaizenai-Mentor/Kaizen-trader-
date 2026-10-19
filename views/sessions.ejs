@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="<%= lang %>">
 <head>
   <%- include('partials/head') %>
   <title><%= t('title.sessions') %></title>
@@ -12,12 +12,8 @@
     <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:8px;">
       <div>
         <div class="k-eyebrow" style="margin-bottom:8px;">Sessions</div>
-        <h1 class="k-page-h1" style="font-size:clamp(1.7rem,4vw,2.4rem);margin-bottom:8px;">
-          One loop at a time.
-        </h1>
-        <p style="font-size:0.9rem;color:var(--text-secondary);max-width:560px;line-height:1.75;margin:0;">
-          Plan before you enter. Write what happened. Learn from it.
-        </p>
+        <h1 class="k-page-h1" style="font-size:clamp(1.7rem,4vw,2.4rem);margin-bottom:8px;"><%= t('sessions.sub') %></h1>
+        <p style="font-size:0.9rem;color:var(--text-secondary);max-width:560px;line-height:1.75;margin:0;"><%= t('sessions.sub2') %></p>
       </div>
       <a href="/dashboard/sessions/new" class="btn-primary k-btn-lg">+ <%= t('sessions.new') %></a>
     </div>
@@ -25,12 +21,12 @@
     <% if (openPlan) { %>
       <div class="k-card k-card--featured" style="margin:24px 0;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;">
         <div>
-          <span class="k-tag" style="color:var(--gold);border-color:var(--gold-border);margin-bottom:8px;">AWAITING RECORD</span>
+          <span class="k-tag" style="color:var(--gold);border-color:var(--gold-border);margin-bottom:8px;"><%= t('sessions.awaiting') %></span>
           <div style="font-weight:700;color:var(--text-primary);margin-top:8px;">
             <%= openPlan.plan.skipped ? 'Unplanned session in progress' : (openPlan.plan.setup || 'Planned session in progress') %>
           </div>
         </div>
-        <a href="/dashboard/sessions/<%= openPlan._id %>/record" class="btn-primary">Record It →</a>
+        <a href="/dashboard/sessions/<%= openPlan._id %>/record" class="btn-primary"><%= t('sessions.recordIt') %></a>
       </div>
     <% } %>
 
@@ -40,7 +36,7 @@
         <p style="font-size:0.9rem;color:var(--text-secondary);line-height:1.8;margin:0 0 20px;">
           <%= t('sessions.empty') %>
         </p>
-        <a href="/dashboard/sessions/new" class="btn-primary">Make Your First Plan</a>
+        <a href="/dashboard/sessions/new" class="btn-primary"><%= t('sessions.firstPlan') %></a>
       </div>
     <% } else { %>
 

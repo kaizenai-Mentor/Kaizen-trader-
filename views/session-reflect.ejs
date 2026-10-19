@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="<%= lang %>">
 <head>
   <%- include('partials/head') %>
   <title><%= t('title.reflection') %></title>
@@ -15,13 +15,9 @@
       <span class="is-active"><%= t('reflect.title') %></span>
     </div>
 
-    <div class="k-eyebrow" style="margin-bottom:10px;">The Reflection</div>
-    <h1 style="font-size:clamp(1.5rem,3.5vw,2.1rem);font-weight:700;color:var(--text-primary);line-height:1.15;margin:0 0 8px;">
-      A session becomes a lesson here.
-    </h1>
-    <p style="font-size:0.88rem;color:var(--text-secondary);line-height:1.75;margin:0 0 24px;">
-      Four short answers. Yours, not KAIZEN's — the AI responds after you finish.
-    </p>
+    <div class="k-eyebrow" style="margin-bottom:10px;"><%= t('reflect.title') %></div>
+    <h1 style="font-size:clamp(1.5rem,3.5vw,2.1rem);font-weight:700;color:var(--text-primary);line-height:1.15;margin:0 0 8px;"><%= t('reflect.lesson') %></h1>
+    <p style="font-size:0.88rem;color:var(--text-secondary);line-height:1.75;margin:0 0 24px;"><%= t('reflect.four') %></p>
 
     <div class="k-card" style="margin-bottom:18px;">
       <div class="k-metric-label" style="margin-bottom:8px;"><%= t('nav.sessions') %> — <%= session.asset %></div>
@@ -35,42 +31,40 @@
 
       <div class="k-card k-formcard k-prompt">
         <label class="k-fieldlabel"><%= t('reflect.whatHappened') %></label>
-        <textarea name="whatHappened" class="k-input" rows="3" placeholder="In your own words..."></textarea>
+        <textarea name="whatHappened" class="k-input" rows="3" placeholder="<%= t('reflect.ph1') %>"></textarea>
       </div>
 
       <div class="k-card k-formcard k-prompt">
         <label class="k-fieldlabel"><%= t('reflect.followed') %></label>
-        <textarea name="followedProcess" class="k-input" rows="3" placeholder="Honest answer — this is where improvement starts..."></textarea>
+        <textarea name="followedProcess" class="k-input" rows="3" placeholder="<%= t('reflect.ph2') %>"></textarea>
       </div>
 
       <div class="k-card k-formcard k-prompt">
         <label class="k-fieldlabel"><%= t('reflect.learned') %></label>
-        <textarea name="learned" class="k-input" rows="3" placeholder="The same mistake, seen twice, becomes a decision..."></textarea>
+        <textarea name="learned" class="k-input" rows="3" placeholder="<%= t('reflect.ph3') %>"></textarea>
       </div>
 
       <div class="k-card k-formcard k-prompt">
         <label class="k-fieldlabel"><%= t('reflect.wouldChange') %></label>
-        <textarea name="wouldChange" class="k-input" rows="3" placeholder="One concrete thing..."></textarea>
+        <textarea name="wouldChange" class="k-input" rows="3" placeholder="<%= t('reflect.ph4') %>"></textarea>
       </div>
 
       <div class="k-actions">
         <button type="submit" class="btn-primary k-btn-lg" id="k-finish"><%= t('reflect.submit') %></button>
       </div>
-      <p style="font-size:0.72rem;color:var(--ash);line-height:1.7;margin:14px 0 0;">
-        On finish, the engine scores your session and 改 KAIZEN responds to your reflection.
-      </p>
+      <p style="font-size:0.72rem;color:var(--ash);line-height:1.7;margin:14px 0 0;"><%= t('reflect.onFinish') %></p>
     </form>
 
     <!-- KAIZEN's response — revealed in place (streamed, Psychology-style) -->
     <div class="k-card k-card--featured" id="k-response" hidden style="margin-top:18px;">
-      <div class="k-panel-title" style="margin-bottom:14px;"><span class="k-kanji k-kanji--sm">改</span> KAIZEN RESPONDS</div>
+      <div class="k-panel-title" style="margin-bottom:14px;"><span class="k-kanji k-kanji--sm">改</span><%= t('kaizen.responds') %></div>
       <div class="k-typing" id="k-responding" hidden>
         <span class="k-kanji k-kanji--sm">改</span>
         <div class="k-msg-text k-typingdots"><span></span><span></span><span></span></div>
       </div>
       <div id="k-analysis" style="font-size:0.9rem;color:var(--text-primary);line-height:1.85;white-space:pre-wrap;"></div>
       <div id="k-after" hidden style="margin-top:18px;">
-        <a class="btn-primary k-btn-lg" href="/dashboard/sessions/<%= session._id %>">Open the analyzed session</a>
+        <a class="btn-primary k-btn-lg" href="/dashboard/sessions/<%= session._id %>"><%= t('reflect.openAnalyzed') %></a>
       </div>
     </div>
 

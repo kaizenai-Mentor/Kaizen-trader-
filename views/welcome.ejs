@@ -1,16 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="<%= lang %>">
 <head>
   <%- include('partials/head') %>
-  <title>KAIZEN - Trade Better. Every Day.</title>
+  <title><%= t('title.home') %></title>
 </head>
 <body class="welcome-page" style="min-height:100vh;background:var(--bg-base);color:var(--text-primary);">
   <%- include('partials/navbar') %>
 
   <% if (typeof deleted !== 'undefined' && deleted) { %>
-    <div class="alert alert-success" style="text-align:center;margin:0;border-radius:0;">
-      Your account has been deleted successfully.
-    </div>
+    <div class="alert alert-success" style="text-align:center;margin:0;border-radius:0;"><%= t('welcome.deleted') %></div>
   <% } %>
 
   <!-- ============================================================
@@ -27,18 +25,10 @@
           <span class="k-gold"><%= t('welcome.hero3') %></span>
         </h1>
 
-        <p class="k-hero-sub">
-          KAIZEN is a trader improvement platform that turns your trading
-          behavior into measurable progress. It learns your rules, reads
-          every session you log, and shows you the patterns you can't
-          see — so you can become the trader you can
-          <strong style="color:var(--text-primary);">prove you're becoming.</strong>
+        <p class="k-hero-sub"><%= t('welcome.sub1') %><strong style="color:var(--text-primary);"><%= t('welcome.sub2') %></strong>
         </p>
 
-        <p class="k-hero-sub2">
-          Not a signal app. Not a copy-trading platform.
-          A mentor that makes you a better trader from the inside out.
-        </p>
+        <p class="k-hero-sub2"><%= t('welcome.tagline') %></p>
 
         <div class="k-hero-ctas">
           <a href="/auth/register" class="btn-primary k-btn-lg"><%= t('welcome.ctaStart') %></a>
@@ -55,8 +45,8 @@
 
       <div class="k-hero-panel k-card--elevated k-grid-bg" data-reveal style="transition-delay:120ms;">
         <div class="k-panel-head">
-          <span class="k-panel-title"><span class="k-kanji k-kanji--sm">改</span> KAIZEN SCORE</span>
-          <span class="k-tag">Live Preview</span>
+          <span class="k-panel-title"><span class="k-kanji k-kanji--sm">改</span><%= t('dash.score') %></span>
+          <span class="k-tag"><%= t('welcome.preview') %></span>
         </div>
 
         <div class="k-panel-dial">
@@ -71,9 +61,7 @@
           ['Learning & Consistency', 86]
         ] }) %>
 
-        <div class="k-panel-foot">
-          Updates after every session. Measures how you traded — not what you made.
-        </div>
+        <div class="k-panel-foot"><%= t('welcome.scoreNote') %></div>
       </div>
 
     </div>
@@ -82,15 +70,15 @@
     <div class="k-trust-row" data-reveal>
       <div class="k-trust-item">
         <div class="k-trust-icon"><i data-feather="zap" width="18" height="18"></i></div>
-        <div class="k-trust-label">AI-Powered Analysis</div>
+        <div class="k-trust-label"><%= t('welcome.feat1') %></div>
       </div>
       <div class="k-trust-item">
         <div class="k-trust-icon"><i data-feather="activity" width="18" height="18"></i></div>
-        <div class="k-trust-label">Behavioral Pattern Detection</div>
+        <div class="k-trust-label"><%= t('welcome.feat2') %></div>
       </div>
       <div class="k-trust-item">
         <div class="k-trust-icon"><i data-feather="bar-chart-2" width="18" height="18"></i></div>
-        <div class="k-trust-label">KAIZEN Score Tracking</div>
+        <div class="k-trust-label"><%= t('welcome.feat3') %></div>
       </div>
       <div class="k-trust-item">
         <div class="k-trust-icon"><i data-feather="unlock" width="18" height="18"></i></div>
@@ -103,55 +91,38 @@
        PRODUCT PREVIEW
   ============================================================ -->
   <section class="k-section k-section--border">
-    <div class="k-eyebrow k-eyebrow--center" data-reveal>Inside KAIZEN</div>
-    <h2 class="k-title k-title--center" data-reveal>Built for traders</h2>
-    <p class="k-sub" data-reveal>
-      Every session logged becomes data. Every pattern detected becomes
-      insight. Every insight becomes discipline.
-    </p>
+    <div class="k-eyebrow k-eyebrow--center" data-reveal><%= t('welcome.inside') %></div>
+    <h2 class="k-title k-title--center" data-reveal><%= t('welcome.insideSub') %></h2>
+    <p class="k-sub" data-reveal><%= t('welcome.insideP') %></p>
 
     <div class="k-preview-grid">
 
       <div class="k-preview-card k-card k-card--elevated k-card--hover" data-reveal>
-        <div class="k-card-label"><i data-feather="bar-chart-2" width="14" height="14"></i> KAIZEN SCORE</div>
+        <div class="k-card-label"><i data-feather="bar-chart-2" width="14" height="14"></i><%= t('dash.score') %></div>
         <div style="display:flex;justify-content:center;padding:12px 0;">
           <%- include('partials/k-dial', { value: 76, size: 140, label: 'KAIZEN Score' }) %>
         </div>
-        <p class="k-preview-desc">
-          Updates after every session. Measures how you traded —
-          not what you made.
-        </p>
+        <p class="k-preview-desc"><%= t('welcome.scoreNote') %></p>
       </div>
 
       <div class="k-preview-card k-card k-card--featured" data-reveal style="transition-delay:80ms;">
-        <div class="k-card-label"><span class="k-kanji k-kanji--sm">改</span> KAIZEN AI RESPONSE</div>
-        <div class="k-metric-label">Where the breakdown occurred</div>
-        <p class="k-ai-text">
-          The EURUSD entry came before your 30min MSS confirmed. You have
-          documented this exact sequence three times. Valid zone, valid
-          direction — premature entry. That nine-second gap between price
-          moving and your decision is where FOMO lives.
-        </p>
-        <div class="k-metric-label" style="margin-top:16px;">One thing to focus on</div>
-        <p class="k-ai-text">
-          Before your next EURUSD trade, set a timer for five minutes after
-          the 4H sweep. Do nothing. Enter only if MSS confirms.
-        </p>
-        <div class="k-ai-score-line">KAIZEN SCORE: <strong>61</strong></div>
+        <div class="k-card-label"><span class="k-kanji k-kanji--sm">改</span><%= t('welcome.aiResp') %></div>
+        <div class="k-metric-label"><%= t('welcome.aiWhere') %></div>
+        <p class="k-ai-text"><%= t('welcome.aiWhereBody') %></p>
+        <div class="k-metric-label" style="margin-top:16px;"><%= t('welcome.aiFocus') %></div>
+        <p class="k-ai-text"><%= t('welcome.aiFocusBody') %></p>
+        <div class="k-ai-score-line"><%= t('welcome.scoreColon') %><strong>61</strong></div>
       </div>
 
       <div class="k-preview-card k-card k-card--hover" data-reveal style="transition-delay:160ms;">
-        <div class="k-card-label"><i data-feather="activity" width="14" height="14"></i> PATTERN DETECTION</div>
+        <div class="k-card-label"><i data-feather="activity" width="14" height="14"></i><%= t('welcome.pattern') %></div>
         <div style="display:flex;flex-direction:column;gap:8px;">
-          <div class="k-chip k-chip--warn"><i data-feather="alert-triangle" width="13" height="13"></i> FOMO detected · 4 sessions</div>
-          <div class="k-chip k-chip--watch"><i data-feather="clock" width="13" height="13"></i> Premature entries · EURUSD</div>
-          <div class="k-chip k-chip--good"><i data-feather="check-circle" width="13" height="13"></i> AUDJPY compliance · improving</div>
+          <div class="k-chip k-chip--warn"><i data-feather="alert-triangle" width="13" height="13"></i><%= t('welcome.pat1') %></div>
+          <div class="k-chip k-chip--watch"><i data-feather="clock" width="13" height="13"></i><%= t('welcome.pat2') %></div>
+          <div class="k-chip k-chip--good"><i data-feather="check-circle" width="13" height="13"></i><%= t('welcome.pat3') %></div>
           <div class="k-chip k-chip--warn"><i data-feather="trending-down" width="13" height="13"></i> Friday compliance · −18%</div>
         </div>
-        <p class="k-preview-desc">
-          Patterns your P&amp;L will never show. Only your journal can
-          reveal them.
-        </p>
+        <p class="k-preview-desc"><%= t('welcome.patNote') %></p>
       </div>
 
     </div>
@@ -161,16 +132,16 @@
        HOW IT WORKS — the improvement loop
   ============================================================ -->
   <section id="how-it-works" class="k-section k-section--border k-grid-bg">
-    <div class="k-eyebrow k-eyebrow--center" data-reveal>How It Works</div>
-    <h2 class="k-title k-title--center" data-reveal>The improvement loop</h2>
+    <div class="k-eyebrow k-eyebrow--center" data-reveal><%= t('welcome.how') %></div>
+    <h2 class="k-title k-title--center" data-reveal><%= t('welcome.loop') %></h2>
     <div style="display:flex;justify-content:center;margin-bottom:8px;" data-reveal>
       <div class="k-loop">
-        <span>Plan</span><b>→</b>
-        <span>Trade</span><b>→</b>
-        <span>Reflect</span><b>→</b>
-        <span>Analyze</span><b>→</b>
-        <span>Improve</span><b>→</b>
-        <span>Repeat</span>
+        <span><%= t('welcome.wPlan') %></span><b>→</b>
+        <span><%= t('welcome.wTrade') %></span><b>→</b>
+        <span><%= t('welcome.wReflect') %></span><b>→</b>
+        <span><%= t('welcome.wAnalyze') %></span><b>→</b>
+        <span><%= t('welcome.wImprove') %></span><b>→</b>
+        <span><%= t('welcome.wRepeat') %></span>
       </div>
     </div>
 
@@ -178,59 +149,42 @@
 
       <div class="k-step" data-reveal>
         <div class="k-step-num">01</div>
-        <div class="k-step-kicker">Plan</div>
+        <div class="k-step-kicker"><%= t('welcome.wPlan') %></div>
         <div class="k-step-icon"><i data-feather="sliders" width="22" height="22"></i></div>
-        <h3>Define Your System</h3>
-        <p>
-          Your setups, entry and exit rules, risk rules, and no-trade
-          conditions — set once, refined as you grow. This becomes the
-          standard KAIZEN measures you against. Your rules, not ours.
-        </p>
+        <h3><%= t('welcome.s1t') %></h3>
+        <p><%= t('welcome.s1b') %></p>
       </div>
 
       <div class="k-step" data-reveal style="transition-delay:60ms;">
         <div class="k-step-num">02</div>
-        <div class="k-step-kicker">Trade</div>
+        <div class="k-step-kicker"><%= t('welcome.wTrade') %></div>
         <div class="k-step-icon"><i data-feather="edit-3" width="22" height="22"></i></div>
-        <h3>Log Every Session</h3>
-        <p>
-          Plan before you enter. Journal after you exit. What you saw,
-          what you did, what you felt. Honest notes, every time.
-        </p>
+        <h3><%= t('welcome.s2t') %></h3>
+        <p><%= t('welcome.s2b') %></p>
       </div>
 
       <div class="k-step" data-reveal style="transition-delay:120ms;">
         <div class="k-step-num">03</div>
-        <div class="k-step-kicker">Reflect</div>
+        <div class="k-step-kicker"><%= t('welcome.wReflect') %></div>
         <div class="k-step-icon"><i data-feather="search" width="22" height="22"></i></div>
-        <h3>Face What Happened</h3>
-        <p>
-          Did you follow your plan? What went wrong? What did you learn?
-          Structured reflection is where a session becomes a lesson.
-        </p>
+        <h3><%= t('welcome.s3t') %></h3>
+        <p><%= t('welcome.s3b') %></p>
       </div>
 
       <div class="k-step k-step--featured" data-reveal style="transition-delay:180ms;">
         <div class="k-step-num">04</div>
-        <div class="k-step-kicker">Analyze</div>
+        <div class="k-step-kicker"><%= t('welcome.wAnalyze') %></div>
         <div class="k-step-icon"><span class="k-kanji k-kanji--md">改</span></div>
-        <h3>KAIZEN AI Responds</h3>
-        <p>
-          The AI reads every entry against your rules and your full
-          history, identifies your patterns, and gives you specific,
-          actionable feedback. Never generic advice.
-        </p>
+        <h3><%= t('welcome.s4t') %></h3>
+        <p><%= t('welcome.s4b') %></p>
       </div>
 
       <div class="k-step" data-reveal style="transition-delay:240ms;">
         <div class="k-step-num">05</div>
-        <div class="k-step-kicker">Improve</div>
+        <div class="k-step-kicker"><%= t('welcome.wImprove') %></div>
         <div class="k-step-icon"><i data-feather="trending-up" width="22" height="22"></i></div>
-        <h3>Watch Yourself Get Better</h3>
-        <p>
-          Your KAIZEN Score updates after every session, across five
-          dimensions. Improvement becomes visible — and over time, provable.
-        </p>
+        <h3><%= t('welcome.s5t') %></h3>
+        <p><%= t('welcome.s5b') %></p>
       </div>
 
     </div>
@@ -243,15 +197,10 @@
     <div class="k-tracks">
 
       <div data-reveal>
-        <div class="k-eyebrow">What KAIZEN AI Tracks</div>
-        <h2 class="k-title">The patterns you cannot see yourself</h2>
-        <p style="font-size:0.95rem;color:var(--text-secondary);line-height:1.85;margin:0 0 32px;">
-          KAIZEN AI learns from every session you log. Over time it builds
-          a behavioral profile specific to you — your triggers, your
-          tendencies, your blind spots — and surfaces them with data you
-          cannot argue with.
-        </p>
-        <a href="/auth/register" class="btn-primary">Start Tracking Now</a>
+        <div class="k-eyebrow"><%= t('welcome.tracks') %></div>
+        <h2 class="k-title"><%= t('welcome.tracksSub') %></h2>
+        <p style="font-size:0.95rem;color:var(--text-secondary);line-height:1.85;margin:0 0 32px;"><%= t('welcome.tracksP') %></p>
+        <a href="/auth/register" class="btn-primary"><%= t('welcome.startNow') %></a>
       </div>
 
       <div data-reveal style="transition-delay:100ms;">
@@ -259,32 +208,32 @@
         <div class="k-track-item">
           <div class="k-track-icon"><i data-feather="check-square" width="16" height="16"></i></div>
           <div>
-            <div class="k-track-title">Rule Compliance Rate</div>
-            <div class="k-track-desc">Tracks whether you follow your own defined entry and risk rules across every session.</div>
+            <div class="k-track-title"><%= t('welcome.tr1') %></div>
+            <div class="k-track-desc"><%= t('welcome.tr1b') %></div>
           </div>
         </div>
 
         <div class="k-track-item">
           <div class="k-track-icon"><i data-feather="zap" width="16" height="16"></i></div>
           <div>
-            <div class="k-track-title">Emotional Trigger Patterns</div>
-            <div class="k-track-desc">Detects FOMO, revenge trading, and overconfidence in your writing before they become habits.</div>
+            <div class="k-track-title"><%= t('welcome.tr2') %></div>
+            <div class="k-track-desc"><%= t('welcome.tr2b') %></div>
           </div>
         </div>
 
         <div class="k-track-item">
           <div class="k-track-icon"><i data-feather="target" width="16" height="16"></i></div>
           <div>
-            <div class="k-track-title">Technical Execution Quality</div>
-            <div class="k-track-desc">Identifies whether losses come from strategy errors or discipline failures — a critical distinction.</div>
+            <div class="k-track-title"><%= t('welcome.tr3') %></div>
+            <div class="k-track-desc"><%= t('welcome.tr3b') %></div>
           </div>
         </div>
 
         <div class="k-track-item">
           <div class="k-track-icon"><i data-feather="trending-up" width="16" height="16"></i></div>
           <div>
-            <div class="k-track-title">KAIZEN Score Progression</div>
-            <div class="k-track-desc">Five dimensions, updated every session. A rising score means rising consistency — not luck.</div>
+            <div class="k-track-title"><%= t('welcome.tr4') %></div>
+            <div class="k-track-desc"><%= t('welcome.tr4b') %></div>
           </div>
         </div>
 
@@ -296,73 +245,51 @@
        WHO KAIZEN IS FOR
   ============================================================ -->
   <section class="k-section k-section--border">
-    <div class="k-eyebrow k-eyebrow--center" data-reveal>Who KAIZEN Is For</div>
-    <h2 class="k-title k-title--center" data-reveal>Built for traders who want to get better</h2>
-    <p class="k-sub" data-reveal>
-      Forex, crypto, stocks, indices — wherever you trade, KAIZEN works the
-      same way: it makes your behavior visible so you can change it.
-    </p>
+    <div class="k-eyebrow k-eyebrow--center" data-reveal><%= t('welcome.who') %></div>
+    <h2 class="k-title k-title--center" data-reveal><%= t('welcome.whoSub') %></h2>
+    <p class="k-sub" data-reveal><%= t('welcome.whoP') %></p>
 
     <div class="k-audience-grid">
 
       <div class="k-audience-card k-card k-card--hover" data-reveal>
         <div class="k-audience-icon"><i data-feather="book-open" width="18" height="18"></i></div>
-        <div class="k-audience-tier">New Trader</div>
-        <h3 class="k-audience-level">Starting out</h3>
-        <p class="k-audience-desc">
-          Build the right habits before the bad ones form. Journal from
-          day one and you'll never have to unlearn recklessness.
-        </p>
+        <div class="k-audience-tier"><%= t('welcome.t1') %></div>
+        <h3 class="k-audience-level"><%= t('welcome.t1s') %></h3>
+        <p class="k-audience-desc"><%= t('welcome.t1b') %></p>
       </div>
 
       <div class="k-audience-card k-card k-card--hover" data-reveal style="transition-delay:60ms;">
         <div class="k-audience-icon"><i data-feather="compass" width="18" height="18"></i></div>
-        <div class="k-audience-tier">Developing Trader</div>
-        <h3 class="k-audience-level">Finding your style</h3>
-        <p class="k-audience-desc">
-          You know the basics. Now find out what you actually do versus
-          what you think you do — and close the gap.
-        </p>
+        <div class="k-audience-tier"><%= t('welcome.t2') %></div>
+        <h3 class="k-audience-level"><%= t('welcome.t2s') %></h3>
+        <p class="k-audience-desc"><%= t('welcome.t2b') %></p>
       </div>
 
       <div class="k-audience-card k-card k-card--featured" data-reveal style="transition-delay:120ms;">
         <div class="k-audience-icon"><i data-feather="trending-up" width="18" height="18"></i></div>
-        <div class="k-audience-tier">Consistent Trader</div>
-        <h3 class="k-audience-level">2–5 years experience</h3>
-        <p class="k-audience-desc">
-          You have a strategy. The problem is executing it consistently.
-          KAIZEN shows you exactly where and why your discipline breaks.
-        </p>
+        <div class="k-audience-tier"><%= t('welcome.t3') %></div>
+        <h3 class="k-audience-level"><%= t('welcome.t3s') %></h3>
+        <p class="k-audience-desc"><%= t('welcome.t3b') %></p>
       </div>
 
       <div class="k-audience-card k-card k-card--hover" data-reveal style="transition-delay:180ms;">
         <div class="k-audience-icon"><i data-feather="award" width="18" height="18"></i></div>
-        <div class="k-audience-tier">Prop Firm Trader</div>
-        <h3 class="k-audience-level">In a challenge or funded</h3>
-        <p class="k-audience-desc">
-          A challenge doesn't just test your strategy, it also tests your
-          rule-following under pressure. KAIZEN measures that behavior
-          session by session and builds the record behind it. Funding
-          comes from your firm, never from us.
-        </p>
+        <div class="k-audience-tier"><%= t('welcome.t4') %></div>
+        <h3 class="k-audience-level"><%= t('welcome.t4s') %></h3>
+        <p class="k-audience-desc"><%= t('welcome.t4b') %></p>
       </div>
 
     </div>
 
     <!-- Final CTA -->
     <div class="k-final-cta" style="margin-top:72px;" data-reveal>
-      <div class="k-eyebrow k-eyebrow--center">Start Your Journey</div>
-      <h2 class="k-cta-h">
-        Your discipline is<br>
-        <span class="k-gold">your edge.</span>
+      <div class="k-eyebrow k-eyebrow--center"><%= t('welcome.final') %></div>
+      <h2 class="k-cta-h"><%= t('welcome.final1') %><span class="k-gold"><%= t('welcome.final2') %></span>
       </h2>
-      <p class="k-cta-sub">
-        No signals. No shortcuts. Just honest feedback that makes you
-        a better trader.
-      </p>
+      <p class="k-cta-sub"><%= t('welcome.finalSub') %></p>
       <div class="k-cta-btns">
-        <a href="/auth/register" class="btn-primary k-btn-lg">Create Account</a>
-        <a href="/about" class="btn-outline k-btn-lg">Learn More</a>
+        <a href="/auth/register" class="btn-primary k-btn-lg"><%= t('welcome.create') %></a>
+        <a href="/about" class="btn-outline k-btn-lg"><%= t('welcome.learn') %></a>
       </div>
     </div>
 
@@ -382,9 +309,9 @@
         window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       if (reduced) return;
       var lines = [
-        { text: 'Most traders know', gold: false },
-        { text: 'their rules.', gold: false },
-        { text: 'Few follow them.', gold: true }
+        { text: <%- JSON.stringify(t('welcome.hero1')) %>, gold: false },
+        { text: <%- JSON.stringify(t('welcome.hero2')) %>, gold: false },
+        { text: <%- JSON.stringify(t('welcome.hero3')) %>, gold: true }
       ];
       var spans = [];
       h.innerHTML = '';

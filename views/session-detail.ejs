@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="<%= lang %>">
 <head>
   <%- include('partials/head') %>
   <title><%= t('title.session') %></title>
@@ -28,28 +28,27 @@
     </div>
 
     <h1 style="font-size:clamp(1.4rem,3vw,2rem);font-weight:700;color:var(--text-primary);margin:0 0 20px;">
-      <%= session.asset %> — the session, closed.
-    </h1>
+      <%= session.asset %><%= t('detail.closed') %></h1>
 
     <div style="display:grid;grid-template-columns:1.25fr 0.75fr;gap:14px;align-items:start;" class="k-detail-grid">
 
       <!-- LEFT: the coach's response -->
       <div class="k-card k-card--featured">
-        <div class="k-panel-title" style="margin-bottom:16px;"><span class="k-kanji k-kanji--sm">改</span> KAIZEN RESPONDS</div>
+        <div class="k-panel-title" style="margin-bottom:16px;"><span class="k-kanji k-kanji--sm">改</span><%= t('kaizen.responds') %></div>
         <div style="font-size:0.9rem;color:var(--text-primary);line-height:1.85;white-space:pre-wrap;"><%= session.aiAnalysis %></div>
       </div>
 
       <!-- RIGHT: the engine's numbers -->
       <% if (score) { %>
         <div class="k-card k-card--elevated">
-          <div class="k-metric-label" style="margin-bottom:14px;">THE ENGINE — AFTER THIS SESSION</div>
+          <div class="k-metric-label" style="margin-bottom:14px;"><%= t('detail.engine') %></div>
           <% if (score.overall !== null && score.overall !== undefined) { %>
             <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:16px;">
               <span style="font-family:var(--font-mono);font-size:2.4rem;color:var(--gold);font-weight:500;line-height:1;"><%= score.overall %></span>
               <span style="font-family:var(--font-mono);font-size:0.58rem;letter-spacing:0.14em;color:var(--text-faint);">KAIZEN SCORE</span>
             </div>
             <% if (score.overallState === 'PARTIAL') { %>
-              <div class="k-fieldhint" style="margin-bottom:12px;">Partially estimated — from your written history.</div>
+              <div class="k-fieldhint" style="margin-bottom:12px;"><%= t('detail.partialEst') %></div>
             <% } %>
             <div class="k-meters">
               <% ['process','risk','execution','behavior','learning'].forEach(function(k){ %>
@@ -76,12 +75,10 @@
               </div>
             <% } %>
           <% } else { %>
-            <p style="font-size:0.82rem;color:var(--text-secondary);line-height:1.75;margin:0;">
-              Building baseline — your score appears once there's enough evidence. Keep logging; the engine is watching your plan → record → reflect loop, not the clock.
-            </p>
+            <p style="font-size:0.82rem;color:var(--text-secondary);line-height:1.75;margin:0;"><%= t('detail.baseline') %></p>
           <% } %>
           <div style="border-top:1px solid var(--border);margin-top:14px;padding-top:12px;">
-            <a href="/dashboard" style="font-family:var(--font-mono);font-size:0.62rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);text-decoration:underline;">How is this scored? →</a>
+            <a href="/dashboard" style="font-family:var(--font-mono);font-size:0.62rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);text-decoration:underline;"><%= t('detail.howScored') %></a>
           </div>
         </div>
       <% } %>
