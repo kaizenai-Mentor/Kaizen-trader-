@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="<%= lang %>">
 <head>
   <%- include('partials/head') %>
-  <title>KAIZEN — Bounty Detail</title>
+  <title><%= t('title.bountyDetail') %></title>
 </head>
 <body class="app-page">
   <%- include('partials/navbar') %>
@@ -12,15 +12,11 @@
     <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:24px;flex-wrap:wrap;">
       <div>
         <div style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:6px;display:flex;align-items:center;gap:8px;">
-          <span style="width:16px;height:1px;background:var(--gold);display:inline-block;"></span>
-          Zero Authority DAO Challenge
-        </div>
-        <h1 style="font-size:1.6rem;font-weight:700;color:var(--text-primary);margin-bottom:4px;">Bounty Detail</h1>
+          <span style="width:16px;height:1px;background:var(--gold);display:inline-block;"></span><%= t('bd.eyebrow') %></div>
+        <h1 style="font-size:1.6rem;font-weight:700;color:var(--text-primary);margin-bottom:4px;"><%= t('bd.h1') %></h1>
       </div>
       <a href="/za/bounties" style="display:inline-flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);border:1px solid var(--border);padding:10px 16px;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.color='var(--gold)';this.style.borderColor='rgba(245,197,24,0.3)'" onmouseout="this.style.color='var(--ash)';this.style.borderColor='var(--border)'">
-        <i data-feather="arrow-left" width="12" height="12"></i>
-        All Bounties
-      </a>
+        <i data-feather="arrow-left" width="12" height="12"></i><%= t('bd.all') %></a>
     </div>
 
     <% if (bounty && bounty.id) { %>
@@ -38,7 +34,7 @@
             <span style="font-family:'DM Mono',monospace;font-size:1.8rem;font-weight:700;color:var(--blue);">
               <%= bounty.totalPayment || bounty.reward || '—' %> <%= bounty.token ? bounty.token.symbol : 'STX' %>
             </span>
-            <span style="color:var(--ash);font-size:0.82rem;">Total Prize</span>
+            <span style="color:var(--ash);font-size:0.82rem;"><%= t('bd.prize') %></span>
           </div>
 
           <div style="background:var(--bg-surface);padding:20px;margin-bottom:20px;border:1px solid var(--border);">
@@ -47,15 +43,15 @@
 
           <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:2px;">
             <div style="background:var(--bg-surface);border:1px solid var(--border);padding:14px;text-align:center;">
-              <div style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-bottom:6px;">Type</div>
+              <div style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-bottom:6px;"><%= t('bd.type') %></div>
               <div style="font-weight:700;color:var(--text-primary);font-size:0.85rem;"><%= bounty.type || '—' %></div>
             </div>
             <div style="background:var(--bg-surface);border:1px solid var(--border);padding:14px;text-align:center;">
-              <div style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-bottom:6px;">Days Left</div>
+              <div style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-bottom:6px;"><%= t('bd.days') %></div>
               <div style="font-weight:700;color:var(--gold);font-size:0.85rem;"><%= bounty.daysRemaining || '—' %></div>
             </div>
             <div style="background:var(--bg-surface);border:1px solid var(--border);padding:14px;text-align:center;">
-              <div style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-bottom:6px;">Submissions</div>
+              <div style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-bottom:6px;"><%= t('bd.submissions') %></div>
               <div style="font-weight:700;color:var(--text-primary);font-size:0.85rem;"><%= bounty.submissionsCount || 0 %></div>
             </div>
           </div>
@@ -67,8 +63,7 @@
           <% if (bounty.creator) { %>
           <div style="background:var(--bg-card);border:1px solid var(--border);padding:22px;">
             <div style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--ash);margin-bottom:14px;display:flex;align-items:center;gap:6px;">
-              <i data-feather="user" width="11" height="11"></i> Creator
-            </div>
+              <i data-feather="user" width="11" height="11"></i><%= t('bd.creator') %></div>
             <div style="display:flex;gap:12px;align-items:center;margin-bottom:14px;">
               <% if (bounty.creator.avatarUrl) { %>
                 <img src="<%= bounty.creator.avatarUrl %>" style="width:42px;height:42px;border-radius:50%;object-fit:cover;border:1px solid var(--border);">
@@ -91,12 +86,9 @@
           <!-- KAIZEN CONNECTION -->
           <div style="background:linear-gradient(135deg,rgba(245,197,24,0.06),rgba(245,197,24,0.02));border:1px solid rgba(245,197,24,0.2);padding:22px;">
             <div style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);margin-bottom:12px;display:flex;align-items:center;gap:6px;">
-              <i data-feather="zap" width="11" height="11"></i> KAIZEN Connection
-            </div>
-            <p style="font-size:0.82rem;color:var(--ash-light);line-height:1.75;margin-bottom:16px;">
-              Complete this ZA bounty to earn on-chain reputation. Your KAIZEN Discipline Score proves you have the consistency and focus to deliver quality work.
-            </p>
-            <div style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);margin-bottom:4px;">Your Discipline Score</div>
+              <i data-feather="zap" width="11" height="11"></i><%= t('bd.connection') %></div>
+            <p style="font-size:0.82rem;color:var(--ash-light);line-height:1.75;margin-bottom:16px;"><%= t('bd.connectionNote') %></p>
+            <div style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);margin-bottom:4px;"><%= t('bd.yourScore') %></div>
             <div style="font-family:'DM Mono',monospace;font-size:2rem;font-weight:700;color:var(--gold);"><%= user.disciplineScore || 0 %><span style="font-size:1rem;">/100</span></div>
           </div>
 
@@ -107,8 +99,7 @@
       <% if (bounty.submissions && bounty.submissions.length > 0) { %>
         <div style="background:var(--bg-card);border:1px solid var(--border);padding:22px;margin-top:2px;">
           <div style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--ash);margin-bottom:16px;display:flex;align-items:center;gap:8px;">
-            <i data-feather="file-text" width="12" height="12"></i>
-            Submissions (<%= bounty.submissionsCount %>)
+            <i data-feather="file-text" width="12" height="12"></i><%= t('bd.subsPre') %><%= bounty.submissionsCount %>)
           </div>
           <div style="display:flex;flex-direction:column;gap:2px;">
             <% bounty.submissions.forEach(function(sub) { %>
@@ -126,8 +117,7 @@
                     <div style="font-size:0.74rem;color:var(--ash);"><%= sub.summary ? sub.summary.substring(0, 60) : '' %></div>
                   </div>
                 </div>
-                <a href="<%= sub.submissionUrl %>" target="_blank" style="display:inline-flex;align-items:center;gap:5px;font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(245,197,24,0.2);padding:6px 12px;text-decoration:none;">
-                  View <i data-feather="external-link" width="10" height="10"></i>
+                <a href="<%= sub.submissionUrl %>" target="_blank" style="display:inline-flex;align-items:center;gap:5px;font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(245,197,24,0.2);padding:6px 12px;text-decoration:none;"><%= t('bount.view') %><i data-feather="external-link" width="10" height="10"></i>
                 </a>
               </div>
             <% }); %>
@@ -140,11 +130,9 @@
         <div style="width:44px;height:44px;border:1px solid rgba(248,113,113,0.25);background:rgba(248,113,113,0.04);display:flex;align-items:center;justify-content:center;color:#F87171;margin:0 auto 16px;">
           <i data-feather="alert-triangle" width="18" height="18"></i>
         </div>
-        <p style="font-size:0.9rem;color:var(--ash);margin-bottom:20px;">Bounty not found.</p>
+        <p style="font-size:0.9rem;color:var(--ash);margin-bottom:20px;"><%= t('bd.notFound') %></p>
         <a href="/za/bounties" style="display:inline-flex;align-items:center;gap:6px;background:var(--gold);color:#000;font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;font-weight:700;padding:12px 24px;text-decoration:none;">
-          <i data-feather="arrow-left" width="13" height="13"></i>
-          Back to Bounties
-        </a>
+          <i data-feather="arrow-left" width="13" height="13"></i><%= t('bd.back') %></a>
       </div>
     <% } %>
 

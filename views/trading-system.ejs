@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="<%= lang %>">
 <head>
   <%- include('partials/head') %>
   <title>My Trading System · 改 KAIZEN</title>
@@ -12,112 +12,111 @@
 
       <div class="k-head">
         <div>
-          <div class="k-eyebrow">SETTINGS · 改</div>
-          <h1 class="k-title">My Trading System</h1>
-          <p class="k-sub">The rules every session is measured against. Each save creates a new version — history is never overwritten, so past sessions stay judged by the rules you had at the time.</p>
+          <div class="k-eyebrow"><%= t('ts.eyebrow') %></div>
+          <h1 class="k-title"><%= t('ts.h1') %></h1>
+          <p class="k-sub"><%= t('ts.sub') %></p>
         </div>
         <div class="k-versionchip">
           <span class="k-versionnum">v<%= system.version %></span>
-          <span class="k-versionmeta"><%= system.history.length %> version<%= system.history.length === 1 ? '' : 's' %> on record</span>
+          <span class="k-versionmeta"><%= system.history.length %><%= t('ts.version') %><%= system.history.length === 1 ? '' : 's' %><%= t('ts.onRecord') %></span>
         </div>
       </div>
 
       <% if (saved) { %>
         <div class="k-savenote">
-          <span class="k-badge-glyph">改</span> Saved as version <%= system.version %>. Sessions from now on are measured against these rules.
-        </div>
+          <span class="k-badge-glyph">改</span><%= t('ts.savedAs') %><%= system.version %><%= t('ts.fromNowOn') %></div>
       <% } %>
 
       <form method="POST" action="/settings/trading-system" class="k-formgrid">
 
         <section class="k-formcard">
-          <h2 class="k-cardtitle">Identity</h2>
+          <h2 class="k-cardtitle"><%= t('ts.identity') %></h2>
           <div class="k-field">
-            <label class="k-fieldlabel" for="name">System name</label>
-            <input class="k-input" type="text" id="name" name="name" value="<%= system.name %>" maxlength="60" placeholder="e.g. London Open Playbook">
+            <label class="k-fieldlabel" for="name"><%= t('ts.name') %></label>
+            <input class="k-input" type="text" id="name" name="name" value="<%= system.name %>" maxlength="60" placeholder="<%= t('ts.namePh') %>">
           </div>
           <div class="k-field">
-            <label class="k-fieldlabel" for="marketConditions">Where it works — market conditions</label>
-            <textarea class="k-input" id="marketConditions" name="marketConditions" rows="3" placeholder="The conditions your system is built for. e.g. London session, trending pairs, post-news drift, high-liquidity hours…"><%= system.marketConditions %></textarea>
-          </div>
-        </section>
-
-        <section class="k-formcard">
-          <h2 class="k-cardtitle">Your edge</h2>
-          <div class="k-field">
-            <label class="k-fieldlabel" for="setups">Setups — one per line</label>
-            <textarea class="k-input" id="setups" name="setups" rows="4" placeholder="e.g.&#10;London open breakout&#10;Trend pullback to 20 EMA&#10;Range sweep reversal"><% if (system.setups && system.setups.length) { %><%= system.setups.map(s => s.name).join('\n') %><% } %></textarea>
-            <div class="k-fieldhint">These become the setups you pick from when planning a session.</div>
-          </div>
-          <div class="k-field">
-            <label class="k-fieldlabel" for="entryRules">Entry rules</label>
-            <textarea class="k-input" id="entryRules" name="entryRules" rows="3" placeholder="What must be true before you enter. If you can't point to it on the chart, it's not a rule."><%= system.entryRules %></textarea>
-          </div>
-          <div class="k-field">
-            <label class="k-fieldlabel" for="exitRules">Exit rules</label>
-            <textarea class="k-input" id="exitRules" name="exitRules" rows="3" placeholder="Take-profit logic, and when you're out because the idea is wrong."><%= system.exitRules %></textarea>
+            <label class="k-fieldlabel" for="marketConditions"><%= t('ts.whereWorks') %></label>
+            <textarea class="k-input" id="marketConditions" name="marketConditions" rows="3" placeholder="<%= t('ts.wherePh') %>"><%= system.marketConditions %></textarea>
           </div>
         </section>
 
         <section class="k-formcard">
-          <h2 class="k-cardtitle">Risk rules</h2>
-          <p class="k-cardsub">Hard numbers. The engine reads these — breaking them is what moves your Risk dimension.</p>
+          <h2 class="k-cardtitle"><%= t('ts.edge') %></h2>
+          <div class="k-field">
+            <label class="k-fieldlabel" for="setups"><%= t('ts.setups') %></label>
+            <textarea class="k-input" id="setups" name="setups" rows="4" placeholder="<%= t('ts.setupsPh') %>"><% if (system.setups && system.setups.length) { %><%= system.setups.map(s => s.name).join('\n') %><% } %></textarea>
+            <div class="k-fieldhint"><%= t('form.setupsHelp') %></div>
+          </div>
+          <div class="k-field">
+            <label class="k-fieldlabel" for="entryRules"><%= t('ts.entry') %></label>
+            <textarea class="k-input" id="entryRules" name="entryRules" rows="3" placeholder="<%= t('ts.entryPh') %>"><%= system.entryRules %></textarea>
+          </div>
+          <div class="k-field">
+            <label class="k-fieldlabel" for="exitRules"><%= t('ts.exit') %></label>
+            <textarea class="k-input" id="exitRules" name="exitRules" rows="3" placeholder="<%= t('ts.exitPh') %>"><%= system.exitRules %></textarea>
+          </div>
+        </section>
+
+        <section class="k-formcard">
+          <h2 class="k-cardtitle"><%= t('ts.risk') %></h2>
+          <p class="k-cardsub"><%= t('ts.hardNums') %></p>
           <div class="k-fieldrow">
             <div class="k-field">
-              <label class="k-fieldlabel" for="riskPerTrade">Risk per trade</label>
+              <label class="k-fieldlabel" for="riskPerTrade"><%= t('form.riskPerTrade') %></label>
               <input class="k-input" type="text" id="riskPerTrade" name="riskPerTrade" value="<%= system.riskRules.riskPerTrade %>" placeholder="e.g. 1% of account">
             </div>
             <div class="k-field">
-              <label class="k-fieldlabel" for="maxDailyTrades">Max trades per day</label>
-              <input class="k-input" type="text" id="maxDailyTrades" name="maxDailyTrades" value="<%= system.riskRules.maxDailyTrades %>" placeholder="e.g. 3">
+              <label class="k-fieldlabel" for="maxDailyTrades"><%= t('ts.maxTrades') %></label>
+              <input class="k-input" type="text" id="maxDailyTrades" name="maxDailyTrades" value="<%= system.riskRules.maxDailyTrades %>" placeholder="<%= t('ts.numPh') %>">
             </div>
           </div>
           <div class="k-fieldrow">
             <div class="k-field">
-              <label class="k-fieldlabel" for="dailyDrawdown">Daily drawdown limit</label>
+              <label class="k-fieldlabel" for="dailyDrawdown"><%= t('ts.drawdown') %></label>
               <input class="k-input" type="text" id="dailyDrawdown" name="dailyDrawdown" value="<%= system.riskRules.dailyDrawdown %>" placeholder="e.g. 3% then stop">
             </div>
             <div class="k-field">
-              <label class="k-fieldlabel" for="maxPositionSize">Max position size</label>
-              <input class="k-input" type="text" id="maxPositionSize" name="maxPositionSize" value="<%= system.riskRules.maxPositionSize %>" placeholder="e.g. 0.5 lots">
+              <label class="k-fieldlabel" for="maxPositionSize"><%= t('ts.maxPos') %></label>
+              <input class="k-input" type="text" id="maxPositionSize" name="maxPositionSize" value="<%= system.riskRules.maxPositionSize %>" placeholder="<%= t('ts.sizePh') %>">
             </div>
           </div>
         </section>
 
         <section class="k-formcard">
-          <h2 class="k-cardtitle">Discipline</h2>
+          <h2 class="k-cardtitle"><%= t('ts.discipline') %></h2>
           <div class="k-field">
-            <label class="k-fieldlabel" for="tradingHours">Trading hours</label>
-            <input class="k-input" type="text" id="tradingHours" name="tradingHours" value="<%= system.tradingHours %>" placeholder="e.g. 08:00–12:00 London, weekdays only">
+            <label class="k-fieldlabel" for="tradingHours"><%= t('ts.hours') %></label>
+            <input class="k-input" type="text" id="tradingHours" name="tradingHours" value="<%= system.tradingHours %>" placeholder="<%= t('ts.hoursPh') %>">
           </div>
           <div class="k-field">
-            <label class="k-fieldlabel" for="noTradeConditions">No-trade conditions — one per line</label>
-            <textarea class="k-input" id="noTradeConditions" name="noTradeConditions" rows="3" placeholder="e.g.&#10;During red-folder news&#10;After two losses in a day&#10;Less than 6 hours of sleep"><%= (system.noTradeConditions || []).join('\n') %></textarea>
+            <label class="k-fieldlabel" for="noTradeConditions"><%= t('ts.noTrade') %></label>
+            <textarea class="k-input" id="noTradeConditions" name="noTradeConditions" rows="3" placeholder="<%= t('ts.noTradePh') %>"><%= (system.noTradeConditions || []).join('\n') %></textarea>
           </div>
           <div class="k-field">
-            <label class="k-fieldlabel" for="psychologicalRules"><%= t('system.psychRules') %> — one per line</label>
-            <textarea class="k-input" id="psychologicalRules" name="psychologicalRules" rows="3" placeholder="e.g.&#10;No entries in the first 10 minutes&#10;Journal before the next trade, win or lose&#10;Stop after a 2R loss"><%= (system.psychologicalRules || []).join('\n') %></textarea>
+            <label class="k-fieldlabel" for="psychologicalRules"><%= t('system.psychRules') %><%= t('ts.perLine') %></label>
+            <textarea class="k-input" id="psychologicalRules" name="psychologicalRules" rows="3" placeholder="<%= t('ts.positionPh') %>"><%= (system.psychologicalRules || []).join('\n') %></textarea>
           </div>
         </section>
 
         <section class="k-formcard">
-          <h2 class="k-cardtitle">Position rules</h2>
+          <h2 class="k-cardtitle"><%= t('ts.position') %></h2>
           <div class="k-field">
-            <label class="k-fieldlabel" for="positionRules">How you size and manage positions</label>
+            <label class="k-fieldlabel" for="positionRules"><%= t('ts.positionSub') %></label>
             <textarea class="k-input" id="positionRules" name="positionRules" rows="3" placeholder="Scaling in/out, partials, trailing, when you move a stop…"><%= system.positionRules %></textarea>
           </div>
         </section>
 
         <section class="k-formcard k-savecard">
           <div class="k-field">
-            <label class="k-fieldlabel" for="changeNote">What changed? (optional)</label>
-            <input class="k-input" type="text" id="changeNote" name="changeNote" maxlength="140" placeholder="e.g. Cut max daily trades from 5 to 3 — overtrading on losses">
+            <label class="k-fieldlabel" for="changeNote"><%= t('ts.whatChanged') %></label>
+            <input class="k-input" type="text" id="changeNote" name="changeNote" maxlength="140" placeholder="<%= t('ts.changedPh') %>">
           </div>
           <div class="k-actions">
             <button type="submit" class="k-btn k-btn-primary"><%= t('system.save') %></button>
-            <a class="k-btn k-btn-ghost" href="/dashboard">Back to Cockpit</a>
+            <a class="k-btn k-btn-ghost" href="/dashboard"><%= t('ts.backCockpit') %></a>
           </div>
-          <div class="k-fieldhint">Nothing is deleted. Your previous version stays on record, and sessions logged before this save stay measured against the rules you had then.</div>
+          <div class="k-fieldhint"><%= t('ts.nothingDeleted') %></div>
         </section>
 
       </form>

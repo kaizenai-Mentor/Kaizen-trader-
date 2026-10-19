@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="<%= lang %>">
 <head>
   <%- include('partials/head') %>
   <title><%= t('title.chart') %></title>
@@ -419,22 +419,20 @@
     </div>
 
     <div class="popup-section">
-      <div class="popup-section-label">Navigation</div>
+      <div class="popup-section-label"><%= t('chart.nav') %></div>
       <a href="/dashboard" class="popup-item">▪ <%= t('nav.cockpit') %></a>
       <a href="/chart" class="popup-item popup-item-active">▪ <%= t('nav.chart') %></a>
       <a href="/journal" class="popup-item">▪ <%= t('nav.journal') %></a>
       <a href="/kaizen-ai" class="popup-item">▪ <%= t('nav.kaizenAI') %></a>
       <a href="/memories" class="popup-item">▪ <%= t('nav.memories') %></a>
-      <a href="/za/bounties" class="popup-item">▪ Bounties</a>
+      <a href="/za/bounties" class="popup-item"><%= t('chart.bounties') %></a>
       <a href="/za/reputation/<%= user.id %>" class="popup-item">▪ <%= t('nav.reputation') %></a>
     </div>
 
     <div class="popup-section">
       <div class="popup-section-label"><%= t('nav.settings') %></div>
       <button class="popup-item"
-        onclick="toggleTheme();closePopup()">
-        ▪ Dark / Light Mode
-      </button>
+        onclick="toggleTheme();closePopup()"><%= t('chart.theme') %></button>
       <button class="popup-item"
         onclick="openModal('securityModal');closePopup()">
         ▪ <%= t('nav.security') %>
@@ -452,7 +450,7 @@
 
     <div class="popup-section">
       <a href="/auth/logout" class="popup-item"
-        style="color:#F87171;">▪ Log Out</a>
+        style="color:#F87171;"><%= t('chart.logout') %></a>
     </div>
 
     <div class="popup-footer">
@@ -481,27 +479,25 @@
   <div class="modal-overlay" id="securityModal">
     <div class="modal">
       <div class="modal-header">
-        <h3>Security</h3>
+        <h3><%= t('chart.security') %></h3>
         <button class="modal-close"
           onclick="closeModal('securityModal')">×</button>
       </div>
       <div class="modal-body">
         <form action="/auth/change-password" method="POST">
-          <label class="m-label">Current Password</label>
+          <label class="m-label"><%= t('nav.currentPassword') %></label>
           <input type="password" name="currentPassword" class="m-input"
-            placeholder="Enter current password">
-          <label class="m-label">New Password</label>
+            placeholder="<%= t('nav.enterCurrentPassword') %>">
+          <label class="m-label"><%= t('nav.newPassword') %></label>
           <input type="password" name="newPassword" class="m-input"
-            placeholder="Enter new password">
-          <label class="m-label">Confirm New Password</label>
+            placeholder="<%= t('nav.enterNewPassword') %>">
+          <label class="m-label"><%= t('nav.confirmPassword') %></label>
           <input type="password" name="confirmPassword" class="m-input"
-            placeholder="Confirm new password">
-          <button type="submit" class="m-btn">Update Password</button>
+            placeholder="<%= t('nav.confirmNewPassword') %>">
+          <button type="submit" class="m-btn"><%= t('nav.updatePassword') %></button>
         </form>
         <div style="margin-top:16px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.06);">
-          <p style="font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.08em;color:#3A3530;text-align:center;">
-            2FA — Coming in Phase 3
-          </p>
+          <p style="font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.08em;color:#3A3530;text-align:center;"><%= t('chart.twofa') %></p>
         </div>
       </div>
     </div>
@@ -510,10 +506,9 @@
   <!-- TOP BAR -->
   <div class="chart-topbar">
     <div class="topbar-left">
-      <a href="/dashboard" class="back-link">← 改</a>
-      <span class="chart-title">KAIZEN · Chart</span>
-      <div class="discipline-badge">
-        Score: <span><%= user.disciplineScore || 0 %>/100</span>
+      <a href="/dashboard" class="back-link"><%= t('chart.back') %></a>
+      <span class="chart-title"><%= t('chart.title') %></span>
+      <div class="discipline-badge"><%= t('chart.score') %><span><%= user.disciplineScore || 0 %>/100</span>
       </div>
     </div>
     <div class="topbar-right">

@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="<%= lang %>">
 <head>
   <%- include('partials/head') %>
-  <title>KAIZEN - My Journal</title>
+  <title><%= t('title.journal') %></title>
 </head>
 <body class="app-page">
   <%- include('partials/navbar') %>
@@ -13,16 +13,12 @@
     <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:24px;flex-wrap:wrap;">
       <div>
         <div style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:6px;display:flex;align-items:center;gap:8px;">
-          <span style="width:16px;height:1px;background:var(--gold);display:inline-block;"></span>
-          Trading Journal
-        </div>
+          <span style="width:16px;height:1px;background:var(--gold);display:inline-block;"></span><%= t('journal.h1') %></div>
         <h1 style="font-size:1.6rem;font-weight:700;color:var(--text-primary);margin-bottom:4px;">My Journal</h1>
-        <p style="font-size:0.82rem;color:var(--ash);font-style:italic;">Write honestly. KAIZEN learns from everything you record.</p>
+        <p style="font-size:0.82rem;color:var(--ash);font-style:italic;"><%= t('journal.sub') %></p>
       </div>
       <a href="/dashboard" style="display:inline-flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);border:1px solid var(--border);padding:10px 16px;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.color='var(--gold)';this.style.borderColor='rgba(245,197,24,0.3)'" onmouseout="this.style.color='var(--ash)';this.style.borderColor='var(--border)'">
-        <i data-feather="arrow-left" width="12" height="12"></i>
-        Dashboard
-      </a>
+        <i data-feather="arrow-left" width="12" height="12"></i><%= t('crumb.dashboard') %></a>
     </div>
 
     <!-- TIPS ROW -->
@@ -53,17 +49,17 @@
             <i data-feather="file-text" width="13" height="13"></i>
           </div>
           <div>
-            <div style="font-weight:700;font-size:0.95rem;color:var(--text-primary);">New Session Entry</div>
-            <div style="font-size:0.72rem;color:var(--ash);">Write freely. KAIZEN AI reads every word</div>
+            <div style="font-weight:700;font-size:0.95rem;color:var(--text-primary);"><%= t('journal.newEntry') %></div>
+            <div style="font-size:0.72rem;color:var(--ash);"><%= t('journal.writeFree') %></div>
           </div>
         </div>
-        <span style="font-family:'DM Mono',monospace;font-size:0.52rem;letter-spacing:0.12em;text-transform:uppercase;color:rgba(245,197,24,0.4);border:1px solid rgba(245,197,24,0.12);padding:3px 8px;">Write Freely</span>
+        <span style="font-family:'DM Mono',monospace;font-size:0.52rem;letter-spacing:0.12em;text-transform:uppercase;color:rgba(245,197,24,0.4);border:1px solid rgba(245,197,24,0.12);padding:3px 8px;"><%= t('journal.writeFreely') %></span>
       </div>
 
       <form action="/dashboard/journal" method="POST" id="journal-form" enctype="multipart/form-data">
 
         <div style="margin-bottom:14px;">
-          <label style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);display:block;margin-bottom:8px;">Session Notes</label>
+          <label style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);display:block;margin-bottom:8px;"><%= t('journal.notes') %></label>
           <textarea name="notes" required style="
             width:100%;min-height:300px;
             background:var(--bg-surface);
@@ -76,32 +72,24 @@
             outline:none;
             line-height:1.75;
             box-sizing:border-box;
-          " placeholder="Start writing about your session...
-
-What pair did you analyze? What timeframe?
-What did you see on the chart?
-Did you take a trade? What was your entry, SL, and TP?
-Did you follow your checklist?
-What happened? Win, loss, or no trade?
-What did you feel during the session?
-What would you do differently?"></textarea>
+          " placeholder="<%= t('journal.notesPh') %>"></textarea>
         </div>
 
         <div style="margin-bottom:20px;">
-          <label style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);display:block;margin-bottom:10px;">Did you follow ALL your trading rules?</label>
+          <label style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);display:block;margin-bottom:10px;"><%= t('journal.followQ') %></label>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
             <label style="display:flex;align-items:center;justify-content:center;gap:8px;padding:14px;background:rgba(52,211,153,0.04);border:1px solid rgba(52,211,153,0.2);cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background='rgba(52,211,153,0.08)'" onmouseout="this.style.background='rgba(52,211,153,0.04)'">
               <input type="radio" name="ruleCompliance" value="true" required>
               <div style="display:flex;align-items:center;gap:6px;">
                 <i data-feather="check-circle" width="14" height="14" style="color:#4ADE80;"></i>
-                <span style="font-weight:700;font-size:0.9rem;color:#4ADE80;">Yes. Followed Rules</span>
+                <span style="font-weight:700;font-size:0.9rem;color:#4ADE80;"><%= t('journal.followYes') %></span>
               </div>
             </label>
             <label style="display:flex;align-items:center;justify-content:center;gap:8px;padding:14px;background:rgba(248,113,113,0.04);border:1px solid rgba(248,113,113,0.2);cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background='rgba(248,113,113,0.08)'" onmouseout="this.style.background='rgba(248,113,113,0.04)'">
               <input type="radio" name="ruleCompliance" value="false">
               <div style="display:flex;align-items:center;gap:6px;">
                 <i data-feather="x-circle" width="14" height="14" style="color:#F87171;"></i>
-                <span style="font-weight:700;font-size:0.9rem;color:#F87171;">No Violated Rules</span>
+                <span style="font-weight:700;font-size:0.9rem;color:#F87171;"><%= t('journal.followNo') %></span>
               </div>
             </label>
           </div>
@@ -113,32 +101,30 @@ What would you do differently?"></textarea>
         <!-- TRADE OUTCOME -->
 <div style="margin-bottom:14px;">
   <label style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);display:block;margin-bottom:10px;">
-    <i data-feather="target" width="10" height="10" style="display:inline;margin-right:4px;"></i>
-    Trade Outcome — Optional
-  </label>
+    <i data-feather="target" width="10" height="10" style="display:inline;margin-right:4px;"></i><%= t('journal.outcome') %></label>
   <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:8px;margin-bottom:12px;">
     <label style="display:flex;align-items:center;justify-content:center;gap:6px;padding:10px;background:rgba(52,211,153,0.04);border:1px solid rgba(52,211,153,0.2);cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background='rgba(52,211,153,0.1)'" onmouseout="this.style.background='rgba(52,211,153,0.04)'">
       <input type="radio" name="outcome" value="Win">
-      <span style="font-family:'DM Mono',monospace;font-size:0.7rem;font-weight:700;color:#4ADE80;">Win</span>
+      <span style="font-family:'DM Mono',monospace;font-size:0.7rem;font-weight:700;color:#4ADE80;"><%= t('journal.win') %></span>
     </label>
     <label style="display:flex;align-items:center;justify-content:center;gap:6px;padding:10px;background:rgba(248,113,113,0.04);border:1px solid rgba(248,113,113,0.2);cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background='rgba(248,113,113,0.1)'" onmouseout="this.style.background='rgba(248,113,113,0.04)'">
       <input type="radio" name="outcome" value="Loss">
-      <span style="font-family:'DM Mono',monospace;font-size:0.7rem;font-weight:700;color:#F87171;">Loss</span>
+      <span style="font-family:'DM Mono',monospace;font-size:0.7rem;font-weight:700;color:#F87171;"><%= t('journal.loss') %></span>
     </label>
     <label style="display:flex;align-items:center;justify-content:center;gap:6px;padding:10px;background:rgba(245,197,24,0.04);border:1px solid rgba(245,197,24,0.15);cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background='rgba(245,197,24,0.1)'" onmouseout="this.style.background='rgba(245,197,24,0.04)'">
       <input type="radio" name="outcome" value="Breakeven">
-      <span style="font-family:'DM Mono',monospace;font-size:0.7rem;font-weight:700;color:var(--gold);">Breakeven</span>
+      <span style="font-family:'DM Mono',monospace;font-size:0.7rem;font-weight:700;color:var(--gold);"><%= t('journal.be') %></span>
     </label>
     <label style="display:flex;align-items:center;justify-content:center;gap:6px;padding:10px;background:var(--bg-surface);border:1px solid var(--border);cursor:pointer;transition:all 0.2s;" onmouseover="this.style.background='rgba(168,160,154,0.1)'" onmouseout="this.style.background='var(--bg-surface)'">
       <input type="radio" name="outcome" value="No Trade" checked>
-      <span style="font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--ash);">No Trade</span>
+      <span style="font-family:'DM Mono',monospace;font-size:0.7rem;color:var(--ash);"><%= t('journal.noTrade') %></span>
     </label>
   </div>
 
   <!-- RR Achieved -->
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
     <div>
-      <label style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);display:block;margin-bottom:6px;">RR Achieved</label>
+      <label style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);display:block;margin-bottom:6px;"><%= t('journal.rr') %></label>
       <input type="text" name="rrAchieved" style="
         width:100%;background:var(--bg-surface);
         border:1px solid var(--border);
@@ -146,12 +132,12 @@ What would you do differently?"></textarea>
         font-family:'Outfit',sans-serif;font-size:0.88rem;
         padding:10px 12px;outline:none;box-sizing:border-box;
         transition:border-color 0.2s;
-      " placeholder="e.g. 1:2.5"
+      " placeholder="<%= t('journal.rrPh') %>"
       onfocus="this.style.borderColor='rgba(245,197,24,0.4)'"
       onblur="this.style.borderColor='var(--border)'">
     </div>
     <div>
-      <label style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);display:block;margin-bottom:6px;">Pips / Points</label>
+      <label style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);display:block;margin-bottom:6px;"><%= t('journal.pips') %></label>
       <input type="text" name="pipsGained" style="
         width:100%;background:var(--bg-surface);
         border:1px solid var(--border);
@@ -159,7 +145,7 @@ What would you do differently?"></textarea>
         font-family:'Outfit',sans-serif;font-size:0.88rem;
         padding:10px 12px;outline:none;box-sizing:border-box;
         transition:border-color 0.2s;
-      " placeholder="e.g. +45 or -20"
+      " placeholder="<%= t('journal.pipsPh') %>"
       onfocus="this.style.borderColor='rgba(245,197,24,0.4)'"
       onblur="this.style.borderColor='var(--border)'">
     </div>
@@ -172,9 +158,7 @@ What would you do differently?"></textarea>
 
         <div style="margin-bottom:14px;">
   <label style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);display:block;margin-bottom:8px;">
-    <i data-feather="image" width="11" height="11" style="display:inline;margin-right:4px;"></i>
-    Chart Screenshot — Optional
-  </label>
+    <i data-feather="image" width="11" height="11" style="display:inline;margin-right:4px;"></i><%= t('journal.chartShot') %></label>
 
   <!-- Drop zone — hidden when image is selected -->
   <div id="image-drop-zone" style="
@@ -186,17 +170,13 @@ What would you do differently?"></textarea>
      onmouseover="this.style.borderColor='rgba(245,197,24,0.4)'"
      onmouseout="this.style.borderColor='var(--border)'">
     <i data-feather="upload" width="20" height="20" style="color:var(--ash);margin-bottom:8px;display:block;margin-left:auto;margin-right:auto;"></i>
-    <div style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);">
-      Tap to upload chart image
-    </div>
-    <div style="font-size:0.72rem;color:rgba(168,160,154,0.4);margin-top:6px;">
-      KAIZEN AI will analyze your chart alongside your journal entry
-    </div>
+    <div style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);"><%= t('journal.tapUpload') %></div>
+    <div style="font-size:0.72rem;color:rgba(168,160,154,0.4);margin-top:6px;"><%= t('journal.chartNote') %></div>
   </div>
 
   <!-- Image preview — shown after selection -->
   <div id="image-preview-container" style="display:none;position:relative;">
-    <img id="image-preview-thumb" src="" alt="Chart preview" style="
+    <img id="image-preview-thumb" src="" alt="<%= t('journal.chartAlt') %>" style="
       width:100%;
       max-height:280px;
       object-fit:contain;
@@ -213,7 +193,7 @@ What would you do differently?"></textarea>
       display:flex;align-items:center;gap:6px;
     ">
       <i data-feather="check-circle" width="11" height="11" style="color:#4ADE80;"></i>
-      <span style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:#4ADE80;">Chart Ready</span>
+      <span style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:#4ADE80;"><%= t('journal.chartReady') %></span>
     </div>
     <!-- Remove button -->
     <button type="button" onclick="removeImage()" style="
@@ -228,9 +208,7 @@ What would you do differently?"></textarea>
       cursor:pointer;
       display:flex;align-items:center;gap:4px;
     ">
-      <i data-feather="x" width="10" height="10"></i>
-      Remove
-    </button>
+      <i data-feather="x" width="10" height="10"></i><%= t('journal.remove') %></button>
     <!-- File info bar -->
     <div style="
       background:rgba(245,197,24,0.06);
@@ -241,7 +219,7 @@ What would you do differently?"></textarea>
     ">
       <i data-feather="image" width="11" height="11" style="color:var(--gold);"></i>
       <span id="image-file-name" style="font-family:'DM Mono',monospace;font-size:0.6rem;color:var(--gold);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></span>
-      <span style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--ash);">KAIZEN AI will analyze this</span>
+      <span style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--ash);"><%= t('journal.analyzeThis') %></span>
     </div>
   </div>
 
@@ -264,17 +242,15 @@ What would you do differently?"></textarea>
           display:flex;align-items:center;justify-content:center;gap:8px;
           transition:background 0.2s;
         " onmouseover="this.style.background='#FFD84D'" onmouseout="this.style.background='var(--gold)'">
-          <i data-feather="send" width="14" height="14"></i>
-          Save Session Get KAIZEN AI Analysis
-        </button>
+          <i data-feather="send" width="14" height="14"></i><%= t('journal.save') %></button>
 
         <!-- Responding state -->
         <div id="responding-state" style="display:none;text-align:center;padding:28px 16px;border:1px solid rgba(245,197,24,0.2);background:rgba(245,197,24,0.03);margin-top:12px;">
           <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:8px;">
             <div style="width:6px;height:6px;border-radius:50%;background:var(--gold);animation:pulse 1.2s infinite;"></div>
-            <div id="responding-text" style="font-family:'DM Mono',monospace;font-size:0.72rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);">KAIZEN AI IS RESPONDING...</div>
+            <div id="responding-text" style="font-family:'DM Mono',monospace;font-size:0.72rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);"><%= t('journal.responding') %></div>
           </div>
-          <p style="font-size:0.72rem;color:var(--ash);font-family:'DM Mono',monospace;letter-spacing:0.05em;">Analyzing your session. Redirecting shortly.</p>
+          <p style="font-size:0.72rem;color:var(--ash);font-family:'DM Mono',monospace;letter-spacing:0.05em;"><%= t('journal.analyzing') %></p>
         </div>
 
       </form>
@@ -285,11 +261,10 @@ What would you do differently?"></textarea>
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
         <div style="display:flex;align-items:center;gap:8px;">
           <i data-feather="clock" width="14" height="14" style="color:var(--gold);"></i>
-          <span style="font-weight:700;font-size:0.9rem;color:var(--text-primary);">Past Sessions</span>
+          <span style="font-weight:700;font-size:0.9rem;color:var(--text-primary);"><%= t('journal.past') %></span>
         </div>
         <span style="font-family:'DM Mono',monospace;font-size:0.58rem;color:var(--ash);letter-spacing:0.1em;text-transform:uppercase;">
-          <%= typeof journals !== 'undefined' ? journals.length : 0 %> entries
-        </span>
+          <%= typeof journals !== 'undefined' ? journals.length : 0 %><%= t('journal.entries') %></span>
       </div>
 
       <% if (typeof journals !== 'undefined' && journals.length === 0) { %>
@@ -297,9 +272,7 @@ What would you do differently?"></textarea>
           <div style="width:40px;height:40px;border:1px solid var(--border);background:var(--bg-surface);display:flex;align-items:center;justify-content:center;color:var(--ash);margin:0 auto 12px;">
             <i data-feather="book-open" width="16" height="16"></i>
           </div>
-          <p style="font-size:0.88rem;color:var(--ash);line-height:1.7;">
-            Traders who journal consistently outperform those who don't.<br>Write your first entry above.
-          </p>
+          <p style="font-size:0.88rem;color:var(--ash);line-height:1.7;"><%= t('journal.quote') %><br><%= t('journal.firstEntry') %></p>
         </div>
       <% } else if (typeof journals !== 'undefined') { %>
         <div style="display:flex;flex-direction:column;gap:2px;">
@@ -328,8 +301,8 @@ What would you do differently?"></textarea>
         </div>
       <% } else { %>
         <div style="background:var(--bg-card);border:1px solid var(--border);padding:32px;text-align:center;">
-          <p style="font-size:0.85rem;color:var(--ash);">Could not load journal entries.</p>
-          <a href="/dashboard" style="display:inline-block;margin-top:12px;font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(245,197,24,0.25);padding:8px 16px;text-decoration:none;">Back to Dashboard</a>
+          <p style="font-size:0.85rem;color:var(--ash);"><%= t('journal.loadFail') %></p>
+          <a href="/dashboard" style="display:inline-block;margin-top:12px;font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(245,197,24,0.25);padding:8px 16px;text-decoration:none;"><%= t('journal.backDash') %></a>
         </div>
       <% } %>
     </div>
