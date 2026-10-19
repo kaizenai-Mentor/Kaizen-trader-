@@ -304,4 +304,5 @@ module.exports = {
   'welcome.ctaHow': '了解运作方式',
   'ticker.update': '更新',
   'ticker.dismiss': '关闭公告',
+  'ticker.announce.v2': "<b>KAIZEN V2 即将上线</b> — 评分升级为五个维度 · 计划 → 记录 → 复盘 · 你自己的交易系统 · 未来 30 天内逐步推出",
 };

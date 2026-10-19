@@ -196,14 +196,14 @@ const recordedSession = Object.assign(mk({}, 1), {
 });
 const analyzedSession = sessions[0];
 const memories = [
-  { type: 'session', asset: 'XAUUSD', sessionData: 'London sweep + MSS, entered on retest, held to 2R.', response: 'Strong execution. The patience after the sweep is exactly the behavior to repeat. Note the urge to add size at +1.5R — log what you felt there.', sessionScore: 82, createdAt: new Date(Date.now() - 2 * 864e5) },
+  { type: 'session', asset: 'XAUUSD', sessionData: 'London sweep + MSS, entered on retest, held to 2R.', response: 'Your execution on this one was strong. The patience you showed after the sweep is exactly the behavior to repeat. Note the urge you felt to add size at +1.5R — log what you felt there.', sessionScore: 82, createdAt: new Date(Date.now() - 2 * 864e5) },
   { type: 'session', asset: 'BTCUSD', sessionData: 'Entered before MSS confirmation.', response: 'The entry came before your trigger fired. Same setup, one candle early. The five-minute timer exists for exactly this moment.', sessionScore: 48, createdAt: new Date(Date.now() - 5 * 864e5) },
   { type: 'psych', asset: '—', sessionData: 'Froze before clicking on a perfect setup.', response: 'The freeze is data, not failure. It appeared after two losses — we will watch that window together.', sessionScore: null, createdAt: new Date(Date.now() - 8 * 864e5) }
 ];
 
 pages['session-record'] = { user, session: plannedSession, title: 'The Record' };
 pages['session-reflect'] = { user, session: recordedSession, title: 'The Reflection' };
-pages['session-detail'] = { user, session: Object.assign({}, analyzedSession, { hasChartImage: true, aiAnalysis: 'Your entry timing improved on this one — the confirmation candle closed before you acted, and that patience is what moved Execution up. The loss itself is noise; the process that produced it is signal. One thing to watch: your confidence was a 7 pre-session but your reflection says you almost added size at +1.5R. That gap between declared confidence and in-trade impulses is exactly what the after-loss window tracks. Keep logging that urge honestly — it is the raw material for the next improvement.' }), score: scoreEngine.computeScore([analyzedSession], null, null), title: 'Session' };
+pages['session-detail'] = { user, session: Object.assign({}, analyzedSession, { hasChartImage: true, aiAnalysis: 'Your entry timing improved on this one — the confirmation candle closed before you acted, and that patience is what moved your Execution up. The loss itself is noise; the process that produced it is signal. One thing to watch: your confidence was a 7 pre-session but your reflection says you almost added size at +1.5R. That gap between declared confidence and in-trade impulses is exactly what the after-loss window tracks. Keep logging that urge honestly — it is the raw material for the next improvement.' }), score: scoreEngine.computeScore([analyzedSession], null, null), title: 'Session' };
 pages['news'] = {
   user,
   articles: [
@@ -220,7 +220,8 @@ pages['news'] = {
 pages['memories'] = { user, memories, title: 'Memories' };
 
 const ANNOUNCEMENT = {
-  message: '<b>KAIZEN V2 IS COMING</b> — the score gets five dimensions · plan → record → reflect sessions · your own Trading System · rolling out over the next 30 days'
+  message: '<b>KAIZEN V2 IS COMING</b> — the score gets five dimensions · plan → record → reflect sessions · your own Trading System · rolling out over the next 30 days',
+  messageKey: 'ticker.announce.v2'
 };
 
 (async () => {

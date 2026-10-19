@@ -11,8 +11,8 @@ module.exports = {
   'brand.kaizen': 'KAIZEN',
 
   // ── Navbar / chrome ──────────────────────────────────────────────────
-  'nav.cockpit': 'Cockpit',
-  'nav.sessions': 'Sessions',
+  'nav.cockpit': 'Tableau de bord',
+  'nav.sessions': 'Séances',
   'nav.journal': 'Journal',
   'nav.coach': 'Coach',
   'nav.kaizenAI': 'KAIZEN AI',
@@ -50,7 +50,7 @@ module.exports = {
   'ticker.clockIn': 'POINTEUSE',
   'ticker.score': 'SCORE',
   'ticker.streak': 'SÉRIE',
-  'ticker.sessions': 'SESSIONS',
+  'ticker.sessions': 'SÉANCES',
 
   // ── Welcome / onboarding ─────────────────────────────────────────────
   'welcome.headline': 'Le trading, amélioré.',
@@ -84,7 +84,7 @@ module.exports = {
   'auth.errorGeneric': 'Une erreur est survenue. Veuillez réessayer.',
 
   // ── Sessions list ────────────────────────────────────────────────────
-  'sessions.title': 'Sessions',
+  'sessions.title': 'Séances',
   'sessions.subtitle': 'La boucle centrale : planifier → enregistrer → réfléchir.',
   'sessions.new': 'Nouvelle session',
   'sessions.newLive': 'Session en direct',
@@ -151,7 +151,7 @@ module.exports = {
   'reflect.submit': 'Réfléchir',
 
   // ── Session: DETAIL ──────────────────────────────────────────────────
-  'detail.title': 'Session',
+  'detail.title': 'Séance',
   'detail.thePlan': 'LE PLAN',
   'detail.yourRecord': 'VOTRE ENREGISTREMENT',
   'detail.theChart': 'LE GRAPHIQUE — TEL QU’ENREGISTRÉ',
@@ -166,7 +166,7 @@ module.exports = {
   'detail.scoring': 'Notation de cette session…',
 
   // ── Dashboard / Cockpit ──────────────────────────────────────────────
-  'dash.title': 'Cockpit',
+  'dash.title': 'Tableau de bord',
   'dash.greeting': 'Bon retour, {{name}}',
   'dash.today': "AUJOURD'HUI",
   'dash.nextAction': 'PROCHAINE ACTION',
@@ -284,8 +284,8 @@ module.exports = {
   'title.record': "KAIZEN — L'Enregistrement",
   'title.reflection': 'KAIZEN — La Réflexion',
   'title.session': 'KAIZEN — Session',
-  'title.cockpit': 'KAIZEN — Cockpit',
-  'title.sessions': 'KAIZEN — Sessions',
+  'title.cockpit': 'KAIZEN — Tableau de bord',
+  'title.sessions': 'KAIZEN — Séances',
   'title.support': 'KAIZEN — Assistance',
   'title.news': 'KAIZEN — Actualités',
   'title.chart': 'KAIZEN — Graphique',
@@ -304,4 +304,5 @@ module.exports = {
   'welcome.ctaHow': 'Voir comment ça marche',
   'ticker.update': 'Mise à jour',
   'ticker.dismiss': "Masquer l'annonce",
+  'ticker.announce.v2': "<b>KAIZEN V2 ARRIVE</b> — le score passe à cinq dimensions · planifier → enregistrer → réfléchir · votre propre Trading System · déploiement sur les 30 prochains jours",
 };

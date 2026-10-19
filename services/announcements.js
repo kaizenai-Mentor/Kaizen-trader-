@@ -19,7 +19,7 @@ async function getActiveAnnouncement() {
     try {
       const Announcement = require('../models/Announcement');
       const doc = await Announcement.findActive().lean();
-      cache.value = doc ? { message: doc.message, endsAt: doc.endsAt } : null;
+      cache.value = doc ? { message: doc.message, messageKey: doc.messageKey, endsAt: doc.endsAt } : null;
       cache.at = Date.now();
       return cache.value;
     } catch (e) {

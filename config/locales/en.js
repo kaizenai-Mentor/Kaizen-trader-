@@ -307,4 +307,5 @@ module.exports = {
   'welcome.ctaHow': 'See How It Works',
   'ticker.update': 'Update',
   'ticker.dismiss': 'Dismiss announcement',
+  'ticker.announce.v2': "<b>KAIZEN V2 IS COMING</b> — the score gets five dimensions · plan → record → reflect sessions · your own Trading System · rolling out over the next 30 days",
 };

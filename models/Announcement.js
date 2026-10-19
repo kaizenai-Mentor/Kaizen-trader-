@@ -7,6 +7,10 @@ const mongoose = require('mongoose');
 
 const AnnouncementSchema = new mongoose.Schema({
   message: { type: String, required: true, trim: true },
+  // Optional i18n key — when set, views render t(messageKey) instead of
+  // the raw message, so the ticker speaks the reader's language. The raw
+  // message stays as the fallback for announcements without a key.
+  messageKey: { type: String, trim: true },
   startsAt: { type: Date, default: Date.now },
   endsAt: { type: Date, required: true },
   active: { type: Boolean, default: true }

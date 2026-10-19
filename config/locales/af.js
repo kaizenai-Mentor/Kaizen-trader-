@@ -304,4 +304,5 @@ module.exports = {
   'welcome.ctaHow': 'Sien Hoe Dit Werk',
   'ticker.update': 'Opdatering',
   'ticker.dismiss': 'Maak aankondiging toe',
+  'ticker.announce.v2': "<b>KAIZEN V2 KOM BINNEKORT</b> — die telling kry vyf dimensies · beplan → neem op → reflekteer · jou eie Trading System · rol die volgende 30 dae uit",
 };

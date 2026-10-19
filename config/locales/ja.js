@@ -304,4 +304,5 @@ module.exports = {
   'welcome.ctaHow': '仕組みを見る',
   'ticker.update': 'アップデート',
   'ticker.dismiss': 'お知らせを閉じる',
+  'ticker.announce.v2': "<b>KAIZEN V2 がまもなく登場</b> — スコアは5つのディメンションに · 計画 → 記録 → 振り返り · あなた自身のトレーディングシステム · 今後30日かけて順次リリース",
 };
