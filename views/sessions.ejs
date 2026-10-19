@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="<%= lang %>">
 <head>
   <%- include('partials/head') %>
-  <title>KAIZEN — Sessions</title>
+  <title><%= t('title.sessions') %></title>
 </head>
 <body class="app-page">
   <%- include('partials/navbar') %>
@@ -12,25 +12,21 @@
     <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:8px;">
       <div>
         <div class="k-eyebrow" style="margin-bottom:8px;">Sessions</div>
-        <h1 class="k-page-h1" style="font-size:clamp(1.7rem,4vw,2.4rem);margin-bottom:8px;">
-          One loop at a time.
-        </h1>
-        <p style="font-size:0.9rem;color:var(--text-secondary);max-width:560px;line-height:1.75;margin:0;">
-          Plan before you enter. Write what happened. Learn from it.
-        </p>
+        <h1 class="k-page-h1" style="font-size:clamp(1.7rem,4vw,2.4rem);margin-bottom:8px;"><%= t('sessions.sub') %></h1>
+        <p style="font-size:0.9rem;color:var(--text-secondary);max-width:560px;line-height:1.75;margin:0;"><%= t('sessions.sub2') %></p>
       </div>
-      <a href="/dashboard/sessions/new" class="btn-primary k-btn-lg">+ New Session</a>
+      <a href="/dashboard/sessions/new" class="btn-primary k-btn-lg">+ <%= t('sessions.new') %></a>
     </div>
 
     <% if (openPlan) { %>
       <div class="k-card k-card--featured" style="margin:24px 0;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;">
         <div>
-          <span class="k-tag" style="color:var(--gold);border-color:var(--gold-border);margin-bottom:8px;">AWAITING RECORD</span>
+          <span class="k-tag" style="color:var(--gold);border-color:var(--gold-border);margin-bottom:8px;"><%= t('sessions.awaiting') %></span>
           <div style="font-weight:700;color:var(--text-primary);margin-top:8px;">
             <%= openPlan.plan.skipped ? 'Unplanned session in progress' : (openPlan.plan.setup || 'Planned session in progress') %>
           </div>
         </div>
-        <a href="/dashboard/sessions/<%= openPlan._id %>/record" class="btn-primary">Record It →</a>
+        <a href="/dashboard/sessions/<%= openPlan._id %>/record" class="btn-primary"><%= t('sessions.recordIt') %></a>
       </div>
     <% } %>
 
@@ -38,9 +34,9 @@
       <div class="k-card" style="text-align:center;padding:56px 24px;margin-top:24px;">
         <span class="k-kanji k-kanji--md" style="margin:0 auto 16px;">改</span>
         <p style="font-size:0.9rem;color:var(--text-secondary);line-height:1.8;margin:0 0 20px;">
-          No sessions yet. Your first one starts with a plan.
+          <%= t('sessions.empty') %>
         </p>
-        <a href="/dashboard/sessions/new" class="btn-primary">Make Your First Plan</a>
+        <a href="/dashboard/sessions/new" class="btn-primary"><%= t('sessions.firstPlan') %></a>
       </div>
     <% } else { %>
 
@@ -50,7 +46,7 @@
             <div style="min-width:64px;">
               <div style="font-family:var(--font-mono);font-size:0.85rem;color:var(--text-primary);font-weight:500;"><%= s.asset %></div>
               <div style="font-family:var(--font-mono);font-size:0.55rem;color:var(--text-faint);letter-spacing:0.08em;margin-top:3px;">
-                <%= new Date(s.createdAt).toLocaleDateString('en-US',{month:'short',day:'numeric'}) %>
+                <%= new Date(s.createdAt).toLocaleDateString(({en:'en-US',fr:'fr-FR',zh:'zh-CN',ja:'ja-JP',af:'af-ZA'})[lang]||'en-US',{month:'short',day:'numeric'}) %>
               </div>
             </div>
             <div style="flex:1;min-width:0;">

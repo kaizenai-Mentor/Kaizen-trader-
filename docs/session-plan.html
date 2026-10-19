@@ -80,6 +80,8 @@
       <div class="popup-section-label">Coach</div>
       <a href="kaizen-ai.html" class="popup-item"><span class="popup-item-icon"><i data-feather="message-circle" width="14" height="14"></i></span> KAIZEN AI</a>
       <a href="psychology.html" class="popup-item"><span class="popup-item-icon"><i data-feather="brain" width="14" height="14"></i></span> Psychology</a>
+      <a href="improve.html" class="popup-item"><span class="popup-item-icon"><i data-feather="target" width="14" height="14"></i></span> Improve</a>
+      <a href="goals.html" class="popup-item"><span class="popup-item-icon"><i data-feather="check-circle" width="14" height="14"></i></span> Goals</a>
       <a href="memories.html" class="popup-item"><span class="popup-item-icon"><i data-feather="book-open" width="14" height="14"></i></span> Memories</a>
     </div>
 
@@ -94,7 +96,7 @@
     <!-- IDENTITY -->
     <div class="popup-section">
       <div class="popup-section-label">Identity</div>
-      <a href="reputation.html" class="popup-item"><span class="popup-item-icon"><i data-feather="link" width="14" height="14"></i></span> Wallets &amp; Verification</a>
+      <a href="reputation.html" class="popup-item"><span class="popup-item-icon"><i data-feather="award" width="14" height="14"></i></span> Reputation</a>
     </div>
 
     <!-- SETTINGS -->
@@ -121,6 +123,12 @@
       <a href="help.html" class="popup-item">
         <span class="popup-item-icon"><i data-feather="help-circle" width="14" height="14"></i></span> Help Center
       </a>
+    </div>
+
+    <!-- LANGUAGE (owner directive 13 Oct 2026) -->
+    <div class="popup-section">
+      <div style="padding:4px 14px 10px;">
+      </div>
     </div>
 
     <div class="popup-section">
@@ -157,6 +165,8 @@
 <nav class="navbar">
   <a href="dashboard.html" class="nav-logo">改 KAIZEN</a>
   <div class="nav-right">
+    <div class="nav-lang" style="margin-right:6px;display:flex;align-items:center;">
+    </div>
     <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
       <span id="themeIcon">◐</span>
     </button>
@@ -168,7 +178,7 @@
 
 
 
-<div class="k-ticker" id="k-ticker" role="region" aria-label="Announcement">
+<div class="k-ticker" id="k-ticker" role="region" aria-label="Update">
   <button type="button" class="k-ticker-close" onclick="dismissTicker()" aria-label="Dismiss announcement">×</button>
   <div class="k-ticker-track">
     <span class="k-ticker-text"><b>KAIZEN V2 IS COMING</b> — the score gets five dimensions · plan → record → reflect sessions · your own Trading System · rolling out over the next 30 days</span>
@@ -211,17 +221,17 @@
           <div class="form-group">
             <label class="form-label">Current Password</label>
             <input type="password" name="currentPassword"
-              class="form-input" placeholder="Enter current Password">
+              class="form-input" placeholder="Enter current password">
           </div>
           <div class="form-group">
             <label class="form-label">New Password</label>
             <input type="password" name="newPassword"
-              class="form-input" placeholder="Enter New Password">
+              class="form-input" placeholder="Enter new password">
           </div>
           <div class="form-group">
             <label class="form-label">Confirm Password</label>
             <input type="password" name="confirmPassword"
-              class="form-input" placeholder="Confirm New Password">
+              class="form-input" placeholder="Confirm new password">
           </div>
           <button type="submit" class="btn-primary">Update Password</button>
         </form>
@@ -241,18 +251,14 @@
   <main class="k-flow">
 
     <div class="k-stepstrip">
-      <span class="is-active">Plan</span><b>—</b>
+      <span class="is-active">The Plan</span><b>—</b>
       <span>Record</span><b>—</b>
       <span>Reflect</span>
     </div>
 
-    <div class="k-eyebrow" style="margin-bottom:10px;">New Session — The Plan</div>
-    <h1 style="font-size:clamp(1.5rem,3.5vw,2.1rem);font-weight:700;color:var(--text-primary);line-height:1.15;margin:0 0 8px;">
-      Declare it before you do it.
-    </h1>
-    <p style="font-size:0.88rem;color:var(--text-secondary);line-height:1.75;margin:0 0 24px;">
-      This is what KAIZEN measures you against. Under a minute.
-    </p>
+    <div class="k-eyebrow" style="margin-bottom:10px;">The Plan</div>
+    <h1 style="font-size:clamp(1.5rem,3.5vw,2.1rem);font-weight:700;color:var(--text-primary);line-height:1.15;margin:0 0 8px;">Declare it before you do it.</h1>
+    <p style="font-size:0.88rem;color:var(--text-secondary);line-height:1.75;margin:0 0 24px;">This is what KAIZEN measures you against. Under a minute.</p>
 
     <!-- Session type -->
     <div class="k-card" style="margin-bottom:14px;">
@@ -309,10 +315,31 @@
           <div class="k-field">
             <label class="k-fieldlabel">RISK</label>
             
-              <select name="predefinedRisk" class="k-input">
+              <select name="predefinedRisk" id="risk-select" class="k-input">
                 <option value="1%">1% — from your system</option>
+                <option value="CUSTOM">Custom risk for this session</option>
                 <option value="">Different this time (say it in the record)</option>
               </select>
+              <div id="risk-custom-box" style="display:none;margin-top:8px;padding:12px;border:1px solid rgba(245,197,24,0.25);background:rgba(245,197,24,0.04);">
+                <label class="k-fieldlabel" style="margin-bottom:6px;">YOUR RISK FOR THIS SESSION</label>
+                <input type="text" name="customRisk" id="risk-custom-input" class="k-input" placeholder="e.g. 0.5%">
+                <p style="font-size:0.72rem;color:var(--ash);margin:8px 0 0;">This becomes the risk your record is measured against for this session only.</p>
+              </div>
+              <script>
+                (function () {
+                  var sel = document.getElementById('risk-select');
+                  var box = document.getElementById('risk-custom-box');
+                  var input = document.getElementById('risk-custom-input');
+                  function sync() {
+                    var custom = sel.value === 'CUSTOM';
+                    box.style.display = custom ? 'block' : 'none';
+                    input.required = custom;
+                    if (!custom) input.value = '';
+                  }
+                  sel.addEventListener('change', sync);
+                  sync();
+                })();
+              </script>
             
           </div>
 
@@ -334,19 +361,17 @@
           </div>
 
           <div class="k-field">
-            <label class="k-fieldlabel">CONFIDENCE — <span id="conf-val" class="k-gold">7</span>/10</label>
+            <label class="k-fieldlabel">CONFIDENCE (1-10) — <span id="conf-val" class="k-gold">7</span>/10</label>
             <input type="range" name="confidence" min="1" max="10" value="7" class="k-slider" oninput="document.getElementById('conf-val').textContent=this.value">
           </div>
         </div>
       
 
       <div class="k-actions">
-        <button type="submit" class="btn-primary k-btn-lg">Save Plan</button>
-        <button type="submit" name="skip" value="1" class="btn-outline k-btn-lg">Skip — trade without a plan</button>
+        <button type="submit" class="btn-primary k-btn-lg">Lock in the plan</button>
+        <button type="submit" name="skip" value="1" class="btn-outline k-btn-lg">Skip the plan (be honest — it counts against you)</button>
       </div>
-      <p style="font-size:0.72rem;color:var(--ash);line-height:1.7;margin:14px 0 0;">
-        Skipping is allowed — this session will carry less Process evidence. KAIZEN will nudge you to plan next time.
-      </p>
+      <p style="font-size:0.72rem;color:var(--ash);line-height:1.7;margin:14px 0 0;">Skipping is allowed — this session will carry less Process evidence. KAIZEN will nudge you to plan next time.</p>
     </form>
 
   </main>
@@ -355,14 +380,14 @@
   <div class="footer-inner">
     <span class="footer-logo">改 KAIZEN</span>
     <div style="display:flex;gap:20px;flex-wrap:wrap;align-items:center;">
-      <a href="privacy.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Privacy</a>
-      <a href="terms.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Terms</a>
-      <a href="about.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">About</a>
+      <a href="privacy.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Privacy Policy</a>
+      <a href="terms.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Terms of Service</a>
+      <a href="about.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">About Kaizen</a>
       <a href="whitepaper.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Whitepaper</a>
       <a href="help.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Help Center</a>
       <a href="support.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Support</a>
     </div>
-    <span class="footer-right">© 2026 KAIZEN</span>
+    <span class="footer-right">© 2026 KAIZEN. All rights reserved.</span>
   </div>
 </footer>
 <script>if (window.feather) feather.replace();</script>

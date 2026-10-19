@@ -14,21 +14,29 @@ const upload = multer({
   }
 });
 
-router.get('/', protect, dashboardController.getDashboard);
-router.post('/cutover-ack', protect, dashboardController.ackCutover);
+// A() — async route wrapper (crash fix, owner directive): a rejected
+// controller promise reaches the Express error middleware instead of
+// becoming an unhandled rejection (which kills the whole Node process).
+// Sync throws are forwarded too — one wrapper, both failure modes.
+const A = (fn) => (req, res, next) =>
+  Promise.resolve().then(() => fn(req, res, next)).catch(next);
+
+router.get('/', protect, A(dashboardController.getDashboard));
+router.post('/cutover-ack', protect, A(dashboardController.ackCutover));
 
 // ── V2 SESSIONS (core loop): plan → record → reflect → detail ──
-router.get('/sessions', protect, sessionsController.getSessions);
-router.get('/sessions/new', protect, sessionsController.getPlan);
-router.post('/sessions/plan', protect, sessionsController.postPlan);
-router.get('/sessions/:id/record', protect, sessionsController.getRecord);
-router.post('/sessions/:id/record', protect, upload.single('chartImage'), sessionsController.postRecord);
-router.get('/sessions/:id/reflect', protect, sessionsController.getReflect);
-router.post('/sessions/:id/reflect', protect, sessionsController.postReflect);
-router.get('/sessions/:id', protect, sessionsController.getDetail);
+router.get('/sessions', protect, A(sessionsController.getSessions));
+router.get('/sessions/new', protect, A(sessionsController.getPlan));
+router.post('/sessions/plan', protect, A(sessionsController.postPlan));
+router.get('/sessions/:id/record', protect, A(sessionsController.getRecord));
+router.post('/sessions/:id/record', protect, upload.single('chartImage'), A(sessionsController.postRecord));
+router.get('/sessions/:id/reflect', protect, A(sessionsController.getReflect));
+router.post('/sessions/:id/reflect', protect, A(sessionsController.postReflect));
+router.get('/sessions/:id/chart-image', protect, A(sessionsController.getChartImage));
+router.get('/sessions/:id', protect, A(sessionsController.getDetail));
 
 // Legacy journal: form handler kept working; the page redirects to Sessions
-router.post('/journal', protect, upload.single('chartImage'), dashboardController.addJournal);
+router.post('/journal', protect, upload.single('chartImage'), A(dashboardController.addJournal));
 router.get('/journal', protect, (req, res) => res.redirect('/dashboard/sessions'));
 
 router.get('/chart', protect, (req, res) => {

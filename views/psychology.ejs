@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="<%= lang %>">
 <head>
   <%- include('partials/head') %>
-  <title>KAIZEN — Psychology</title>
+  <title><%= t('title.psychology') %></title>
 </head>
 <body class="app-page k-chatbody">
   <%- include('partials/navbar') %>
@@ -13,35 +13,35 @@
   <main class="k-flow k-flow--wide">
     <div class="k-cockpit-head">
       <div>
-        <div class="k-eyebrow">COACH · 改</div>
-        <h1 class="k-page-title">Psychology</h1>
-        <p class="k-page-sub">The room with no scoreboard. Most of the time it is not the rules — it is the state. Work on the state here.</p>
+        <div class="k-eyebrow"><%= t('ai.eyebrow') %></div>
+        <h1 class="k-page-title"><%= t('psych.title') %></h1>
+        <p class="k-page-sub"><%= t('psych.sub') %></p>
       </div>
     </div>
 
     <% if (mindState && (mindState.summary || (mindState.themes && mindState.themes.length))) { %>
     <section class="k-card k-mindcard">
-      <div class="k-panel-title">WHAT <span class="k-kanji k-kanji--sm">改</span> UNDERSTANDS ABOUT ME</div>
+      <div class="k-panel-title"><%= t('psych.what') %><span class="k-kanji k-kanji--sm">改</span><%= t('psych.understands') %></div>
       <% if (mindState.summary) { %>
         <p class="k-mindsummary"><%= mindState.summary %></p>
       <% } %>
       <% if (mindState.themes && mindState.themes.length) { %>
         <div class="k-mindthemes">
-          <% mindState.themes.forEach(function(t){ %>
+          <% mindState.themes.forEach(function(th){ %>
             <div class="k-mindtheme">
-              <span class="k-themechip is-<%= t.status %>"><%= t.status %></span>
-              <span class="k-themename"><%= t.name %></span>
-              <span class="k-thememeta"><%= t.occurrences %>× · since <%= new Date(t.firstSeen).toLocaleDateString('en-US',{month:'short',year:'numeric'}) %></span>
+              <span class="k-themechip is-<%= th.status %>"><%= th.status %></span>
+              <span class="k-themename"><%= th.name %></span>
+              <span class="k-thememeta"><%= th.occurrences %><%= t('psych.since') %><%= new Date(th.firstSeen).toLocaleDateString(({en:'en-US',fr:'fr-FR',zh:'zh-CN',ja:'ja-JP',af:'af-ZA'})[lang]||'en-US',{month:'short',year:'numeric'}) %></span>
             </div>
           <% }); %>
         </div>
       <% } %>
-      <div class="k-fieldhint">KAIZEN updates this as you talk — nothing here is deletable. Memory is how a pattern gets recognized when it returns.</div>
+      <div class="k-fieldhint"><%= t('psych.memoryNote') %></div>
     </section>
     <% } %>
 
     <section class="k-card">
-      <div class="k-panel-title" style="margin-bottom:14px;">START A CONVERSATION</div>
+      <div class="k-panel-title" style="margin-bottom:14px;"><%= t('ai.startConv') %></div>
       <% if (openers && openers.length) { %>
         <div class="k-openerrow">
           <% openers.forEach(function(o){ %>
@@ -50,23 +50,23 @@
         </div>
       <% } %>
       <div class="k-composer">
-        <textarea id="psych-input" rows="2" placeholder="Tell KAIZEN what is going on…"></textarea>
-        <button type="button" id="psych-send" class="k-btn k-btn-primary">Send</button>
+        <textarea id="psych-input" rows="2" placeholder="<%= t('psych.placeholder') %>"></textarea>
+        <button type="button" id="psych-send" class="k-btn k-btn-primary"><%= t('ai.send') %></button>
       </div>
     </section>
 
     <section class="k-card">
-      <div class="k-panel-title" style="margin-bottom:6px;">CONVERSATIONS</div>
+      <div class="k-panel-title" style="margin-bottom:6px;"><%= t('ai.conversations') %></div>
       <% if (threads && threads.length) { %>
         <div class="k-threadlist">
-          <% threads.forEach(function(t){ %>
-            <a class="k-threadrow" href="/psychology/t/<%= t._id %>">
+          <% threads.forEach(function(thr){ %>
+            <a class="k-threadrow" href="/psychology/t/<%= thr._id %>">
               <div class="k-threadmain">
-                <span class="k-threadtitle"><%= t.title %></span>
+                <span class="k-threadtitle"><%= thr.title %></span>
                 <span class="k-threadmeta">
-                  <%= t.messageCount %> message<%= t.messageCount === 1 ? '' : 's' %>
-                  · <%= new Date(t.lastMessageAt).toLocaleDateString('en-US',{month:'short',day:'numeric'}) %>
-                  <% if (t.imported) { %> · imported<% } %>
+                  <%= thr.messageCount %><%= t('ai.messageWord') %><%= thr.messageCount === 1 ? '' : 's' %>
+                  · <%= new Date(thr.lastMessageAt).toLocaleDateString(({en:'en-US',fr:'fr-FR',zh:'zh-CN',ja:'ja-JP',af:'af-ZA'})[lang]||'en-US',{month:'short',day:'numeric'}) %>
+                  <% if (thr.imported) { %><%= t('psych.imported') %><% } %>
                 </span>
               </div>
               <span class="k-threadarrow">→</span>
@@ -74,7 +74,7 @@
           <% }); %>
         </div>
       <% } else { %>
-        <p class="k-emptyhint">No conversations yet. Start one above — it stays between you and KAIZEN.</p>
+        <p class="k-emptyhint"><%= t('psych.none') %></p>
       <% } %>
     </section>
   </main>
@@ -84,7 +84,7 @@
   <!-- ═══ ONE CONVERSATION ═══ -->
   <main class="k-flow k-flow--wide k-chatmain">
     <div class="k-chathead">
-      <a class="k-backlink" href="/psychology">← Psychology</a>
+      <a class="k-backlink" href="/psychology">← <%= t('psych.title') %></a>
       <span class="k-chattitle"><%= thread.title %></span>
     </div>
 
@@ -116,8 +116,8 @@
     <% } %>
 
     <div class="k-composer k-composer--sticky">
-      <textarea id="psych-input" rows="2" placeholder="Reply to KAIZEN…"></textarea>
-      <button type="button" id="psych-send" class="k-btn k-btn-primary">Send</button>
+      <textarea id="psych-input" rows="2" placeholder="<%= t('psych.placeholder') %>"></textarea>
+      <button type="button" id="psych-send" class="k-btn k-btn-primary"><%= t('ai.send') %></button>
     </div>
   </main>
 

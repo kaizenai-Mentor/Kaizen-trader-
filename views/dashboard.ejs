@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="<%= lang %>">
 <head>
   <%- include('partials/head') %>
-  <title>KAIZEN — Cockpit</title>
+  <title><%= t('title.cockpit') %></title>
 </head>
 <body class="app-page">
   <%- include('partials/navbar') %>
@@ -13,14 +13,14 @@
 
     <div class="k-cockpit-head">
       <div>
-        <div class="k-eyebrow">COCKPIT · 改</div>
+        <div class="k-eyebrow"><%= t('dash.eyebrow') %></div>
         <h1 class="k-page-title"><%= greet %>, <%= user.username %>.</h1>
-        <p class="k-page-sub">One honest question: how are you improving?</p>
+        <p class="k-page-sub"><%= t('dash.question') %></p>
       </div>
-      <div class="k-streakchip" title="Practice consistency — never presented as trading performance">
+      <div class="k-streakchip" title="<%= t('dash.scoreAria') %>">
         <span class="k-streak-flame">◆</span>
         <span class="k-streak-num"><%= streak %></span>
-        <span class="k-streak-label">day streak</span>
+        <span class="k-streak-label"><%= t('dash.dayStreak') %></span>
       </div>
     </div>
 
@@ -34,9 +34,9 @@
           <div class="k-scoreline">
             <span class="k-scorenum"><%= score.overall %></span>
             <div class="k-scoremeta">
-              <% if (score.overallState === 'READY') { %><span class="k-statechip is-ready">READY</span><% } %>
-              <% if (score.overallState === 'PARTIAL') { %><span class="k-statechip is-partial">PARTIAL — FROM YOUR WRITTEN HISTORY</span><% } %>
-              <span class="k-scoresub">From your last <%= score.sessionsConsidered %> sessions · <a class="k-link" href="/about#kaizen-score">How is this scored?</a></span>
+              <% if (score.overallState === 'READY') { %><span class="k-statechip is-ready"><%= t('dash.ready') %></span><% } %>
+              <% if (score.overallState === 'PARTIAL') { %><span class="k-statechip is-partial"><%= t('dash.partial') %></span><% } %>
+              <span class="k-scoresub"><%= t('dash.fromLast') %><%= score.sessionsConsidered %><%= t('dash.sessionsDot') %><a class="k-link" href="/about#kaizen-score"><%= t('dash.howScored') %></a></span>
             </div>
           </div>
 
@@ -55,7 +55,7 @@
           <% var whyDims = ['behavior','risk','process','learning','execution'].filter(function(k){ return score.dimensions && score.dimensions[k] && score.dimensions[k].reasons && score.dimensions[k].reasons.length; }); %>
           <% if (whyDims.length) { %>
             <div class="k-whyblock">
-              <div class="k-metric-label">WHY THIS NUMBER</div>
+              <div class="k-metric-label"><%= t('dash.whyNumber') %></div>
               <% whyDims.slice(0,3).forEach(function(k){ %>
                 <p class="k-whyline">
                   <span class="k-whydim"><%= dimensionLabels[k].toUpperCase() %></span> — <%= score.dimensions[k].reasons[0] %>
@@ -67,8 +67,8 @@
           <div class="k-building">
             <span class="k-buildnum">改</span>
             <div>
-              <div class="k-buildtitle">Building your baseline</div>
-              <p class="k-buildtext">No score yet — and that's honest, not broken. The engine needs a few sessions through plan → record → reflect before it will say anything about you. No instant judgment, no vanity number.</p>
+              <div class="k-buildtitle"><%= t('dash.buildingBase') %></div>
+              <p class="k-buildtext"><%= t('dash.noScore') %></p>
             </div>
           </div>
         <% } %>
@@ -76,9 +76,9 @@
 
       <!-- ═══ TODAY ═══ -->
       <section class="k-card k-todaycard">
-        <div class="k-panel-title">TODAY</div>
+        <div class="k-panel-title"><%= t('dash.today') %></div>
         <% if (!todayActions.length) { %>
-          <p class="k-todaydone">Today is complete. Rest is also discipline — come back tomorrow.</p>
+          <p class="k-todaydone"><%= t('dash.todayDone') %></p>
         <% } else { %>
           <% todayActions.forEach(function(a){ %>
             <div class="k-todayitem">
@@ -95,33 +95,33 @@
       <!-- ═══ RECENT PATTERN ═══ -->
       <% if (predictiveWarning) { %>
         <section class="k-card k-patterncard is-<%= predictiveWarning.level %>">
-          <div class="k-panel-title">RECENT PATTERN</div>
+          <div class="k-panel-title"><%= t('dash.recentPattern') %></div>
           <p class="k-patternmsg"><%= predictiveWarning.message %></p>
           <% if (predictiveWarning.level !== 'positive') { %>
-            <div class="k-patternfoot">A pattern is a signal, not a verdict — the next session is what counts.</div>
+            <div class="k-patternfoot"><%= t('dash.patternNote') %></div>
           <% } %>
         </section>
       <% } %>
 
       <!-- ═══ NEXT MILESTONE ═══ -->
       <section class="k-card k-milestonecard">
-        <div class="k-panel-title">NEXT MILESTONE</div>
+        <div class="k-panel-title"><%= t('dash.nextMilestone') %></div>
         <div class="k-milestone-label"><%= nextMilestone.label %></div>
         <div class="k-milestone-track"><span class="k-milestone-fill" data-meter="<%= nextMilestone.progress %>"></span></div>
         <div class="k-milestone-meta">
-          <% if (nextMilestone.remaining > 0) { %><%= nextMilestone.remaining %> to go<% } else { %>Reached<% } %>
-          · <a class="k-link" href="/leaderboard">My Progress</a>
+          <% if (nextMilestone.remaining > 0) { %><%= nextMilestone.remaining %><%= t('dash.toGo') %><% } else { %><%= t('dash.reached') %><% } %>
+          · <a class="k-link" href="/leaderboard"><%= t('dash.myProgress') %></a>
         </div>
       </section>
 
       <!-- ═══ ESSENTIALS: RECENT SESSIONS ═══ -->
       <section class="k-card k-essentialcard">
         <div class="k-panel-title" style="display:flex;align-items:center;justify-content:space-between;">
-          <span>RECENT SESSIONS</span>
-          <a class="k-link" href="/dashboard/sessions">All sessions →</a>
+          <span><%= t('dash.recentSessions') %></span>
+          <a class="k-link" href="/dashboard/sessions"><%= t('dash.allSessions') %></a>
         </div>
         <% if (!sessions.length) { %>
-          <p class="k-emptyhint">Nothing yet. Your first plan is one tap away — top of this page.</p>
+          <p class="k-emptyhint"><%= t('dash.nothingYet') %></p>
         <% } else { %>
           <div class="k-minirows">
             <% sessions.forEach(function(s){ %>
@@ -130,17 +130,17 @@
                 <span class="k-type-tag k-type-<%= (s.sessionType || 'LIVE').toLowerCase() %>"><%= s.sessionType || 'LIVE' %></span>
                 <span class="k-minirow-asset"><%= s.asset %></span>
                 <span class="k-minirow-state"><%= s.state %></span>
-                <span class="k-minirow-date"><%= new Date(s.createdAt).toLocaleDateString('en-US',{month:'short',day:'numeric'}) %></span>
+                <span class="k-minirow-date"><%= new Date(s.createdAt).toLocaleDateString(({en:'en-US',fr:'fr-FR',zh:'zh-CN',ja:'ja-JP',af:'af-ZA'})[lang]||'en-US',{month:'short',day:'numeric'}) %></span>
               </a>
             <% }); %>
           </div>
         <% } %>
         <div class="k-essentialfoot">
-          <span><%= totalSessions %> session<%= totalSessions === 1 ? '' : 's' %> total</span>
+          <span><%= totalSessions %><%= t('word.session') %><%= totalSessions === 1 ? '' : 's' %><%= t('word.total') %></span>
           <span>·</span>
-          <span><%= badgeCount %> milestone<%= badgeCount === 1 ? '' : 's' %></span>
+          <span><%= badgeCount %><%= t('word.milestone') %><%= badgeCount === 1 ? '' : 's' %></span>
           <span>·</span>
-          <a class="k-link" href="/settings/trading-system">System v<%= systemVersion %></a>
+          <a class="k-link" href="/settings/trading-system"><%= t('dash.systemV') %><%= systemVersion %></a>
         </div>
       </section>
 
@@ -150,7 +150,7 @@
   <% if (newBadges && newBadges.length) { %>
     <div class="k-toast" id="badgeToast">
       <% newBadges.forEach(function(b){ %>
-        <div class="k-toast-item"><span class="k-kanji k-kanji--sm">改</span> Milestone reached: <b><%= b.name %></b></div>
+        <div class="k-toast-item"><span class="k-kanji k-kanji--sm">改</span><%= t('dash.milestoneReached') %><b><%= b.name %></b></div>
       <% }); %>
     </div>
   <% } %>
@@ -160,13 +160,13 @@
     <div class="k-modalwrap" id="scoreIntroModal">
       <div class="k-modal">
         <span class="k-kanji k-kanji--lg">改</span>
-        <h2 class="k-modaltitle">How your KAIZEN Score works</h2>
-        <p class="k-modaltext">Every session you finish through <b>Plan → Record → Reflect</b> feeds one score across five dimensions — <b>Process, Risk, Execution, Behavior, Learning &amp; Consistency</b>. It measures how you traded, not what you made.</p>
-        <p class="k-modaltext">Every number shows its <b>WHY</b> — you will always see the reason behind it, in plain words.</p>
-        <p class="k-modaltext">When there isn't enough evidence yet, a dimension says <b>Building</b> instead of guessing. That's not a lower score — it's an honest one. It fills in as you work.</p>
+        <h2 class="k-modaltitle"><%= t('dash.howWorks') %></h2>
+        <p class="k-modaltext"><%= t('dash.exA') %><b><%= t('dash.exLoop') %></b><%= t('dash.exB') %><b><%= t('dash.exDims') %></b><%= t('dash.exC') %></p>
+        <p class="k-modaltext"><%= t('dash.exD') %><b><%= t('dash.exWhy') %></b><%= t('dash.exE') %></p>
+        <p class="k-modaltext"><%= t('dash.exF') %><b><%= t('dash.exBuilding') %></b><%= t('dash.exG') %></p>
         <div class="k-modalactions">
-          <a class="k-btn k-btn-primary" href="/dashboard/sessions/new">Plan a session</a>
-          <button class="k-btn k-btn-ghost" type="button" onclick="document.getElementById('scoreIntroModal').remove()">Got it</button>
+          <a class="k-btn k-btn-primary" href="/dashboard/sessions/new"><%= t('dash.planSession') %></a>
+          <button class="k-btn k-btn-ghost" type="button" onclick="document.getElementById('scoreIntroModal').remove()"><%= t('dash.gotIt') %></button>
         </div>
       </div>
     </div>
@@ -177,13 +177,13 @@
     <div class="k-modalwrap" id="cutoverModal">
       <div class="k-modal">
         <span class="k-kanji k-kanji--lg">改</span>
-        <h2 class="k-modaltitle">Your Discipline Score is now your KAIZEN Score</h2>
-        <p class="k-modaltext">Same discipline, sharper instrument. From today your score is computed by a fixed formula across five dimensions — <b>Process, Risk, Execution, Behavior, Learning &amp; Consistency</b> — and every score shows its WHY.</p>
-        <p class="k-modaltext">Nothing from your history was lost. Your past sessions were read and carried over; if a dimension needs more evidence it says <b>Building</b> instead of guessing. That's not a lower score — it's an honest one.</p>
-        <p class="k-modaltext">Sessions are now a loop: <b>Plan → Record → Reflect → Analyzed</b>. The plan you write before the session is what your execution is measured against.</p>
+        <h2 class="k-modaltitle"><%= t('dash.renameTitle') %></h2>
+        <p class="k-modaltext"><%= t('dash.renameA') %><b><%= t('dash.exDims') %></b><%= t('dash.renameB') %></p>
+        <p class="k-modaltext"><%= t('dash.renameC') %><b>Building</b><%= t('dash.renameD') %></p>
+        <p class="k-modaltext"><%= t('dash.loopNow') %><b><%= t('dash.loopChain') %></b><%= t('dash.loopNote') %></p>
         <div class="k-modalactions">
-          <a class="k-btn k-btn-primary" href="/dashboard/sessions/new">Plan a session</a>
-          <button class="k-btn k-btn-ghost" type="button" onclick="document.getElementById('cutoverModal').remove()">Got it</button>
+          <a class="k-btn k-btn-primary" href="/dashboard/sessions/new"><%= t('dash.planSession') %></a>
+          <button class="k-btn k-btn-ghost" type="button" onclick="document.getElementById('cutoverModal').remove()"><%= t('dash.gotIt') %></button>
         </div>
       </div>
     </div>

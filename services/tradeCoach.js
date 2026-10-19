@@ -21,6 +21,8 @@
  */
 
 const llm = require('./llm');
+const i18n = require('../config/locales');
+
 const { CRISIS_RE, CRISIS_RESPONSE } = require('./psychCoach');
 
 // Signal-seeking language — declined and redirected to process.
@@ -88,10 +90,12 @@ HOW YOU COACH:
 2. Review, don't instruct: read what they show you (including chart images) and respond with what their own rules would say. Teach the reasoning process.
 3. If they ask for a signal, a prediction, or "what should I trade": decline honestly — you don't predict markets, and prediction is not the skill. Redirect to their process. Never soften this into a maybe.
 4. One clear next step per reply. Short paragraphs. Under 250 words.
-5. If they share a chart image, describe what you observe neutrally (structure, levels, in relation to their stated rules) — no direction calls.
-6. Warm, direct, zero flattery. Never start with "I". No scores, no percentages as judgments — facts from their record are fine ("rules broken in 3 of your last 5") but numbers that sound like measurement are not.
+5. THE IMAGE RULE. A chart image is SILENT CONTEXT: it informs your reply without being narrated back unprompted — don't open with what you see unless they asked you to look. When they do ask, your answer is CORRESPONDENCE-ONLY: observations map 1:1 to what is visibly on the chart and to their stated rules, nothing inferred beyond the frame. The descriptive vocabulary is FROZEN: structure, levels, zones, trend, their rule references. Direction calls, predictions, and "setup" language never appear.
+6. Warm, direct, zero flattery. Never start with "I". VOICE: always second person with explicit possession — "your execution", "your rule", "you entered" — never bare noun phrases about their trading ("execution slipped" → "your execution slipped"). No scores, no percentages as judgments — facts from their record are fine ("rules broken in 3 of your last 5") but numbers that sound like measurement are not.
 7. You are building a trader who doesn't need you. Teach the checks, not the answers.
 8. GROUNDING (frozen): conclusions about their discipline come only from recorded behavior — checks, rule compliance, session facts. Never tell them they are disciplined because their message sounded committed. A convincing description is not compliance; the record is.
+9. CONSENT-BASED QUESTIONS. Questions are offered, never required. If they ask you to stop asking — or say they don't want questions — ask nothing further until they invite one. Quiz mode dies the moment they withdraw consent.
+10. LANGUAGE. Always reply in English. Machine blocks stay in their fixed English format.
 
 QUIZ MODE: when asked to quiz, ask ONE question about THEIR actual rules (from the system above) — specific, checkable, phrased so they must reason (not yes/no). Wait for their answer before the next one. When they answer, say what their system actually says, verbatim, and whether they got it.`;
 }
@@ -103,29 +107,35 @@ function buildQuizPrompt({ user, system, sessions }) {
 
 // ── Deterministic fallbacks (no API key) ─────────────────────────
 
-function buildFallback({ userMessage, system, sessions, imageAttached }) {
+function buildFallback({ userMessage, system, sessions, imageAttached, lang = 'en' }) {
+  const tr = (k, p) => i18n.t(lang, k, p);
   const msg = (userMessage || '').toLowerCase();
   const hasRules = system && (system.entryRules || (system.setups && system.setups.length));
+  const ruleText = (system && (system.entryRules || (system.setups && system.setups[0] && system.setups[0].name))) || '';
+  const snippet = (userMessage || '').trim().split(/\s+/).slice(0, 12).join(' ');
   const parts = [];
 
   if (SIGNAL_RE.test(msg)) {
-    parts.push('Honest answer: I do not predict markets, and I will not pick a direction for you. Anyone who does is selling you something.');
-    parts.push(hasRules
-      ? 'What I can do is sharper: tell me the setup you are looking at and I will hold it against your own entry rules — the ones you wrote. If it passes them, the trade speaks for itself. If it does not, no signal from me would make it better.'
-      : 'Right now your system has no written entry rules — so there is nothing for me to check the idea against. Write your first entry rule in My Trading System and bring the idea back. That is the trade that matters today.');
+    parts.push(tr('coach.tc.noPredict'));
+    parts.push(hasRules ? tr('coach.tc.signalRules') : tr('coach.tc.signalNoRules'));
   } else if (imageAttached) {
-    parts.push('I cannot see the image in this mode, and I will not pretend to. Here is what still works: describe what you see — the level, the structure, where your entry would be — and I will check it against your written rules.');
+    parts.push(tr('coach.tc.image'));
+    if (snippet) parts.push(tr('coach.tc.imageMsg', { snippet }));
+    if (hasRules) parts.push(tr('coach.tc.ruleQuote', { rule: ruleText }));
   } else if (msg.includes('quiz')) {
     parts.push(hasRules
-      ? `Quiz time, from your own book: your system says you risk ${system.riskRules && system.riskRules.riskPerTrade || '—'} per trade with a daily stop of ${system.riskRules && system.riskRules.dailyDrawdown || '—'}. Today you are down to your daily stop, and one more setup you love appears. Walk me through exactly what your rules do — and what you do if the rules and the urge disagree.`
-      : 'Cannot quiz you yet — your system has no written rules, and I do not test memory, I test rules. Write your first one in My Trading System and I will quiz you on it daily.');
+      ? tr('coach.tc.quizRules', {
+          risk: (system.riskRules && system.riskRules.riskPerTrade) || '\u2014',
+          stop: (system.riskRules && system.riskRules.dailyDrawdown) || '\u2014'
+        })
+      : tr('coach.tc.quizNoRules'));
   } else {
-    parts.push('Let me hold that against your book before I say anything.');
+    parts.push(tr('coach.tc.hold'));
     if (hasRules) {
-      parts.push(`Your entry rule reads: "${system.entryRules || (system.setups[0] && system.setups[0].name)}". Does what you just described satisfy it — every clause, not most of it?`);
-      parts.push('If the honest answer is yes, the next check is risk: does the size you described fit within what your system allows? If either check fails, the conversation is not about whether the trade is good — it is about which rule you are about to negotiate with.');
+      parts.push(tr('coach.tc.ruleQuote', { rule: ruleText }));
+      parts.push(tr('coach.tc.riskCheck'));
     } else {
-      parts.push('Before opinions, rules: your system does not have written entry rules yet. Write one — a single sentence a stranger could check a chart against. Bring this idea back after, and we will test it properly.');
+      parts.push(tr('coach.tc.noRules'));
     }
   }
   return parts.join('\n\n');
@@ -173,7 +183,7 @@ async function converse({ user, system, sessions, threadMessages = [], userMessa
   }
 
   return {
-    reply: buildFallback({ userMessage, system, sessions, imageAttached: !!imageDataUrl })
+    reply: buildFallback({ userMessage, system, sessions, imageAttached: !!imageDataUrl, lang: i18n.normalize(user && user.preferredLang) })
   };
 }
 
@@ -193,7 +203,8 @@ async function* streamConverse(args) {
   }
   yield buildFallback({
     userMessage: args.userMessage, system: args.system,
-    sessions: args.sessions, imageAttached: !!args.imageDataUrl
+    sessions: args.sessions, imageAttached: !!args.imageDataUrl,
+    lang: i18n.normalize(args.user && args.user.preferredLang)
   });
 }
 
@@ -203,6 +214,7 @@ module.exports = {
   streamConverse,
   buildFallback,
   buildSystemPrompt,
+  buildQuizPrompt,
   digestSystem,
   digestSessions,
   SIGNAL_RE,

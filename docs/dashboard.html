@@ -80,6 +80,8 @@
       <div class="popup-section-label">Coach</div>
       <a href="kaizen-ai.html" class="popup-item"><span class="popup-item-icon"><i data-feather="message-circle" width="14" height="14"></i></span> KAIZEN AI</a>
       <a href="psychology.html" class="popup-item"><span class="popup-item-icon"><i data-feather="brain" width="14" height="14"></i></span> Psychology</a>
+      <a href="improve.html" class="popup-item"><span class="popup-item-icon"><i data-feather="target" width="14" height="14"></i></span> Improve</a>
+      <a href="goals.html" class="popup-item"><span class="popup-item-icon"><i data-feather="check-circle" width="14" height="14"></i></span> Goals</a>
       <a href="memories.html" class="popup-item"><span class="popup-item-icon"><i data-feather="book-open" width="14" height="14"></i></span> Memories</a>
     </div>
 
@@ -94,7 +96,7 @@
     <!-- IDENTITY -->
     <div class="popup-section">
       <div class="popup-section-label">Identity</div>
-      <a href="reputation.html" class="popup-item"><span class="popup-item-icon"><i data-feather="link" width="14" height="14"></i></span> Wallets &amp; Verification</a>
+      <a href="reputation.html" class="popup-item"><span class="popup-item-icon"><i data-feather="award" width="14" height="14"></i></span> Reputation</a>
     </div>
 
     <!-- SETTINGS -->
@@ -121,6 +123,12 @@
       <a href="help.html" class="popup-item">
         <span class="popup-item-icon"><i data-feather="help-circle" width="14" height="14"></i></span> Help Center
       </a>
+    </div>
+
+    <!-- LANGUAGE (owner directive 13 Oct 2026) -->
+    <div class="popup-section">
+      <div style="padding:4px 14px 10px;">
+      </div>
     </div>
 
     <div class="popup-section">
@@ -157,6 +165,8 @@
 <nav class="navbar">
   <a href="dashboard.html" class="nav-logo">改 KAIZEN</a>
   <div class="nav-right">
+    <div class="nav-lang" style="margin-right:6px;display:flex;align-items:center;">
+    </div>
     <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
       <span id="themeIcon">◐</span>
     </button>
@@ -168,7 +178,7 @@
 
 
 
-<div class="k-ticker" id="k-ticker" role="region" aria-label="Announcement">
+<div class="k-ticker" id="k-ticker" role="region" aria-label="Update">
   <button type="button" class="k-ticker-close" onclick="dismissTicker()" aria-label="Dismiss announcement">×</button>
   <div class="k-ticker-track">
     <span class="k-ticker-text"><b>KAIZEN V2 IS COMING</b> — the score gets five dimensions · plan → record → reflect sessions · your own Trading System · rolling out over the next 30 days</span>
@@ -211,17 +221,17 @@
           <div class="form-group">
             <label class="form-label">Current Password</label>
             <input type="password" name="currentPassword"
-              class="form-input" placeholder="Enter current Password">
+              class="form-input" placeholder="Enter current password">
           </div>
           <div class="form-group">
             <label class="form-label">New Password</label>
             <input type="password" name="newPassword"
-              class="form-input" placeholder="Enter New Password">
+              class="form-input" placeholder="Enter new password">
           </div>
           <div class="form-group">
             <label class="form-label">Confirm Password</label>
             <input type="password" name="confirmPassword"
-              class="form-input" placeholder="Confirm New Password">
+              class="form-input" placeholder="Confirm new password">
           </div>
           <button type="submit" class="btn-primary">Update Password</button>
         </form>
@@ -245,7 +255,7 @@
     <div class="k-cockpit-head">
       <div>
         <div class="k-eyebrow">COCKPIT · 改</div>
-        <h1 class="k-page-title">Good morning, Kaizen.</h1>
+        <h1 class="k-page-title">Good afternoon, Kaizen.</h1>
         <p class="k-page-sub">One honest question: how are you improving?</p>
       </div>
       <div class="k-streakchip" title="Practice consistency — never presented as trading performance">
@@ -267,7 +277,7 @@
             <div class="k-scoremeta">
               <span class="k-statechip is-ready">READY</span>
               
-              <span class="k-scoresub">From your last 14 sessions · <a class="k-link" href="/about#kaizen-score">How is this scored?</a></span>
+              <span class="k-scoresub">From your last14sessions ·<a class="k-link" href="/about#kaizen-score">How is this scored?</a></span>
             </div>
           </div>
 
@@ -376,7 +386,7 @@
         <div class="k-milestone-label">25 sessions logged</div>
         <div class="k-milestone-track"><span class="k-milestone-fill" data-meter="56"></span></div>
         <div class="k-milestone-meta">
-          11 to go
+          11to go
           · <a class="k-link" href="leaderboard.html">My Progress</a>
         </div>
       </section>
@@ -433,9 +443,9 @@
           </div>
         
         <div class="k-essentialfoot">
-          <span>48 sessions total</span>
+          <span>48sessionstotal</span>
           <span>·</span>
-          <span>2 milestones</span>
+          <span>2milestones</span>
           <span>·</span>
           <a class="k-link" href="trading-system.html">System v3</a>
         </div>
@@ -456,14 +466,14 @@
   <div class="footer-inner">
     <span class="footer-logo">改 KAIZEN</span>
     <div style="display:flex;gap:20px;flex-wrap:wrap;align-items:center;">
-      <a href="privacy.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Privacy</a>
-      <a href="terms.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Terms</a>
-      <a href="about.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">About</a>
+      <a href="privacy.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Privacy Policy</a>
+      <a href="terms.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Terms of Service</a>
+      <a href="about.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">About Kaizen</a>
       <a href="whitepaper.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Whitepaper</a>
       <a href="help.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Help Center</a>
       <a href="support.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Support</a>
     </div>
-    <span class="footer-right">© 2026 KAIZEN</span>
+    <span class="footer-right">© 2026 KAIZEN. All rights reserved.</span>
   </div>
 </footer>
 <script>if (window.feather) feather.replace();</script>

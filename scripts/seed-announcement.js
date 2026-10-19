@@ -24,6 +24,7 @@ async function main() {
   await Announcement.updateMany({}, { $set: { active: false } });
   const doc = await Announcement.create({
     message,
+    messageKey: 'ticker.announce.v2',
     startsAt: new Date(),
     endsAt: new Date(Date.now() + days * 24 * 60 * 60 * 1000),
     active: true

@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="<%= lang %>">
 <head>
   <%- include('partials/head') %>
-  <title>KAIZEN — My Progress</title>
+  <title><%= t('title.progress') %></title>
 </head>
 <body class="app-page">
   <%- include('partials/navbar') %>
@@ -11,14 +11,14 @@
 
     <div class="k-cockpit-head">
       <div>
-        <div class="k-eyebrow">IMPROVE · 改</div>
-        <h1 class="k-page-title">My Progress</h1>
-        <p class="k-page-sub">Progress, not performance. What the record says changed.</p>
+        <div class="k-eyebrow"><%= t('prog.eyebrow') %></div>
+        <h1 class="k-page-title"><%= t('dash.myProgress') %></h1>
+        <p class="k-page-sub"><%= t('prog.sub') %></p>
       </div>
       <div class="k-streakchip" title="Practice consistency — never trading performance">
         <span class="k-streak-flame">◆</span>
         <span class="k-streak-num"><%= streak %></span>
-        <span class="k-streak-label">day streak</span>
+        <span class="k-streak-label"><%= t('dash.dayStreak') %></span>
       </div>
     </div>
 
@@ -26,40 +26,40 @@
 
     <% if (move) { %>
     <section class="k-card k-card--elevated">
-      <div class="k-panel-title">SCORE TIMELINE — <span class="k-gold">KAIZEN SCORE</span></div>
+      <div class="k-panel-title"><%= t('prog.scoreTimeline') %><span class="k-gold"><%= t('dash.score') %></span></div>
       <div class="k-scorerow">
         <span class="k-scorenum"><%= move.overall.now %></span>
         <div class="k-scoremeta">
           <% if (move.overall.same) { %>
-            <span class="k-deltachip is-flat">first reading</span>
+            <span class="k-deltachip is-flat"><%= t('prog.firstReading') %></span>
           <% } else if (move.overall.delta > 0) { %>
-            <span class="k-deltachip is-up">▲ +<%= move.overall.delta %> in 30 days</span>
+            <span class="k-deltachip is-up">▲ +<%= move.overall.delta %><%= t('prog.in30') %></span>
           <% } else if (move.overall.delta < 0) { %>
-            <span class="k-deltachip is-down">▼ <%= move.overall.delta %> in 30 days</span>
+            <span class="k-deltachip is-down">▼ <%= move.overall.delta %><%= t('prog.in30') %></span>
           <% } else { %>
-            <span class="k-deltachip is-flat">± 0 in 30 days</span>
+            <span class="k-deltachip is-flat"><%= t('prog.flat30') %></span>
           <% } %>
-          <span class="k-scoresub"><%= points.length %> computed score<%= points.length === 1 ? '' : 's' %> on record · <a class="k-link" href="/about#kaizen-score">How is this scored?</a></span>
+          <span class="k-scoresub"><%= points.length %><%= t('prog.computed') %><%= points.length === 1 ? '' : 's' %><%= t('prog.onRecord') %><a class="k-link" href="/about#kaizen-score"><%= t('dash.howScored') %></a></span>
         </div>
       </div>
       <% if (points.length >= 2) { %>
-        <svg class="k-spark" viewBox="0 0 300 64" preserveAspectRatio="none" role="img" aria-label="Score timeline">
+        <svg class="k-spark" viewBox="0 0 300 64" preserveAspectRatio="none" role="img" aria-label="<%= t('prog.timelineAria') %>">
           <line x1="0" y1="63" x2="300" y2="63" class="k-spark-base"></line>
           <polyline class="k-spark-line" points="<%= sparkPoints %>"></polyline>
           <% var lastPt = points[points.length-1]; %>
           <circle class="k-spark-dot" cx="300" cy="<%= 64 - (lastPt.v / 100) * 64 %>" r="2.5"></circle>
         </svg>
         <div class="k-spark-meta">
-          <span><%= new Date(points[0].t).toLocaleDateString('en-US',{month:'short',day:'numeric'}) %></span>
-          <span><%= new Date(lastPt.t).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) %></span>
+          <span><%= new Date(points[0].t).toLocaleDateString(({en:'en-US',fr:'fr-FR',zh:'zh-CN',ja:'ja-JP',af:'af-ZA'})[lang]||'en-US',{month:'short',day:'numeric'}) %></span>
+          <span><%= new Date(lastPt.t).toLocaleDateString(({en:'en-US',fr:'fr-FR',zh:'zh-CN',ja:'ja-JP',af:'af-ZA'})[lang]||'en-US',{month:'short',day:'numeric',year:'numeric'}) %></span>
         </div>
       <% } else { %>
-        <div class="k-fieldhint">One reading so far — the line starts drawing with your next sessions.</div>
+        <div class="k-fieldhint"><%= t('prog.oneReading') %></div>
       <% } %>
     </section>
 
     <section class="k-card">
-      <div class="k-panel-title">DIMENSION MOVEMENT — LAST 30 DAYS</div>
+      <div class="k-panel-title"><%= t('prog.dimMove') %></div>
       <div class="k-dimrows">
         <% ['process','risk','execution','behavior','learning'].forEach(function(k){ %>
           <% var d = move.dimensions[k]; %>
@@ -67,7 +67,7 @@
             <span class="k-dimlabel"><%= dimensionLabels[k] %></span>
             <span class="k-dimval"><%= d.now != null ? d.now : '—' %></span>
             <% if (d.delta == null) { %>
-              <span class="k-dimdelta is-flat">building</span>
+              <span class="k-dimdelta is-flat"><%= t('prog.building') %></span>
             <% } else if (d.delta > 0) { %>
               <span class="k-dimdelta is-up">▲ +<%= d.delta %></span>
             <% } else if (d.delta < 0) { %>
@@ -81,28 +81,28 @@
     </section>
     <% } else { %>
     <section class="k-card">
-      <div class="k-panel-title">SCORE TIMELINE</div>
+      <div class="k-panel-title"><%= t('prog.timeline2') %></div>
       <div class="k-building">
         <span class="k-buildnum">改</span>
         <div>
-          <div class="k-buildtitle">The timeline starts with your first computed score</div>
-          <p class="k-buildtext">No scores on record yet — that's honest, not broken. Finish a session through plan → record → reflect and the engine will take its first reading.</p>
+          <div class="k-buildtitle"><%= t('prog.timelineStarts') %></div>
+          <p class="k-buildtext"><%= t('prog.noScores') %></p>
         </div>
       </div>
     </section>
     <% } %>
 
     <section class="k-card">
-      <div class="k-panel-title">PRACTICE VS PERFORMANCE</div>
-      <p class="k-cardsub">How your discipline holds across session types. Practice consistency — never presented as trading results.</p>
+      <div class="k-panel-title"><%= t('prog.practiceVs') %></div>
+      <p class="k-cardsub"><%= t('prog.practiceNote') %></p>
       <div class="k-typerow">
-        <% ['LIVE','BACKTEST','STUDY'].forEach(function(t){ %>
-          <% var tp = typePerf.types[t]; %>
+        <% ['LIVE','BACKTEST','STUDY'].forEach(function(ty){ %>
+          <% var tp = typePerf.types[ty]; %>
           <div class="k-typecard-stat">
-            <span class="k-type-tag k-type-<%= t.toLowerCase() %>"><%= t %></span>
+            <span class="k-type-tag k-type-<%= ty.toLowerCase() %>"><%= ty %></span>
             <span class="k-typecard-num"><%= tp.count %></span>
-            <span class="k-typecard-cap">session<%= tp.count === 1 ? '' : 's' %></span>
-            <span class="k-typecard-rate"><%= tp.rate != null ? tp.rate + '% inside rules' : 'no data yet' %></span>
+            <span class="k-typecard-cap"><%= t('word.session') %><%= tp.count === 1 ? '' : 's' %></span>
+            <span class="k-typecard-rate"><%= tp.rate != null ? t('prog.insidePct', { p: tp.rate }) : t('prog.noData') %></span>
           </div>
         <% }); %>
       </div>
@@ -112,54 +112,54 @@
           <p><%= typePerf.insight.message %></p>
         </div>
       <% } else if (typePerf.types.LIVE.count + typePerf.types.BACKTEST.count > 0) { %>
-        <div class="k-fieldhint">Not enough on both sides yet to compare practice with performance — three of each opens the comparison.</div>
+        <div class="k-fieldhint"><%= t('prog.notEnough') %></div>
       <% } else { %>
-        <div class="k-fieldhint">No sessions yet. Log LIVE, BACKTEST and STUDY sessions and the comparison builds itself.</div>
+        <div class="k-fieldhint"><%= t('prog.noSessionsYet') %></div>
       <% } %>
     </section>
 
     <section class="k-card">
       <div class="k-panel-title" style="display:flex;align-items:center;justify-content:space-between;">
-        <span>MILESTONES</span>
-        <span class="k-milestone-meta"><%= totalSessions %> session<%= totalSessions === 1 ? '' : 's' %> total</span>
+        <span><%= t('prog.milestones') %></span>
+        <span class="k-milestone-meta"><%= totalSessions %><%= t('word.session') %><%= totalSessions === 1 ? '' : 's' %><%= t('word.total') %></span>
       </div>
       <div class="k-milestone-label"><%= nextMilestone.label %></div>
       <div class="k-milestone-track"><span class="k-milestone-fill" data-meter="<%= nextMilestone.progress %>"></span></div>
-      <div class="k-milestone-meta"><% if (nextMilestone.remaining > 0) { %><%= nextMilestone.remaining %> to go<% } else { %>Reached<% } %></div>
+      <div class="k-milestone-meta"><% if (nextMilestone.remaining > 0) { %><%= nextMilestone.remaining %><%= t('dash.toGo') %><% } else { %><%= t('dash.reached') %><% } %></div>
       <% if (badges.length) { %>
         <div class="k-badgegrid">
           <% badges.forEach(function(b){ %>
             <div class="k-badgecell">
               <span class="k-badgename"><%= b.name %></span>
-              <span class="k-badgedate"><%= b.earnedAt ? new Date(b.earnedAt).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '' %></span>
+              <span class="k-badgedate"><%= b.earnedAt ? new Date(b.earnedAt).toLocaleDateString(({en:'en-US',fr:'fr-FR',zh:'zh-CN',ja:'ja-JP',af:'af-ZA'})[lang]||'en-US',{month:'short',day:'numeric',year:'numeric'}) : '' %></span>
             </div>
           <% }); %>
         </div>
       <% } else { %>
-        <div class="k-fieldhint">No milestones yet — your first arrives at 5 sessions.</div>
+        <div class="k-fieldhint"><%= t('prog.noMilestones') %></div>
       <% } %>
     </section>
 
     <!-- ═══ REGION B: COMMUNITY (carried, honest) ═══ -->
 
     <section class="k-card">
-      <div class="k-panel-title">COMMUNITY RANKINGS</div>
-      <p class="k-cardsub">Ranked by discipline — not profit. Verification marks identity, never skill. These are V1-era scores, frozen at cutover; the ranking moves to the KAIZEN Score as histories build.</p>
+      <div class="k-panel-title"><%= t('prog.community') %></div>
+      <p class="k-cardsub"><%= t('prog.communityNote') %></p>
 
       <div class="k-ranktabs">
-        <span class="k-ranktab is-active">All time</span>
+        <span class="k-ranktab is-active"><%= t('prog.allTime') %></span>
       </div>
       <div class="k-ranktable">
         <% allTimeLeaders.forEach(function(u, i){ %>
           <div class="k-rankrow <%= u._id == user.id ? 'is-me' : '' %>">
             <span class="k-rankpos"><%= i + 1 %></span>
-            <span class="k-rankname"><%= u.username %><% if (u._id == user.id) { %> <span class="k-rankyou">you</span><% } %></span>
+            <span class="k-rankname"><%= u.username %><% if (u._id == user.id) { %> <span class="k-rankyou"><%= t('prog.you') %></span><% } %></span>
             <span class="k-rankscore"><%= u.disciplineScore || 0 %></span>
             <span class="k-rankmeta"><%= u.totalSessions || 0 %> sessions · <%= u.streak || 0 %>◆</span>
           </div>
         <% }); %>
       </div>
-      <div class="k-fieldhint" style="margin-top:12px;">This week's active traders: <%= weeklyLeaders.length %>. Rankings never imply trading ability — only logged practice.</div>
+      <div class="k-fieldhint" style="margin-top:12px;"><%= t('prog.weekActive') %><%= weeklyLeaders.length %><%= t('prog.rankNote') %></div>
     </section>
 
   </main>

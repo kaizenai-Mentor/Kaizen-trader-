@@ -779,6 +779,49 @@ img { max-width: 100%; }
 .form-input::placeholder { color: rgba(168, 160, 154, 0.4); }
 
 .form-textarea { min-height: 100px; resize: vertical; }
+/* ── Branded dropdowns: EVERY <select> on the site, no exceptions ── */
+/* Support form, session forms, filters — all get the same gold-accented
+   menu. Class rules (.k-input/.form-input) still win where they exist. */
+select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-color: var(--bg-surface);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' fill='none' stroke='%23F5C518' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 12px;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  color: var(--text-primary);
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.9rem;
+  padding: 12px 36px 12px 14px;
+  cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+select:hover {
+  border-color: rgba(245, 197, 24, 0.3);
+}
+select:focus {
+  border-color: rgba(245, 197, 24, 0.45);
+  box-shadow: 0 0 0 1px rgba(245, 197, 24, 0.18);
+  outline: none;
+}
+select option {
+  background-color: var(--bg-surface);
+  color: var(--text-primary);
+  padding: 8px;
+}
+[data-theme="light"] select option {
+  background-color: var(--bg-surface);
+  color: var(--text-primary);
+}
+select:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 select.form-input { cursor: pointer; }
 
 /* RADIO OPTIONS */
@@ -2783,7 +2826,8 @@ html.k-anim [data-reveal].is-in {
   font-size: 0.9rem; line-height: 1.7; padding: 12px; resize: vertical;
 }
 .k-input:focus { outline: none; border-color: var(--gold-border); }
-select.k-input { cursor: pointer; }
+select.k-input { cursor: pointer; padding: 12px 36px 12px 14px; }
+select.form-input { padding: 12px 36px 12px 14px; }
 .k-fieldhint { font-size: 0.72rem; color: var(--ash); line-height: 1.6; margin-top: 6px; }
 .k-actions { display: flex; align-items: center; gap: 16px; margin-top: 22px; flex-wrap: wrap; }
 .k-chiprow { display: flex; gap: 8px; flex-wrap: wrap; }

@@ -80,6 +80,8 @@
       <div class="popup-section-label">Coach</div>
       <a href="kaizen-ai.html" class="popup-item"><span class="popup-item-icon"><i data-feather="message-circle" width="14" height="14"></i></span> KAIZEN AI</a>
       <a href="psychology.html" class="popup-item"><span class="popup-item-icon"><i data-feather="brain" width="14" height="14"></i></span> Psychology</a>
+      <a href="improve.html" class="popup-item"><span class="popup-item-icon"><i data-feather="target" width="14" height="14"></i></span> Improve</a>
+      <a href="goals.html" class="popup-item"><span class="popup-item-icon"><i data-feather="check-circle" width="14" height="14"></i></span> Goals</a>
       <a href="memories.html" class="popup-item"><span class="popup-item-icon"><i data-feather="book-open" width="14" height="14"></i></span> Memories</a>
     </div>
 
@@ -94,7 +96,7 @@
     <!-- IDENTITY -->
     <div class="popup-section">
       <div class="popup-section-label">Identity</div>
-      <a href="reputation.html" class="popup-item"><span class="popup-item-icon"><i data-feather="link" width="14" height="14"></i></span> Wallets &amp; Verification</a>
+      <a href="reputation.html" class="popup-item"><span class="popup-item-icon"><i data-feather="award" width="14" height="14"></i></span> Reputation</a>
     </div>
 
     <!-- SETTINGS -->
@@ -121,6 +123,12 @@
       <a href="help.html" class="popup-item">
         <span class="popup-item-icon"><i data-feather="help-circle" width="14" height="14"></i></span> Help Center
       </a>
+    </div>
+
+    <!-- LANGUAGE (owner directive 13 Oct 2026) -->
+    <div class="popup-section">
+      <div style="padding:4px 14px 10px;">
+      </div>
     </div>
 
     <div class="popup-section">
@@ -157,6 +165,8 @@
 <nav class="navbar">
   <a href="dashboard.html" class="nav-logo">改 KAIZEN</a>
   <div class="nav-right">
+    <div class="nav-lang" style="margin-right:6px;display:flex;align-items:center;">
+    </div>
     <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
       <span id="themeIcon">◐</span>
     </button>
@@ -168,7 +178,7 @@
 
 
 
-<div class="k-ticker" id="k-ticker" role="region" aria-label="Announcement">
+<div class="k-ticker" id="k-ticker" role="region" aria-label="Update">
   <button type="button" class="k-ticker-close" onclick="dismissTicker()" aria-label="Dismiss announcement">×</button>
   <div class="k-ticker-track">
     <span class="k-ticker-text"><b>KAIZEN V2 IS COMING</b> — the score gets five dimensions · plan → record → reflect sessions · your own Trading System · rolling out over the next 30 days</span>
@@ -211,17 +221,17 @@
           <div class="form-group">
             <label class="form-label">Current Password</label>
             <input type="password" name="currentPassword"
-              class="form-input" placeholder="Enter current Password">
+              class="form-input" placeholder="Enter current password">
           </div>
           <div class="form-group">
             <label class="form-label">New Password</label>
             <input type="password" name="newPassword"
-              class="form-input" placeholder="Enter New Password">
+              class="form-input" placeholder="Enter new password">
           </div>
           <div class="form-group">
             <label class="form-label">Confirm Password</label>
             <input type="password" name="confirmPassword"
-              class="form-input" placeholder="Confirm New Password">
+              class="form-input" placeholder="Confirm new password">
           </div>
           <button type="submit" class="btn-primary">Update Password</button>
         </form>
@@ -241,10 +251,10 @@
   <main class="k-flow">
 
     <div class="k-stepstrip">
-      <span class="is-done">Plan ✓</span><b>—</b>
-      <span class="is-done">Record ✓</span><b>—</b>
-      <span class="is-done">Reflect ✓</span><b>—</b>
-      <span class="is-active">Analyzed</span>
+      <span class="is-done">The Plan ✓</span><b>—</b>
+      <span class="is-done">The Record ✓</span><b>—</b>
+      <span class="is-done">The Reflection ✓</span><b>—</b>
+      <span class="is-active">ANALYZED</span>
     </div>
 
     <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:18px;">
@@ -259,15 +269,14 @@
     </div>
 
     <h1 style="font-size:clamp(1.4rem,3vw,2rem);font-weight:700;color:var(--text-primary);margin:0 0 20px;">
-      BTCUSD — the session, closed.
-    </h1>
+      BTCUSD— the session, closed.</h1>
 
     <div style="display:grid;grid-template-columns:1.25fr 0.75fr;gap:14px;align-items:start;" class="k-detail-grid">
 
       <!-- LEFT: the coach's response -->
       <div class="k-card k-card--featured">
-        <div class="k-panel-title" style="margin-bottom:16px;"><span class="k-kanji k-kanji--sm">改</span> KAIZEN RESPONDS</div>
-        <div style="font-size:0.9rem;color:var(--text-primary);line-height:1.85;white-space:pre-wrap;">Your entry timing improved on this one — the confirmation candle closed before you acted, and that patience is what moved Execution up. The loss itself is noise; the process that produced it is signal. One thing to watch: your confidence was a 7 pre-session but your reflection says you almost added size at +1.5R. That gap between declared confidence and in-trade impulses is exactly what the after-loss window tracks. Keep logging that urge honestly — it is the raw material for the next improvement.</div>
+        <div class="k-panel-title" style="margin-bottom:16px;"><span class="k-kanji k-kanji--sm">改</span>KAIZEN RESPONDS</div>
+        <div style="font-size:0.9rem;color:var(--text-primary);line-height:1.85;white-space:pre-wrap;">Your entry timing improved on this one — the confirmation candle closed before you acted, and that patience is what moved your Execution up. The loss itself is noise; the process that produced it is signal. One thing to watch: your confidence was a 7 pre-session but your reflection says you almost added size at +1.5R. That gap between declared confidence and in-trade impulses is exactly what the after-loss window tracks. Keep logging that urge honestly — it is the raw material for the next improvement.</div>
       </div>
 
       <!-- RIGHT: the engine's numbers -->
@@ -275,9 +284,7 @@
         <div class="k-card k-card--elevated">
           <div class="k-metric-label" style="margin-bottom:14px;">THE ENGINE — AFTER THIS SESSION</div>
           
-            <p style="font-size:0.82rem;color:var(--text-secondary);line-height:1.75;margin:0;">
-              Building baseline — your score appears once there's enough evidence. Keep logging; the engine is watching your plan → record → reflect loop, not the clock.
-            </p>
+            <p style="font-size:0.82rem;color:var(--text-secondary);line-height:1.75;margin:0;">Building baseline — your score appears once there&#39;s enough evidence. Keep logging; the engine is watching your plan → record → reflect loop, not the clock.</p>
           
           <div style="border-top:1px solid var(--border);margin-top:14px;padding-top:12px;">
             <a href="dashboard.html" style="font-family:var(--font-mono);font-size:0.62rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);text-decoration:underline;">How is this scored? →</a>
@@ -294,17 +301,27 @@
     </div>
 
     
+      <!-- The chart as it was at record time — owner-only, not a live feed -->
+      <div class="k-card" style="margin-top:14px;">
+        <div class="k-metric-label" style="margin-bottom:10px;">THE CHART — AS RECORDED</div>
+        <img src="images/chart-demo.png" alt="THE CHART — AS RECORDED"
+             style="width:100%;max-height:520px;object-fit:contain;border:1px solid var(--border);background:rgba(0,0,0,0.2);">
+        <p style="font-size:0.72rem;color:var(--ash);margin:10px 0 0;">Exactly as you saw it when you recorded this session — kept privately with your session.</p>
+      </div>
+    
+
+    
       <div class="k-card" style="margin-top:14px;">
         <div class="k-metric-label" style="margin-bottom:10px;">YOUR REFLECTION</div>
         <p style="font-size:0.84rem;color:var(--text-secondary);line-height:1.8;margin:0 0 10px;"><span class="k-gold">What happened:</span> Entered as planned and held through the squeeze.</p>
-        <p style="font-size:0.84rem;color:var(--text-secondary);line-height:1.8;margin:0 0 10px;"><span class="k-gold">Learned:</span> The five-minute timer works when it matters most.</p>
-        <p style="font-size:0.84rem;color:var(--text-secondary);line-height:1.8;margin:0;"><span class="k-gold">Would change:</span> Nothing this time.</p>
+        <p style="font-size:0.84rem;color:var(--text-secondary);line-height:1.8;margin:0 0 10px;"><span class="k-gold">What you learned:</span> The five-minute timer works when it matters most.</p>
+        <p style="font-size:0.84rem;color:var(--text-secondary);line-height:1.8;margin:0;"><span class="k-gold">What you would change:</span> Nothing this time.</p>
       </div>
     
 
     <div class="k-actions" style="margin-top:24px;">
       <a href="session-plan.html" class="btn-outline k-btn-lg">+ New Session</a>
-      <a href="sessions.html" style="font-family:var(--font-mono);font-size:0.68rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);text-decoration:underline;">All sessions</a>
+      <a href="sessions.html" style="font-family:var(--font-mono);font-size:0.68rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);text-decoration:underline;">Sessions</a>
     </div>
 
   </main>
@@ -313,14 +330,14 @@
   <div class="footer-inner">
     <span class="footer-logo">改 KAIZEN</span>
     <div style="display:flex;gap:20px;flex-wrap:wrap;align-items:center;">
-      <a href="privacy.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Privacy</a>
-      <a href="terms.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Terms</a>
-      <a href="about.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">About</a>
+      <a href="privacy.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Privacy Policy</a>
+      <a href="terms.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Terms of Service</a>
+      <a href="about.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">About Kaizen</a>
       <a href="whitepaper.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Whitepaper</a>
       <a href="help.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Help Center</a>
       <a href="support.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Support</a>
     </div>
-    <span class="footer-right">© 2026 KAIZEN</span>
+    <span class="footer-right">© 2026 KAIZEN. All rights reserved.</span>
   </div>
 </footer>
 <script>if (window.feather) feather.replace();</script>

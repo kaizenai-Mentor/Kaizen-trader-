@@ -9,6 +9,7 @@ const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const path = require('path');
 const connectDB = require('./config/db');
+const { getActiveEvents } = require('./config/Events');
 const User = require('./models/User');
 const { sendWelcomeEmail } = require('./config/email');
 const multer = require('multer');
@@ -38,20 +39,25 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
 // Session
-app.use(session({
-  secret: process.env.SESSION_SECRET,
+// Offline/test boots (no MONGODB_URI): MemoryStore + dev secret so the
+// server still boots. Production on Render always has both set.
+const sessionOptions = {
+  secret: process.env.SESSION_SECRET || 'kaizen-dev-secret',
   resave: false,
   saveUninitialized: false,
-  store: MongoStore.create({
-    mongoUrl: process.env.MONGODB_URI,
-    ttl: 2 * 60 * 60
-  }),
   cookie: {
     secure: false,
     httpOnly: true,
     maxAge: 2 * 60 * 60 * 1000
   }
-}));
+};
+if (process.env.MONGODB_URI) {
+  sessionOptions.store = MongoStore.create({
+    mongoUrl: process.env.MONGODB_URI,
+    ttl: 2 * 60 * 60
+  });
+}
+app.use(session(sessionOptions));
 
 // Auto logout after 2 hours inactivity
 app.use((req, res, next) => {
@@ -195,6 +201,9 @@ const authRoutes = require('./routes/auth');
 const dashboardRoutes = require('./routes/dashboard');
 const zaRoutes = require('./routes/za');
 
+// i18n (owner directive 13 Oct 2026): every view gets t() + lang.
+app.use(require('./middleware/i18n'));
+
 app.use('/auth', authRoutes);
 app.use('/dashboard', dashboardRoutes);
 app.use('/za', zaRoutes);
@@ -316,6 +325,42 @@ app.get('/psychology', (req, res) => {
 app.get('/psychology/t/:id', (req, res) => {
   if (!req.session.user) return res.redirect('/auth/login');
   psychController.getThread(req, res);
+});
+
+// Improvement Recommendations — AI-generated, actionable (owner
+// directive 19 Oct 2026).
+const improveController = require('./controllers/improveController');
+app.get('/improve', (req, res) => {
+  if (!req.session.user) return res.redirect('/auth/login');
+  improveController.getIndex(req, res);
+});
+
+// Goal Guidance — set, track and adapt improvement goals (owner
+// directive 19 Oct 2026).
+const goalsController = require('./controllers/goalsController');
+app.get('/goals', (req, res) => {
+  if (!req.session.user) return res.redirect('/auth/login');
+  goalsController.getList(req, res);
+});
+app.post('/goals', (req, res) => {
+  if (!req.session.user) return res.redirect('/auth/login');
+  goalsController.postCreate(req, res);
+});
+app.get('/goals/:id', (req, res) => {
+  if (!req.session.user) return res.redirect('/auth/login');
+  goalsController.getDetail(req, res);
+});
+app.post('/goals/:id/log', (req, res) => {
+  if (!req.session.user) return res.redirect('/auth/login');
+  goalsController.postLog(req, res);
+});
+app.post('/goals/:id/status', (req, res) => {
+  if (!req.session.user) return res.redirect('/auth/login');
+  goalsController.postStatus(req, res);
+});
+app.post('/goals/:id/adapt', (req, res) => {
+  if (!req.session.user) return res.redirect('/auth/login');
+  goalsController.postAdapt(req, res);
 });
 app.post('/psychology/ask', (req, res) => {
   if (!req.session.user) return res.status(401).json({ error: 'Not logged in.' });
@@ -457,24 +502,40 @@ app.get('/test-ai', async (req, res) => {
   }
 });
 
+// Market news — 30-minute cache so the page never waits on the API twice in a row.
+const newsCache = { at: 0, articles: [] };
+const NEWS_TTL_MS = 30 * 60 * 1000;
+
 app.get('/news', async (req, res) => {
   if (!req.session.user) return res.redirect('/auth/login');
+  const renderNews = (articles) => res.render('news', {
+    user: req.session.user,
+    articles,
+    events: getActiveEvents()
+  });
   try {
-    const axios = require('axios');
-    const response = await axios.get('https://api.marketaux.com/v1/news/all', {
-      params: {
-        api_token: process.env.MARKETAUX_KEY,
-        language: 'en',
-        limit: 20,
-        filter_entities: true
-      },
-      timeout: 8000
-    });
-    const news = response.data?.data || [];
-    res.render('news', { user: req.session.user, news });
+    if (Date.now() - newsCache.at >= NEWS_TTL_MS || newsCache.articles.length === 0) {
+      const axios = require('axios');
+      const response = await axios.get('https://api.marketaux.com/v1/news/all', {
+        params: {
+          api_token: process.env.MARKETAUX_KEY,
+          language: 'en',
+          limit: 20,
+          filter_entities: true
+        },
+        timeout: 8000
+      });
+      newsCache.articles = (response.data?.data || []).map((a) => ({
+        ...a,
+        publishedAt: a.publishedAt || a.published_at
+      }));
+      newsCache.at = Date.now();
+    }
+    renderNews(newsCache.articles);
   } catch (err) {
     console.error('News error:', err.message);
-    res.render('news', { user: req.session.user, news: [] });
+    // On API failure serve the last good cache (even if stale) rather than an empty page.
+    renderNews(newsCache.articles);
   }
 });
 
@@ -788,9 +849,24 @@ app.use((err, req, res, next) => {
   res.status(500).send('Something went wrong.');
 });
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`KAIZEN running on port ${PORT}`);
+// ── Process-level rejection net (crash fix, owner directive) ──
+// Last resort: a stray rejection or exception is contained and logged —
+// it never takes the whole site down. Route-level errors should not land
+// here: the A() wrappers send them to the error middleware above.
+process.on('unhandledRejection', (reason) => {
+  console.error('[kaizen] unhandledRejection (contained):', reason);
 });
+process.on('uncaughtException', (err) => {
+  console.error('[kaizen] uncaughtException (contained):', err);
+});
+
+const PORT = process.env.PORT || 3000;
+// Listen only when run directly (`node server.js` / Render). Tests and
+// scripts that require the app start their own listener (ephemeral port).
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`KAIZEN running on port ${PORT}`);
+  });
+}
 
 module.exports = app;

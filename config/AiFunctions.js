@@ -126,4 +126,23 @@
  * 4. Pattern catalog (functions 1+4) — named detectors as engine outputs.
  * 5. Goal tracking (function 8) — new model, keyed to measured behaviors.
  * Monthly review rides along with 4. Function 10 stays locked.
+ *
+ * ============================================================================
+ * COACH CONVERSATION RULES (owner directive, 16 Oct 2026)
+ * ============================================================================
+ * 1. CONSENT-BASED QUESTIONS. Questions are offered, never required. If
+ *    the trader asks to stop being questioned — or simply doesn't want
+ *    them — ask nothing further. The conversation continues without
+ *    questions until they invite one. Applies in every room, including
+ *    quiz mode.
+ * 2. THE IMAGE RULE. A chart image is SILENT CONTEXT: it informs the
+ *    reply without being narrated back unprompted. When the trader does
+ *    ask about it, the answer is CORRESPONDENCE-ONLY — observations map
+ *    1:1 to what is visibly on the chart and to their own written rules;
+ *    nothing inferred beyond the frame. The descriptive vocabulary is
+ *    FROZEN: structure, levels, zones, trend, their rule references.
+ *    Direction calls, predictions, and "setup" language never appear.
+ * 3. LANGUAGE. Reply in the trader's language. The machine blocks
+ *    (EXTRACTED:, PSYCH-STATE:) stay in their fixed English format in
+ *    every language — they must remain parseable.
  */

@@ -76,6 +76,12 @@
       <a href="register.html" class="btn-outline btn-full">Sign Up</a>
     </div>
 
+    <!-- LANGUAGE (owner directive 13 Oct 2026) -->
+    <div class="popup-section">
+      <div style="padding:4px 14px 10px;">
+      </div>
+    </div>
+
     <div class="popup-section">
       <div class="popup-section-label">Info</div>
       <a href="about.html" class="popup-item">
@@ -98,6 +104,8 @@
 <nav class="navbar">
   <a href="index.html" class="nav-logo">改 KAIZEN</a>
   <div class="nav-right">
+    <div class="nav-lang" style="margin-right:6px;display:flex;align-items:center;">
+    </div>
     <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
       <span id="themeIcon">◐</span>
     </button>
@@ -109,7 +117,7 @@
 
 
 
-<div class="k-ticker" id="k-ticker" role="region" aria-label="Announcement">
+<div class="k-ticker" id="k-ticker" role="region" aria-label="Update">
   <button type="button" class="k-ticker-close" onclick="dismissTicker()" aria-label="Dismiss announcement">×</button>
   <div class="k-ticker-track">
     <span class="k-ticker-text"><b>KAIZEN V2 IS COMING</b> — the score gets five dimensions · plan → record → reflect sessions · your own Trading System · rolling out over the next 30 days</span>
@@ -152,17 +160,17 @@
           <div class="form-group">
             <label class="form-label">Current Password</label>
             <input type="password" name="currentPassword"
-              class="form-input" placeholder="Enter current Password">
+              class="form-input" placeholder="Enter current password">
           </div>
           <div class="form-group">
             <label class="form-label">New Password</label>
             <input type="password" name="newPassword"
-              class="form-input" placeholder="Enter New Password">
+              class="form-input" placeholder="Enter new password">
           </div>
           <div class="form-group">
             <label class="form-label">Confirm Password</label>
             <input type="password" name="confirmPassword"
-              class="form-input" placeholder="Confirm New Password">
+              class="form-input" placeholder="Confirm new password">
           </div>
           <button type="submit" class="btn-primary">Update Password</button>
         </form>
@@ -184,16 +192,12 @@
     <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:24px;flex-wrap:wrap;">
       <div>
         <div style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:6px;display:flex;align-items:center;gap:8px;">
-          <span style="width:16px;height:1px;background:var(--gold);display:inline-block;"></span>
-          We're Here to Help
-        </div>
+          <span style="width:16px;height:1px;background:var(--gold);display:inline-block;"></span>We&#39;re Here to Help</div>
         <h1 style="font-size:1.6rem;font-weight:700;color:var(--text-primary);margin-bottom:4px;">Support</h1>
-        <p style="font-size:0.82rem;color:var(--ash);font-style:italic;">Usually respond within 24 hours.</p>
+        <p style="font-size:0.82rem;color:var(--ash);font-style:italic;">Tell us what is wrong — a human reads every message.</p>
       </div>
       <a href="dashboard.html" style="display:inline-flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);border:1px solid var(--border);padding:10px 16px;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.color='var(--gold)';this.style.borderColor='rgba(245,197,24,0.3)'" onmouseout="this.style.color='var(--ash)';this.style.borderColor='var(--border)'">
-        <i data-feather="arrow-left" width="12" height="12"></i>
-        Dashboard
-      </a>
+        <i data-feather="arrow-left" width="12" height="12"></i>Dashboard</a>
     </div>
 
     <div style="display:grid;grid-template-columns:1.4fr 1fr;gap:2px;" class="support-grid">
@@ -204,7 +208,7 @@
           <div style="width:28px;height:28px;border:1px solid rgba(245,197,24,0.25);background:rgba(245,197,24,0.06);display:flex;align-items:center;justify-content:center;color:var(--gold);">
             <i data-feather="mail" width="13" height="13"></i>
           </div>
-          <div style="font-weight:700;font-size:0.95rem;color:var(--text-primary);">Send a Message</div>
+          <div style="font-weight:700;font-size:0.95rem;color:var(--text-primary);">Tell us what is wrong — a human reads every message.</div>
         </div>
 
         <form style="display:flex;flex-direction:column;gap:16px;">
@@ -218,7 +222,7 @@
           </div>
           <div>
             <label style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);display:block;margin-bottom:6px;">Issue Type</label>
-            <select style="width:100%;background:var(--bg-surface);border:1px solid var(--border);color:var(--text-primary);font-family:'Outfit',sans-serif;font-size:0.9rem;padding:12px 14px;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='rgba(245,197,24,0.4)'" onblur="this.style.borderColor='var(--border)'">
+            <select class="k-input" style="width:100%;box-sizing:border-box;">
               <option>Account issue</option>
               <option>Journal not loading</option>
               <option>Bounties not showing</option>
@@ -230,12 +234,12 @@
             </select>
           </div>
           <div>
-            <label style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);display:block;margin-bottom:6px;">Message</label>
+            <label style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);display:block;margin-bottom:6px;">What happened?</label>
             <textarea rows="5" style="width:100%;background:var(--bg-surface);border:1px solid var(--border);color:var(--text-primary);font-family:'Outfit',sans-serif;font-size:0.9rem;padding:12px 14px;outline:none;box-sizing:border-box;resize:none;line-height:1.6;transition:border-color 0.2s;" placeholder="Describe your issue..." onfocus="this.style.borderColor='rgba(245,197,24,0.4)'" onblur="this.style.borderColor='var(--border)'"></textarea>
           </div>
           <button type="submit" style="width:100%;background:var(--gold);color:#000;border:none;font-family:'DM Mono',monospace;font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;font-weight:700;padding:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:background 0.2s;" onmouseover="this.style.background='#FFD84D'" onmouseout="this.style.background='var(--gold)'">
             <i data-feather="send" width="13" height="13"></i>
-            Send Message
+            Send
           </button>
         </form>
       </div>
@@ -248,7 +252,7 @@
             <i data-feather="twitter" width="14" height="14" style="color:var(--gold);"></i>
             <span style="font-weight:700;font-size:0.85rem;color:var(--text-primary);">Direct on X</span>
           </div>
-          <p style="font-size:0.8rem;color:var(--ash);line-height:1.7;margin-bottom:14px;">Fastest way to reach us. We're active daily.</p>
+          <p style="font-size:0.8rem;color:var(--ash);line-height:1.7;margin-bottom:14px;">Fastest way to reach us. We&#39;re active daily.</p>
           <a href="https://x.com/kaizenaibot" target="_blank" style="display:inline-flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(245,197,24,0.25);padding:9px 16px;text-decoration:none;">
             @kaizenaibot
             <i data-feather="external-link" width="10" height="10"></i>
@@ -261,9 +265,7 @@
             <span style="font-weight:700;font-size:0.85rem;color:var(--text-primary);">Help Center</span>
           </div>
           <p style="font-size:0.8rem;color:var(--ash);line-height:1.7;margin-bottom:14px;">Common questions answered instantly.</p>
-          <a href="help.html" style="display:inline-flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);border:1px solid var(--border);padding:9px 16px;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.color='var(--gold)';this.style.borderColor='rgba(245,197,24,0.3)'" onmouseout="this.style.color='var(--ash)';this.style.borderColor='var(--border)'">
-            Browse FAQs
-            <i data-feather="arrow-right" width="10" height="10"></i>
+          <a href="help.html" style="display:inline-flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);border:1px solid var(--border);padding:9px 16px;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.color='var(--gold)';this.style.borderColor='rgba(245,197,24,0.3)'" onmouseout="this.style.color='var(--ash)';this.style.borderColor='var(--border)'">Browse FAQs<i data-feather="arrow-right" width="10" height="10"></i>
           </a>
         </div>
 
@@ -285,14 +287,14 @@
   <div class="footer-inner">
     <span class="footer-logo">改 KAIZEN</span>
     <div style="display:flex;gap:20px;flex-wrap:wrap;align-items:center;">
-      <a href="privacy.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Privacy</a>
-      <a href="terms.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Terms</a>
-      <a href="about.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">About</a>
+      <a href="privacy.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Privacy Policy</a>
+      <a href="terms.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Terms of Service</a>
+      <a href="about.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">About Kaizen</a>
       <a href="whitepaper.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Whitepaper</a>
       <a href="help.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Help Center</a>
       <a href="support.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Support</a>
     </div>
-    <span class="footer-right">© 2026 KAIZEN</span>
+    <span class="footer-right">© 2026 KAIZEN. All rights reserved.</span>
   </div>
 </footer>
 <script>if (window.feather) feather.replace();</script>

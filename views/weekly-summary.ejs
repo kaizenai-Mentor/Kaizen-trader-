@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="<%= lang %>">
 <head>
   <%- include('partials/head') %>
-  <title>KAIZEN — Weekly Report</title>
+  <title><%= t('title.weekly') %></title>
 </head>
 <body class="app-page">
   <%- include('partials/navbar') %>
@@ -11,23 +11,23 @@
 
     <div class="k-cockpit-head">
       <div>
-        <div class="k-eyebrow">TOOLS · 改</div>
-        <h1 class="k-page-title">Weekly Report</h1>
-        <p class="k-page-sub">Your week in one honest page — the last seven days, ending today.</p>
+        <div class="k-eyebrow"><%= t('wk.eyebrow') %></div>
+        <h1 class="k-page-title"><%= t('weekly.title') %></h1>
+        <p class="k-page-sub"><%= t('wk.sub') %></p>
       </div>
       <div class="k-streakchip" title="Practice consistency — never trading performance">
         <span class="k-streak-flame">◆</span>
         <span class="k-streak-num"><%= streak %></span>
-        <span class="k-streak-label">day streak</span>
+        <span class="k-streak-label"><%= t('dash.dayStreak') %></span>
       </div>
     </div>
 
     <!-- ═══ THE COACH'S LETTER ═══ -->
     <section class="k-card k-card--featured">
-      <div class="k-panel-title"><span class="k-kanji k-kanji--sm">改</span> THE WEEK, IN WORDS</div>
+      <div class="k-panel-title"><span class="k-kanji k-kanji--sm">改</span><%= t('wk.weekWords') %></div>
       <div class="k-legacyai"><%= letter %></div>
       <% if (!letterCached) { %>
-        <div class="k-fieldhint">Written for this week — it updates when your week changes shape.</div>
+        <div class="k-fieldhint"><%= t('wk.writtenFor') %></div>
       <% } %>
     </section>
 
@@ -35,13 +35,13 @@
 
     <!-- ═══ HONEST EMPTY STATE ═══ -->
     <section class="k-card">
-      <div class="k-panel-title">THIS WEEK'S SESSIONS</div>
+      <div class="k-panel-title"><%= t('wk.weekSessions') %></div>
       <div class="k-building">
         <span class="k-buildnum">改</span>
         <div>
-          <div class="k-buildtitle">Zero sessions this week</div>
-          <p class="k-buildtext">The record notices — without judging. A week without a session is information too. When you come back, start with a plan: even one.</p>
-          <a class="k-btn k-btn-primary k-btn-sm" style="margin-top:10px;" href="/dashboard/sessions/new">Plan a session</a>
+          <div class="k-buildtitle"><%= t('wk.zero') %></div>
+          <p class="k-buildtext"><%= t('wk.zeroNote') %></p>
+          <a class="k-btn k-btn-primary k-btn-sm" style="margin-top:10px;" href="/dashboard/sessions/new"><%= t('dash.planSession') %></a>
         </div>
       </div>
     </section>
@@ -50,26 +50,26 @@
 
     <!-- ═══ SESSIONS THIS WEEK ═══ -->
     <section class="k-card">
-      <div class="k-panel-title">THIS WEEK'S SESSIONS</div>
+      <div class="k-panel-title"><%= t('wk.weekSessions') %></div>
       <div class="k-typerow">
-        <% ['LIVE','BACKTEST','STUDY'].forEach(function(t){ %>
+        <% ['LIVE','BACKTEST','STUDY'].forEach(function(ty){ %>
           <div class="k-typecard-stat">
-            <span class="k-type-tag k-type-<%= t.toLowerCase() %>"><%= t %></span>
-            <span class="k-typecard-num"><%= stats.byType[t] %></span>
-            <span class="k-typecard-cap">session<%= stats.byType[t] === 1 ? '' : 's' %></span>
+            <span class="k-type-tag k-type-<%= ty.toLowerCase() %>"><%= ty %></span>
+            <span class="k-typecard-num"><%= stats.byType[ty] %></span>
+            <span class="k-typecard-cap"><%= t('word.session') %><%= stats.byType[ty] === 1 ? '' : 's' %></span>
           </div>
         <% }); %>
       </div>
       <div class="k-weekmeta">
-        <span><%= stats.loopCompleted %> through the full loop</span>
+        <span><%= stats.loopCompleted %><%= t('wk.throughLoop') %></span>
         <span>·</span>
-        <span><%= stats.loopOpen %> still open</span>
+        <span><%= stats.loopOpen %><%= t('wk.stillOpen') %></span>
         <% if (stats.complianceRate != null) { %>
           <span>·</span>
-          <span><%= stats.compliant %> of <%= stats.checked %> inside their rules</span>
+          <span><%= stats.compliant %><%= t('wk.of') %><%= stats.checked %><%= t('wk.insideRules') %></span>
         <% } %>
       </div>
-      <div class="k-fieldhint">Compliance here is practice consistency — never trading performance.</div>
+      <div class="k-fieldhint"><%= t('wk.complianceNote') %></div>
     </section>
 
     <% } %>
@@ -77,20 +77,20 @@
     <!-- ═══ SCORE MOVEMENT ═══ -->
     <% if (move) { %>
     <section class="k-card">
-      <div class="k-panel-title">SCORE MOVEMENT — VS PRE-WEEK</div>
+      <div class="k-panel-title"><%= t('wk.scoreMove') %></div>
       <div class="k-scorerow">
         <span class="k-scorenum"><%= move.overall.now %></span>
         <div class="k-scoremeta">
           <% if (move.overall.same) { %>
-            <span class="k-deltachip is-flat">first reading</span>
+            <span class="k-deltachip is-flat"><%= t('prog.firstReading') %></span>
           <% } else if (move.overall.delta > 0) { %>
-            <span class="k-deltachip is-up">▲ +<%= move.overall.delta %> this week</span>
+            <span class="k-deltachip is-up">▲ +<%= move.overall.delta %><%= t('wk.thisWeek') %></span>
           <% } else if (move.overall.delta < 0) { %>
-            <span class="k-deltachip is-down">▼ <%= move.overall.delta %> this week</span>
+            <span class="k-deltachip is-down">▼ <%= move.overall.delta %><%= t('wk.thisWeek') %></span>
           <% } else { %>
-            <span class="k-deltachip is-flat">± 0 this week</span>
+            <span class="k-deltachip is-flat"><%= t('wk.flatWeek') %></span>
           <% } %>
-          <span class="k-scoresub">From your score snapshots — measured, not re-guessed.</span>
+          <span class="k-scoresub"><%= t('wk.snapshots') %></span>
         </div>
       </div>
       <div class="k-dimrows">
@@ -100,7 +100,7 @@
             <span class="k-dimlabel"><%= dimensionLabels[k] %></span>
             <span class="k-dimval"><%= d.now != null ? d.now : '—' %></span>
             <% if (d.delta == null) { %>
-              <span class="k-dimdelta is-flat">building</span>
+              <span class="k-dimdelta is-flat"><%= t('prog.building') %></span>
             <% } else if (d.delta > 0) { %>
               <span class="k-dimdelta is-up">▲ +<%= d.delta %></span>
             <% } else if (d.delta < 0) { %>
@@ -114,25 +114,25 @@
     </section>
     <% } else { %>
     <section class="k-card">
-      <div class="k-panel-title">SCORE MOVEMENT</div>
-      <p class="k-emptyhint">No computed scores yet — the movement appears after your first sessions complete the loop.</p>
+      <div class="k-panel-title"><%= t('wk.scoreMove2') %></div>
+      <p class="k-emptyhint"><%= t('wk.noScores') %></p>
     </section>
     <% } %>
 
     <!-- ═══ MILESTONES THIS WEEK ═══ -->
     <section class="k-card">
-      <div class="k-panel-title">MILESTONES THIS WEEK</div>
+      <div class="k-panel-title"><%= t('wk.milestonesWeek') %></div>
       <% if (earned.length) { %>
         <div class="k-badgegrid">
           <% earned.forEach(function(b){ %>
             <div class="k-badgecell">
               <span class="k-badgename"><%= b.name %></span>
-              <span class="k-badgedate"><%= b.earnedAt ? new Date(b.earnedAt).toLocaleDateString('en-US',{month:'short',day:'numeric'}) : '' %></span>
+              <span class="k-badgedate"><%= b.earnedAt ? new Date(b.earnedAt).toLocaleDateString(({en:'en-US',fr:'fr-FR',zh:'zh-CN',ja:'ja-JP',af:'af-ZA'})[lang]||'en-US',{month:'short',day:'numeric'}) : '' %></span>
             </div>
           <% }); %>
         </div>
       <% } else { %>
-        <p class="k-emptyhint">No new milestones this week. They arrive with the work, not the clock.</p>
+        <p class="k-emptyhint"><%= t('wk.noMilestones') %></p>
       <% } %>
     </section>
 

@@ -95,7 +95,8 @@ const postRegister = async (req, res) => {
       username: user.username,
       email: user.email,
       disciplineScore: user.disciplineScore,
-      streak: user.streak
+      streak: user.streak,
+      lang: 'en'
     };
 
     // JOIN done → RULES next (PRG)
@@ -201,7 +202,8 @@ const postLogin = async (req, res) => {
       username: user.username,
       email: user.email,
       disciplineScore: user.disciplineScore,
-      streak: user.streak
+      streak: user.streak,
+      lang: 'en'
     };
 
     res.redirect('/dashboard');

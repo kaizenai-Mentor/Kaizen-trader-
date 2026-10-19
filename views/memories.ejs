@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="<%= lang %>">
 <head>
   <%- include('partials/head') %>
-  <title>KAIZEN — Memories</title>
+  <title><%= t('title.memories') %></title>
 </head>
 <body class="app-page">
   <%- include('partials/navbar') %>
@@ -12,11 +12,9 @@
     <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:24px;flex-wrap:wrap;">
       <div>
         <div style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:6px;display:flex;align-items:center;gap:8px;">
-          <span style="width:16px;height:1px;background:var(--gold);display:inline-block;"></span>
-          Session Archive
-        </div>
-        <h1 style="font-size:1.6rem;font-weight:700;color:var(--text-primary);margin-bottom:4px;">Memories</h1>
-        <p style="font-size:0.82rem;color:var(--ash);font-style:italic;">Every KAIZEN AI response — saved permanently for reflection.</p>
+          <span style="width:16px;height:1px;background:var(--gold);display:inline-block;"></span><%= t('mem.eyebrow') %></div>
+        <h1 style="font-size:1.6rem;font-weight:700;color:var(--text-primary);margin-bottom:4px;"><%= t('mem.title') %></h1>
+        <p style="font-size:0.82rem;color:var(--ash);font-style:italic;"><%= t('mem.sub') %></p>
       </div>
       <a href="/kaizen-ai" style="display:inline-flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);border:1px solid var(--border);padding:10px 16px;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.color='var(--gold)';this.style.borderColor='rgba(245,197,24,0.3)'" onmouseout="this.style.color='var(--ash)';this.style.borderColor='var(--border)'">
         KAIZEN AI
@@ -30,32 +28,28 @@
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:2px;margin-bottom:16px;">
         <div style="background:var(--bg-card);border:1px solid rgba(245,197,24,0.15);padding:16px;">
           <div style="font-family:'DM Mono',monospace;font-size:0.52rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--ash);margin-bottom:6px;display:flex;align-items:center;gap:5px;">
-            <i data-feather="archive" width="10" height="10"></i> Total Saved
-          </div>
+            <i data-feather="archive" width="10" height="10"></i><%= t('mem.total') %></div>
           <div style="font-family:'DM Mono',monospace;font-size:1.6rem;font-weight:700;color:var(--gold);"><%= memories.length %></div>
         </div>
         <div style="background:var(--bg-card);border:1px solid var(--border);padding:16px;">
           <div style="font-family:'DM Mono',monospace;font-size:0.52rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--ash);margin-bottom:6px;display:flex;align-items:center;gap:5px;">
-            <i data-feather="edit-3" width="10" height="10"></i> Journal
-          </div>
+            <i data-feather="edit-3" width="10" height="10"></i><%= t('mem.journal') %></div>
           <div style="font-family:'DM Mono',monospace;font-size:1.6rem;font-weight:700;color:var(--text-primary);">
             <%= memories.filter(m => m.type !== 'psychology' && m.asset !== 'Psychology Session').length %>
           </div>
         </div>
         <div style="background:var(--bg-card);border:1px solid var(--border);padding:16px;">
           <div style="font-family:'DM Mono',monospace;font-size:0.52rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--ash);margin-bottom:6px;display:flex;align-items:center;gap:5px;">
-            <i data-feather="cpu" width="10" height="10"></i> Psychology
-          </div>
+            <i data-feather="cpu" width="10" height="10"></i><%= t('mem.psych') %></div>
           <div style="font-family:'DM Mono',monospace;font-size:1.6rem;font-weight:700;color:var(--text-primary);">
             <%= memories.filter(m => m.type === 'psychology' || m.asset === 'Psychology Session').length %>
           </div>
         </div>
         <div style="background:var(--bg-card);border:1px solid var(--border);padding:16px;">
           <div style="font-family:'DM Mono',monospace;font-size:0.52rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--ash);margin-bottom:6px;display:flex;align-items:center;gap:5px;">
-            <i data-feather="calendar" width="10" height="10"></i> Latest
-          </div>
+            <i data-feather="calendar" width="10" height="10"></i><%= t('mem.latest') %></div>
           <div style="font-family:'DM Mono',monospace;font-size:0.85rem;font-weight:700;color:var(--text-primary);">
-            <%= new Date(memories[0].createdAt).toLocaleDateString('en-US',{month:'short',day:'numeric'}) %>
+            <%= new Date(memories[0].createdAt).toLocaleDateString(({en:'en-US',fr:'fr-FR',zh:'zh-CN',ja:'ja-JP',af:'af-ZA'})[lang]||'en-US',{month:'short',day:'numeric'}) %>
           </div>
         </div>
       </div>
@@ -85,7 +79,7 @@
                     </span>
                   </div>
                   <span style="font-family:'DM Mono',monospace;font-size:0.52rem;color:var(--ash);">
-                    <%= new Date(memory.createdAt).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) %>
+                    <%= new Date(memory.createdAt).toLocaleDateString(({en:'en-US',fr:'fr-FR',zh:'zh-CN',ja:'ja-JP',af:'af-ZA'})[lang]||'en-US',{month:'short',day:'numeric',year:'numeric'}) %>
                   </span>
                   <% if (memory.sessionScore && memory.sessionScore > 0) { %>
                     <span style="font-family:'DM Mono',monospace;font-size:0.55rem;font-weight:700;color:<%= memory.sessionScore >= 70 ? '#4ADE80' : memory.sessionScore >= 50 ? 'var(--gold)' : '#F87171' %>;">
@@ -98,9 +92,7 @@
                 </p>
               </div>
               <div style="display:flex;align-items:center;gap:5px;font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--ash);flex-shrink:0;">
-                <i data-feather="chevron-down" width="12" height="12" id="icon-<%= memory._id %>"></i>
-                Expand
-              </div>
+                <i data-feather="chevron-down" width="12" height="12" id="icon-<%= memory._id %>"></i><%= t('mem.expand') %></div>
             </div>
 
             <div id="memory-<%= memory._id %>" style="display:none;margin-top:20px;padding-top:20px;border-top:1px solid var(--border);">
@@ -109,7 +101,7 @@
               </div>
               <% if (memory.sessionData) { %>
                 <div style="padding:14px 16px;background:var(--bg-surface);border:1px solid var(--border);border-left:2px solid rgba(245,197,24,0.2);">
-                  <div style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);margin-bottom:8px;">Your Session Entry</div>
+                  <div style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);margin-bottom:8px;"><%= t('mem.yourEntry') %></div>
                   <p style="font-size:0.82rem;color:var(--ash);line-height:1.7;margin:0;font-style:italic;">"<%= memory.sessionData %>"</p>
                 </div>
               <% } %>
@@ -123,14 +115,10 @@
 
       <div style="background:var(--bg-card);border:1px solid var(--border);padding:80px 32px;text-align:center;">
         <div style="font-family:'DM Mono',monospace;font-size:4rem;color:rgba(245,197,24,0.1);margin-bottom:20px;">改</div>
-        <h2 style="font-size:1.1rem;font-weight:700;color:var(--text-primary);margin-bottom:8px;">No memories yet</h2>
-        <p style="font-size:0.88rem;color:var(--ash);max-width:380px;margin:0 auto 24px;line-height:1.8;">
-          Log a session in My Journal and KAIZEN AI will analyze it. The response is saved here automatically — permanently.
-        </p>
+        <h2 style="font-size:1.1rem;font-weight:700;color:var(--text-primary);margin-bottom:8px;"><%= t('mem.none') %></h2>
+        <p style="font-size:0.88rem;color:var(--ash);max-width:380px;margin:0 auto 24px;line-height:1.8;"><%= t('mem.noneNote') %></p>
         <a href="/dashboard/journal" style="display:inline-flex;align-items:center;gap:6px;background:var(--gold);color:#000;font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;font-weight:700;padding:12px 24px;text-decoration:none;">
-          <i data-feather="edit-3" width="13" height="13"></i>
-          Log Your First Session
-        </a>
+          <i data-feather="edit-3" width="13" height="13"></i><%= t('mem.first') %></a>
       </div>
 
     <% } %>

@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="<%= lang %>">
 <head>
   <%- include('partials/head') %>
-  <title>KAIZEN — Join</title>
+  <title><%= t('title.join') %></title>
 </head>
 <body class="k-auth" style="display:block;">
   <%- include('partials/navbar') %>
@@ -16,7 +16,7 @@
     <div class="k-authlogo">
       <a href="/" class="k-authlogolink">
         <span class="k-authkanji">改</span>
-        <span class="k-authword">KAIZEN</span>
+        <span class="k-authword"><%= t('brand.kaizen') %></span>
       </a>
     </div>
 
@@ -25,15 +25,15 @@
     <!-- ═══ STEP: JOIN ═══ -->
     <div class="k-card k-formcard k-authcard">
       <div class="k-stepstrip" style="margin-bottom:22px;">
-        <span class="is-active">Join</span><b>—</b>
-        <span>Rules</span><b>—</b>
-        <span>Plan</span><b>—</b>
-        <span>Log</span>
+        <span class="is-active"><%= t('nav.signup') %></span><b>—</b>
+        <span><%= t('register.chipRules') %></span><b>—</b>
+        <span><%= t('register.chipPlan') %></span><b>—</b>
+        <span><%= t('register.chipLog') %></span>
       </div>
 
       <div class="k-authhead">
-        <h1 class="k-authtitle">Start your improvement record</h1>
-        <p class="k-authsub">KAIZEN measures how you improve — not how much you make.</p>
+        <h1 class="k-authtitle"><%= t('register.start') %></h1>
+        <p class="k-authsub"><%= t('register.sub') %></p>
       </div>
 
       <a href="/auth/google" class="k-oauth">
@@ -42,46 +42,44 @@
           <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
           <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
           <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
-        </svg>
-        Continue with Google
-      </a>
-      <div class="k-oauthnote">By continuing with Google you accept our <a class="k-link" href="/terms" target="_blank" rel="noopener">Terms of Service</a> and <a class="k-link" href="/privacy" target="_blank" rel="noopener">Privacy Policy</a>.</div>
+        </svg><%= t('auth.google') %></a>
+      <div class="k-oauthnote"><%= t('auth.termsPrefix') %><a class="k-link" href="/terms" target="_blank" rel="noopener"><%= t('auth.terms') %></a><%= t('auth.and') %><a class="k-link" href="/privacy" target="_blank" rel="noopener"><%= t('auth.privacy') %></a>.</div>
 
-      <div class="k-oauthdiv"><span>or email</span></div>
+      <div class="k-oauthdiv"><span><%= t('auth.orEmail') %></span></div>
 
       <% if (error) { %><div class="k-autherror"><%= error %></div><% } %>
 
       <form action="/auth/register" method="POST" class="k-authform">
         <input type="hidden" name="ref" value="<%= typeof query !== 'undefined' && query && query.ref ? query.ref : '' %>">
         <div class="k-field">
-          <label class="k-fieldlabel" for="username">Username</label>
-          <input class="k-input" type="text" id="username" name="username" required placeholder="your_trader_name" value="<%= typeof username !== 'undefined' ? username : '' %>">
+          <label class="k-fieldlabel" for="username"><%= t('auth.username') %></label>
+          <input class="k-input" type="text" id="username" name="username" required placeholder="<%= t('register.namePh') %>" value="<%= typeof username !== 'undefined' ? username : '' %>">
         </div>
         <div class="k-field">
-          <label class="k-fieldlabel" for="email">Email</label>
+          <label class="k-fieldlabel" for="email"><%= t('auth.email') %></label>
           <input class="k-input" type="email" id="email" name="email" required placeholder="your@email.com" value="<%= typeof email !== 'undefined' ? email : '' %>">
         </div>
         <div class="k-field">
-          <label class="k-fieldlabel" for="password">Password</label>
-          <input class="k-input" type="password" id="password" name="password" required minlength="6" placeholder="At least 6 characters">
+          <label class="k-fieldlabel" for="password"><%= t('auth.password') %></label>
+          <input class="k-input" type="password" id="password" name="password" required minlength="6" placeholder="<%= t('register.passPh') %>">
         </div>
         <div class="k-field">
-          <label class="k-fieldlabel" for="confirmPassword">Confirm password</label>
-          <input class="k-input" type="password" id="confirmPassword" name="confirmPassword" required placeholder="Repeat your password">
+          <label class="k-fieldlabel" for="confirmPassword"><%= t('auth.confirmPassword') %></label>
+          <input class="k-input" type="password" id="confirmPassword" name="confirmPassword" required placeholder="<%= t('register.pass2Ph') %>">
         </div>
 
         <div class="k-field k-termscheck">
           <label class="k-check" for="terms">
             <input type="checkbox" id="terms" name="terms" value="1" required>
-            <span>I have read and accept the <a href="/terms" target="_blank" rel="noopener" onclick="event.stopPropagation()">Terms of Service</a> and <a href="/privacy" target="_blank" rel="noopener" onclick="event.stopPropagation()">Privacy Policy</a>.</span>
+            <span><%= t('auth.termsLabel') %> <a href="/terms" target="_blank" rel="noopener" onclick="event.stopPropagation()"><%= t('footer.terms') %></a> · <a href="/privacy" target="_blank" rel="noopener" onclick="event.stopPropagation()"><%= t('footer.privacy') %></a>.</span>
           </label>
         </div>
-        <button type="submit" class="k-btn k-btn-primary k-btn-block">Create Account</button>
+        <button type="submit" class="k-btn k-btn-primary k-btn-block"><%= t('auth.registerBtn') %></button>
       </form>
 
       <div class="k-authfoot">
-        <span>Already have an account?</span>
-        <a href="/auth/login">Sign in</a>
+        <span><%= t('auth.haveAccount') %></span>
+        <a href="/auth/login"><%= t('nav.login') %></a>
       </div>
     </div>
 
@@ -90,72 +88,72 @@
     <!-- ═══ STEP: RULES — build your first Trading System ═══ -->
     <div class="k-card k-formcard k-authcard">
       <div class="k-stepstrip" style="margin-bottom:22px;">
-        <span class="is-done">Join ✓</span><b>—</b>
-        <span class="is-active">Rules</span><b>—</b>
-        <span>Plan</span><b>—</b>
-        <span>Log</span>
+        <span class="is-done"><%= t('nav.signup') %> ✓</span><b>—</b>
+        <span class="is-active"><%= t('system.entryRules') %></span><b>—</b>
+        <span><%= t('register.chipPlan') %></span><b>—</b>
+        <span><%= t('register.chipLog') %></span>
       </div>
 
       <div class="k-authhead">
-        <h1 class="k-authtitle">Build your first Trading System</h1>
-        <p class="k-authsub">The rules every session will be measured against. Be honest, be specific — and don't worry, you can refine later. Every save is a new version.</p>
+        <h1 class="k-authtitle"><%= t('register.buildSys') %></h1>
+        <p class="k-authsub"><%= t('register.buildSub') %></p>
       </div>
 
       <form action="/auth/onboarding/rules" method="POST" class="k-authform">
 
         <div class="k-fieldrow">
           <div class="k-field">
-            <label class="k-fieldlabel" for="markets">What do you trade?</label>
+            <label class="k-fieldlabel" for="markets"><%= t('register.whatTrade') %></label>
             <select class="k-input" id="markets" name="markets">
-              <option value="">Select your market</option>
-              <option value="Forex">Forex</option>
-              <option value="Crypto">Crypto</option>
-              <option value="Stocks">Stocks</option>
-              <option value="Indices">Indices</option>
-              <option value="Commodities">Commodities</option>
-              <option value="Multiple markets">Multiple markets</option>
+              <option value=""><%= t('register.selectMarket') %></option>
+              <option value="Forex"><%= t('register.mForex') %></option>
+              <option value="Crypto"><%= t('register.mCrypto') %></option>
+              <option value="Stocks"><%= t('register.mStocks') %></option>
+              <option value="Indices"><%= t('register.mIndices') %></option>
+              <option value="Commodities"><%= t('register.mCommod') %></option>
+              <option value="Multiple markets"><%= t('register.mMulti') %></option>
             </select>
           </div>
           <div class="k-field">
-            <label class="k-fieldlabel" for="tradingHours">When do you trade?</label>
-            <input class="k-input" type="text" id="tradingHours" name="tradingHours" placeholder="e.g. 08:00–12:00 London, weekdays">
+            <label class="k-fieldlabel" for="tradingHours"><%= t('register.when') %></label>
+            <input class="k-input" type="text" id="tradingHours" name="tradingHours" placeholder="<%= t('register.hoursPh') %>">
           </div>
         </div>
 
         <div class="k-field">
-          <label class="k-fieldlabel" for="setups">Your setups — one per line (optional)</label>
-          <textarea class="k-input" id="setups" name="setups" rows="3" placeholder="e.g.&#10;London open breakout&#10;Trend pullback to 20 EMA"></textarea>
-          <div class="k-fieldhint">These become the setups you pick from when planning a session.</div>
+          <label class="k-fieldlabel" for="setups"><%= t('register.setups') %></label>
+          <textarea class="k-input" id="setups" name="setups" rows="3" placeholder="<%= t('register.setupsPh') %>"></textarea>
+          <div class="k-fieldhint"><%= t('form.setupsHelp') %></div>
         </div>
 
         <div class="k-field">
-          <label class="k-fieldlabel" for="entryRules">One entry rule you actually follow (optional)</label>
-          <textarea class="k-input" id="entryRules" name="entryRules" rows="2" placeholder="What must be true before you enter?"></textarea>
+          <label class="k-fieldlabel" for="entryRules"><%= t('register.entryRule') %></label>
+          <textarea class="k-input" id="entryRules" name="entryRules" rows="2" placeholder="<%= t('register.entryPh') %>"></textarea>
         </div>
 
         <div class="k-fieldrow k-fieldrow--3">
           <div class="k-field">
-            <label class="k-fieldlabel" for="riskPerTrade">Risk per trade</label>
+            <label class="k-fieldlabel" for="riskPerTrade"><%= t('form.riskPerTrade') %></label>
             <input class="k-input" type="text" id="riskPerTrade" name="riskPerTrade" placeholder="e.g. 1%">
           </div>
           <div class="k-field">
-            <label class="k-fieldlabel" for="maxDailyTrades">Max trades / day</label>
-            <input class="k-input" type="text" id="maxDailyTrades" name="maxDailyTrades" placeholder="e.g. 3">
+            <label class="k-fieldlabel" for="maxDailyTrades"><%= t('form.maxTrades') %></label>
+            <input class="k-input" type="text" id="maxDailyTrades" name="maxDailyTrades" placeholder="<%= t('register.numPh') %>">
           </div>
           <div class="k-field">
-            <label class="k-fieldlabel" for="dailyDrawdown">Daily stop</label>
+            <label class="k-fieldlabel" for="dailyDrawdown"><%= t('form.dailyStop') %></label>
             <input class="k-input" type="text" id="dailyDrawdown" name="dailyDrawdown" placeholder="e.g. 3%">
           </div>
         </div>
-        <div class="k-fieldhint" style="margin-bottom:16px;">Hard numbers matter — the engine reads these to score your Risk dimension.</div>
+        <div class="k-fieldhint" style="margin-bottom:16px;"><%= t('register.hardNums') %></div>
 
-        <button type="submit" class="k-btn k-btn-primary k-btn-block">Save rules → plan my first session</button>
+        <button type="submit" class="k-btn k-btn-primary k-btn-block"><%= t('register.save') %></button>
       </form>
 
       <form action="/auth/onboarding/skip" method="POST" class="k-authskipform">
-        <button type="submit" class="k-btn k-btn-ghost k-btn-block">Skip — start with a blank system</button>
+        <button type="submit" class="k-btn k-btn-ghost k-btn-block"><%= t('register.skip') %></button>
       </form>
-      <div class="k-fieldhint" style="text-align:center;">Skipping is fine. Your cockpit will nudge you to write your rules when it matters.</div>
+      <div class="k-fieldhint" style="text-align:center;"><%= t('register.skipNote') %></div>
     </div>
 
     <% } %>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="<%= lang %>">
+<head>
+  <%- include('partials/head') %>
+  <title><%= goal.title %> · <%= t('title.goals') %></title>
+</head>
+<body class="app-page">
+  <%- include('partials/navbar') %>
+
+  <main class="app-main">
+
+    <div style="margin-bottom:24px;">
+      <div style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:6px;display:flex;align-items:center;gap:8px;">
+        <span style="width:16px;height:1px;background:var(--gold);display:inline-block;"></span><%= t('goals.eyebrow') %></div>
+      <h1 style="font-size:1.5rem;font-weight:700;color:var(--text-primary);margin-bottom:6px;"><%= goal.title %></h1>
+      <p style="font-family:'DM Mono',monospace;font-size:0.68rem;color:var(--ash);">
+        <%= goal.metric %> <% if (goal.target != null) { %>· <%= t('goals.target') %> <%= goal.target %><%= goal.unit || '' %><% } %>
+        · <%= goal.cadence %> · <%= goal.status %>
+        <% if (current != null) { %>· <%= t('goals.now') %> <%= current %><%= goal.unit || '' %><% } %>
+      </p>
+    </div>
+
+    <div class="k-card" style="margin-bottom:16px;">
+      <div class="k-panel-title" style="margin-bottom:10px;"><%= t('goals.guidance') %></div>
+      <p style="font-size:0.9rem;line-height:1.65;color:var(--text-primary);margin-bottom:12px;"><%= guidance.assessment %></p>
+      <div style="font-family:'DM Mono',monospace;font-size:0.56rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:4px;"><%= t('goals.next') %></div>
+      <p style="font-size:0.88rem;line-height:1.65;color:var(--text-primary);"><%= guidance.nextStep %></p>
+    </div>
+
+    <div class="k-card" style="margin-bottom:16px;">
+      <div class="k-panel-title" style="margin-bottom:12px;"><%= t('goals.adapt') %></div>
+      <form method="POST" action="/goals/<%= goal._id %>/adapt" style="display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;">
+        <div>
+          <label style="display:block;font-family:'DM Mono',monospace;font-size:0.56rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);margin-bottom:6px;"><%= t('goals.newTarget') %></label>
+          <input class="k-input" name="target" type="number" step="any" value="<%= goal.target != null ? goal.target : '' %>" style="width:110px;">
+        </div>
+        <button type="submit" class="k-btn" style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;"><%= t('goals.reGuide') %></button>
+      </form>
+      <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;">
+        <% statuses.forEach(function (s) { %>
+          <form method="POST" action="/goals/<%= goal._id %>/status">
+            <input type="hidden" name="status" value="<%= s %>">
+            <button type="submit" class="k-btn k-btn--ghost" style="font-family:'DM Mono',monospace;font-size:0.52rem;letter-spacing:0.1em;text-transform:uppercase;<%= goal.status === s ? 'border-color:var(--gold);color:var(--gold);' : '' %>"><%= s %></button>
+          </form>
+        <% }); %>
+      </div>
+    </div>
+
+    <div class="k-card" style="margin-bottom:16px;">
+      <div class="k-panel-title" style="margin-bottom:12px;"><%= t('goals.log') %></div>
+      <form method="POST" action="/goals/<%= goal._id %>/log" style="display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;">
+        <div>
+          <label style="display:block;font-family:'DM Mono',monospace;font-size:0.56rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);margin-bottom:6px;"><%= t('goals.value') %></label>
+          <input class="k-input" name="value" type="number" step="any" style="width:110px;">
+        </div>
+        <div style="flex:1;min-width:200px;">
+          <label style="display:block;font-family:'DM Mono',monospace;font-size:0.56rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);margin-bottom:6px;"><%= t('goals.note') %></label>
+          <input class="k-input" name="note" maxlength="300" placeholder="<%= t('goals.notePh') %>">
+        </div>
+        <button type="submit" class="k-btn" style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;"><%= t('goals.addEntry') %></button>
+      </form>
+
+      <% if (goal.progressLog && goal.progressLog.length) { %>
+        <div style="margin-top:14px;">
+          <% goal.progressLog.slice().reverse().forEach(function (e) { %>
+            <div style="display:flex;justify-content:space-between;gap:12px;border-top:1px solid var(--border);padding:8px 0;font-size:0.82rem;">
+              <span style="color:var(--ash);font-family:'DM Mono',monospace;font-size:0.66rem;"><%= e.at ? new Date(e.at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '' %></span>
+              <span style="flex:1;color:var(--text-primary);"><%= e.note || '—' %></span>
+              <span style="color:var(--gold);font-family:'DM Mono',monospace;"><%= e.value != null ? e.value + (goal.unit || '') : '' %></span>
+            </div>
+          <% }); %>
+        </div>
+      <% } %>
+    </div>
+
+    <a href="/goals" class="k-btn k-btn--ghost" style="font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.12em;text-transform:uppercase;"><%= t('goals.backToList') %></a>
+
+  </main>
+  <script src="/js/app.js"></script>
+</body>
+</html>

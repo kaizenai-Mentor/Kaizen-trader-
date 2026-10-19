@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="<%= lang %>">
 <head>
   <%- include('partials/head') %>
-  <title>KAIZEN — <%= profileUser.username %>'s Discipline Profile</title>
+  <title><%= t('profile.titlePre') %><%= profileUser.username %><%= t('profile.titleSuf') %></title>
   <meta property="og:title" content="<%= profileUser.username %>'s KAIZEN Discipline Profile">
-  <meta property="og:description" content="Discipline Score: <%= profileUser.disciplineScore %>% | <%= profileUser.totalSessions %> sessions logged | <%= profileUser.streak %> day streak">
+  <meta property="og:description" content="Discipline Score: <%= profileUser.disciplineScore %>% | <%= profileUser.totalSessions %><%= t('profile.sessionsLogged') %><%= profileUser.streak %> day streak">
   <meta property="og:url" content="https://kaizen-trader.onrender.com/trader/<%= profileUser.username %>">
 </head>
 <body class="app-page">
@@ -42,14 +42,11 @@
           </div>
 
           <div>
-            <div style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--ash);margin-bottom:4px;">
-              改 KAIZEN Trader
-            </div>
+            <div style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--ash);margin-bottom:4px;"><%= t('profile.trader') %></div>
             <h1 style="font-size:1.4rem;font-weight:700;color:var(--text-primary);margin-bottom:4px;">
               <%= profileUser.username %>
             </h1>
-            <div style="font-size:0.75rem;color:var(--ash);">
-              Member since <%= new Date(profileUser.memberSince).toLocaleDateString('en-US',{month:'long',year:'numeric'}) %>
+            <div style="font-size:0.75rem;color:var(--ash);"><%= t('profile.member') %><%= new Date(profileUser.memberSince).toLocaleDateString(({en:'en-US',fr:'fr-FR',zh:'zh-CN',ja:'ja-JP',af:'af-ZA'})[lang]||'en-US',{month:'long',year:'numeric'}) %>
             </div>
           </div>
         </div>
@@ -65,9 +62,7 @@
         " onmouseover="this.style.color='var(--gold)';this.style.borderColor='rgba(245,197,24,0.3)'"
            onmouseout="this.style.color='var(--ash)';this.style.borderColor='var(--border)'"
            id="share-btn">
-          <i data-feather="share-2" width="11" height="11"></i>
-          Share Profile
-        </button>
+          <i data-feather="share-2" width="11" height="11"></i><%= t('profile.share') %></button>
 
       </div>
     </div>
@@ -80,9 +75,7 @@
       margin-bottom:2px;
     ">
       <div style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--ash);margin-bottom:12px;display:flex;align-items:center;gap:6px;">
-        <i data-feather="bar-chart-2" width="12" height="12" style="color:var(--gold);"></i>
-        Discipline Score
-      </div>
+        <i data-feather="bar-chart-2" width="12" height="12" style="color:var(--gold);"></i><%= t('profile.score') %></div>
 
       <div style="display:flex;align-items:flex-end;gap:12px;margin-bottom:12px;flex-wrap:wrap;">
         <div style="font-family:'DM Mono',monospace;font-size:3.5rem;font-weight:700;color:var(--gold);line-height:1;">
@@ -107,9 +100,7 @@
         <div style="height:100%;background:linear-gradient(to right,var(--gold),rgba(245,197,24,0.6));width:<%= profileUser.disciplineScore %>%;transition:width 1.2s ease;"></div>
       </div>
 
-      <div style="font-size:0.75rem;color:var(--ash);">
-        Process consistency — not profit and loss
-      </div>
+      <div style="font-size:0.75rem;color:var(--ash);"><%= t('profile.scoreNote') %></div>
     </div>
 
     <!-- STATS ROW -->
@@ -117,29 +108,25 @@
 
       <div style="background:var(--bg-card);border:1px solid var(--border);padding:18px;text-align:center;">
         <div style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--ash);margin-bottom:6px;display:flex;align-items:center;justify-content:center;gap:4px;">
-          <i data-feather="edit-3" width="9" height="9"></i>Sessions
-        </div>
+          <i data-feather="edit-3" width="9" height="9"></i><%= t('rep.sessions') %></div>
         <div style="font-family:'DM Mono',monospace;font-size:1.6rem;font-weight:700;color:var(--text-primary);"><%= profileUser.totalSessions %></div>
       </div>
 
       <div style="background:var(--bg-card);border:1px solid var(--border);padding:18px;text-align:center;">
         <div style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--ash);margin-bottom:6px;display:flex;align-items:center;justify-content:center;gap:4px;">
-          <i data-feather="zap" width="9" height="9"></i>Streak
-        </div>
+          <i data-feather="zap" width="9" height="9"></i><%= t('profile.streak') %></div>
         <div style="font-family:'DM Mono',monospace;font-size:1.6rem;font-weight:700;color:<%= profileUser.streak >= 7 ? '#4ADE80' : 'var(--text-primary)' %>;"><%= profileUser.streak %><span style="font-size:0.8rem;color:var(--ash);">d</span></div>
       </div>
 
       <div style="background:var(--bg-card);border:1px solid var(--border);padding:18px;text-align:center;">
         <div style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--ash);margin-bottom:6px;display:flex;align-items:center;justify-content:center;gap:4px;">
-          <i data-feather="check-circle" width="9" height="9"></i>Compliance
-        </div>
+          <i data-feather="check-circle" width="9" height="9"></i><%= t('profile.compliance') %></div>
         <div style="font-family:'DM Mono',monospace;font-size:1.6rem;font-weight:700;color:#4ADE80;"><%= profileUser.complianceRate %>%</div>
       </div>
 
       <div style="background:var(--bg-card);border:1px solid var(--border);padding:18px;text-align:center;">
         <div style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--ash);margin-bottom:6px;display:flex;align-items:center;justify-content:center;gap:4px;">
-          <i data-feather="award" width="9" height="9"></i>Badges
-        </div>
+          <i data-feather="award" width="9" height="9"></i><%= t('rep.badges') %></div>
         <div style="font-family:'DM Mono',monospace;font-size:1.6rem;font-weight:700;color:var(--gold);"><%= profileUser.badges.length %></div>
       </div>
 
@@ -149,9 +136,7 @@
     <% if (recentActivity && recentActivity.length > 0) { %>
     <div style="background:var(--bg-card);border:1px solid var(--border);padding:22px;margin-bottom:2px;">
       <div style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--ash);margin-bottom:16px;display:flex;align-items:center;gap:6px;">
-        <i data-feather="activity" width="12" height="12" style="color:var(--gold);"></i>
-        Recent Activity
-      </div>
+        <i data-feather="activity" width="12" height="12" style="color:var(--gold);"></i><%= t('profile.recent') %></div>
 
       <!-- Activity bar chart -->
       <div style="display:flex;align-items:flex-end;gap:5px;height:60px;margin-bottom:12px;">
@@ -169,11 +154,11 @@
       <div style="display:flex;gap:16px;">
         <div style="display:flex;align-items:center;gap:5px;">
           <div style="width:8px;height:8px;background:rgba(52,211,153,0.7);border-radius:1px;"></div>
-          <span style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--ash);">Compliant</span>
+          <span style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--ash);"><%= t('profile.compliant') %></span>
         </div>
         <div style="display:flex;align-items:center;gap:5px;">
           <div style="width:8px;height:8px;background:rgba(248,113,113,0.7);border-radius:1px;"></div>
-          <span style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--ash);">Violated</span>
+          <span style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--ash);"><%= t('profile.violated') %></span>
         </div>
       </div>
     </div>
@@ -183,9 +168,7 @@
     <% if (profileUser.badges && profileUser.badges.length > 0) { %>
     <div style="background:var(--bg-card);border:1px solid var(--border);padding:22px;margin-bottom:2px;">
       <div style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--ash);margin-bottom:16px;display:flex;align-items:center;gap:6px;">
-        <i data-feather="award" width="12" height="12" style="color:var(--gold);"></i>
-        Achievements
-        <span style="color:var(--gold);border:1px solid rgba(245,197,24,0.2);padding:2px 7px;"><%= profileUser.badges.length %></span>
+        <i data-feather="award" width="12" height="12" style="color:var(--gold);"></i><%= t('profile.achievements') %><span style="color:var(--gold);border:1px solid rgba(245,197,24,0.2);padding:2px 7px;"><%= profileUser.badges.length %></span>
       </div>
       <div style="display:flex;flex-wrap:wrap;gap:6px;">
         <% profileUser.badges.forEach(function(badge) { %>
@@ -208,24 +191,20 @@
     <!-- ON-CHAIN REPUTATION -->
     <div style="background:var(--bg-card);border:1px solid rgba(59,130,246,0.15);padding:22px;margin-bottom:2px;">
       <div style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--ash);margin-bottom:14px;display:flex;align-items:center;gap:6px;">
-        <i data-feather="link" width="12" height="12" style="color:var(--blue);"></i>
-        On-Chain Reputation
-      </div>
+        <i data-feather="link" width="12" height="12" style="color:var(--blue);"></i><%= t('help.onchain') %></div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:2px;">
         <div style="background:var(--bg-surface);border:1px solid rgba(245,197,24,0.1);padding:14px;">
-          <div style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-bottom:6px;">ZA DAO · Stacks</div>
+          <div style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-bottom:6px;"><%= t('profile.za') %></div>
           <% if (profileUser.zaUserId) { %>
-            <a href="https://zeroauthoritydao.com/profile/<%= profileUser.zaUserId %>" target="_blank" style="display:inline-flex;align-items:center;gap:5px;font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--gold);text-decoration:none;">
-              View Profile <i data-feather="external-link" width="10" height="10"></i>
+            <a href="https://zeroauthoritydao.com/profile/<%= profileUser.zaUserId %>" target="_blank" style="display:inline-flex;align-items:center;gap:5px;font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--gold);text-decoration:none;"><%= t('profile.viewProfile') %><i data-feather="external-link" width="10" height="10"></i>
             </a>
           <% } else { %>
-            <span style="font-size:0.75rem;color:var(--ash);">Not connected</span>
+            <span style="font-size:0.75rem;color:var(--ash);"><%= t('profile.notConn') %></span>
           <% } %>
         </div>
         <div style="background:var(--bg-surface);border:1px solid rgba(59,130,246,0.1);padding:14px;">
-          <div style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-bottom:6px;">Mantle · AI Record</div>
-          <a href="https://explorer.sepolia.mantle.xyz" target="_blank" style="display:inline-flex;align-items:center;gap:5px;font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--blue);text-decoration:none;">
-            View Explorer <i data-feather="external-link" width="10" height="10"></i>
+          <div style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-bottom:6px;"><%= t('profile.mantle') %></div>
+          <a href="https://explorer.sepolia.mantle.xyz" target="_blank" style="display:inline-flex;align-items:center;gap:5px;font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--blue);text-decoration:none;"><%= t('profile.viewExplorer') %><i data-feather="external-link" width="10" height="10"></i>
           </a>
         </div>
       </div>
@@ -234,13 +213,9 @@
     <!-- CTA — if viewing someone else's profile -->
     <% if (!isOwnProfile) { %>
     <div style="background:rgba(245,197,24,0.03);border:1px solid rgba(245,197,24,0.12);padding:24px;text-align:center;">
-      <p style="font-size:0.88rem;color:var(--ash);margin-bottom:16px;line-height:1.7;">
-        Want to build your own verifiable discipline record?
-      </p>
+      <p style="font-size:0.88rem;color:var(--ash);margin-bottom:16px;line-height:1.7;"><%= t('profile.want') %></p>
       <a href="/auth/register" style="display:inline-flex;align-items:center;gap:6px;background:var(--gold);color:#000;font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;font-weight:700;padding:12px 28px;text-decoration:none;">
-        <i data-feather="arrow-right" width="13" height="13"></i>
-        Start Free on KAIZEN
-      </a>
+        <i data-feather="arrow-right" width="13" height="13"></i><%= t('profile.startFree') %></a>
     </div>
     <% } %>
 
@@ -248,9 +223,7 @@
     <% if (isOwnProfile) { %>
     <div style="text-align:center;margin-top:16px;">
       <a href="/dashboard" style="display:inline-flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);border:1px solid var(--border);padding:10px 20px;text-decoration:none;">
-        <i data-feather="arrow-left" width="12" height="12"></i>
-        Back to Dashboard
-      </a>
+        <i data-feather="arrow-left" width="12" height="12"></i><%= t('crumb.dashboard') %></a>
     </div>
     <% } %>
 

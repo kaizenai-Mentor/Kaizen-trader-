@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="<%= lang %>">
 <head>
   <%- include('partials/head') %>
-  <title>KAIZEN — Market News</title>
+  <title><%= t('title.news') %></title>
 </head>
 <body class="app-page">
   <%- include('partials/navbar') %>
@@ -12,24 +12,40 @@
     <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:24px;flex-wrap:wrap;">
       <div>
         <div style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:6px;display:flex;align-items:center;gap:8px;">
-          <span style="width:16px;height:1px;background:var(--gold);display:inline-block;"></span>
-          Market Intelligence
-        </div>
-        <h1 style="font-size:1.6rem;font-weight:700;color:var(--text-primary);margin-bottom:4px;">Market News</h1>
-        <p style="font-size:0.82rem;color:var(--ash);font-style:italic;">Stay informed. Trade with context.</p>
+          <span style="width:16px;height:1px;background:var(--gold);display:inline-block;"></span><%= t('news.intel') %></div>
+        <h1 style="font-size:1.6rem;font-weight:700;color:var(--text-primary);margin-bottom:4px;"><%= t('news.title') %></h1>
+        <p style="font-size:0.82rem;color:var(--ash);font-style:italic;"><%= t('news.sub') %></p>
       </div>
       <a href="/dashboard" style="display:inline-flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);border:1px solid var(--border);padding:10px 16px;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.color='var(--gold)';this.style.borderColor='rgba(245,197,24,0.3)'" onmouseout="this.style.color='var(--ash)';this.style.borderColor='var(--border)'">
-        <i data-feather="arrow-left" width="12" height="12"></i>
-        Dashboard
-      </a>
+        <i data-feather="arrow-left" width="12" height="12"></i><%= t('crumb.dashboard') %></a>
     </div>
 
     <!-- WARNING BANNER -->
     <div style="background:rgba(245,197,24,0.04);border:1px solid rgba(245,197,24,0.15);padding:14px 18px;margin-bottom:16px;display:flex;align-items:center;gap:10px;">
       <i data-feather="alert-circle" width="13" height="13" style="color:var(--gold);flex-shrink:0;"></i>
-      <p style="font-size:0.78rem;color:var(--ash);margin:0;line-height:1.6;">
-        News is for context only — not trading signals. Always apply your own analysis before making decisions.
-      </p>
+      <p style="font-size:0.78rem;color:var(--ash);margin:0;line-height:1.6;"><%= t('news.disclaimer') %></p>
+    </div>
+
+    <!-- UPCOMING EVENTS -->
+    <div style="background:var(--bg-card);border:1px solid var(--border);padding:18px 20px;margin-bottom:16px;">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+        <i data-feather="calendar" width="13" height="13" style="color:var(--gold);"></i>
+        <div style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);"><%= t('news.upcomingEvents') %></div>
+      </div>
+      <% if (typeof events !== 'undefined' && events && events.length > 0) { %>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <% events.forEach(function(ev) { %>
+            <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:10px 12px;border:1px solid var(--border);">
+              <span style="font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--text-primary);white-space:nowrap;"><%= new Date(ev.date).toLocaleDateString(({en:'en-US',fr:'fr-FR',zh:'zh-CN',ja:'ja-JP',af:'af-ZA'})[lang]||'en-US',{month:'short',day:'numeric'}) %></span>
+              <span style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;border:1px solid rgba(245,197,24,0.25);color:var(--gold);padding:2px 8px;"><%= ev.impact %></span>
+              <span style="font-size:0.82rem;color:var(--text-primary);font-weight:600;"><%= ev.title %></span>
+              <% if (ev.note) { %><span style="font-size:0.75rem;color:var(--ash);"><%= ev.note %></span><% } %>
+            </div>
+          <% }); %>
+        </div>
+      <% } else { %>
+        <p style="font-size:0.78rem;color:var(--ash);margin:0;line-height:1.6;"><%= t('news.noEvents') %></p>
+      <% } %>
     </div>
 
     <% if (typeof articles !== 'undefined' && articles && articles.length > 0) { %>
@@ -63,7 +79,7 @@
                     <span style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(245,197,24,0.2);padding:2px 7px;"><%= article.source_id || article.source?.name %></span>
                   <% } %>
                   <span style="font-family:'DM Mono',monospace;font-size:0.52rem;color:var(--ash);">
-                    <%= article.pubDate ? new Date(article.pubDate).toLocaleDateString('en-US',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}) : article.publishedAt ? new Date(article.publishedAt).toLocaleDateString('en-US',{month:'short',day:'numeric'}) : '' %>
+                    <%= article.pubDate ? new Date(article.pubDate).toLocaleDateString(({en:'en-US',fr:'fr-FR',zh:'zh-CN',ja:'ja-JP',af:'af-ZA'})[lang]||'en-US',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}) : article.publishedAt ? new Date(article.publishedAt).toLocaleDateString(({en:'en-US',fr:'fr-FR',zh:'zh-CN',ja:'ja-JP',af:'af-ZA'})[lang]||'en-US',{month:'short',day:'numeric'}) : '' %>
                   </span>
                 </div>
 
@@ -77,9 +93,7 @@
                   </p>
                 <% } %>
 
-                <div style="display:flex;align-items:center;gap:4px;margin-top:8px;font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--ash);">
-                  Read full story
-                  <i data-feather="external-link" width="10" height="10"></i>
+                <div style="display:flex;align-items:center;gap:4px;margin-top:8px;font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--ash);"><%= t('news.readFull') %><i data-feather="external-link" width="10" height="10"></i>
                 </div>
               </div>
 
@@ -94,8 +108,8 @@
         <div style="width:44px;height:44px;border:1px solid var(--border);background:var(--bg-surface);display:flex;align-items:center;justify-content:center;color:var(--ash);margin:0 auto 16px;">
           <i data-feather="rss" width="18" height="18"></i>
         </div>
-        <h2 style="font-size:1rem;font-weight:700;color:var(--text-primary);margin-bottom:8px;">No news available</h2>
-        <p style="font-size:0.85rem;color:var(--ash);max-width:320px;margin:0 auto;line-height:1.7;">Market news couldn't be loaded right now. Check back shortly.</p>
+        <h2 style="font-size:1rem;font-weight:700;color:var(--text-primary);margin-bottom:8px;"><%= t('news.none') %></h2>
+        <p style="font-size:0.85rem;color:var(--ash);max-width:320px;margin:0 auto;line-height:1.7;"><%= t('news.noneNote') %></p>
       </div>
 
     <% } %>

@@ -14,6 +14,7 @@ const fs = require('fs');
 const ROOT = path.join(__dirname, '..');
 const VIEWS = path.join(ROOT, 'views');
 const OUT = process.argv[2] || '/tmp/app-pages';
+const LANG = process.argv[3] || 'en';
 fs.mkdirSync(OUT, { recursive: true });
 
 // ── demo sessions (shape mirrors test/scoreEngine.test.js factory) ──
@@ -195,18 +196,51 @@ const recordedSession = Object.assign(mk({}, 1), {
 });
 const analyzedSession = sessions[0];
 const memories = [
-  { type: 'session', asset: 'XAUUSD', sessionData: 'London sweep + MSS, entered on retest, held to 2R.', response: 'Strong execution. The patience after the sweep is exactly the behavior to repeat. Note the urge to add size at +1.5R — log what you felt there.', sessionScore: 82, createdAt: new Date(Date.now() - 2 * 864e5) },
+  { type: 'session', asset: 'XAUUSD', sessionData: 'London sweep + MSS, entered on retest, held to 2R.', response: 'Your execution on this one was strong. The patience you showed after the sweep is exactly the behavior to repeat. Note the urge you felt to add size at +1.5R — log what you felt there.', sessionScore: 82, createdAt: new Date(Date.now() - 2 * 864e5) },
   { type: 'session', asset: 'BTCUSD', sessionData: 'Entered before MSS confirmation.', response: 'The entry came before your trigger fired. Same setup, one candle early. The five-minute timer exists for exactly this moment.', sessionScore: 48, createdAt: new Date(Date.now() - 5 * 864e5) },
   { type: 'psych', asset: '—', sessionData: 'Froze before clicking on a perfect setup.', response: 'The freeze is data, not failure. It appeared after two losses — we will watch that window together.', sessionScore: null, createdAt: new Date(Date.now() - 8 * 864e5) }
 ];
 
 pages['session-record'] = { user, session: plannedSession, title: 'The Record' };
 pages['session-reflect'] = { user, session: recordedSession, title: 'The Reflection' };
-pages['session-detail'] = { user, session: Object.assign({}, analyzedSession, { aiAnalysis: 'Your entry timing improved on this one — the confirmation candle closed before you acted, and that patience is what moved Execution up. The loss itself is noise; the process that produced it is signal. One thing to watch: your confidence was a 7 pre-session but your reflection says you almost added size at +1.5R. That gap between declared confidence and in-trade impulses is exactly what the after-loss window tracks. Keep logging that urge honestly — it is the raw material for the next improvement.' }), score: scoreEngine.computeScore([analyzedSession], null, null), title: 'Session' };
+pages['session-detail'] = { user, session: Object.assign({}, analyzedSession, { hasChartImage: true, aiAnalysis: 'Your entry timing improved on this one — the confirmation candle closed before you acted, and that patience is what moved your Execution up. The loss itself is noise; the process that produced it is signal. One thing to watch: your confidence was a 7 pre-session but your reflection says you almost added size at +1.5R. That gap between declared confidence and in-trade impulses is exactly what the after-loss window tracks. Keep logging that urge honestly — it is the raw material for the next improvement.' }), score: scoreEngine.computeScore([analyzedSession], null, null), title: 'Session' };
+pages['news'] = {
+  user,
+  articles: [
+    { title: 'Dollar steadies as markets await fresh inflation print', url: '#', description: 'The dollar held its ground in quiet trade as traders positioned for this week\'s inflation data, with policy expectations little changed.', image_url: null, urlToImage: null, publishedAt: new Date(Date.now() - 2 * 36e5).toISOString(), pubDate: new Date(Date.now() - 2 * 36e5).toISOString(), source: 'Market Wire', source_id: 'market-wire' },
+    { title: 'Gold eases from highs as risk appetite returns', url: '#', description: 'Bullion pulled back from the week\'s high as equities rallied, though demand for haven assets stayed firm.', image_url: null, urlToImage: null, publishedAt: new Date(Date.now() - 5 * 36e5).toISOString(), pubDate: new Date(Date.now() - 5 * 36e5).toISOString(), source: 'Desk Report', source_id: 'desk-report' },
+    { title: 'Central banks keep rates on hold — what it means for your sessions', url: '#', description: 'Policy unchanged across major banks this month. The message is patience — the same skill your record keeps asking of you.', image_url: null, urlToImage: null, publishedAt: new Date(Date.now() - 9 * 36e5).toISOString(), pubDate: new Date(Date.now() - 9 * 36e5).toISOString(), source: 'Macro Daily', source_id: 'macro-daily' }
+  ],
+  events: [
+    { date: new Date(Date.now() + 3 * 864e5).toISOString(), impact: 'HIGH', title: 'US CPI (YoY)', note: 'Inflation print — expect volatility' },
+    { date: new Date(Date.now() + 6 * 864e5).toISOString(), impact: 'MED', title: 'ECB Rate Decision', note: '' }
+  ],
+  title: 'Market News'
+};
 pages['memories'] = { user, memories, title: 'Memories' };
+pages['improve'] = {
+  user, totalSessions: 5, movement: null,
+  rec: {
+    intro: 'You wrote: "Moved my stop after the sweep, took the full loss." That is the material we improve with — everything below is built from your own record, nothing generic.',
+    items: [
+      { title: 'Take one rule back into the next session', why: '2 of your last 5 recorded sessions broke a rule — and your own entry rule is: "MSS on 30min after liquidity sweep; no entry without confirmation candle close."', action: 'Trade the next session with exactly one job: honouring that rule. Log the session even if you skip the trade. One rule at a time.' },
+      { title: 'Move your Risk dimension first', why: 'Your Risk dimension is your lowest reading at 38 (-11 versus your prior reading) — this is the number your next sessions move fastest.', action: 'Write the exact risk per trade and the daily stop before the session, and end the day the moment the daily stop hits. One rule at a time.' },
+      { title: 'Keep working the revenge trading', why: 'Your Psychology room is still on "Revenge trading" (active) — this is the layer that shows up in the sessions when nobody is watching.', action: 'Name the trigger once before the next session starts — in the Psychology room or in the session note — and trade the plan despite it. One rule at a time.' }
+    ]
+  }
+};
+pages['goals'] = {
+  user, metrics: ['RULE_COMPLIANCE', 'SESSIONS_PER_WEEK', 'RISK_LIMIT', 'JOURNAL_STREAK', 'CUSTOM'],
+  suggestions: [
+    { title: 'Keep 8 of your last 10 sessions inside your rules', metric: 'RULE_COMPLIANCE', target: 80, unit: '%', cadence: 'WEEKLY', rationale: '2 of your last 5 recorded sessions stayed inside your rules (40%). One rule at a time: your entry rule — "MSS on 30min after liquidity sweep" — is the one to protect.' },
+    { title: 'Run the loop on 3 sessions this week', metric: 'SESSIONS_PER_WEEK', target: 3, unit: 'sessions', cadence: 'WEEKLY', rationale: 'You logged 2 sessions in the last seven days. The loop compounds when it runs — three honest sessions beat ten rushed ones.' }
+  ],
+  goals: [{ _id: 'g1', title: 'Hold 9 of 10 inside your rules', metric: 'RULE_COMPLIANCE', target: 90, unit: '%', cadence: 'WEEKLY', status: 'ACTIVE' }]
+};
 
 const ANNOUNCEMENT = {
-  message: '<b>KAIZEN V2 IS COMING</b> — the score gets five dimensions · plan → record → reflect sessions · your own Trading System · rolling out over the next 30 days'
+  message: '<b>KAIZEN V2 IS COMING</b> — the score gets five dimensions · plan → record → reflect sessions · your own Trading System · rolling out over the next 30 days',
+  messageKey: 'ticker.announce.v2'
 };
 
 (async () => {
@@ -215,7 +249,12 @@ const ANNOUNCEMENT = {
     try {
       const html = await ejs.renderFile(
         path.join(VIEWS, name + '.ejs'),
-        Object.assign({ announcement: ANNOUNCEMENT }, data)
+        Object.assign({
+          announcement: ANNOUNCEMENT,
+          lang: LANG,
+          langs: require(path.join(ROOT, 'config', 'locales')).LANGS,
+          t: (key, params) => require(path.join(ROOT, 'config', 'locales')).t(LANG, key, params)
+        }, data)
       );
       fs.writeFileSync(path.join(OUT, name + '.html'), html);
       results.push('OK   ' + name);

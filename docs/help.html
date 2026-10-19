@@ -77,6 +77,12 @@
       <a href="register.html" class="btn-outline btn-full">Sign Up</a>
     </div>
 
+    <!-- LANGUAGE (owner directive 13 Oct 2026) -->
+    <div class="popup-section">
+      <div style="padding:4px 14px 10px;">
+      </div>
+    </div>
+
     <div class="popup-section">
       <div class="popup-section-label">Info</div>
       <a href="about.html" class="popup-item">
@@ -99,6 +105,8 @@
 <nav class="navbar">
   <a href="index.html" class="nav-logo">改 KAIZEN</a>
   <div class="nav-right">
+    <div class="nav-lang" style="margin-right:6px;display:flex;align-items:center;">
+    </div>
     <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
       <span id="themeIcon">◐</span>
     </button>
@@ -110,7 +118,7 @@
 
 
 
-<div class="k-ticker" id="k-ticker" role="region" aria-label="Announcement">
+<div class="k-ticker" id="k-ticker" role="region" aria-label="Update">
   <button type="button" class="k-ticker-close" onclick="dismissTicker()" aria-label="Dismiss announcement">×</button>
   <div class="k-ticker-track">
     <span class="k-ticker-text"><b>KAIZEN V2 IS COMING</b> — the score gets five dimensions · plan → record → reflect sessions · your own Trading System · rolling out over the next 30 days</span>
@@ -153,17 +161,17 @@
           <div class="form-group">
             <label class="form-label">Current Password</label>
             <input type="password" name="currentPassword"
-              class="form-input" placeholder="Enter current Password">
+              class="form-input" placeholder="Enter current password">
           </div>
           <div class="form-group">
             <label class="form-label">New Password</label>
             <input type="password" name="newPassword"
-              class="form-input" placeholder="Enter New Password">
+              class="form-input" placeholder="Enter new password">
           </div>
           <div class="form-group">
             <label class="form-label">Confirm Password</label>
             <input type="password" name="confirmPassword"
-              class="form-input" placeholder="Confirm New Password">
+              class="form-input" placeholder="Confirm new password">
           </div>
           <button type="submit" class="btn-primary">Update Password</button>
         </form>
@@ -193,9 +201,7 @@
         margin-bottom:20px;
         display:flex;align-items:center;justify-content:center;gap:12px;
       ">
-        <span style="width:32px;height:1px;background:var(--gold);display:inline-block;"></span>
-        Support
-        <span style="width:32px;height:1px;background:var(--gold);display:inline-block;"></span>
+        <span style="width:32px;height:1px;background:var(--gold);display:inline-block;"></span>Support<span style="width:32px;height:1px;background:var(--gold);display:inline-block;"></span>
       </div>
       <h1 style="
         font-size:clamp(2.2rem,5vw,3.2rem);
@@ -210,10 +216,7 @@
         max-width:480px;
         margin:0 auto 28px;
         line-height:1.85;
-      ">
-        Everything you need to know about using KAIZEN.
-        Can't find what you need? Reach us on X.
-      </p>
+      ">Everything you need to know about using KAIZEN. Can&#39;t find what you need? Reach us on X.</p>
       <a href="https://x.com/kaizenaibot" target="_blank" style="
         display:inline-flex;align-items:center;gap:8px;
         font-family:'DM Mono',monospace;
@@ -392,9 +395,7 @@
         padding-bottom:12px;
         border-bottom:1px solid var(--border);
       ">
-        <i data-feather="book-open" width="14" height="14"></i>
-        Getting Started
-      </div>
+        <i data-feather="book-open" width="14" height="14"></i>Getting Started</div>
 
       
         <div style="
@@ -496,9 +497,7 @@
         padding-bottom:12px;
         border-bottom:1px solid var(--border);
       ">
-        <i data-feather="edit-3" width="14" height="14"></i>
-        Using Sessions
-      </div>
+        <i data-feather="edit-3" width="14" height="14"></i>Using Sessions</div>
 
       
         <div style="
@@ -600,9 +599,7 @@
         padding-bottom:12px;
         border-bottom:1px solid var(--border);
       ">
-        <i data-feather="bar-chart-2" width="14" height="14"></i>
-        KAIZEN Score
-      </div>
+        <i data-feather="bar-chart-2" width="14" height="14"></i>DISCIPLINE SCORE</div>
 
       
         <div style="
@@ -704,9 +701,7 @@
         padding-bottom:12px;
         border-bottom:1px solid var(--border);
       ">
-        <i data-feather="brain" width="14" height="14"></i>
-        Psychology
-      </div>
+        <i data-feather="brain" width="14" height="14"></i>Psychology</div>
 
       
         <div style="
@@ -808,9 +803,7 @@
         padding-bottom:12px;
         border-bottom:1px solid var(--border);
       ">
-        <i data-feather="link" width="14" height="14"></i>
-        On-Chain Reputation
-      </div>
+        <i data-feather="link" width="14" height="14"></i>On-Chain Reputation</div>
 
       
         <div style="
@@ -933,9 +926,7 @@
         padding-bottom:12px;
         border-bottom:1px solid var(--border);
       ">
-        <i data-feather="settings" width="14" height="14"></i>
-        Account Management
-      </div>
+        <i data-feather="settings" width="14" height="14"></i>Account Management</div>
 
       
         <div style="
@@ -1041,18 +1032,11 @@
       ">
         <i data-feather="message-circle" width="20" height="20"></i>
       </div>
-      <h3 style="font-size:1.2rem;font-weight:700;color:var(--text-primary);margin-bottom:10px;">
-        Still need help?
-      </h3>
-      <p style="font-size:0.88rem;color:var(--text-secondary);max-width:340px;margin:0 auto 24px;line-height:1.75;">
-        Reach out directly on X and we will get back to you
-        as soon as possible — usually within 24 hours.
-      </p>
+      <h3 style="font-size:1.2rem;font-weight:700;color:var(--text-primary);margin-bottom:10px;">Still need help?</h3>
+      <p style="font-size:0.88rem;color:var(--text-secondary);max-width:340px;margin:0 auto 24px;line-height:1.75;">Reach out directly on X and we will get back to you as soon as possible — usually within 24 hours.</p>
       <a href="https://x.com/kaizenaibot" target="_blank" class="btn-primary"
         style="display:inline-flex;align-items:center;gap:8px;padding:14px 32px;">
-        <i data-feather="twitter" width="14" height="14"></i>
-        Message @kaizenaibot
-      </a>
+        <i data-feather="twitter" width="14" height="14"></i>Message @kaizenaibot</a>
     </div>
 
   </main>
@@ -1061,14 +1045,14 @@
   <div class="footer-inner">
     <span class="footer-logo">改 KAIZEN</span>
     <div style="display:flex;gap:20px;flex-wrap:wrap;align-items:center;">
-      <a href="privacy.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Privacy</a>
-      <a href="terms.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Terms</a>
-      <a href="about.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">About</a>
+      <a href="privacy.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Privacy Policy</a>
+      <a href="terms.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Terms of Service</a>
+      <a href="about.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">About Kaizen</a>
       <a href="whitepaper.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Whitepaper</a>
       <a href="help.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Help Center</a>
       <a href="support.html" style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);transition:color 0.2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--ash)'">Support</a>
     </div>
-    <span class="footer-right">© 2026 KAIZEN</span>
+    <span class="footer-right">© 2026 KAIZEN. All rights reserved.</span>
   </div>
 </footer>
 <script>if (window.feather) feather.replace();</script>

@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="<%= lang %>">
 <head>
   <%- include('partials/head') %>
-  <title>KAIZEN — New Session</title>
+  <title><%= t('title.newSession') %></title>
 </head>
 <body class="app-page">
   <%- include('partials/navbar') %>
@@ -10,22 +10,18 @@
   <main class="k-flow">
 
     <div class="k-stepstrip">
-      <span class="is-active">Plan</span><b>—</b>
-      <span>Record</span><b>—</b>
-      <span>Reflect</span>
+      <span class="is-active"><%= t('plan.title') %></span><b>—</b>
+      <span><%= t('plan.stepRecord') %></span><b>—</b>
+      <span><%= t('plan.stepReflect') %></span>
     </div>
 
-    <div class="k-eyebrow" style="margin-bottom:10px;">New Session — The Plan</div>
-    <h1 style="font-size:clamp(1.5rem,3.5vw,2.1rem);font-weight:700;color:var(--text-primary);line-height:1.15;margin:0 0 8px;">
-      Declare it before you do it.
-    </h1>
-    <p style="font-size:0.88rem;color:var(--text-secondary);line-height:1.75;margin:0 0 24px;">
-      This is what KAIZEN measures you against. Under a minute.
-    </p>
+    <div class="k-eyebrow" style="margin-bottom:10px;"><%= t('plan.title') %></div>
+    <h1 style="font-size:clamp(1.5rem,3.5vw,2.1rem);font-weight:700;color:var(--text-primary);line-height:1.15;margin:0 0 8px;"><%= t('plan.declare') %></h1>
+    <p style="font-size:0.88rem;color:var(--text-secondary);line-height:1.75;margin:0 0 24px;"><%= t('plan.underMin') %></p>
 
     <!-- Session type -->
     <div class="k-card" style="margin-bottom:14px;">
-      <div class="k-metric-label" style="margin-bottom:12px;">SESSION TYPE</div>
+      <div class="k-metric-label" style="margin-bottom:12px;"><%= t('plan.type') %></div>
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">
         <% [['LIVE','Real execution, capital at risk'],['BACKTEST','Practice on historical markets'],['STUDY','Market analysis, no trade']].forEach(function(t){ %>
           <a href="/dashboard/sessions/new?type=<%= t[0] %>" class="k-typecard <%= type === t[0] ? 'is-active' : '' %>">
@@ -42,44 +38,65 @@
       <% if (type !== 'STUDY') { %>
         <div class="k-card k-formcard">
           <div class="k-field">
-            <label class="k-fieldlabel">SETUP <span style="color:var(--text-faint);text-transform:none;letter-spacing:0;">— from your Trading System</span></label>
+            <label class="k-fieldlabel"><%= t('plan.setup') %> <span style="color:var(--text-faint);text-transform:none;letter-spacing:0;"><%= t('plan.fromSystem') %></span></label>
             <% if (system.setups && system.setups.length) { %>
               <select name="setup" class="k-input">
                 <% system.setups.forEach(function(s){ %>
                   <option value="<%= s.name %>"><%= s.name %></option>
                 <% }); %>
-                <option value="">Other / ad-hoc</option>
+                <option value=""><%= t('plan.adhoc') %></option>
               </select>
             <% } else { %>
-              <input type="text" name="setup" class="k-input" placeholder="e.g. 4H sweep → 30min MSS">
-              <div class="k-fieldhint"><a href="/settings/trading-system" class="k-gold">Add setups to your Trading System</a> to make plans faster.</div>
+              <input type="text" name="setup" class="k-input" placeholder="<%= t('plan.setupPh') %>">
+              <div class="k-fieldhint"><a href="/settings/trading-system" class="k-gold"><%= t('plan.addSetups') %></a><%= t('plan.toMakeFaster') %></div>
             <% } %>
           </div>
 
           <div class="k-field">
-            <label class="k-fieldlabel">ENTRY CONDITION</label>
-            <input type="text" name="entryCondition" class="k-input" placeholder="Price retests the demand zone">
+            <label class="k-fieldlabel"><%= t('plan.entry') %></label>
+            <input type="text" name="entryCondition" class="k-input" placeholder="<%= t('plan.entryPh') %>">
           </div>
 
           <div class="k-field">
-            <label class="k-fieldlabel">INVALIDATION</label>
-            <input type="text" name="invalidation" class="k-input" placeholder="Below the 4H swing low">
+            <label class="k-fieldlabel"><%= t('plan.invalidation') %></label>
+            <input type="text" name="invalidation" class="k-input" placeholder="<%= t('plan.invPh') %>">
           </div>
 
           <div class="k-field">
-            <label class="k-fieldlabel">RISK</label>
+            <label class="k-fieldlabel"><%= t('plan.risk') %></label>
             <% if (system.riskRules && system.riskRules.riskPerTrade) { %>
-              <select name="predefinedRisk" class="k-input">
-                <option value="<%= system.riskRules.riskPerTrade %>%"><%= system.riskRules.riskPerTrade %>% — from your system</option>
-                <option value="">Different this time (say it in the record)</option>
+              <select name="predefinedRisk" id="risk-select" class="k-input">
+                <option value="<%= system.riskRules.riskPerTrade %>%"><%= t('plan.riskFromSystem', { value: system.riskRules.riskPerTrade }) %></option>
+                <option value="CUSTOM"><%= t('plan.riskCustom') %></option>
+                <option value=""><%= t('plan.riskDifferent') %></option>
               </select>
+              <div id="risk-custom-box" style="display:none;margin-top:8px;padding:12px;border:1px solid rgba(245,197,24,0.25);background:rgba(245,197,24,0.04);">
+                <label class="k-fieldlabel" style="margin-bottom:6px;"><%= t('plan.customRiskLabel') %></label>
+                <input type="text" name="customRisk" id="risk-custom-input" class="k-input" placeholder="e.g. 0.5%">
+                <p style="font-size:0.72rem;color:var(--ash);margin:8px 0 0;"><%= t('plan.customRiskHint') %></p>
+              </div>
+              <script>
+                (function () {
+                  var sel = document.getElementById('risk-select');
+                  var box = document.getElementById('risk-custom-box');
+                  var input = document.getElementById('risk-custom-input');
+                  function sync() {
+                    var custom = sel.value === 'CUSTOM';
+                    box.style.display = custom ? 'block' : 'none';
+                    input.required = custom;
+                    if (!custom) input.value = '';
+                  }
+                  sel.addEventListener('change', sync);
+                  sync();
+                })();
+              </script>
             <% } else { %>
               <input type="text" name="predefinedRisk" class="k-input" placeholder="e.g. 1%">
             <% } %>
           </div>
 
           <div class="k-field">
-            <label class="k-fieldlabel">EMOTIONAL STATE</label>
+            <label class="k-fieldlabel"><%= t('plan.emotion') %></label>
             <div class="k-chiprow">
               <% ['CALM','FOCUSED','ANXIOUS','FOMO','REVENGE'].forEach(function(e){ %>
                 <label class="k-emochip"><input type="radio" name="emotionalState" value="<%= e %>" <%= e==='CALM'?'checked':'' %>><span><%= e %></span></label>
@@ -88,18 +105,18 @@
           </div>
 
           <div class="k-field">
-            <label class="k-fieldlabel">CONFIDENCE — <span id="conf-val" class="k-gold">7</span>/10</label>
+            <label class="k-fieldlabel"><%= t('plan.confidence') %> — <span id="conf-val" class="k-gold">7</span>/10</label>
             <input type="range" name="confidence" min="1" max="10" value="7" class="k-slider" oninput="document.getElementById('conf-val').textContent=this.value">
           </div>
         </div>
       <% } else { %>
         <div class="k-card k-formcard">
           <div class="k-field">
-            <label class="k-fieldlabel">WHAT ARE YOU STUDYING?</label>
-            <input type="text" name="setup" class="k-input" placeholder="e.g. London open behavior on EURUSD">
+            <label class="k-fieldlabel"><%= t('plan.studying') %></label>
+            <input type="text" name="setup" class="k-input" placeholder="<%= t('plan.studyPh') %>">
           </div>
           <div class="k-field">
-            <label class="k-fieldlabel">EMOTIONAL STATE</label>
+            <label class="k-fieldlabel"><%= t('plan.emotion') %></label>
             <div class="k-chiprow">
               <% ['CALM','FOCUSED','ANXIOUS','FOMO','REVENGE'].forEach(function(e){ %>
                 <label class="k-emochip"><input type="radio" name="emotionalState" value="<%= e %>" <%= e==='CALM'?'checked':'' %>><span><%= e %></span></label>
@@ -110,12 +127,10 @@
       <% } %>
 
       <div class="k-actions">
-        <button type="submit" class="btn-primary k-btn-lg">Save Plan</button>
-        <button type="submit" name="skip" value="1" class="btn-outline k-btn-lg">Skip — trade without a plan</button>
+        <button type="submit" class="btn-primary k-btn-lg"><%= t('plan.submit') %></button>
+        <button type="submit" name="skip" value="1" class="btn-outline k-btn-lg"><%= t('plan.skip') %></button>
       </div>
-      <p style="font-size:0.72rem;color:var(--ash);line-height:1.7;margin:14px 0 0;">
-        Skipping is allowed — this session will carry less Process evidence. KAIZEN will nudge you to plan next time.
-      </p>
+      <p style="font-size:0.72rem;color:var(--ash);line-height:1.7;margin:14px 0 0;"><%= t('plan.skipNote') %></p>
     </form>
 
   </main>
