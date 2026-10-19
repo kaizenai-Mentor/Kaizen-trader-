@@ -13,6 +13,8 @@
  */
 
 const llm = require('./llm');
+const i18n = require('../config/locales');
+
 
 function planSummary(session) {
   const p = session.plan || {};
@@ -80,7 +82,7 @@ CRITICAL RESPONSE RULES:
 6. For STUDY sessions: coach the observation and the decision NOT to trade, when that's what happened.
 7. Maximum 300 words. Use only these sections when relevant:
 8. GROUNDING (frozen): any conclusion about their discipline or improvement must rest on measured behavior — their quick checks, rule compliance, and the engine summary. A well-written journal entry is never evidence of discipline. If the record does not support a conclusion, say what the record shows instead.
-9. LANGUAGE: write the analysis in the language their entry is written in. The EXTRACTED line stays English regardless (rule below) — it must remain parseable.
+9. LANGUAGE: write the analysis in the language their entry is written in. If their entry language is unclear, use their account language. The EXTRACTED line stays English regardless (rule below) — it must remain parseable.
 10. VOICE: speak TO them, never ABOUT them. Second person, with explicit possession on everything that belongs to them — "your execution", "your risk", "your plan", "your sizing", "you entered". Never write bare abstract nouns where the possession matters ("execution will improve" → "your execution will improve"; "discipline held" → "your discipline held"). They must feel spoken to, not described.
 
 WHAT YOU EXECUTED WELL
@@ -99,28 +101,37 @@ At the very end add this line with facts extracted from their writing (or N/A). 
 EXTRACTED: outcome=[Win/Loss/Breakeven/No Trade] rr=[e.g. 1:2.5 or N/A] pips=[e.g. +45 or N/A]`;
 }
 
-function buildFallback(session) {
+function buildFallback(session, lang = 'en') {
+  const tr = (k, p) => i18n.t(lang, k, p);
   const planned = session.plan && !session.plan.skipped;
   const followed = session.quickChecks && session.quickChecks.followedPlan === 'YES';
+  const setup = (session.plan && session.plan.setup) || '';
+  const notes = (session.notes || '').trim();
+  const snippet = notes.split(/\s+/).slice(0, 12).join(' ');
   const parts = [];
-  parts.push('WHAT YOU EXECUTED WELL');
-  if (planned && followed) {
-    parts.push('You declared this trade before entering it and then traded it as declared. That closed loop — plan, execute, record — is the discipline the score is built from. Name it and protect it.');
-  } else if (!planned) {
-    parts.push('You logged the session honestly, including trading without a plan. Honest records beat flattering ones — this entry is usable.');
-  } else {
-    parts.push('You planned this trade before entering. The plan exists, and that is what makes the deviation visible and fixable.');
+  if (notes) {
+    parts.push(session.asset
+      ? tr('coach.fb.readA', { asset: session.asset, snippet })
+      : tr('coach.fb.read', { snippet }));
   }
-  parts.push('\nONE THING TO FOCUS ON');
-  if (!planned) {
-    parts.push('Make your next session a planned one — declare the setup, invalidation, and risk before you enter. Thirty seconds, before the trade.');
-  } else if (!followed) {
-    parts.push('Reread your declared invalidation before your next entry. The plan you wrote is the standard — trade it or rewrite it between sessions, never during.');
+  parts.push(tr('coach.well'));
+  if (planned && followed) {
+    parts.push(tr('coach.fb.closed'));
+  } else if (!planned) {
+    parts.push(tr('coach.fb.honest'));
   } else {
-    parts.push('Repeat exactly this loop tomorrow: declare, execute as declared, record, reflect. Consistency is the edge.');
+    parts.push(tr('coach.fb.planned'));
+  }
+  parts.push('\n' + tr('coach.focus'));
+  if (!planned) {
+    parts.push(tr('coach.fb.nextPlan'));
+  } else if (!followed) {
+    parts.push(setup ? tr('coach.fb.rereadSetup', { setup }) : tr('coach.fb.reread'));
+  } else {
+    parts.push(tr('coach.fb.repeat'));
   }
   parts.push('\nEXTRACTED: outcome=' + (session.outcome || 'N/A') + ' rr=N/A pips=N/A');
-  return parts.join('\n');
+  return parts.join('\n\n');
 }
 
 /** Extract structured facts from the AI response tail (engine input fallback). */
@@ -141,7 +152,7 @@ function stripExtracted(text) {
  */
 async function analyzeSession({ session, user, system, recentSessions }) {
   if (!llm.available()) {
-    return buildFallback(session);
+    return buildFallback(session, i18n.normalize(user && user.preferredLang));
   }
   const prep = prepareAnalysis({ session, user, system, recentSessions });
   return llm.callLLM(prep.systemPrompt, prep.messageContent, { maxTokens: 900 });
@@ -168,7 +179,7 @@ function prepareAnalysis({ session, user, system, recentSessions }) {
  */
 async function* streamAnalysis({ session, user, system, recentSessions }) {
   if (!llm.available()) {
-    yield buildFallback(session);
+    yield buildFallback(session, i18n.normalize(user && user.preferredLang));
     return;
   }
   const prep = prepareAnalysis({ session, user, system, recentSessions });
@@ -206,6 +217,7 @@ HARD RULES:
 - NEVER include a score line, percentage-as-judgment, or rank. Movement facts may be referenced plainly ("risk held steady"), but this letter is words, not numbers.
 - No profit promises, no performance claims. Practice consistency is never trading performance.
 - One page. Four short sections max. Warm, direct, zero flattery.
+- LANGUAGE: write the letter in their language — their account language.
 - VOICE: the letter speaks TO them — "your week", "your execution", "you held". Never third person ("the trader"), never bare noun phrases where possession matters ("execution held" → "your execution held").
 
 THE WEEK:
@@ -242,33 +254,39 @@ async function writeWeeklyLetter({ user, system, weekSessions, movement, mindSta
       // fall through to deterministic
     }
   }
-  return buildWeeklyFallback({ weekSessions, movement, mindState });
+  return buildWeeklyFallback({ weekSessions, movement, mindState, lang: i18n.normalize(user && user.preferredLang) });
 }
 
 /** Deterministic weekly letter (no API key) — honest, specific, never scored. */
-function buildWeeklyFallback({ weekSessions, movement, mindState }) {
+function buildWeeklyFallback({ weekSessions, movement, mindState, lang = 'en' }) {
+  const tr = (k, p) => i18n.t(lang, k, p);
   const stats = require('./weekly').weekStats(weekSessions);
   const parts = [];
 
-  parts.push(`This week: ${stats.total} session${stats.total === 1 ? '' : 's'} — ${stats.byType.LIVE} live, ${stats.byType.BACKTEST} backtest, ${stats.byType.STUDY} study. ${stats.loopCompleted} made it all the way through the loop${stats.loopOpen ? `, ${stats.loopOpen} still waiting to be finished` : ''}.`);
+  parts.push(tr('coach.wk.week', {
+    total: stats.total, s: stats.total === 1 ? '' : 's',
+    live: stats.byType.LIVE, backtest: stats.byType.BACKTEST, study: stats.byType.STUDY,
+    done: stats.loopCompleted,
+    open: stats.loopOpen ? tr('coach.wk.openNote', { open: stats.loopOpen }) : ''
+  }));
 
   if (stats.complianceRate != null) {
     parts.push(stats.compliant === stats.checked
-      ? 'Every recorded session stayed inside your rules. Protect whatever conditions made that possible — they are the real edge.'
-      : `${stats.compliant} of ${stats.checked} recorded sessions stayed inside your rules. The misses are the curriculum — each one has a reason underneath it.`);
+      ? tr('coach.wk.allIn')
+      : tr('coach.wk.someIn', { compliant: stats.compliant, checked: stats.checked }));
   }
 
   const activeTheme = mindState && mindState.themes &&
     mindState.themes.find(t => t.status === 'active');
   if (activeTheme) {
-    parts.push(`You have been working on ${activeTheme.name.toLowerCase()} in your conversations — watch whether next week's sessions show it too. The chart is where the inner work becomes visible.`);
+    parts.push(tr('coach.wk.theme', { theme: activeTheme.name.toLowerCase() }));
   }
 
   const focusDim = movement && movement.dimensions &&
     ['risk', 'process', 'execution', 'behavior', 'learning'].find(k => movement.dimensions[k].delta != null && movement.dimensions[k].delta < 0);
   parts.push(focusDim
-    ? `Next week, one focus: ${focusDim === 'learning' ? 'write the reflection before the day ends — even three lines' : focusDim + ', one rule at a time'}. Process, not outcome.`
-    : 'Next week, one focus: finish what you start — every session that gets planned deserves its reflection. Process, not outcome.');
+    ? (focusDim === 'learning' ? tr('coach.wk.focusLearning') : tr('coach.wk.focusDim', { dim: focusDim }))
+    : tr('coach.wk.focus'));
 
   return parts.join('\n\n');
 }

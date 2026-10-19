@@ -21,6 +21,8 @@
  */
 
 const llm = require('./llm');
+const i18n = require('../config/locales');
+
 const { CRISIS_RE, CRISIS_RESPONSE } = require('./psychCoach');
 
 // Signal-seeking language — declined and redirected to process.
@@ -105,29 +107,35 @@ function buildQuizPrompt({ user, system, sessions }) {
 
 // ── Deterministic fallbacks (no API key) ─────────────────────────
 
-function buildFallback({ userMessage, system, sessions, imageAttached }) {
+function buildFallback({ userMessage, system, sessions, imageAttached, lang = 'en' }) {
+  const tr = (k, p) => i18n.t(lang, k, p);
   const msg = (userMessage || '').toLowerCase();
   const hasRules = system && (system.entryRules || (system.setups && system.setups.length));
+  const ruleText = (system && (system.entryRules || (system.setups && system.setups[0] && system.setups[0].name))) || '';
+  const snippet = (userMessage || '').trim().split(/\s+/).slice(0, 12).join(' ');
   const parts = [];
 
   if (SIGNAL_RE.test(msg)) {
-    parts.push('Honest answer: I do not predict markets, and I will not pick a direction for you. Anyone who does is selling you something.');
-    parts.push(hasRules
-      ? 'What I can do is sharper: tell me the setup you are looking at and I will hold it against your own entry rules — the ones you wrote. If it passes them, the trade speaks for itself. If it does not, no signal from me would make it better.'
-      : 'Right now your system has no written entry rules — so there is nothing for me to check the idea against. Write your first entry rule in My Trading System and bring the idea back. That is the trade that matters today.');
+    parts.push(tr('coach.tc.noPredict'));
+    parts.push(hasRules ? tr('coach.tc.signalRules') : tr('coach.tc.signalNoRules'));
   } else if (imageAttached) {
-    parts.push('I cannot see the image in this mode, and I will not pretend to. Here is what still works: describe what you see — the level, the structure, where your entry would be — and I will check it against your written rules.');
+    parts.push(tr('coach.tc.image'));
+    if (snippet) parts.push(tr('coach.tc.imageMsg', { snippet }));
+    if (hasRules) parts.push(tr('coach.tc.ruleQuote', { rule: ruleText }));
   } else if (msg.includes('quiz')) {
     parts.push(hasRules
-      ? `Quiz time, from your own book: your system says you risk ${system.riskRules && system.riskRules.riskPerTrade || '—'} per trade with a daily stop of ${system.riskRules && system.riskRules.dailyDrawdown || '—'}. Today you are down to your daily stop, and one more setup you love appears. Walk me through exactly what your rules do — and what you do if the rules and the urge disagree.`
-      : 'Cannot quiz you yet — your system has no written rules, and I do not test memory, I test rules. Write your first one in My Trading System and I will quiz you on it daily.');
+      ? tr('coach.tc.quizRules', {
+          risk: (system.riskRules && system.riskRules.riskPerTrade) || '\u2014',
+          stop: (system.riskRules && system.riskRules.dailyDrawdown) || '\u2014'
+        })
+      : tr('coach.tc.quizNoRules'));
   } else {
-    parts.push('Let me hold that against your book before I say anything.');
+    parts.push(tr('coach.tc.hold'));
     if (hasRules) {
-      parts.push(`Your entry rule reads: "${system.entryRules || (system.setups[0] && system.setups[0].name)}". Does what you just described satisfy it — every clause, not most of it?`);
-      parts.push('If the honest answer is yes, the next check is risk: does the size you described fit within what your system allows? If either check fails, the conversation is not about whether the trade is good — it is about which rule you are about to negotiate with.');
+      parts.push(tr('coach.tc.ruleQuote', { rule: ruleText }));
+      parts.push(tr('coach.tc.riskCheck'));
     } else {
-      parts.push('Before opinions, rules: your system does not have written entry rules yet. Write one — a single sentence a stranger could check a chart against. Bring this idea back after, and we will test it properly.');
+      parts.push(tr('coach.tc.noRules'));
     }
   }
   return parts.join('\n\n');
@@ -175,7 +183,7 @@ async function converse({ user, system, sessions, threadMessages = [], userMessa
   }
 
   return {
-    reply: buildFallback({ userMessage, system, sessions, imageAttached: !!imageDataUrl })
+    reply: buildFallback({ userMessage, system, sessions, imageAttached: !!imageDataUrl, lang: i18n.normalize(user && user.preferredLang) })
   };
 }
 
@@ -195,7 +203,8 @@ async function* streamConverse(args) {
   }
   yield buildFallback({
     userMessage: args.userMessage, system: args.system,
-    sessions: args.sessions, imageAttached: !!args.imageDataUrl
+    sessions: args.sessions, imageAttached: !!args.imageDataUrl,
+    lang: i18n.normalize(args.user && args.user.preferredLang)
   });
 }
 

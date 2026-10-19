@@ -21,6 +21,8 @@
  */
 
 const llm = require('./llm');
+const i18n = require('../config/locales');
+
 
 // ── Crisis language (checked before anything else) ───────────────
 const CRISIS_RE = /suicid|kill(ing)? myself|end(ing)? (it all|my life)|self.?harm|harm(ing)? myself|hurt(ing)? myself|don'?t want to (be here|live|go on)|do not want to (be here|live|go on)|no reason to (live|go on)|better off dead/i;
@@ -216,7 +218,8 @@ function deterministicState(userMessage) {
   return { summary: '', themes: themes.map(name => ({ name, status: 'active', note: '' })), triggers: [], helps: [] };
 }
 
-function buildFallback({ userMessage, mindState, sessions }) {
+function buildFallback({ userMessage, mindState, sessions, lang = 'en' }) {
+  const tr = (k, p) => i18n.t(lang, k, p);
   const msg = (userMessage || '').toLowerCase();
   const named = (mindState && mindState.themes && mindState.themes.length)
     ? mindState.themes.find(t => t.status !== 'resolved') : null;
@@ -224,27 +227,27 @@ function buildFallback({ userMessage, mindState, sessions }) {
     ? sessions.slice(0, 5).filter(s => !s.ruleCompliance).length : 0;
 
   const parts = [];
-  parts.push('Thank you for putting that into words. Most people never say this stuff out loud — writing it down is already the first move.');
+  parts.push(tr('coach.pc.thanks'));
 
   if (named) {
-    parts.push(`This connects to something we have talked about before: ${named.name.toLowerCase()}. Patterns like this rarely visit once; recognizing it returning is the skill you are building.`);
+    parts.push(tr('coach.pc.theme', { theme: named.name.toLowerCase() }));
   } else if (/pressure|bills|rent|need the money|financial/.test(msg)) {
-    parts.push('Trading from financial need is one of the hardest states to trade from. When the outcome matters that much, every decision gets made twice — once by you, once by the need. The work is shrinking the size until the need goes quiet.');
+    parts.push(tr('coach.pc.pressure'));
   } else if (/anxious|anxiety|nervous|scared|afraid|panic/.test(msg)) {
-    parts.push('That feeling before the chart opens is not weakness — it is your nervous system asking whether it is safe. The question is never how to delete the feeling; it is how to make decisions it does not get to vote on.');
+    parts.push(tr('coach.pc.anxiety'));
   } else if (/loss|losing|lost|blew/.test(msg)) {
-    parts.push('The thirty minutes after a loss are where accounts actually die — not from the loss, from what gets traded in reaction to it. What you do in that window is the real skill.');
+    parts.push(tr('coach.pc.loss'));
   } else if (/doubt|hesitat|missed/.test(msg)) {
-    parts.push('Doubt at entry usually means the trust is being asked to live in the moment, when it actually lives in the repetition. You do not need certainty on this trade; you need a process you would follow twenty more times.');
+    parts.push(tr('coach.pc.doubt'));
   } else {
-    parts.push('Whatever is sitting under what you wrote — the thing you almost typed and deleted — that is usually where the work is.');
+    parts.push(tr('coach.pc.default'));
   }
 
   if (violations >= 3) {
-    parts.push(`One honest note from your record: rules were broken in ${violations} of your last five sessions. When that much structure bends, the rules are rarely the problem — the state they are being asked to hold is.`);
+    parts.push(tr('coach.pc.violations', { count: violations }));
   }
 
-  parts.push('What is the feeling underneath it — fear of losing, fear of missing, or something the market is just borrowing from the rest of your life?');
+  parts.push(tr('coach.pc.ask'));
   return parts.join('\n\n');
 }
 
@@ -276,7 +279,7 @@ async function converse({ user, system, sessions, mindState, threadMessages = []
   }
 
   return {
-    reply: buildFallback({ userMessage, mindState, sessions }),
+    reply: buildFallback({ userMessage, mindState, sessions, lang: i18n.normalize(user && user.preferredLang) }),
     psychState: deterministicState(userMessage)
   };
 }
@@ -301,7 +304,7 @@ async function* streamConverse({ user, system, sessions, mindState, threadMessag
     yield* llm.streamLLM(systemPrompt, content, { maxTokens: 700 });
     return;
   }
-  yield buildFallback({ userMessage, mindState, sessions });
+  yield buildFallback({ userMessage, mindState, sessions, lang: i18n.normalize(user && user.preferredLang) });
 }
 
 
