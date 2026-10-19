@@ -946,4 +946,12 @@ module.exports = {
   "welcome.pat4": "Friday compliance · −18%",
   "prog.insidePct": "{{p}}% inside rules",
   "prog.noData": "no data yet",
+  "improve.action": "Action",
+  "improve.back": "Back to Cockpit",
+  "improve.eyebrow": "IMPROVE · 改",
+  "improve.h1": "Improvement Recommendations",
+  "improve.note": "One rule at a time. Recommendations move as your record grows.",
+  "improve.sub": "What to work on next — built from your own patterns, mistakes, and performance.",
+  "improve.why": "Why",
+  "title.improve": "KAIZEN — Improvement",
 };

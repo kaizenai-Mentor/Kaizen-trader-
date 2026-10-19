@@ -326,6 +326,14 @@ app.get('/psychology/t/:id', (req, res) => {
   if (!req.session.user) return res.redirect('/auth/login');
   psychController.getThread(req, res);
 });
+
+// Improvement Recommendations — AI-generated, actionable (owner
+// directive 19 Oct 2026).
+const improveController = require('./controllers/improveController');
+app.get('/improve', (req, res) => {
+  if (!req.session.user) return res.redirect('/auth/login');
+  improveController.getIndex(req, res);
+});
 app.post('/psychology/ask', (req, res) => {
   if (!req.session.user) return res.status(401).json({ error: 'Not logged in.' });
   psychController.postAsk(req, res);
