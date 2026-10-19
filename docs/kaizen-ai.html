@@ -313,8 +313,8 @@
               <div class="k-threadmain">
                 <span class="k-threadtitle">Why did I move my stop?</span>
                 <span class="k-threadmeta">
-                  6 messages
-                  · Oct 18
+                  6messages
+                  · Oct 19
                 </span>
               </div>
               <span class="k-threadarrow">→</span>
@@ -324,8 +324,8 @@
               <div class="k-threadmain">
                 <span class="k-threadtitle">Backtest vs live gap</span>
                 <span class="k-threadmeta">
-                  4 messages
-                  · Oct 18
+                  4messages
+                  · Oct 19
                 </span>
               </div>
               <span class="k-threadarrow">→</span>
@@ -381,7 +381,7 @@
         if (!f) return;
         if (f.size > 2 * 1024 * 1024) {
           attachMeta.hidden = false;
-          attachMeta.textContent = 'Chart too large — keep it under 2 MB.';
+          attachMeta.textContent = "Chart too large — keep it under 2 MB.";
           fileInput.value = '';
           return;
         }
@@ -389,7 +389,7 @@
         fr.onload = function () {
           imageData = fr.result;
           attachMeta.hidden = false;
-          attachMeta.textContent = '📎 ' + f.name + ' attached — describe what to check, or just send.';
+          attachMeta.textContent = '📎 ' + f.name + ' ' + "attached — describe what to check, or just send.";
         };
         fr.readAsDataURL(f);
       });
@@ -404,7 +404,7 @@
           if (hasImage) {
             var tag = document.createElement('span');
             tag.className = 'k-attachtag';
-            tag.textContent = '📎 chart ';
+            tag.textContent = "📎 chart";
             b.appendChild(tag);
           }
           b.appendChild(document.createTextNode(text));

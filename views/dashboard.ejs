@@ -130,7 +130,7 @@
                 <span class="k-type-tag k-type-<%= (s.sessionType || 'LIVE').toLowerCase() %>"><%= s.sessionType || 'LIVE' %></span>
                 <span class="k-minirow-asset"><%= s.asset %></span>
                 <span class="k-minirow-state"><%= s.state %></span>
-                <span class="k-minirow-date"><%= new Date(s.createdAt).toLocaleDateString('en-US',{month:'short',day:'numeric'}) %></span>
+                <span class="k-minirow-date"><%= new Date(s.createdAt).toLocaleDateString(({en:'en-US',fr:'fr-FR',zh:'zh-CN',ja:'ja-JP',af:'af-ZA'})[lang]||'en-US',{month:'short',day:'numeric'}) %></span>
               </a>
             <% }); %>
           </div>

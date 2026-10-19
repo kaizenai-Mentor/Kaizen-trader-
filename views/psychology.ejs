@@ -27,11 +27,11 @@
       <% } %>
       <% if (mindState.themes && mindState.themes.length) { %>
         <div class="k-mindthemes">
-          <% mindState.themes.forEach(function(t){ %>
+          <% mindState.themes.forEach(function(th){ %>
             <div class="k-mindtheme">
-              <span class="k-themechip is-<%= t.status %>"><%= t.status %></span>
-              <span class="k-themename"><%= t.name %></span>
-              <span class="k-thememeta"><%= t.occurrences %><%= t('psych.since') %><%= new Date(t.firstSeen).toLocaleDateString('en-US',{month:'short',year:'numeric'}) %></span>
+              <span class="k-themechip is-<%= th.status %>"><%= th.status %></span>
+              <span class="k-themename"><%= th.name %></span>
+              <span class="k-thememeta"><%= th.occurrences %><%= t('psych.since') %><%= new Date(th.firstSeen).toLocaleDateString(({en:'en-US',fr:'fr-FR',zh:'zh-CN',ja:'ja-JP',af:'af-ZA'})[lang]||'en-US',{month:'short',year:'numeric'}) %></span>
             </div>
           <% }); %>
         </div>
@@ -59,14 +59,14 @@
       <div class="k-panel-title" style="margin-bottom:6px;"><%= t('ai.conversations') %></div>
       <% if (threads && threads.length) { %>
         <div class="k-threadlist">
-          <% threads.forEach(function(t){ %>
-            <a class="k-threadrow" href="/psychology/t/<%= t._id %>">
+          <% threads.forEach(function(thr){ %>
+            <a class="k-threadrow" href="/psychology/t/<%= thr._id %>">
               <div class="k-threadmain">
-                <span class="k-threadtitle"><%= t.title %></span>
+                <span class="k-threadtitle"><%= thr.title %></span>
                 <span class="k-threadmeta">
-                  <%= t.messageCount %><%= t('ai.messageWord') %><%= t.messageCount === 1 ? '' : 's' %>
-                  · <%= new Date(t.lastMessageAt).toLocaleDateString('en-US',{month:'short',day:'numeric'}) %>
-                  <% if (t.imported) { %><%= t('psych.imported') %><% } %>
+                  <%= thr.messageCount %><%= t('ai.messageWord') %><%= thr.messageCount === 1 ? '' : 's' %>
+                  · <%= new Date(thr.lastMessageAt).toLocaleDateString(({en:'en-US',fr:'fr-FR',zh:'zh-CN',ja:'ja-JP',af:'af-ZA'})[lang]||'en-US',{month:'short',day:'numeric'}) %>
+                  <% if (thr.imported) { %><%= t('psych.imported') %><% } %>
                 </span>
               </div>
               <span class="k-threadarrow">→</span>

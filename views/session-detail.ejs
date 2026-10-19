@@ -23,7 +23,7 @@
         <span style="font-family:var(--font-mono);font-size:0.68rem;color:<%= session.outcome === 'Win' ? 'var(--green)' : session.outcome === 'Loss' ? 'var(--red)' : 'var(--ash)' %>;"><%= session.outcome.toUpperCase() %></span>
       <% } %>
       <span style="font-family:var(--font-mono);font-size:0.6rem;color:var(--text-faint);letter-spacing:0.08em;margin-left:auto;">
-        <%= new Date(session.createdAt).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) %>
+        <%= new Date(session.createdAt).toLocaleDateString(({en:'en-US',fr:'fr-FR',zh:'zh-CN',ja:'ja-JP',af:'af-ZA'})[lang]||'en-US',{month:'short',day:'numeric',year:'numeric'}) %>
       </span>
     </div>
 

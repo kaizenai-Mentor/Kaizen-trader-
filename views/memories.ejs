@@ -49,7 +49,7 @@
           <div style="font-family:'DM Mono',monospace;font-size:0.52rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--ash);margin-bottom:6px;display:flex;align-items:center;gap:5px;">
             <i data-feather="calendar" width="10" height="10"></i><%= t('mem.latest') %></div>
           <div style="font-family:'DM Mono',monospace;font-size:0.85rem;font-weight:700;color:var(--text-primary);">
-            <%= new Date(memories[0].createdAt).toLocaleDateString('en-US',{month:'short',day:'numeric'}) %>
+            <%= new Date(memories[0].createdAt).toLocaleDateString(({en:'en-US',fr:'fr-FR',zh:'zh-CN',ja:'ja-JP',af:'af-ZA'})[lang]||'en-US',{month:'short',day:'numeric'}) %>
           </div>
         </div>
       </div>
@@ -79,7 +79,7 @@
                     </span>
                   </div>
                   <span style="font-family:'DM Mono',monospace;font-size:0.52rem;color:var(--ash);">
-                    <%= new Date(memory.createdAt).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) %>
+                    <%= new Date(memory.createdAt).toLocaleDateString(({en:'en-US',fr:'fr-FR',zh:'zh-CN',ja:'ja-JP',af:'af-ZA'})[lang]||'en-US',{month:'short',day:'numeric',year:'numeric'}) %>
                   </span>
                   <% if (memory.sessionScore && memory.sessionScore > 0) { %>
                     <span style="font-family:'DM Mono',monospace;font-size:0.55rem;font-weight:700;color:<%= memory.sessionScore >= 70 ? '#4ADE80' : memory.sessionScore >= 50 ? 'var(--gold)' : '#F87171' %>;">

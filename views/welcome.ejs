@@ -50,15 +50,15 @@
         </div>
 
         <div class="k-panel-dial">
-          <%- include('partials/k-dial', { value: 76, size: 200, label: 'KAIZEN Score' }) %>
+          <%- include('partials/k-dial', { value: 76, size: 200 }) %>
         </div>
 
         <%- include('partials/k-meters', { meters: [
-          ['Process', 91],
-          ['Risk', 89],
-          ['Execution', 84],
-          ['Behavior', 79],
-          ['Learning & Consistency', 86]
+          [t('dash.dimProcess'), 91],
+          [t('dash.dimRisk'), 89],
+          [t('dash.dimExecution'), 84],
+          [t('dash.dimBehavior'), 79],
+          [t('dash.dimLearning'), 86]
         ] }) %>
 
         <div class="k-panel-foot"><%= t('welcome.scoreNote') %></div>
@@ -82,7 +82,7 @@
       </div>
       <div class="k-trust-item">
         <div class="k-trust-icon"><i data-feather="unlock" width="18" height="18"></i></div>
-        <div class="k-trust-label">100% Free to Start</div>
+        <div class="k-trust-label"><%= t('welcome.free100') %></div>
       </div>
     </div>
   </section>
@@ -100,7 +100,7 @@
       <div class="k-preview-card k-card k-card--elevated k-card--hover" data-reveal>
         <div class="k-card-label"><i data-feather="bar-chart-2" width="14" height="14"></i><%= t('dash.score') %></div>
         <div style="display:flex;justify-content:center;padding:12px 0;">
-          <%- include('partials/k-dial', { value: 76, size: 140, label: 'KAIZEN Score' }) %>
+          <%- include('partials/k-dial', { value: 76, size: 140 }) %>
         </div>
         <p class="k-preview-desc"><%= t('welcome.scoreNote') %></p>
       </div>
@@ -120,7 +120,7 @@
           <div class="k-chip k-chip--warn"><i data-feather="alert-triangle" width="13" height="13"></i><%= t('welcome.pat1') %></div>
           <div class="k-chip k-chip--watch"><i data-feather="clock" width="13" height="13"></i><%= t('welcome.pat2') %></div>
           <div class="k-chip k-chip--good"><i data-feather="check-circle" width="13" height="13"></i><%= t('welcome.pat3') %></div>
-          <div class="k-chip k-chip--warn"><i data-feather="trending-down" width="13" height="13"></i> Friday compliance · −18%</div>
+          <div class="k-chip k-chip--warn"><i data-feather="trending-down" width="13" height="13"></i><%= t('welcome.pat4') %></div>
         </div>
         <p class="k-preview-desc"><%= t('welcome.patNote') %></p>
       </div>

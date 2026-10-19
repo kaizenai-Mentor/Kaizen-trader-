@@ -68,13 +68,13 @@
           <div class="k-feat-title" style="margin-bottom:0;"><%= t('dash.score') %></div>
         </div>
         <div class="k-score-demo">
-          <%- include('partials/k-dial', { value: 84, size: 120, label: 'KAIZEN Score' }) %>
+          <%- include('partials/k-dial', { value: 84, size: 120 }) %>
           <%- include('partials/k-meters', { meters: [
-            ['Process', 88],
-            ['Risk', 81],
-            ['Execution', 85],
-            ['Behavior', 79],
-            ['Learning & Consistency', 90]
+            [t('dash.dimProcess'), 88],
+            [t('dash.dimRisk'), 81],
+            [t('dash.dimExecution'), 85],
+            [t('dash.dimBehavior'), 79],
+            [t('dash.dimLearning'), 90]
           ] }) %>
         </div>
         <p><%= t('svc.scoreB') %></p>

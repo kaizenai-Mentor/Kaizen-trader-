@@ -50,13 +50,13 @@
       <div class="k-panel-title" style="margin-bottom:6px;"><%= t('ai.conversations') %></div>
       <% if (threads && threads.length) { %>
         <div class="k-threadlist">
-          <% threads.forEach(function(t){ %>
-            <a class="k-threadrow" href="/kaizen-ai/t/<%= t._id %>">
+          <% threads.forEach(function(thr){ %>
+            <a class="k-threadrow" href="/kaizen-ai/t/<%= thr._id %>">
               <div class="k-threadmain">
-                <span class="k-threadtitle"><%= t.title %></span>
+                <span class="k-threadtitle"><%= thr.title %></span>
                 <span class="k-threadmeta">
-                  <%= t.messageCount %><%= t('ai.messageWord') %><%= t.messageCount === 1 ? '' : 's' %>
-                  · <%= new Date(t.lastMessageAt).toLocaleDateString('en-US',{month:'short',day:'numeric'}) %>
+                  <%= thr.messageCount %><%= t('ai.messageWord') %><%= thr.messageCount === 1 ? '' : 's' %>
+                  · <%= new Date(thr.lastMessageAt).toLocaleDateString(({en:'en-US',fr:'fr-FR',zh:'zh-CN',ja:'ja-JP',af:'af-ZA'})[lang]||'en-US',{month:'short',day:'numeric'}) %>
                 </span>
               </div>
               <span class="k-threadarrow">→</span>

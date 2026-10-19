@@ -46,7 +46,7 @@
             <h1 style="font-size:1.4rem;font-weight:700;color:var(--text-primary);margin-bottom:4px;">
               <%= profileUser.username %>
             </h1>
-            <div style="font-size:0.75rem;color:var(--ash);"><%= t('profile.member') %><%= new Date(profileUser.memberSince).toLocaleDateString('en-US',{month:'long',year:'numeric'}) %>
+            <div style="font-size:0.75rem;color:var(--ash);"><%= t('profile.member') %><%= new Date(profileUser.memberSince).toLocaleDateString(({en:'en-US',fr:'fr-FR',zh:'zh-CN',ja:'ja-JP',af:'af-ZA'})[lang]||'en-US',{month:'long',year:'numeric'}) %>
             </div>
           </div>
         </div>

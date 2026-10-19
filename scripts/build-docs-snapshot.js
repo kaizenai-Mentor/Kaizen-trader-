@@ -31,7 +31,8 @@ const SUFFIX = process.env.SNAP_SUFFIX || '';
 
 // Same announcement the review renderer uses (demo ticker content).
 const ANNOUNCEMENT = {
-  message: '<b>KAIZEN V2 IS COMING</b> — the score gets five dimensions · plan → record → reflect sessions · your own Trading System · rolling out over the next 30 days'
+  message: '<b>KAIZEN V2 IS COMING</b> — the score gets five dimensions · plan → record → reflect sessions · your own Trading System · rolling out over the next 30 days',
+  messageKey: 'ticker.announce.v2'
 };
 
 // view name -> output file (public pages, rendered logged out)

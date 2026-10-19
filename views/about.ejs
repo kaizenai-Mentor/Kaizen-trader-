@@ -28,20 +28,18 @@
     <div class="k-solution">
       <div data-reveal>
         <div class="k-eyebrow"><%= t('about.solution') %></div>
-        <h2 class="k-solution-h">
-          Turn the invisible struggle into measurable improvement.
-        </h2>
+        <h2 class="k-solution-h"><%= t('about.p3') %></h2>
         <p><%= t('about.p4') %></p>
         <p><%= t('about.p5') %></p>
       </div>
       <div class="k-solution-panel k-card--elevated k-grid-bg" data-reveal style="transition-delay:100ms;">
-        <%- include('partials/k-dial', { value: 87, size: 180, label: 'KAIZEN Score' }) %>
+        <%- include('partials/k-dial', { value: 87, size: 180 }) %>
         <%- include('partials/k-meters', { meters: [
-          ['Process', 91],
-          ['Risk', 86],
-          ['Execution', 88],
-          ['Behavior', 82],
-          ['Learning & Consistency', 90]
+          [t('dash.dimProcess'), 91],
+          [t('dash.dimRisk'), 86],
+          [t('dash.dimExecution'), 88],
+          [t('dash.dimBehavior'), 82],
+          [t('dash.dimLearning'), 90]
         ] }) %>
         <div class="k-solution-caption"><%= t('about.tag1') %><br><%= t('about.tag2') %></div>
       </div>

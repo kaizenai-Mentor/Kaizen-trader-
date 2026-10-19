@@ -138,7 +138,7 @@
               <span style="font-size:0.78rem;color:var(--text-primary);"><%= ev.label %></span>
               <% if (ev.ts) { %>
                 <span style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--ash);margin-left:auto;">
-                  <%= new Date(ev.ts).toLocaleDateString('en-US',{month:'short',day:'numeric'}) %>
+                  <%= new Date(ev.ts).toLocaleDateString(({en:'en-US',fr:'fr-FR',zh:'zh-CN',ja:'ja-JP',af:'af-ZA'})[lang]||'en-US',{month:'short',day:'numeric'}) %>
                 </span>
               <% } %>
               <% if (ev.txHash) { %>

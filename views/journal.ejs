@@ -292,7 +292,7 @@
                   </span>
                 </div>
                 <span style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--ash);">
-                  <%= new Date(journal.createdAt).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) %>
+                  <%= new Date(journal.createdAt).toLocaleDateString(({en:'en-US',fr:'fr-FR',zh:'zh-CN',ja:'ja-JP',af:'af-ZA'})[lang]||'en-US',{month:'short',day:'numeric',year:'numeric'}) %>
                 </span>
               </div>
               <p style="font-size:0.85rem;color:var(--ash-light);line-height:1.7;margin:0;"><%= journal.notes %></p>
