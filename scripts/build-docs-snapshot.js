@@ -65,6 +65,8 @@ const REWRITES = [
   [/href="\/psychology"/g, 'href="psychology.html"'],
   [/href="\/memories"/g, 'href="memories.html"'],
   [/href="\/weekly-summary"/g, 'href="weekly-summary.html"'],
+  [/href="\/improve"/g, 'href="improve.html"'],
+  [/href="\/goals"/g, 'href="goals.html"'],
   [/href="\/za\/reputation\/[^"]*"/g, 'href="reputation.html"'],
   [/href="\/settings\/trading-system"/g, 'href="trading-system.html"'],
   [/href="\/auth\/login"/g, 'href="login.html"'],
@@ -109,11 +111,7 @@ const REWRITES = [
     if (!f.endsWith('.html')) continue;
     let html = fs.readFileSync(path.join(TMP, f), 'utf8');
     for (const [re, to] of REWRITES) html = html.replace(re, to);
-    if (SUFFIX) {
-      // Keep navigation inside the language: page links pick up the suffix.
-      html = html.replace(/href="([a-z0-9-]+)\.html/g, 'href="$1' + SUFFIX + '.html');
-    }
-    fs.writeFileSync(path.join(DOCS, f.replace(/\.html$/, SUFFIX + '.html')), html);
+      fs.writeFileSync(path.join(DOCS, f.replace(/\.html$/, SUFFIX + '.html')), html);
     count++;
   }
   console.log('wrote ' + count + ' html pages to docs/' + (SUFFIX ? ' (lang ' + SNAP_LANG + SUFFIX + ')' : ''));

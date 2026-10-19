@@ -218,6 +218,25 @@ pages['news'] = {
   title: 'Market News'
 };
 pages['memories'] = { user, memories, title: 'Memories' };
+pages['improve'] = {
+  user, totalSessions: 5, movement: null,
+  rec: {
+    intro: 'You wrote: "Moved my stop after the sweep, took the full loss." That is the material we improve with — everything below is built from your own record, nothing generic.',
+    items: [
+      { title: 'Take one rule back into the next session', why: '2 of your last 5 recorded sessions broke a rule — and your own entry rule is: "MSS on 30min after liquidity sweep; no entry without confirmation candle close."', action: 'Trade the next session with exactly one job: honouring that rule. Log the session even if you skip the trade. One rule at a time.' },
+      { title: 'Move your Risk dimension first', why: 'Your Risk dimension is your lowest reading at 38 (-11 versus your prior reading) — this is the number your next sessions move fastest.', action: 'Write the exact risk per trade and the daily stop before the session, and end the day the moment the daily stop hits. One rule at a time.' },
+      { title: 'Keep working the revenge trading', why: 'Your Psychology room is still on "Revenge trading" (active) — this is the layer that shows up in the sessions when nobody is watching.', action: 'Name the trigger once before the next session starts — in the Psychology room or in the session note — and trade the plan despite it. One rule at a time.' }
+    ]
+  }
+};
+pages['goals'] = {
+  user, metrics: ['RULE_COMPLIANCE', 'SESSIONS_PER_WEEK', 'RISK_LIMIT', 'JOURNAL_STREAK', 'CUSTOM'],
+  suggestions: [
+    { title: 'Keep 8 of your last 10 sessions inside your rules', metric: 'RULE_COMPLIANCE', target: 80, unit: '%', cadence: 'WEEKLY', rationale: '2 of your last 5 recorded sessions stayed inside your rules (40%). One rule at a time: your entry rule — "MSS on 30min after liquidity sweep" — is the one to protect.' },
+    { title: 'Run the loop on 3 sessions this week', metric: 'SESSIONS_PER_WEEK', target: 3, unit: 'sessions', cadence: 'WEEKLY', rationale: 'You logged 2 sessions in the last seven days. The loop compounds when it runs — three honest sessions beat ten rushed ones.' }
+  ],
+  goals: [{ _id: 'g1', title: 'Hold 9 of 10 inside your rules', metric: 'RULE_COMPLIANCE', target: 90, unit: '%', cadence: 'WEEKLY', status: 'ACTIVE' }]
+};
 
 const ANNOUNCEMENT = {
   message: '<b>KAIZEN V2 IS COMING</b> — the score gets five dimensions · plan → record → reflect sessions · your own Trading System · rolling out over the next 30 days',
