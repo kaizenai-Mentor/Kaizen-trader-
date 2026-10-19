@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="<%= lang %>">
 <head>
   <%- include('partials/head') %>
   <title><%= t('title.psychology') %></title>
@@ -13,15 +13,15 @@
   <main class="k-flow k-flow--wide">
     <div class="k-cockpit-head">
       <div>
-        <div class="k-eyebrow">COACH · 改</div>
+        <div class="k-eyebrow"><%= t('ai.eyebrow') %></div>
         <h1 class="k-page-title"><%= t('psych.title') %></h1>
-        <p class="k-page-sub">The room with no scoreboard. Most of the time it is not the rules — it is the state. Work on the state here.</p>
+        <p class="k-page-sub"><%= t('psych.sub') %></p>
       </div>
     </div>
 
     <% if (mindState && (mindState.summary || (mindState.themes && mindState.themes.length))) { %>
     <section class="k-card k-mindcard">
-      <div class="k-panel-title">WHAT <span class="k-kanji k-kanji--sm">改</span> UNDERSTANDS ABOUT ME</div>
+      <div class="k-panel-title"><%= t('psych.what') %><span class="k-kanji k-kanji--sm">改</span><%= t('psych.understands') %></div>
       <% if (mindState.summary) { %>
         <p class="k-mindsummary"><%= mindState.summary %></p>
       <% } %>
@@ -31,17 +31,17 @@
             <div class="k-mindtheme">
               <span class="k-themechip is-<%= t.status %>"><%= t.status %></span>
               <span class="k-themename"><%= t.name %></span>
-              <span class="k-thememeta"><%= t.occurrences %>× · since <%= new Date(t.firstSeen).toLocaleDateString('en-US',{month:'short',year:'numeric'}) %></span>
+              <span class="k-thememeta"><%= t.occurrences %><%= t('psych.since') %><%= new Date(t.firstSeen).toLocaleDateString('en-US',{month:'short',year:'numeric'}) %></span>
             </div>
           <% }); %>
         </div>
       <% } %>
-      <div class="k-fieldhint">KAIZEN updates this as you talk — nothing here is deletable. Memory is how a pattern gets recognized when it returns.</div>
+      <div class="k-fieldhint"><%= t('psych.memoryNote') %></div>
     </section>
     <% } %>
 
     <section class="k-card">
-      <div class="k-panel-title" style="margin-bottom:14px;">START A CONVERSATION</div>
+      <div class="k-panel-title" style="margin-bottom:14px;"><%= t('ai.startConv') %></div>
       <% if (openers && openers.length) { %>
         <div class="k-openerrow">
           <% openers.forEach(function(o){ %>
@@ -56,7 +56,7 @@
     </section>
 
     <section class="k-card">
-      <div class="k-panel-title" style="margin-bottom:6px;">CONVERSATIONS</div>
+      <div class="k-panel-title" style="margin-bottom:6px;"><%= t('ai.conversations') %></div>
       <% if (threads && threads.length) { %>
         <div class="k-threadlist">
           <% threads.forEach(function(t){ %>
@@ -64,9 +64,9 @@
               <div class="k-threadmain">
                 <span class="k-threadtitle"><%= t.title %></span>
                 <span class="k-threadmeta">
-                  <%= t.messageCount %> message<%= t.messageCount === 1 ? '' : 's' %>
+                  <%= t.messageCount %><%= t('ai.messageWord') %><%= t.messageCount === 1 ? '' : 's' %>
                   · <%= new Date(t.lastMessageAt).toLocaleDateString('en-US',{month:'short',day:'numeric'}) %>
-                  <% if (t.imported) { %> · imported<% } %>
+                  <% if (t.imported) { %><%= t('psych.imported') %><% } %>
                 </span>
               </div>
               <span class="k-threadarrow">→</span>
@@ -74,7 +74,7 @@
           <% }); %>
         </div>
       <% } else { %>
-        <p class="k-emptyhint">No conversations yet. Start one above — it stays between you and KAIZEN.</p>
+        <p class="k-emptyhint"><%= t('psych.none') %></p>
       <% } %>
     </section>
   </main>

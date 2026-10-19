@@ -84,7 +84,7 @@
         var typingEl = document.getElementById('k-responding');
         var out = document.getElementById('k-analysis');
         var after = document.getElementById('k-after');
-        btn.disabled = true; btn.textContent = 'Analyzing…';
+        btn.disabled = true; btn.textContent = <%- JSON.stringify(t('reflect.analyzing')) %>;
         panel.hidden = false; typingEl.hidden = false;
         try { panel.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (err) {}
         var data = new URLSearchParams(new FormData(form));
@@ -93,7 +93,7 @@
           typingEl.hidden = true;
           if (!res || res.error) {
             out.textContent = (res && res.error) || 'Something went wrong — try again.';
-            after.hidden = false; btn.disabled = false; btn.textContent = 'Finish Session';
+            after.hidden = false; btn.disabled = false; btn.textContent = <%- JSON.stringify(t('reflect.finish')) %>;
             return;
           }
           var text = res.analysis || '';
@@ -122,12 +122,12 @@
             onDone: function () {
               typingEl.hidden = true;
               after.hidden = false;
-              btn.textContent = 'Done';
+              btn.textContent = <%- JSON.stringify(t('reflect.done')) %>;
             },
             onError: function (msg) {
               typingEl.hidden = true;
               out.textContent = msg || 'Something went wrong — try again.';
-              after.hidden = false; btn.disabled = false; btn.textContent = 'Finish Session';
+              after.hidden = false; btn.disabled = false; btn.textContent = <%- JSON.stringify(t('reflect.finish')) %>;
             },
             onJson: handleJson
           }).catch(function () { form.submit(); }); // network issue: plain POST
