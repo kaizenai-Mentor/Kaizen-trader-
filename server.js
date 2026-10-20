@@ -315,24 +315,18 @@ app.post('/kaizen-ai/ask', (req, res) => {
   kaizenAiController.postAsk(req, res);
 });
 
-// Psychology — the conversation surface (V2, spec §3.1)
-// ChatGPT-style threads; self-maintaining MindState; nothing deletable (D2).
-const psychController = require('./controllers/psychController');
+// Psychology and Improve are NO LONGER separate destinations (owner
+// directive 20 Oct 2026 — the merges): the mind lives inside KAIZEN AI
+// (one conversation, five layers) and the proposals live inside the
+// Weekly Review. Old links keep working as redirects.
 app.get('/psychology', (req, res) => {
-  if (!req.session.user) return res.redirect('/auth/login');
-  psychController.getIndex(req, res);
+  res.redirect('/kaizen-ai');
 });
 app.get('/psychology/t/:id', (req, res) => {
-  if (!req.session.user) return res.redirect('/auth/login');
-  psychController.getThread(req, res);
+  res.redirect('/kaizen-ai');
 });
-
-// Improvement Recommendations — AI-generated, actionable (owner
-// directive 19 Oct 2026).
-const improveController = require('./controllers/improveController');
 app.get('/improve', (req, res) => {
-  if (!req.session.user) return res.redirect('/auth/login');
-  improveController.getIndex(req, res);
+  res.redirect('/weekly-summary');
 });
 
 // Goal Guidance — set, track and adapt improvement goals (owner
@@ -363,8 +357,8 @@ app.post('/goals/:id/adapt', (req, res) => {
   goalsController.postAdapt(req, res);
 });
 app.post('/psychology/ask', (req, res) => {
-  if (!req.session.user) return res.status(401).json({ error: 'Not logged in.' });
-  psychController.postAsk(req, res);
+  // Merged: psychology conversations live inside KAIZEN AI now.
+  res.status(410).json({ error: 'This conversation now lives inside KAIZEN AI — open /kaizen-ai.' });
 });
 
 // Keeps on-chain activity fresh for every active, consented wallet.

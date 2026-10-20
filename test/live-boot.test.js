@@ -102,3 +102,17 @@ test('unknown paths 404', async () => {
   const { res } = await get('/no-such-page-at-all');
   assert.strictEqual(res.status, 404);
 });
+
+// ── The 20 Oct 2026 merges: Psychology lives inside KAIZEN AI,
+//    Improve lives inside the Weekly Review. Old links redirect. ──
+test('old psychology URL now lands in KAIZEN AI', async () => {
+  const { res } = await get('/psychology');
+  assert.strictEqual(res.status, 302);
+  assert.strictEqual(res.headers.get('location'), '/kaizen-ai');
+});
+
+test('old improve URL now lands in the Weekly Review', async () => {
+  const { res } = await get('/improve');
+  assert.strictEqual(res.status, 302);
+  assert.strictEqual(res.headers.get('location'), '/weekly-summary');
+});
