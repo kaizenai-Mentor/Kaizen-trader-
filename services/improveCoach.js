@@ -83,7 +83,7 @@ ${recent || 'None yet — recommendations should start with logging one honest s
 THEIR SCORE DIMENSIONS (computed by the engine, not by you):
 ${dims}
 
-THEIR PSYCHOLOGY THEMES (private, from the Psychology room):
+THEIR EMOTIONAL PATTERNS (private, captured inside the KAIZEN AI conversation):
 ${themes || 'None logged.'}
 
 TASK — write 3 to 4 improvement recommendations. Exactly this shape, nothing else:
@@ -218,8 +218,8 @@ function buildFallback({ user, system, sessions, movement, mindState } = {}) {
   if (theme) {
     items.push({
       title: `Keep working the ${String(theme.name).toLowerCase()}`,
-      why: `Your Psychology room is still on "${theme.name}" (${theme.status}) — this is the layer that shows up in the sessions when nobody is watching.`,
-      proposal: 'My proposal: name the trigger once before the next session starts — in the Psychology room or in the session note — and trade the plan despite it. Naming it first is what steals its power. One rule at a time.'
+      why: `Your pattern layer is still on "${theme.name}" (${theme.status}) — this is what shows up in the sessions when nobody is watching.`,
+      proposal: 'My proposal: name the trigger once before the next session starts — in a KAIZEN AI conversation or in the session note — and trade the plan despite it. Naming it first is what steals its power. One rule at a time.'
     });
   }
 

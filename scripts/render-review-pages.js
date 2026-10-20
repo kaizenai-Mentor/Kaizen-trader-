@@ -157,8 +157,15 @@ const pages = {
   },
   'sessions': { user, sessions, openPlan: null, system, title: 'Sessions' },
   'session-plan': { user, system, type: 'LIVE', title: 'New Session — The Plan' },
-  'psychology': { user, mode: 'index', threads: psychThreads, mindState, openers: ['What is on your mind before today\'s session?', 'You mentioned pressure last time — how has that evolved?'], title: 'Psychology' },
-  'kaizen-ai': { user, mode: 'index', threads: aiThreads, openers: ['Quiz me on my rules', 'Where does my discipline break most?'], aiResponse: null, title: 'KAIZEN AI' },
+  // Psychology and Improve are no longer pages — their surfaces live
+  // inside kaizen-ai (one conversation + patterns) and weekly-summary
+  // (the proposals), so only those two render here.
+  'kaizen-ai': {
+    user, mode: 'index', threads: aiThreads.concat(psychThreads),
+    themes: mindState.themes,
+    openers: ['Quiz me on my rules', 'Where does my discipline break most?'],
+    aiResponse: null, title: 'KAIZEN AI'
+  },
   'leaderboard': {
     user, fullUser: user, points, move, typePerf, totalSessions: 48,
     nextMilestone: progress.nextSessionMilestone(48),
@@ -169,7 +176,17 @@ const pages = {
   },
   'weekly-summary': {
     user, stats, move, letter, letterCached: false, earned, streak: 6,
-    weekStart: new Date(Date.now() - 7 * 864e5), dimensionLabels: DIMENSION_LABELS, title: 'Weekly Report'
+    weekStart: new Date(Date.now() - 7 * 864e5), dimensionLabels: DIMENSION_LABELS,
+    rec: {
+      intro: 'You wrote: \"Moved my stop after the sweep, took the full loss.\" That is the material we improve with — everything below is built from your own record, nothing generic.',
+      items: [
+        { title: 'Take one rule back into the next session', why: '2 of your last 5 recorded sessions broke a rule — and your own entry rule is: \"MSS on 30min after liquidity sweep; no entry without confirmation candle close.\"', proposal: 'My proposal: trade the next session with exactly one job — honouring that rule. Log the session even if you skip the trade. One rule at a time.' },
+        { title: 'Move your Risk dimension first', why: 'Your Risk dimension is your lowest reading at 38 (-11 versus your prior reading) — this is the number your next sessions move fastest.', proposal: 'My proposal: write the exact risk per trade and the daily stop before the session, and end the day the moment the daily stop hits. One rule at a time.' },
+        { title: 'Keep working the revenge trading', why: 'Your pattern layer is still on \"Revenge trading\" (active) — this is what shows up in the sessions when nobody is watching.', proposal: 'My proposal: name the trigger once before the next session starts — in a KAIZEN AI conversation or in the session note — and trade the plan despite it. One rule at a time.' }
+      ]
+    },
+    totalSessions: 5,
+    title: 'Weekly Review'
   },
   'trading-system': { user, system, saved: false, title: 'My Trading System' },
   'reputation': {
@@ -218,17 +235,6 @@ pages['news'] = {
   title: 'Market News'
 };
 pages['memories'] = { user, memories, title: 'Memories' };
-pages['improve'] = {
-  user, totalSessions: 5, movement: null,
-  rec: {
-    intro: 'You wrote: "Moved my stop after the sweep, took the full loss." That is the material we improve with — everything below is built from your own record, nothing generic.',
-    items: [
-      { title: 'Take one rule back into the next session', why: '2 of your last 5 recorded sessions broke a rule — and your own entry rule is: "MSS on 30min after liquidity sweep; no entry without confirmation candle close."', action: 'Trade the next session with exactly one job: honouring that rule. Log the session even if you skip the trade. One rule at a time.' },
-      { title: 'Move your Risk dimension first', why: 'Your Risk dimension is your lowest reading at 38 (-11 versus your prior reading) — this is the number your next sessions move fastest.', action: 'Write the exact risk per trade and the daily stop before the session, and end the day the moment the daily stop hits. One rule at a time.' },
-      { title: 'Keep working the revenge trading', why: 'Your Psychology room is still on "Revenge trading" (active) — this is the layer that shows up in the sessions when nobody is watching.', action: 'Name the trigger once before the next session starts — in the Psychology room or in the session note — and trade the plan despite it. One rule at a time.' }
-    ]
-  }
-};
 pages['goals'] = {
   user, metrics: ['RULE_COMPLIANCE', 'SESSIONS_PER_WEEK', 'RISK_LIMIT', 'JOURNAL_STREAK', 'CUSTOM'],
   suggestions: [
@@ -253,7 +259,8 @@ const ANNOUNCEMENT = {
           announcement: ANNOUNCEMENT,
           lang: LANG,
           langs: require(path.join(ROOT, 'config', 'locales')).LANGS,
-          t: (key, params) => require(path.join(ROOT, 'config', 'locales')).t(LANG, key, params)
+          t: (key, params) => require(path.join(ROOT, 'config', 'locales')).t(LANG, key, params),
+          labels: require(path.join(ROOT, 'services', 'labels'))
         }, data)
       );
       fs.writeFileSync(path.join(OUT, name + '.html'), html);

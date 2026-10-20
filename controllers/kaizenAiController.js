@@ -1,9 +1,10 @@
 /**
- * KAIZEN AI controller — the trading-side conversation (spec §3.2).
- *
- * Same chat infrastructure as Psychology, different lane: the trades.
- * Threads (kind 'trading'), chart attach, rules quiz, legacy
- * session-analysis display kept for the old journal flow.
+ * KAIZEN AI controller — the ONE reflection conversation (owner
+ * directive 20 Oct 2026): trades, emotions and the patterns connecting
+ * both live in the same room. Surfaces both thread kinds ('trading' and
+ * legacy 'psychology'), keeps the old Psychology threads readable, and
+ * captures emotional patterns on every exchange via psychCoach into the
+ * MindState — so the coach's next reply connects them to the record.
  */
 const PsychThread = require('../models/PsychThread');
 
@@ -11,13 +12,15 @@ async function loadContext(userId) {
   const User = require('../models/User');
   const Journal = require('../models/Journal');
   const TradingSystem = require('../models/TradingSystem');
+  const MindState = require('../models/MindState');
   const user = await User.findById(userId);
   if (!user) return null;
-  const [sessions, system] = await Promise.all([
+  const [sessions, system, mindState] = await Promise.all([
     Journal.find({ userId }).sort({ createdAt: -1 }).limit(5).lean(),
-    TradingSystem.ensureForUser(user)
+    TradingSystem.ensureForUser(user),
+    MindState.ensureForUser(userId)
   ]);
-  return { user, sessions, system };
+  return { user, sessions, system, mindState };
 }
 
 // Context-aware openers from the trader's real situation.
@@ -44,7 +47,8 @@ function openersFor(sessions, system) {
 async function getIndex(req, res) {
   try {
     const userId = req.session.user.id;
-    const threads = await PsychThread.find({ userId, kind: 'trading' })
+    // One inbox: trading threads AND legacy psychology threads.
+    const threads = await PsychThread.find({ userId, kind: { $in: ['trading', 'psychology'] } })
       .sort({ lastMessageAt: -1 }).limit(30).lean();
     const ctx = await loadContext(userId);
     res.render('kaizen-ai', {
@@ -52,6 +56,7 @@ async function getIndex(req, res) {
       mode: 'index',
       threads,
       openers: ctx ? openersFor(ctx.sessions, ctx.system) : [],
+      themes: (ctx && ctx.mindState && ctx.mindState.themes) || [],
       aiResponse: req.session.aiResponse || null,
       title: 'KAIZEN AI'
     });
@@ -63,7 +68,7 @@ async function getIndex(req, res) {
     console.error('KAIZEN AI index error:', err.message);
     res.render('kaizen-ai', {
       user: req.session.user, mode: 'index', threads: [],
-      openers: [], aiResponse: null, title: 'KAIZEN AI'
+      openers: [], themes: [], aiResponse: null, title: 'KAIZEN AI'
     });
   }
 }
@@ -72,14 +77,17 @@ async function getIndex(req, res) {
 async function getThread(req, res) {
   try {
     const thread = await PsychThread.findOne({
-      _id: req.params.id, userId: req.session.user.id, kind: 'trading'
+      _id: req.params.id, userId: req.session.user.id,
+      kind: { $in: ['trading', 'psychology'] }
     }).lean();
     if (!thread) return res.redirect('/kaizen-ai');
+    const ctx = await loadContext(req.session.user.id);
     res.render('kaizen-ai', {
       user: req.session.user,
       mode: 'thread',
       thread,
       openers: thread.messages && thread.messages.length ? [] : ['Review a setup I\'m watching', 'Quiz me on my rules'],
+      themes: (ctx && ctx.mindState && ctx.mindState.themes) || [],
       aiResponse: null,
       title: thread.title
     });
@@ -103,7 +111,7 @@ async function postAsk(req, res) {
 
     let thread = null;
     if (req.body.threadId) {
-      thread = await PsychThread.findOne({ _id: req.body.threadId, userId, kind: 'trading' });
+      thread = await PsychThread.findOne({ _id: req.body.threadId, userId, kind: { $in: ['trading', 'psychology'] } });
       if (!thread) return res.status(404).json({ error: 'Conversation not found.' });
     } else {
       const title = mode === 'quiz'
@@ -123,6 +131,22 @@ async function postAsk(req, res) {
     if (!ctx) return res.status(401).json({ error: 'Not logged in.' });
 
     const tradeCoach = require('../services/tradeCoach');
+
+    // Pattern capture (five layers): every exchange is scanned for the
+    // emotional/behavioral layer and written to the MindState, so the
+    // coach's next reply — and the Improve recommendations — see it.
+    const capturePatterns = async () => {
+      try {
+        const psychCoach = require('../services/psychCoach');
+        const psychState = psychCoach.deterministicState(message);
+        if (psychState && Array.isArray(psychState.themes) && psychState.themes.length && ctx.mindState) {
+          psychCoach.applyPsychState(ctx.mindState, psychState);
+          await ctx.mindState.save();
+        }
+      } catch (capErr) {
+        console.error('Pattern capture error:', capErr.message);
+      }
+    };
 
     // ── Streaming path (SSE): the reply arrives as it is written ──
     if (String(req.body.stream) === '1') {
@@ -156,6 +180,7 @@ async function postAsk(req, res) {
       try {
         for await (const chunk of tradeCoach.streamConverse({
           user: ctx.user, system: ctx.system, sessions: ctx.sessions,
+          mindState: ctx.mindState,
           threadMessages: thread.messages.slice(0, -1),
           userMessage: mode === 'quiz' ? 'Quiz me on my rules.' : message,
           imageDataUrl, mode
@@ -165,6 +190,7 @@ async function postAsk(req, res) {
           send({ type: 'delta', text: chunk });
         }
         await persist(full.trim());
+        await capturePatterns();
         send({ type: 'done', threadId: String(thread._id), messageCount: thread.messageCount });
       } catch (err) {
         console.error('KAIZEN AI stream error:', err.message);
@@ -184,6 +210,7 @@ async function postAsk(req, res) {
 
     const { reply } = await tradeCoach.converse({
       user: ctx.user, system: ctx.system, sessions: ctx.sessions,
+      mindState: ctx.mindState,
       threadMessages: thread.messages.slice(0, -1),
       userMessage: mode === 'quiz' ? 'Quiz me on my rules.' : message,
       imageDataUrl, mode
@@ -193,6 +220,7 @@ async function postAsk(req, res) {
     thread.messageCount = thread.messages.length;
     thread.lastMessageAt = new Date();
     await thread.save();
+    await capturePatterns();
 
     // Archive write-through so Memories stays the complete record.
     try {
