@@ -946,7 +946,7 @@ module.exports = {
   "welcome.pat4": "Friday compliance · −18%",
   "prog.insidePct": "{{p}}% inside rules",
   "prog.noData": "no data yet",
-  "improve.action": "Action",
+  "improve.proposal": "My proposal",
   "improve.back": "Back to Cockpit",
   "improve.eyebrow": "IMPROVE · 改",
   "improve.h1": "Improvement Recommendations",

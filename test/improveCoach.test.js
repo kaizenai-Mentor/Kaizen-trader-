@@ -39,13 +39,13 @@ const mindState = {
 
 test('fallback counts their rule breaks against their own record', () => {
   const fb = buildFallback({ user, system, sessions, movement, mindState });
-  const text = fb.intro + ' ' + fb.items.map(i => i.title + i.why + i.action).join(' ');
+  const text = fb.intro + ' ' + fb.items.map(i => i.title + i.why + i.proposal).join(' ');
   assert.match(text, /3 of your last 5 recorded sessions broke a rule/);
 });
 
 test('fallback quotes the trader\'s own entry rule — one rule at a time', () => {
   const fb = buildFallback({ user, system, sessions, movement, mindState });
-  const text = fb.items.map(i => i.title + i.why + i.action).join(' ');
+  const text = fb.items.map(i => i.title + i.why + i.proposal).join(' ');
   assert.ok(text.includes('MSS on 30min after liquidity sweep'), 'must quote their rule text');
   assert.match(text, /one rule at a time/i);
 });
@@ -68,25 +68,25 @@ test('fallback uses the active psychology theme', () => {
 
 test('fallback without sessions starts with one honest session, in English', () => {
   const fb = buildFallback({ user, system: null, sessions: [], movement: null, mindState: null });
-  const text = fb.items.map(i => i.title + i.action).join(' ');
+  const text = fb.items.map(i => i.title + i.proposal).join(' ');
   assert.match(text, /Log one honest session/);
   assert.ok(!/votre|Verzamel/.test(text), 'fallback must be English-only');
 });
 
-test('every recommendation has title, why, action — and stays out of predictions', () => {
+test('every recommendation has title, why, proposal — and stays out of predictions', () => {
   const fb = buildFallback({ user, system, sessions, movement, mindState });
   assert.ok(fb.items.length >= 2 && fb.items.length <= 4);
   for (const it of fb.items) {
-    assert.ok(it.title && it.why && it.action, 'recommendation parts missing');
+    assert.ok(it.title && it.why && it.proposal, 'recommendation parts missing');
   }
-  const text = fb.intro + fb.items.map(i => i.title + i.why + i.action).join(' ');
+  const text = fb.intro + fb.items.map(i => i.title + i.why + i.proposal).join(' ');
   assert.ok(!/\b(buy|sell|long|short)\b/i.test(text.replace(/one rule at a time/gi, '')), 'no trade directions');
 });
 
-test('system prompt pins: one rule at a time, ACTION shape, machine tail, English', () => {
+test('system prompt pins: one rule at a time, PROPOSAL shape, machine tail, English', () => {
   const p = buildSystemPrompt({ user, system, sessions, movement, mindState });
   assert.match(p, /one rule at a time/i);
-  assert.match(p, /ACTION: one concrete thing/);
+  assert.match(p, /PROPOSAL: one compelling, realistic/);
   assert.match(p, /EXTRACTED-REC: top=\[process\|risk\|execution\|behavior\|learning\|none\]/);
   assert.match(p, /always write this line in English/);
   assert.match(p, /Never price predictions/);
@@ -97,19 +97,35 @@ test('parser reads the structured block and the machine tail', () => {
 
 1. Take one rule back into the next session
    WHY: 3 of your last 5 recorded sessions broke a rule.
-   ACTION: Trade with exactly one job. One rule at a time.
+   PROPOSAL: Trade with exactly one job. One rule at a time.
 
 2. Move your Risk dimension first
    WHY: Risk is your lowest reading at 38 (-11 versus your prior reading).
-   ACTION: Write the exact risk per trade before the session.
+   PROPOSAL: Write the exact risk per trade before the session.
 
 EXTRACTED-REC: top=risk theme=Revenge trading`;
   const parsed = parseRecommendations(sample);
   assert.strictEqual(parsed.items.length, 2);
   assert.strictEqual(parsed.items[0].title, 'Take one rule back into the next session');
+  assert.match(parsed.items[0].proposal, /Trade with exactly one job/);
   assert.match(parsed.items[1].why, /38/);
   assert.strictEqual(parsed.extracted.top, 'risk');
   assert.strictEqual(parsed.extracted.theme, 'Revenge trading');
   assert.strictEqual(parsed.intro, 'Your last week had a clear centre of gravity: risk.');
   assert.ok(!stripTail(sample).includes('EXTRACTED-REC'));
+});
+
+test('asterisks and markdown never reach the page', () => {
+  const sample = `INTRO: **Your week** had a centre of gravity ✳ risk.
+
+1. **Take one rule back**
+   WHY: 3 of your last 5 recorded sessions broke a rule. *Honestly.*
+   PROPOSAL: My proposal ✳ trade with exactly one job.
+
+EXTRACTED-REC: top=risk theme=none`;
+  const parsed = parseRecommendations(sample);
+  const text = parsed.intro + ' ' + parsed.items.map(i => i.title + i.why + i.proposal).join(' ');
+  assert.ok(!/[*✳✱]/.test(text), 'no asterisks or star glyphs in output: ' + text);
+  assert.match(parsed.items[0].title, /Take one rule back/);
+  assert.match(parsed.items[0].proposal, /trade with exactly one job/);
 });
