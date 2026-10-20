@@ -1,21 +1,21 @@
 /**
  * tradeCoach — the KAIZEN AI conversation engine (V2, spec §3.2).
  *
- * THE SURFACE: the trading-side chat. Same conversational quality as the
- * Psychology room, aimed at the TRADES — review an entry against the
- * trader's own rules, read a chart, pressure-test a system version,
- * quiz them on their own rules.
+ * THE SURFACE: one reflection room (owner directive 20 Oct 2026 —
+ * KAIZEN AI and the Psychology page are ONE conversation now). Trades,
+ * emotions, and the patterns connecting both: review an entry against
+ * the trader's own rules, read a chart, pressure-test a system version,
+ * quiz them on their own rules, and name the feeling behind a mistake.
  *
  * CONTRACT (mirrors psychCoach / aiCoach):
  * - NEVER a score, NEVER a signal. No predictions, no "should I buy X".
  *   KAIZEN teaches process in the trader's own system's language. Asked
  *   for a signal → decline honestly, redirect to their process.
  * - Knows: the Trading System (rules, setups, risk numbers, version),
- *   recent sessions (plan vs record, quick checks, outcomes), and the
- *   trader's own reflections. Does NOT read the MindState — the mind
- *   stays in the Psychology room (clean lanes). If the conversation
- *   turns psychological, gently point there.
- * - Crisis language gets the same caring response as the Psychology room.
+ *   recent sessions (plan vs record, quick checks, outcomes), the
+ *   trader's own reflections, and the MindState patterns captured over
+ *   time. The mind is part of this conversation — never routed away.
+ * - Crisis language gets the same caring response, plus real human help.
  * - Deterministic fallback without an API key: honest process questions.
  * - No integrity-mechanics talk (rule 9).
  */
@@ -28,7 +28,7 @@ const { CRISIS_RE, CRISIS_RESPONSE } = require('./psychCoach');
 // Signal-seeking language — declined and redirected to process.
 const SIGNAL_RE = /should i (buy|sell|enter|trade|long|short)|what (should|do) i trade|is (btc|bitcoin|eth|ethereum|xau|gold|eurusd|nas|s&p)[a-z0-9]* (a )?(buy|sell|good)|buy or sell|which coin|which pair|best coin|pump|moon/i;
 
-// Psychological depth language — better served by the Psychology room.
+// Deep emotional language — care lives in this same room now.
 const MIND_RE = /i feel (anxious|depressed|angry|hopeless|scared|afraid|lost|broken)|my mental health|i'?m struggling (with life|to cope)|can'?t stop thinking about.*(loss|losing)|emotionally drained/i;
 
 // ── Prompt construction ──────────────────────────────────────────
@@ -71,10 +71,19 @@ function digestReflections(sessions) {
   ).join('\n');
 }
 
-function buildSystemPrompt({ user, system, sessions }) {
-  return `You are KAIZEN (改) — the trading coach side of a trader-improvement product, in conversation with ${user.username}.
+function digestThemes(mindState) {
+  const themes = ((mindState && mindState.themes) || [])
+    .filter(t => t && (t.status === 'active' || t.status === 'improving'));
+  if (!themes.length) return 'No recurring patterns flagged yet.';
+  return themes.map(t =>
+    `- ${t.name} (${t.status})${t.note ? ' — ' + String(t.note).slice(0, 120) : ''}`
+  ).join('\n');
+}
 
-THIS IS THE TRADING ROOM. Freeform conversation about setups, entries, exits, rules, charts, process. The mind has its own room — if the conversation turns to deep emotional struggle, acknowledge it with care in one sentence and suggest the Psychology room; do not conduct a psychology session here.
+function buildSystemPrompt({ user, system, sessions, mindState }) {
+  return `You are KAIZEN (改) — the reflection coach inside a trader-improvement product, in conversation with ${user.username}.
+
+ONE ROOM, FIVE LAYERS. This single conversation holds their trades AND their mind — the two always connect (a rule broken after a win streak and the greed behind it are one event, not two). Read every exchange on five layers: (a) trade outcomes, (b) emotional triggers, (c) behavioral mistakes, (d) recurring patterns across sessions and conversations, (e) the one improvement action that follows. When they name a feeling — greed, fear, revenge, doubt — connect it to the behaviour it produced and to their record; that connection IS the product. Never route them to another page for it. Only deep crisis gets outside help: acknowledge with care and point to real human support.
 
 WHAT YOU KNOW ABOUT THIS TRADER (use it; quote their own rules back when relevant — rule references in plain text):
 ${digestSystem(system)}
@@ -84,6 +93,9 @@ ${digestSessions(sessions)}
 
 WHAT THEY SAY THEY LEARNED (their words — quote them back when it helps):
 ${digestReflections(sessions)}
+
+RECURRING PATTERNS (theirs, captured over time — connect new moments to these):
+${digestThemes(mindState)}
 
 HOW YOU COACH:
 1. Anchor everything to THEIR system. "Your entry rule says X — does this setup satisfy it?" If their system doesn't cover the question, say so and help them write the missing rule.
@@ -100,8 +112,8 @@ HOW YOU COACH:
 QUIZ MODE: when asked to quiz, ask ONE question about THEIR actual rules (from the system above) — specific, checkable, phrased so they must reason (not yes/no). Wait for their answer before the next one. When they answer, say what their system actually says, verbatim, and whether they got it.`;
 }
 
-function buildQuizPrompt({ user, system, sessions }) {
-  const base = buildSystemPrompt({ user, system, sessions });
+function buildQuizPrompt({ user, system, sessions, mindState }) {
+  const base = buildSystemPrompt({ user, system, sessions, mindState });
   return base + '\n\nTHEY JUST ASKED TO BE QUIZZED. Ask your single best quiz question now — one rule from their system, phrased so they must reason it through. If their system has no rules yet, ask them to write the first one instead.';
 }
 
@@ -142,13 +154,13 @@ function buildFallback({ userMessage, system, sessions, imageAttached, lang = 'e
 }
 
 /** Shared prompt construction for converse / streamConverse. */
-function prepareConverse({ user, system, sessions, threadMessages, userMessage, imageDataUrl, mode }) {
+function prepareConverse({ user, system, sessions, threadMessages, userMessage, imageDataUrl, mode, mindState }) {
   const history = (threadMessages || []).slice(-12).map(m =>
     `${m.role === 'user' ? 'THEM' : 'YOU'}: ${m.text}`).join('\n');
 
   const systemPrompt = mode === 'quiz'
-    ? buildQuizPrompt({ user, system, sessions })
-    : buildSystemPrompt({ user, system, sessions });
+    ? buildQuizPrompt({ user, system, sessions, mindState })
+    : buildSystemPrompt({ user, system, sessions, mindState });
 
   let content;
   if (imageDataUrl) {
@@ -165,13 +177,13 @@ function prepareConverse({ user, system, sessions, threadMessages, userMessage, 
 
 // ── Conversation entry point ─────────────────────────────────────
 
-async function converse({ user, system, sessions, threadMessages = [], userMessage, imageDataUrl, mode }) {
+async function converse({ user, system, sessions, threadMessages = [], userMessage, imageDataUrl, mode, mindState }) {
   // Crisis lane — identical care on every coach surface.
   if (CRISIS_RE.test(userMessage || '')) {
     return { reply: CRISIS_RESPONSE };
   }
 
-  const prepared = prepareConverse({ user, system, sessions, threadMessages, userMessage, imageDataUrl, mode });
+  const prepared = prepareConverse({ user, system, sessions, threadMessages, userMessage, imageDataUrl, mode, mindState });
   if (llm.available() && prepared) {
     try {
       const raw = await llm.callLLM(prepared.systemPrompt, prepared.content, { maxTokens: 700 });
@@ -217,6 +229,7 @@ module.exports = {
   buildQuizPrompt,
   digestSystem,
   digestSessions,
+  digestThemes,
   SIGNAL_RE,
   MIND_RE
 };

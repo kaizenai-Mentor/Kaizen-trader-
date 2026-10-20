@@ -79,8 +79,6 @@
     <div class="popup-section">
       <div class="popup-section-label">Coach</div>
       <a href="kaizen-ai.html" class="popup-item"><span class="popup-item-icon"><i data-feather="message-circle" width="14" height="14"></i></span> KAIZEN AI</a>
-      <a href="psychology.html" class="popup-item"><span class="popup-item-icon"><i data-feather="brain" width="14" height="14"></i></span> Psychology</a>
-      <a href="improve.html" class="popup-item"><span class="popup-item-icon"><i data-feather="target" width="14" height="14"></i></span> Improve</a>
       <a href="goals.html" class="popup-item"><span class="popup-item-icon"><i data-feather="check-circle" width="14" height="14"></i></span> Goals</a>
       <a href="memories.html" class="popup-item"><span class="popup-item-icon"><i data-feather="book-open" width="14" height="14"></i></span> Memories</a>
     </div>
@@ -89,7 +87,7 @@
     <div class="popup-section">
       <div class="popup-section-label">Tools</div>
       <a href="/chart" class="popup-item"><span class="popup-item-icon"><i data-feather="bar-chart-2" width="14" height="14"></i></span> Chart</a>
-      <a href="weekly-summary.html" class="popup-item"><span class="popup-item-icon"><i data-feather="file-text" width="14" height="14"></i></span> Weekly Report</a>
+      <a href="weekly-summary.html" class="popup-item"><span class="popup-item-icon"><i data-feather="file-text" width="14" height="14"></i></span> Weekly Review</a>
       <a href="/news" class="popup-item"><span class="popup-item-icon"><i data-feather="globe" width="14" height="14"></i></span> Market News</a>
     </div>
 
@@ -257,41 +255,6 @@
       <p style="font-size:0.82rem;color:var(--ash);font-style:italic;">Behaviour goals, set and tracked from your own record — never profit targets.</p>
     </div>
 
-    
-      <div class="k-card" style="margin-bottom:20px;">
-        <div class="k-panel-title" style="margin-bottom:12px;">Suggested for you</div>
-        
-          <div style="border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:10px;">
-            <div style="font-weight:700;color:var(--text-primary);margin-bottom:6px;">Keep 8 of your last 10 sessions inside your rules</div>
-            <p style="font-size:0.82rem;line-height:1.6;color:var(--ash);margin-bottom:10px;">2 of your last 5 recorded sessions stayed inside your rules (40%). One rule at a time: your entry rule — &#34;MSS on 30min after liquidity sweep&#34; — is the one to protect.</p>
-            <form method="POST" action="/goals">
-              <input type="hidden" name="title" value="Keep 8 of your last 10 sessions inside your rules">
-              <input type="hidden" name="metric" value="RULE_COMPLIANCE">
-              <input type="hidden" name="target" value="80">
-              <input type="hidden" name="unit" value="%">
-              <input type="hidden" name="cadence" value="WEEKLY">
-              <input type="hidden" name="rationale" value="2 of your last 5 recorded sessions stayed inside your rules (40%). One rule at a time: your entry rule — &#34;MSS on 30min after liquidity sweep&#34; — is the one to protect.">
-              <button type="submit" class="k-btn" style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;">Adopt this goal</button>
-            </form>
-          </div>
-        
-          <div style="border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:10px;">
-            <div style="font-weight:700;color:var(--text-primary);margin-bottom:6px;">Run the loop on 3 sessions this week</div>
-            <p style="font-size:0.82rem;line-height:1.6;color:var(--ash);margin-bottom:10px;">You logged 2 sessions in the last seven days. The loop compounds when it runs — three honest sessions beat ten rushed ones.</p>
-            <form method="POST" action="/goals">
-              <input type="hidden" name="title" value="Run the loop on 3 sessions this week">
-              <input type="hidden" name="metric" value="SESSIONS_PER_WEEK">
-              <input type="hidden" name="target" value="3">
-              <input type="hidden" name="unit" value="sessions">
-              <input type="hidden" name="cadence" value="WEEKLY">
-              <input type="hidden" name="rationale" value="You logged 2 sessions in the last seven days. The loop compounds when it runs — three honest sessions beat ten rushed ones.">
-              <button type="submit" class="k-btn" style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;">Adopt this goal</button>
-            </form>
-          </div>
-        
-      </div>
-    
-
     <div class="k-card" style="margin-bottom:20px;">
       <div class="k-panel-title" style="margin-bottom:12px;">Your goals</div>
       
@@ -341,6 +304,7 @@
           </div>
         </div>
         <button type="submit" class="k-btn" style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;">Create goal</button>
+        <p style="font-size:0.78rem;color:var(--ash);font-style:italic;margin-top:12px;">A prop firm goal works too — &#34;Pass my evaluation and get funded&#34;, &#34;Stay funded&#34;. KAIZEN coaches the discipline and accountability your evaluation measures: the daily loss limit, the drawdown, your own rules. Never trading advice or market insights.</p>
       </form>
     </div>
 

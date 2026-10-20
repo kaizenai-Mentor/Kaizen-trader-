@@ -13,6 +13,7 @@
       <div>
         <div class="k-eyebrow"><%= t('wk.eyebrow') %></div>
         <h1 class="k-page-title"><%= t('weekly.title') %></h1>
+        <div style="font-family:var(--font-mono);font-size:0.62rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);margin-top:8px;"><%= t('wk.weekOf') %> <%= dateRange %></div>
         <p class="k-page-sub"><%= t('wk.sub') %></p>
       </div>
       <div class="k-streakchip" title="Practice consistency — never trading performance">
@@ -24,7 +25,7 @@
 
     <!-- ═══ THE COACH'S LETTER ═══ -->
     <section class="k-card k-card--featured">
-      <div class="k-panel-title"><span class="k-kanji k-kanji--sm">改</span><%= t('wk.weekWords') %></div>
+      <div class="k-panel-title"><span class="k-kanji k-kanji--sm">改</span><%= t('wk.weekWords') %><span style="margin-left:auto;font-family:var(--font-mono);font-size:0.56rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);white-space:nowrap;"><%= dateRange %></span></div>
       <div class="k-legacyai"><%= letter %></div>
       <% if (!letterCached) { %>
         <div class="k-fieldhint"><%= t('wk.writtenFor') %></div>
@@ -35,7 +36,7 @@
 
     <!-- ═══ HONEST EMPTY STATE ═══ -->
     <section class="k-card">
-      <div class="k-panel-title"><%= t('wk.weekSessions') %></div>
+      <div class="k-panel-title"><%= t('wk.weekSessions') %><span style="margin-left:auto;font-family:var(--font-mono);font-size:0.56rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);white-space:nowrap;"><%= dateRange %></span></div>
       <div class="k-building">
         <span class="k-buildnum">改</span>
         <div>
@@ -50,7 +51,7 @@
 
     <!-- ═══ SESSIONS THIS WEEK ═══ -->
     <section class="k-card">
-      <div class="k-panel-title"><%= t('wk.weekSessions') %></div>
+      <div class="k-panel-title"><%= t('wk.weekSessions') %><span style="margin-left:auto;font-family:var(--font-mono);font-size:0.56rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);white-space:nowrap;"><%= dateRange %></span></div>
       <div class="k-typerow">
         <% ['LIVE','BACKTEST','STUDY'].forEach(function(ty){ %>
           <div class="k-typecard-stat">
@@ -77,7 +78,7 @@
     <!-- ═══ SCORE MOVEMENT ═══ -->
     <% if (move) { %>
     <section class="k-card">
-      <div class="k-panel-title"><%= t('wk.scoreMove') %></div>
+      <div class="k-panel-title"><%= t('wk.scoreMove') %><span style="margin-left:auto;font-family:var(--font-mono);font-size:0.56rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);white-space:nowrap;"><%= dateRange %></span></div>
       <div class="k-scorerow">
         <span class="k-scorenum"><%= move.overall.now %></span>
         <div class="k-scoremeta">
@@ -114,14 +115,14 @@
     </section>
     <% } else { %>
     <section class="k-card">
-      <div class="k-panel-title"><%= t('wk.scoreMove2') %></div>
+      <div class="k-panel-title"><%= t('wk.scoreMove2') %><span style="margin-left:auto;font-family:var(--font-mono);font-size:0.56rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);white-space:nowrap;"><%= dateRange %></span></div>
       <p class="k-emptyhint"><%= t('wk.noScores') %></p>
     </section>
     <% } %>
 
     <!-- ═══ MILESTONES THIS WEEK ═══ -->
     <section class="k-card">
-      <div class="k-panel-title"><%= t('wk.milestonesWeek') %></div>
+      <div class="k-panel-title"><%= t('wk.milestonesWeek') %><span style="margin-left:auto;font-family:var(--font-mono);font-size:0.56rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);white-space:nowrap;"><%= dateRange %></span></div>
       <% if (earned.length) { %>
         <div class="k-badgegrid">
           <% earned.forEach(function(b){ %>
@@ -135,6 +136,30 @@
         <p class="k-emptyhint"><%= t('wk.noMilestones') %></p>
       <% } %>
     </section>
+
+    <!-- ═══ WHAT TO WORK ON — the proposals (owner directive: the old
+         Improve page lives inside the Weekly Review now) ═══ -->
+    <% if (rec && rec.items && rec.items.length) { %>
+    <div class="k-card" style="margin-bottom:20px;">
+      <div class="k-panel-title"><%= t('improve.h1') %><span style="margin-left:auto;font-family:var(--font-mono);font-size:0.56rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);white-space:nowrap;"><%= dateRange %></span></div>
+      <p style="font-size:0.92rem;line-height:1.65;color:var(--text-primary);"><%= rec.intro %></p>
+    </div>
+    <% rec.items.forEach(function (item, i) { %>
+      <div class="k-card k-card--hover" style="margin-bottom:14px;">
+        <div style="display:flex;align-items:flex-start;gap:14px;">
+          <div style="flex-shrink:0;width:30px;height:30px;border-radius:8px;background:rgba(245,197,24,0.12);border:1px solid rgba(245,197,24,0.25);display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:0.8rem;font-weight:700;color:var(--gold);"><%= i + 1 %></div>
+          <div style="flex:1;">
+            <h3 style="font-size:1.02rem;font-weight:700;color:var(--text-primary);margin-bottom:8px;"><%= item.title %></h3>
+            <div style="font-family:'DM Mono',monospace;font-size:0.56rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--ash);margin-bottom:4px;"><%= t('improve.why') %></div>
+            <p style="font-size:0.86rem;line-height:1.6;color:var(--text-primary);margin-bottom:12px;"><%= item.why %></p>
+            <div style="font-family:'DM Mono',monospace;font-size:0.56rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:4px;"><%= t('improve.proposal') %></div>
+            <p style="font-size:0.86rem;line-height:1.6;color:var(--text-primary);"><%= item.proposal %></p>
+          </div>
+        </div>
+      </div>
+    <% }); %>
+    <p style="margin-top:6px;font-size:0.72rem;color:var(--ash);font-style:italic;"><%= t('improve.note') %></p>
+    <% } %>
 
   </main>
 

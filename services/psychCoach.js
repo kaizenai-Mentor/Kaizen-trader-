@@ -206,6 +206,7 @@ const FALLBACK_THEMES = [
   { re: /fomo|chase|chasing|missed (the|a)/i, name: 'FOMO / chasing moves' },
   { re: /anxious|anxiety|nervous|scared|afraid|fear|panic/i, name: 'Fear / anxiety around trading' },
   { re: /overconfiden|invincib|euphori|on fire|can'?t lose/i, name: 'Overconfidence after wins' },
+  { re: /greed|greedy|doubl(ing|ed) (my )?(size|down)|oversiz|full port|all in/i, name: 'Greed after wins' },
   { re: /bored|boredom|nothing to do/i, name: 'Boredom trading' },
   { re: /tired|exhaust|sleep|burn(ed|t)? out/i, name: 'Fatigue / burnout' },
   { re: /pressure|bills|rent|need the money|financial/i, name: 'Financial pressure' },
