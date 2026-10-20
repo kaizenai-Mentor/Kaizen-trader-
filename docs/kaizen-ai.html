@@ -79,8 +79,6 @@
     <div class="popup-section">
       <div class="popup-section-label">Coach</div>
       <a href="kaizen-ai.html" class="popup-item"><span class="popup-item-icon"><i data-feather="message-circle" width="14" height="14"></i></span> KAIZEN AI</a>
-      <a href="psychology.html" class="popup-item"><span class="popup-item-icon"><i data-feather="brain" width="14" height="14"></i></span> Psychology</a>
-      <a href="improve.html" class="popup-item"><span class="popup-item-icon"><i data-feather="target" width="14" height="14"></i></span> Improve</a>
       <a href="goals.html" class="popup-item"><span class="popup-item-icon"><i data-feather="check-circle" width="14" height="14"></i></span> Goals</a>
       <a href="memories.html" class="popup-item"><span class="popup-item-icon"><i data-feather="book-open" width="14" height="14"></i></span> Memories</a>
     </div>
@@ -89,7 +87,7 @@
     <div class="popup-section">
       <div class="popup-section-label">Tools</div>
       <a href="/chart" class="popup-item"><span class="popup-item-icon"><i data-feather="bar-chart-2" width="14" height="14"></i></span> Chart</a>
-      <a href="weekly-summary.html" class="popup-item"><span class="popup-item-icon"><i data-feather="file-text" width="14" height="14"></i></span> Weekly Report</a>
+      <a href="weekly-summary.html" class="popup-item"><span class="popup-item-icon"><i data-feather="file-text" width="14" height="14"></i></span> Weekly Review</a>
       <a href="/news" class="popup-item"><span class="popup-item-icon"><i data-feather="globe" width="14" height="14"></i></span> Market News</a>
     </div>
 
@@ -256,9 +254,24 @@
       <div>
         <div class="k-eyebrow">COACH · 改</div>
         <h1 class="k-page-title">KAIZEN AI</h1>
-        <p class="k-page-sub">The trading room. Talk setups, rules, charts — everything anchored to your own system. No signals, no predictions: process.</p>
+        <p class="k-page-sub">KAIZEN AI helps you understand your trades, your emotions, and the patterns connecting both — one conversation, anchored to your own system. No signals, no predictions: process.</p>
       </div>
     </div>
+
+    <!-- Your patterns — the emotional/behavioural layer, inside this room -->
+    <section class="k-card">
+      <div class="k-panel-title">YOUR PATTERNS</div>
+      
+        <div class="k-chiprow">
+          
+            <span class="k-chip k-chip--good">Performance anxiety · improving</span>
+          
+            <span class="k-chip k-chip--warn">Overconfidence after wins · active</span>
+          
+        </div>
+        <p class="k-fieldhint">Tracked across your conversations and sessions — trades and the feelings behind them, together.</p>
+      
+    </section>
 
     
 
@@ -293,7 +306,7 @@
                 <span class="k-threadtitle">Why did I move my stop?</span>
                 <span class="k-threadmeta">
                   6messages
-                  · Oct 19
+                  · Oct 20
                 </span>
               </div>
               <span class="k-threadarrow">→</span>
@@ -304,7 +317,29 @@
                 <span class="k-threadtitle">Backtest vs live gap</span>
                 <span class="k-threadmeta">
                   4messages
-                  · Oct 19
+                  · Oct 20
+                </span>
+              </div>
+              <span class="k-threadarrow">→</span>
+            </a>
+          
+            <a class="k-threadrow" href="/kaizen-ai/t/t1">
+              <div class="k-threadmain">
+                <span class="k-threadtitle">Fear of pulling the trigger</span>
+                <span class="k-threadmeta">
+                  8messages
+                  · Oct 20
+                </span>
+              </div>
+              <span class="k-threadarrow">→</span>
+            </a>
+          
+            <a class="k-threadrow" href="/kaizen-ai/t/t2">
+              <div class="k-threadmain">
+                <span class="k-threadtitle">Pressure from needing income</span>
+                <span class="k-threadmeta">
+                  5messages
+                  · Oct 20
                 </span>
               </div>
               <span class="k-threadarrow">→</span>
@@ -336,7 +371,7 @@
   <script>
     (function () {
       var input = document.getElementById('ai-input');
-      var send = document.getElementById('ai-send');
+      var sendBtn = document.getElementById('ai-send');
       var typing = document.getElementById('typing');
       var log = document.getElementById('chatlog');
       var fileInput = document.getElementById('chart-file');
@@ -407,7 +442,7 @@
       var busy = false;
       function send(payload) {
         busy = true;
-        send.disabled = true;
+        sendBtn.disabled = true;
         if (threadId && payload.message) addMsg('user', payload.message, !!payload.image);
         if (!payload.message && payload.image && threadId) addMsg('user', '(chart attached)', true);
         input.value = '';
@@ -418,7 +453,7 @@
 
         function finish() {
           busy = false;
-          send.disabled = false;
+          sendBtn.disabled = false;
           if (typing) typing.hidden = true;
           input.focus();
         }
@@ -480,7 +515,7 @@
       }
       function sendQuiz() { if (!busy) send({ message: 'Quiz me on my rules.', mode: 'quiz' }); }
 
-      send.addEventListener('click', sendMsg);
+      sendBtn.addEventListener('click', sendMsg);
       input.addEventListener('keydown', function (e) {
         if (e.key === 'Enter' && !e.shiftKey && window.innerWidth > 760) {
           e.preventDefault();
