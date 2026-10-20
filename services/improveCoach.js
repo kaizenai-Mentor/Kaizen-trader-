@@ -13,6 +13,7 @@
  * - Machine tail (EXTRACTED-REC:) stays English and parseable.
  */
 const llm = require('./llm');
+const cleanText = require('./cleanText');
 
 const DIM_LABELS = {
   process: 'Process',
@@ -48,7 +49,7 @@ function notesSnippet(session) {
 
 /**
  * System prompt. Deterministic markers below are test-pinned:
- * "one rule at a time", "ACTION:", "EXTRACTED-REC:", "English".
+ * "one rule at a time", "PROPOSAL:", "EXTRACTED-REC:", "English".
  */
 function buildSystemPrompt({ user, system, sessions, movement, mindState }) {
   const name = (user && user.username) || 'trader';
@@ -71,7 +72,7 @@ VOICE (non-negotiable):
 1. Second person. Talk about THEIR record — quote their notes, their rule text, their numbers. "Your execution", never bare "execution".
 2. Improvement is the only thing you sell: process, risk, execution, behavior, learning. Never price predictions, never entries or exits.
 3. One rule at a time. Every recommendation must be doable in their very next session.
-4. Honest, warm, adult. No emoji. No hype. No templates that could fit any trader.
+4. Honest, warm, adult. No emoji. No hype. No asterisks, no markdown. No templates that could fit any trader.
 
 THEIR SYSTEM (what every session is measured against):
 ${system && (system.entryRules || system.rules) ? JSON.stringify(system.entryRules || system.rules) : 'No written system yet — say so, and make recommendation 1 about writing one.'}
@@ -91,15 +92,15 @@ INTRO: one short paragraph in your voice, referencing something specific from th
 
 1. <short title>
    WHY: one or two sentences about their data — cite the numbers or their own words.
-   ACTION: one concrete thing to do in the next session. One rule at a time.
+   PROPOSAL: one compelling, realistic, personal proposal — pitch it to them like a coach who has read every session: what changes, why it is realistic for them, and the one thing to do in their very next session. One rule at a time.
 
 2. <short title>
    WHY: ...
-   ACTION: ...
+   PROPOSAL: ...
 
 3. <short title>
    WHY: ...
-   ACTION: ...
+   PROPOSAL: ...
 
 (add a 4th only if their record clearly supports it)
 
@@ -115,15 +116,15 @@ function parseRecommendations(text) {
   const themeMatch = (tail.match(/theme=\[?([^\]\n]+?)\]?$/) || [])[1] || 'none';
   const body = src.replace(/EXTRACTED-REC:[\s\S]*$/, '').trim();
 
-  const intro = (body.match(/INTRO:\s*([\s\S]*?)(?=\n\s*1\.)/) || [])[1]?.trim() || '';
+  const intro = cleanText((body.match(/INTRO:\s*([\s\S]*?)(?=\n\s*1\.)/) || [])[1] || '');
   const items = [];
-  const re = /(\d+)\.\s*([^\n]+)\n\s*WHY:\s*([\s\S]*?)\n\s*ACTION:\s*([\s\S]*?)(?=\n\s*\d+\.|$)/g;
+  const re = /(\d+)\.\s*([^\n]+)\n\s*WHY:\s*([\s\S]*?)\n\s*(?:PROPOSAL|ACTION):\s*([\s\S]*?)(?=\n\s*\d+\.|$)/g;
   let m;
   while ((m = re.exec(body)) !== null) {
     items.push({
-      title: m[2].trim(),
-      why: m[3].trim(),
-      action: m[4].trim()
+      title: cleanText(m[2]),
+      why: cleanText(m[3]),
+      proposal: cleanText(m[4])
     });
   }
   return { intro, items, extracted: { top: top.trim(), theme: themeMatch.trim() } };
@@ -170,31 +171,31 @@ function buildFallback({ user, system, sessions, movement, mindState } = {}) {
     items.push({
       title: 'Log one honest session',
       why: 'Nothing has been recorded yet, so there is no pattern to read — the engine needs one full loop (plan → record → reflect) before it can see you.',
-      action: 'Plan one session for your next market day, record what actually happened, and reflect in your own words. One session at a time.'
+      proposal: 'My proposal: give the record one honest week — plan one session for your next market day, record what actually happened, and reflect in your own words. That one loop is what turns advice into something personal. One session at a time.'
     });
   } else if (!rule) {
     items.push({
       title: 'Write one entry rule you can point to on the chart',
       why: 'Your system has no written entry rule yet, so no session can be measured against anything — the engine cannot score adherence to a plan it cannot read.',
-      action: 'Before your next session, write one entry rule in My Trading System — specific enough that you could point to its trigger on the chart. One rule at a time.'
+      proposal: 'My proposal: before your next session, write one entry rule in My Trading System — specific enough that you could point to its trigger on the chart. One rule, written once, that every session after can be measured against. One rule at a time.'
     });
   } else if (violations > 0) {
     items.push({
       title: 'Take one rule back into the next session',
       why: `${violations} of your last ${recent.length} recorded sessions broke a rule — and your own entry rule is: "${rule}"`,
-      action: `Trade the next session with exactly one job: honouring that rule. Log the session even if you skip the trade. One rule at a time.`
+      proposal: `My proposal: your next session has exactly one job — honouring the rule you wrote: "${rule}". Nothing else is scored. If the setup forces you past it, skip the trade and log the skip — that is the session doing its work. One rule at a time, and this is the one.`
     });
   } else if (recent.length > 0) {
     items.push({
       title: 'Protect the clean streak you just built',
       why: `Your last ${recent.length} recorded sessions stayed inside your rules — that is the behaviour that compounds, and it is fragile at the start.`,
-      action: 'Before the next entry, read your entry rule out loud once and write the plan down before the session opens. One rule at a time keeps it.'
+      proposal: 'My proposal: treat the streak like something worth defending — before the next entry, read your entry rule out loud once and write the plan down before the session opens. One rule at a time keeps it.'
     });
   } else {
     items.push({
       title: 'Log one honest session',
       why: 'Nothing has been recorded yet, so there is no pattern to read — the engine needs one full loop (plan → record → reflect) before it can see you.',
-      action: 'Plan one session for your next market day, record what actually happened, and reflect in your own words. One session at a time.'
+      proposal: 'My proposal: give the record one honest week — plan one session for your next market day, record what actually happened, and reflect in your own words. One session at a time.'
     });
   }
 
@@ -206,11 +207,11 @@ function buildFallback({ user, system, sessions, movement, mindState } = {}) {
     items.push({
       title: `Move your ${dimLabel(k)} dimension first`,
       why: `Your ${dimLabel(k)} dimension is your lowest reading at ${v.now == null ? '—' : v.now}${deltaText} — this is the number your next sessions move fastest.`,
-      action: k === 'risk'
-        ? 'Write the exact risk per trade and the daily stop before the session, and end the day the moment the daily stop hits. One rule at a time.'
+      proposal: k === 'risk'
+        ? 'My proposal: risk is the dimension you can move this week without touching anything else — write the exact risk per trade and the daily stop before the session, and end the day the moment the daily stop hits. One rule at a time.'
         : k === 'learning'
-          ? 'In your next reflection, name one mistake and one correction in your own words — a real one, from the session you just traded.'
-          : `In the next session, write the plan before the entry and compare the trade to it afterwards — that comparison is what moves ${dimLabel(k)}.`
+          ? 'My proposal: in your next reflection, name one mistake and one correction in your own words — a real one, from the session you just traded. That single sentence is what moves this dimension.'
+          : `My proposal: the plan is what moves ${dimLabel(k)} — write it before the entry and compare the trade to it afterwards. Honest comparison, one session at a time.`
     });
   }
 
@@ -218,7 +219,7 @@ function buildFallback({ user, system, sessions, movement, mindState } = {}) {
     items.push({
       title: `Keep working the ${String(theme.name).toLowerCase()}`,
       why: `Your Psychology room is still on "${theme.name}" (${theme.status}) — this is the layer that shows up in the sessions when nobody is watching.`,
-      action: 'Name the trigger once before the next session starts — in the Psychology room or in the session note — and trade the plan despite it. One rule at a time.'
+      proposal: 'My proposal: name the trigger once before the next session starts — in the Psychology room or in the session note — and trade the plan despite it. Naming it first is what steals its power. One rule at a time.'
     });
   }
 

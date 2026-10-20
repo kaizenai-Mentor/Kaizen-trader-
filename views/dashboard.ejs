@@ -127,9 +127,9 @@
             <% sessions.forEach(function(s){ %>
               <% var href = s.state === 'PLANNED' ? '/dashboard/sessions/' + s._id + '/record' : (s.state === 'RECORDED' ? '/dashboard/sessions/' + s._id + '/reflect' : '/dashboard/sessions/' + s._id); %>
               <a class="k-minirow" href="<%= href %>">
-                <span class="k-type-tag k-type-<%= (s.sessionType || 'LIVE').toLowerCase() %>"><%= s.sessionType || 'LIVE' %></span>
+                <span class="k-type-tag k-type-<%= (s.sessionType || 'LIVE').toLowerCase() %>"><%= labels.type(s.sessionType || 'LIVE') %></span>
                 <span class="k-minirow-asset"><%= s.asset %></span>
-                <span class="k-minirow-state"><%= s.state %></span>
+                <span class="k-minirow-state"><%= labels.state(s.state) %></span>
                 <span class="k-minirow-date"><%= new Date(s.createdAt).toLocaleDateString(({en:'en-US',fr:'fr-FR',zh:'zh-CN',ja:'ja-JP',af:'af-ZA'})[lang]||'en-US',{month:'short',day:'numeric'}) %></span>
               </a>
             <% }); %>
@@ -150,7 +150,7 @@
   <% if (newBadges && newBadges.length) { %>
     <div class="k-toast" id="badgeToast">
       <% newBadges.forEach(function(b){ %>
-        <div class="k-toast-item"><span class="k-kanji k-kanji--sm">改</span><%= t('dash.milestoneReached') %><b><%= b.name %></b></div>
+        <div class="k-toast-item"><span class="k-kanji k-kanji--sm">改</span><%= t('dash.milestoneReached') %><b><%= labels.badge(b.name) %></b></div>
       <% }); %>
     </div>
   <% } %>

@@ -17,10 +17,10 @@
     </div>
 
     <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:18px;">
-      <span class="k-chip"><%= session.state %></span>
-      <span class="k-type-tag k-type-tag--<%= String(session.sessionType||'LIVE').toLowerCase() %>"><%= session.sessionType || 'LIVE' %></span>
+      <span class="k-chip"><%= labels.state(session.state) %></span>
+      <span class="k-type-tag k-type-tag--<%= String(session.sessionType||'LIVE').toLowerCase() %>"><%= labels.type(session.sessionType || 'LIVE') %></span>
       <% if (session.outcome && session.outcome !== 'Pending') { %>
-        <span style="font-family:var(--font-mono);font-size:0.68rem;color:<%= session.outcome === 'Win' ? 'var(--green)' : session.outcome === 'Loss' ? 'var(--red)' : 'var(--ash)' %>;"><%= session.outcome.toUpperCase() %></span>
+        <span style="font-family:var(--font-mono);font-size:0.68rem;color:<%= session.outcome === 'Win' ? 'var(--green)' : session.outcome === 'Loss' ? 'var(--red)' : 'var(--ash)' %>;"><%= labels.outcome(session.outcome) %></span>
       <% } %>
       <span style="font-family:var(--font-mono);font-size:0.6rem;color:var(--text-faint);letter-spacing:0.08em;margin-left:auto;">
         <%= new Date(session.createdAt).toLocaleDateString(({en:'en-US',fr:'fr-FR',zh:'zh-CN',ja:'ja-JP',af:'af-ZA'})[lang]||'en-US',{month:'short',day:'numeric',year:'numeric'}) %>

@@ -16,27 +16,6 @@
       <p style="font-size:0.82rem;color:var(--ash);font-style:italic;"><%= t('goals.sub') %></p>
     </div>
 
-    <% if (suggestions && suggestions.length) { %>
-      <div class="k-card" style="margin-bottom:20px;">
-        <div class="k-panel-title" style="margin-bottom:12px;"><%= t('goals.suggested') %></div>
-        <% suggestions.forEach(function (s) { %>
-          <div style="border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:10px;">
-            <div style="font-weight:700;color:var(--text-primary);margin-bottom:6px;"><%= s.title %></div>
-            <p style="font-size:0.82rem;line-height:1.6;color:var(--ash);margin-bottom:10px;"><%= s.rationale %></p>
-            <form method="POST" action="/goals">
-              <input type="hidden" name="title" value="<%= s.title %>">
-              <input type="hidden" name="metric" value="<%= s.metric %>">
-              <input type="hidden" name="target" value="<%= s.target %>">
-              <input type="hidden" name="unit" value="<%= s.unit %>">
-              <input type="hidden" name="cadence" value="<%= s.cadence %>">
-              <input type="hidden" name="rationale" value="<%= s.rationale %>">
-              <button type="submit" class="k-btn" style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;"><%= t('goals.adopt') %></button>
-            </form>
-          </div>
-        <% }); %>
-      </div>
-    <% } %>
-
     <div class="k-card" style="margin-bottom:20px;">
       <div class="k-panel-title" style="margin-bottom:12px;"><%= t('goals.yours') %></div>
       <% if (!goals.length) { %>

@@ -5,13 +5,21 @@
  *
  * Same contract as the other coaches:
  * - English only. Personal — their numbers, their rule text, their words.
+ *   Guidance answers the goal AS THEY WROTE IT: it quotes their title
+ *   and their why, then checks it against the record (owner directive
+ *   20 Oct 2026: "the guidance should be realistic and not just for
+ *   having a guidance sake").
  * - Goals are behaviour targets, never profit targets. No market
  *   predictions, ever.
+ * - Goals are the trader's own. KAIZEN never proposes or suggests
+ *   goals (owner directive 20 Oct 2026) — it only guides the ones
+ *   they set.
  * - Deterministic fallback without a provider key: the guidance is
  *   computed from the record itself, so tracking always works.
  * - One rule at a time: next steps are doable in the very next session.
  */
 const llm = require('./llm');
+const cleanText = require('./cleanText');
 
 const METRIC_LABELS = {
   RULE_COMPLIANCE: 'sessions inside your rules',
@@ -24,8 +32,9 @@ const METRIC_LABELS = {
 
 /** Prop-firm goals (owner directive 19 Oct 2026): KAIZEN coaches the
  *  discipline and accountability an evaluation measures — NEVER trading
- *  insights, signals, or market opinions. */
-const PROP_FIRM_RE = /\b(prop\s*firm|propfirm|evaluation|challenge|funded|funding|ftmo|the5ers|myforex|e8\s*markets|surge|trueforex|audacity|alpha\s*capital|funded\s*trader|get\s*funded)\b/i;
+ *  insights, signals, or market opinions. The words cover how traders
+ *  actually phrase it ("pass my Naira trader prop account"). */
+const PROP_FIRM_RE = /\b(prop(\s*(firm|account|challenge|evaluation|trader|trading))?|propfirm|evaluation|challenge|funded(\s*(account|trader|trading))?|funding|ftmo|the5ers|myforex|e8\s*markets|surge|trueforex|audacity|alpha\s*capital|funded\s*trader|get\s*funded|stay\s*funded)\b/i;
 
 function isPropFirmGoal(goal) {
   if (!goal) return false;
@@ -35,6 +44,12 @@ function isPropFirmGoal(goal) {
 
 function metricLabel(m) {
   return METRIC_LABELS[m] || METRIC_LABELS.CUSTOM;
+}
+
+/** Their why, in their words — the anchor every assessment quotes. */
+function whyLine(goal) {
+  const why = cleanText(goal && goal.rationale);
+  return why ? ` Your why, exactly as you put it: "${why}".` : '';
 }
 
 function lastSessions(sessions, n) {
@@ -108,82 +123,10 @@ function currentValue(goal, sessions, now = new Date()) {
 }
 
 /**
- * Propose goals from the record. Deterministic, personal.
- * Test pins: "one rule at a time", rationale cites their numbers.
- */
-function suggest({ user, system, sessions, movement, mindState } = {}) {
-  const recent = lastSessions(sessions, 10);
-  const comp = complianceRate(recent);
-  const week = sessionsThisWeek(sessions);
-  const theme = mindState && (mindState.themes || [])
-    .find(t => t.status === 'active' || t.status === 'improving');
-  const rule = (system && (system.entryRules || system.rules) || []).toString().split('\n')[0] || '';
-
-  const out = [];
-
-  if (!recent.length) {
-    out.push({
-      title: 'Log one full loop — plan, record, reflect',
-      metric: 'SESSIONS_PER_WEEK',
-      target: 1,
-      unit: 'sessions',
-      cadence: 'WEEKLY',
-      rationale: 'Nothing has been recorded yet. One complete loop this week is the whole goal — the record starts keeping score after that.'
-    });
-    return out;
-  }
-
-  if (comp.value == null || comp.value < 80) {
-    out.push({
-      title: comp.value == null ? 'Answer the rule question on every session' : 'Keep 8 of your last 10 sessions inside your rules',
-      metric: 'RULE_COMPLIANCE',
-      target: 80,
-      unit: '%',
-      cadence: 'WEEKLY',
-      rationale: comp.value == null
-        ? 'Your sessions are not being measured against the rule question yet — a goal needs a number, and this is the one your engine scores.'
-        : `${comp.kept} of your last ${comp.checked} recorded sessions stayed inside your rules (${comp.value}%). One rule at a time: your entry rule — "${rule || 'the rule you write down before the session'}" — is the one to protect.`
-    });
-  } else {
-    out.push({
-      title: 'Hold 9 of 10 inside your rules',
-      metric: 'RULE_COMPLIANCE',
-      target: 90,
-      unit: '%',
-      cadence: 'WEEKLY',
-      rationale: `${comp.value}% of your recent sessions stayed inside your rules — the discipline is holding. Tighten the standard slowly instead of chasing wins.`
-    });
-  }
-
-  if (week < 3) {
-    out.push({
-      title: 'Run the loop on 3 sessions this week',
-      metric: 'SESSIONS_PER_WEEK',
-      target: 3,
-      unit: 'sessions',
-      cadence: 'WEEKLY',
-      rationale: `You logged ${week} session${week === 1 ? '' : 's'} in the last seven days. The loop compounds when it runs — three honest sessions beat ten rushed ones.`
-    });
-  }
-
-  if (theme) {
-    out.push({
-      title: `Trade 5 sessions without a single ${String(theme.name).toLowerCase()} act`,
-      metric: 'CUSTOM',
-      target: 5,
-      unit: 'sessions',
-      cadence: 'WEEKLY',
-      rationale: `Your Psychology room is still on "${theme.name}" (${theme.status}). The goal is not to feel different — it is to act differently five sessions running.`
-    });
-  }
-
-  return out.slice(0, 3);
-}
-
-/**
  * Guidance for one goal: track it against the record and say how to
- * adapt. Deterministic and personal. Test pins: gap language with
- * their numbers, "one rule at a time".
+ * adapt. Deterministic and personal — it answers the goal in the
+ * trader's own words, not a generic template. Test pins: gap language
+ * with their numbers, "one rule at a time".
  */
 function guide({ goal, user, system, sessions, movement, mindState, now = new Date() } = {}) {
   if (!goal) return { assessment: 'No goal yet.', nextStep: 'Set one small goal — one rule at a time.' };
@@ -192,6 +135,7 @@ function guide({ goal, user, system, sessions, movement, mindState, now = new Da
   const current = currentValue(goal, sessions, now);
   const comp = complianceRate(recent);
   const target = goal.target;
+  const title = cleanText(goal.title) || 'this goal';
 
   let assessment;
   let nextStep;
@@ -201,32 +145,32 @@ function guide({ goal, user, system, sessions, movement, mindState, now = new Da
     const riskNow = currentValue({ metric: 'PROP_FIRM' }, sessions, now);
     const compNow = complianceRate(recent);
     if (riskNow == null) {
-      assessment = `"${goal.title}" is an evaluation goal — and evaluations are passed by discipline, not by ideas: the daily loss limit, the max drawdown, and your own written rules. The record needs sessions with the risk question answered before the tracking is honest.`;
+      assessment = `"${title}" is an evaluation goal — and evaluations are passed by discipline, not by ideas: the daily loss limit, the max drawdown, and your own written rules. The record needs sessions with the risk question answered before the tracking is honest.${whyLine(goal)}`;
       nextStep = 'Log your next session with the risk question answered — inside the limit or not, say so. Accountability starts with one honest entry. One rule at a time.';
     } else {
-      assessment = `"${goal.title}" — funded accounts are earned by staying inside the limits when it hurts: the daily loss limit, the max drawdown, and your own written rules. Your recent record: ${riskNow}% of your checked sessions held those limits${compNow.checked ? ` — ${compNow.kept} of your last ${compNow.checked} stayed inside your rules overall` : ''}. I coach the discipline and accountability your evaluation measures — never what to trade.`;
+      assessment = `"${title}" — funded accounts are earned by staying inside the limits when it hurts: the daily loss limit, the max drawdown, and your own written rules. Your recent record: ${riskNow}% of your checked sessions held those limits${compNow.checked ? ` — ${compNow.kept} of your last ${compNow.checked} stayed inside your rules overall` : ''}. I coach the discipline and accountability your evaluation measures — never what to trade.${whyLine(goal)}`;
       nextStep = goal.metric === 'PROP_FIRM' && goal.target != null && riskNow >= goal.target
-        ? `You are meeting this goal. Hold the standard: pre-set the daily loss limit before the next session and end the day when it hits — that habit is what funding desks actually evaluate. One rule at a time.`
-        : 'In the next session, the job is not profit — it is finishing inside the daily loss limit and your entry rule. Write the plan first, log it either way. One rule at a time.';
+        ? `You are meeting "${title}". Hold the standard: pre-set the daily loss limit before the next session and end the day when it hits — that habit is what funding desks actually evaluate. One rule at a time.`
+        : `In the next session the job is not profit — it is finishing inside the daily loss limit and your entry rule, the two things this goal actually rides on. Write the plan first, log it either way. One rule at a time.`;
     }
     return { assessment, nextStep };
   }
 
   if (current == null || target == null) {
-    assessment = `"${goal.title}" has no readable number yet — the record needs sessions measured against it before guidance can be honest.`;
+    assessment = `"${title}" has no readable number yet — the record needs one honest measurement against it before guidance can be real. ${target != null ? `You set the bar at ${target}${goal.unit || ''}${goal.cadence === 'MONTHLY' ? ' a month' : ' a week'} — the next logged value starts the track.` : 'Log a progress value after each session and the track starts itself.'}${whyLine(goal)}`;
     nextStep = 'Log the next session with the rule question answered, and the tracking starts itself. One rule at a time.';
   } else {
     const gap = Math.round((target - current) * 10) / 10;
     if (gap > 0) {
-      assessment = `You are at ${current}${goal.unit || ''} on "${goal.title}" — ${gap}${goal.unit || ''} short of the ${target}${goal.unit || ''} target.${comp.checked ? ` Behind the number: ${comp.kept} of your last ${comp.checked} recorded sessions stayed inside your rules.` : ''}`;
+      assessment = `You are at ${current}${goal.unit || ''} on "${title}" — ${gap}${goal.unit || ''} short of the ${target}${goal.unit || ''} target.${comp.checked ? ` Behind the number: ${comp.kept} of your last ${comp.checked} recorded sessions stayed inside your rules.` : ''}${whyLine(goal)}`;
       nextStep = goal.metric === 'RULE_COMPLIANCE' && comp.checked
         ? `In the next session, protect exactly one rule — the one written as your entry rule — and log the session either way. One rule at a time closes this gap.`
-        : `Choose the smallest step that moves this number once — in the very next session, not the next month. One rule at a time.`;
+        : `Choose the smallest step that moves "${title}" once — in the very next session, not the next month. One rule at a time.`;
     } else if (goal.status === 'ACHIEVED') {
-      assessment = `"${goal.title}" is marked achieved at ${current}${goal.unit || ''}. The behaviour held — that is the win worth keeping.`;
+      assessment = `"${title}" is marked achieved at ${current}${goal.unit || ''}. The behaviour held — that is the win worth keeping.${whyLine(goal)}`;
       nextStep = 'Keep the same standard for two more weeks before you raise the bar. Steady beats stretched.';
     } else {
-      assessment = `You are at ${current}${goal.unit || ''} against a ${target}${goal.unit || ''} target on "${goal.title}" — the goal is being met.`;
+      assessment = `You are at ${current}${goal.unit || ''} against a ${target}${goal.unit || ''} target on "${title}" — the goal is being met.${whyLine(goal)}`;
       nextStep = 'Hold this standard. If it holds for two more weeks, tighten the target by one step — never by two.';
     }
   }
@@ -238,22 +182,23 @@ function guide({ goal, user, system, sessions, movement, mindState, now = new Da
 function buildGuidePrompt({ goal, user, system, sessions, movement, mindState }) {
   return `You are KAIZEN, the goal coach inside a trader's improvement journal. English only.
 
-VOICE: second person, their numbers and their words, warm and honest. Goals are behaviour targets — never profit targets. No market predictions, no trading insights, no signals, no market opinions — for prop-firm goals KAIZEN coaches ONLY the discipline and accountability the evaluation measures (daily loss limit, max drawdown, consistency, the trader's own written rules). One rule at a time: the next step must be doable in the very next session.
+VOICE: second person, their numbers and their words, warm and honest. Goals are behaviour targets — never profit targets. No market predictions, no trading insights, no signals, no market opinions — for prop-firm goals KAIZEN coaches ONLY the discipline and accountability the evaluation measures (daily loss limit, max drawdown, consistency, the trader's own written rules). One rule at a time: the next step must be doable in the very next session. No asterisks, no markdown.
 
 GOAL: ${goal.title} (metric: ${goal.metric}, target: ${goal.target}${goal.unit || ''}, cadence: ${goal.cadence}, status: ${goal.status})
+THEIR WHY, AS THEY WROTE IT: ${goal.rationale || 'not written'}
 RECENT SESSIONS:
 ${lastSessions(sessions, 10).map(s => `- [${s.sessionType || 'LIVE'}] rules:${s.ruleCompliance === false ? 'BROKEN' : 'kept'} :: ${(s.notes || '').slice(0, 100)}`).join('\n') || 'None yet.'}
 
-Write exactly this shape:
+Write exactly this shape — answer THIS goal in the trader's own words, never a template that could fit any goal:
 
-ASSESSMENT: one short paragraph tracking the goal against the record.
+ASSESSMENT: one short paragraph tracking the goal against the record. Quote the goal's title and their why; cite one real number from their record.
 NEXT: one concrete next step for the very next session.`;
 }
 
 function parseGuide(text) {
   const src = String(text || '');
-  const assessment = (src.match(/ASSESSMENT:\s*([\s\S]*?)(?=\n\s*NEXT:)/) || [])[1]?.trim() || '';
-  const nextStep = (src.match(/NEXT:\s*([\s\S]*?)$/) || [])[1]?.trim() || '';
+  const assessment = cleanText((src.match(/ASSESSMENT:\s*([\s\S]*?)(?=\n\s*NEXT:)/) || [])[1] || '');
+  const nextStep = cleanText((src.match(/NEXT:\s*([\s\S]*?)$/) || [])[1] || '');
   return { assessment, nextStep };
 }
 
@@ -274,7 +219,6 @@ async function guideAsync(ctx) {
 
 module.exports = {
   isPropFirmGoal,
-  suggest,
   guide,
   guideAsync,
   buildGuidePrompt,

@@ -51,10 +51,10 @@
             </div>
             <div style="flex:1;min-width:0;">
               <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-                <span class="k-chip" style="padding:3px 9px;font-size:0.52rem;"><%= s.state %></span>
-                <span class="k-type-tag k-type-tag--<%= String(s.sessionType||'LIVE').toLowerCase() %>"><%= s.sessionType || 'LIVE' %></span>
+                <span class="k-chip" style="padding:3px 9px;font-size:0.52rem;"><%= labels.state(s.state) %></span>
+                <span class="k-type-tag k-type-tag--<%= String(s.sessionType||'LIVE').toLowerCase() %>"><%= labels.type(s.sessionType || 'LIVE') %></span>
                 <% if (s.outcome && s.outcome !== 'Pending') { %>
-                  <span style="font-family:var(--font-mono);font-size:0.6rem;color:<%= s.outcome === 'Win' ? 'var(--green)' : s.outcome === 'Loss' ? 'var(--red)' : 'var(--ash)' %>;"><%= s.outcome.toUpperCase() %></span>
+                  <span style="font-family:var(--font-mono);font-size:0.6rem;color:<%= s.outcome === 'Win' ? 'var(--green)' : s.outcome === 'Loss' ? 'var(--red)' : 'var(--ash)' %>;"><%= labels.outcome(s.outcome) %></span>
                 <% } %>
               </div>
               <div style="font-size:0.82rem;color:var(--text-secondary);margin-top:7px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">

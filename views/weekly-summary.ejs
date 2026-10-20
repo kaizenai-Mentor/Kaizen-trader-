@@ -54,7 +54,7 @@
       <div class="k-typerow">
         <% ['LIVE','BACKTEST','STUDY'].forEach(function(ty){ %>
           <div class="k-typecard-stat">
-            <span class="k-type-tag k-type-<%= ty.toLowerCase() %>"><%= ty %></span>
+            <span class="k-type-tag k-type-<%= ty.toLowerCase() %>"><%= labels.type(ty) %></span>
             <span class="k-typecard-num"><%= stats.byType[ty] %></span>
             <span class="k-typecard-cap"><%= t('word.session') %><%= stats.byType[ty] === 1 ? '' : 's' %></span>
           </div>
@@ -126,7 +126,7 @@
         <div class="k-badgegrid">
           <% earned.forEach(function(b){ %>
             <div class="k-badgecell">
-              <span class="k-badgename"><%= b.name %></span>
+              <span class="k-badgename"><%= labels.badge(b.name) %></span>
               <span class="k-badgedate"><%= b.earnedAt ? new Date(b.earnedAt).toLocaleDateString(({en:'en-US',fr:'fr-FR',zh:'zh-CN',ja:'ja-JP',af:'af-ZA'})[lang]||'en-US',{month:'short',day:'numeric'}) : '' %></span>
             </div>
           <% }); %>
