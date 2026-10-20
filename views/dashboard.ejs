@@ -24,6 +24,18 @@
       </div>
     </div>
 
+    <% if (typeof goalsDue !== 'undefined' && goalsDue && goalsDue.length) { %>
+      <section class="k-card" style="border-left:3px solid var(--gold);margin-bottom:4px;">
+        <div class="k-panel-title" style="margin-bottom:6px;"><span class="k-kanji k-kanji--sm">記</span> <%= t('dash.feedbackDue') %></div>
+        <p style="font-size:0.84rem;line-height:1.7;color:var(--text-primary);margin-bottom:8px;"><%= t('dash.feedbackDueSub') %></p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <% goalsDue.forEach(function (g) { %>
+            <a href="/goals/<%= g._id %>" class="k-chip" style="padding:5px 11px;font-size:0.6rem;text-decoration:none;"><%= g.title %></a>
+          <% }); %>
+        </div>
+      </section>
+    <% } %>
+
     <div class="k-cockpit-grid">
 
       <!-- ═══ THE SCORE INSTRUMENT ═══ -->

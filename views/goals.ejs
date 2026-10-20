@@ -28,6 +28,7 @@
             <div style="font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--ash);margin-top:3px;"><%= g.metric %> <% if (g.target != null) { %>· <%= t('goals.target') %> <%= g.target %><%= g.unit || '' %><% } %> · <%= g.cadence %></div>
           </div>
           <span class="k-chip" style="padding:3px 9px;font-size:0.52rem;"><%= g.status %></span>
+          <% if (g.dueToday) { %><span class="k-chip" style="padding:3px 9px;font-size:0.52rem;border-color:var(--gold);color:var(--gold);"><%= t('goals.feedbackDue') %></span><% } else if (g.status === 'ACTIVE') { %><span class="k-chip" style="padding:3px 9px;font-size:0.52rem;"><%= t('goals.loggedToday') %></span><% } %>
         </a>
       <% }); %>
     </div>

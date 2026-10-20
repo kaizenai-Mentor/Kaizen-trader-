@@ -182,3 +182,42 @@ test('KAIZEN replies never ship asterisks', () => {
   const view = read('views/kaizen-ai.ejs');
   assert.match(view, /ev\.final != null && live/, 'live bubble swaps to the clean final');
 });
+
+// ── Fourth pass (owner feedback on My Goals, 21 Oct 2026): journaling
+//    feedback replaces log-progress, adapt is gone, daily reminder. ──
+test('goal detail = guidance + journaling feedback + status, no adapt', () => {
+  const view = read('views/goal-detail.ejs');
+  assert.ok(/\/goals\/<%= goal\._id %>\/feedback/.test(view), 'feedback form action');
+  assert.match(view, /textarea name="note"/, 'journaling-style textarea');
+  assert.ok(!/\/adapt/.test(view), 'adapt card still on the page');
+  assert.ok(!/\/log/.test(view), 'old log form still on the page');
+  const ctrl = read('controllers/goalsController.js');
+  assert.match(ctrl, /postFeedback/);
+  assert.ok(!/postAdapt/.test(ctrl), 'postAdapt removed');
+  assert.ok(!/async function postLog/.test(ctrl), 'postLog renamed');
+  const srv = read('server.js');
+  assert.ok(/\/goals\/:id\/feedback/.test(srv), 'feedback route');
+  assert.ok(!/\/goals\/:id\/adapt/.test(srv), 'adapt route removed');
+  assert.ok(!/\/goals\/:id\/log\b/.test(srv), 'log route removed');
+  const en = require('../config/locales').dictionaries.en;
+  assert.strictEqual(en['goals.feedback'], 'Daily feedback');
+  assert.strictEqual(en['goals.adapt'], undefined, 'stale adapt key');
+  assert.strictEqual(en['goals.log'], undefined, 'stale log key');
+  assert.strictEqual(en['goals.statusCard'], 'Status');
+});
+
+test('daily reminder: cockpit strip + goals-list chip from one due rule', () => {
+  const dash = read('views/dashboard.ejs');
+  assert.match(dash, /typeof goalsDue !== 'undefined' && goalsDue && goalsDue\.length/, 'cockpit strip guarded');
+  assert.match(dash, /dash\.feedbackDue/);
+  const goals = read('views/goals.ejs');
+  assert.match(goals, /g\.dueToday/, 'per-goal due chip');
+  assert.match(goals, /goals\.feedbackDue/);
+  const ctrl = read('controllers/goalsController.js');
+  assert.match(ctrl, /dueToday: goalCoach\.feedbackDueToday\(g\)/, 'list reads the shared rule');
+  const dashCtrl = read('controllers/dashboardController.js');
+  assert.match(dashCtrl, /goalCoach\.feedbackDueToday\(g\)/, 'cockpit reads the shared rule');
+  const en = require('../config/locales').dictionaries.en;
+  assert.ok(en['dash.feedbackDue'] && en['dash.feedbackDueSub'], 'reminder copy');
+  assert.ok(en['goals.loggedToday'] && en['goals.feedbackDue'], 'list chip copy');
+});
