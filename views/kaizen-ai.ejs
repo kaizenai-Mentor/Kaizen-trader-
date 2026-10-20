@@ -123,7 +123,7 @@
   <script>
     (function () {
       var input = document.getElementById('ai-input');
-      var send = document.getElementById('ai-send');
+      var sendBtn = document.getElementById('ai-send');
       var typing = document.getElementById('typing');
       var log = document.getElementById('chatlog');
       var fileInput = document.getElementById('chart-file');
@@ -194,7 +194,7 @@
       var busy = false;
       function send(payload) {
         busy = true;
-        send.disabled = true;
+        sendBtn.disabled = true;
         if (threadId && payload.message) addMsg('user', payload.message, !!payload.image);
         if (!payload.message && payload.image && threadId) addMsg('user', '(chart attached)', true);
         input.value = '';
@@ -205,7 +205,7 @@
 
         function finish() {
           busy = false;
-          send.disabled = false;
+          sendBtn.disabled = false;
           if (typing) typing.hidden = true;
           input.focus();
         }
@@ -267,7 +267,7 @@
       }
       function sendQuiz() { if (!busy) send({ message: 'Quiz me on my rules.', mode: 'quiz' }); }
 
-      send.addEventListener('click', sendMsg);
+      sendBtn.addEventListener('click', sendMsg);
       input.addEventListener('keydown', function (e) {
         if (e.key === 'Enter' && !e.shiftKey && window.innerWidth > 760) {
           e.preventDefault();
