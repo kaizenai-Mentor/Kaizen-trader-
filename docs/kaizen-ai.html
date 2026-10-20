@@ -79,7 +79,7 @@
     <div class="popup-section">
       <div class="popup-section-label">Coach</div>
       <a href="kaizen-ai.html" class="popup-item"><span class="popup-item-icon"><i data-feather="message-circle" width="14" height="14"></i></span> KAIZEN AI</a>
-      <a href="goals.html" class="popup-item"><span class="popup-item-icon"><i data-feather="check-circle" width="14" height="14"></i></span> Goals</a>
+      <a href="goals.html" class="popup-item"><span class="popup-item-icon"><i data-feather="check-circle" width="14" height="14"></i></span> My Goals</a>
       <a href="memories.html" class="popup-item"><span class="popup-item-icon"><i data-feather="book-open" width="14" height="14"></i></span> Memories</a>
     </div>
 
@@ -305,7 +305,7 @@
               <div class="k-threadmain">
                 <span class="k-threadtitle">Why did I move my stop?</span>
                 <span class="k-threadmeta">
-                  6messages
+                  6 messages
                   · Oct 20
                 </span>
               </div>
@@ -316,7 +316,7 @@
               <div class="k-threadmain">
                 <span class="k-threadtitle">Backtest vs live gap</span>
                 <span class="k-threadmeta">
-                  4messages
+                  4 messages
                   · Oct 20
                 </span>
               </div>
@@ -327,7 +327,7 @@
               <div class="k-threadmain">
                 <span class="k-threadtitle">Fear of pulling the trigger</span>
                 <span class="k-threadmeta">
-                  8messages
+                  8 messages
                   · Oct 20
                 </span>
               </div>
@@ -338,7 +338,7 @@
               <div class="k-threadmain">
                 <span class="k-threadtitle">Pressure from needing income</span>
                 <span class="k-threadmeta">
-                  5messages
+                  5 messages
                   · Oct 20
                 </span>
               </div>
@@ -468,7 +468,11 @@
               if (live) live.textContent += t;
               scrollBottom();
             },
-            onDone: finish,
+            onDone: function (ev) {
+              // The server ships the final reply asterisk-free — swap it in.
+              if (ev && ev.final != null && live) live.textContent = ev.final;
+              finish();
+            },
             onError: function (msg) {
               if (typing) typing.hidden = true;
               if (live && !live.textContent) {
