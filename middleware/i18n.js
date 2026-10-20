@@ -11,6 +11,7 @@ function i18n(req, res, next) {
   res.locals.lang = 'en';
   res.locals.langs = LANGS;
   res.locals.t = (key, params) => t('en', key, params);
+  res.locals.labels = require('../services/labels');
   next();
 }
 

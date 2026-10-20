@@ -29,7 +29,7 @@
         <div class="k-mindthemes">
           <% mindState.themes.forEach(function(th){ %>
             <div class="k-mindtheme">
-              <span class="k-themechip is-<%= th.status %>"><%= th.status %></span>
+              <span class="k-themechip is-<%= th.status %>"><%= labels.mindStatus(th.status) %></span>
               <span class="k-themename"><%= th.name %></span>
               <span class="k-thememeta"><%= th.occurrences %><%= t('psych.since') %><%= new Date(th.firstSeen).toLocaleDateString(({en:'en-US',fr:'fr-FR',zh:'zh-CN',ja:'ja-JP',af:'af-ZA'})[lang]||'en-US',{month:'short',year:'numeric'}) %></span>
             </div>

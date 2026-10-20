@@ -99,7 +99,7 @@
         <% ['LIVE','BACKTEST','STUDY'].forEach(function(ty){ %>
           <% var tp = typePerf.types[ty]; %>
           <div class="k-typecard-stat">
-            <span class="k-type-tag k-type-<%= ty.toLowerCase() %>"><%= ty %></span>
+            <span class="k-type-tag k-type-<%= ty.toLowerCase() %>"><%= labels.type(ty) %></span>
             <span class="k-typecard-num"><%= tp.count %></span>
             <span class="k-typecard-cap"><%= t('word.session') %><%= tp.count === 1 ? '' : 's' %></span>
             <span class="k-typecard-rate"><%= tp.rate != null ? t('prog.insidePct', { p: tp.rate }) : t('prog.noData') %></span>
@@ -130,7 +130,7 @@
         <div class="k-badgegrid">
           <% badges.forEach(function(b){ %>
             <div class="k-badgecell">
-              <span class="k-badgename"><%= b.name %></span>
+              <span class="k-badgename"><%= labels.badge(b.name) %></span>
               <span class="k-badgedate"><%= b.earnedAt ? new Date(b.earnedAt).toLocaleDateString(({en:'en-US',fr:'fr-FR',zh:'zh-CN',ja:'ja-JP',af:'af-ZA'})[lang]||'en-US',{month:'short',day:'numeric',year:'numeric'}) : '' %></span>
             </div>
           <% }); %>
