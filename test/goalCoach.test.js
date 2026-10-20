@@ -3,12 +3,14 @@
  *
  * Goals are behaviour targets set, tracked and adapted from the
  * trader's own record — personal, English-only, one rule at a time,
- * never profit targets or market predictions.
+ * never profit targets or market predictions. Goals belong to the
+ * trader: KAIZEN guides them and never proposes them (owner directive
+ * 20 Oct 2026).
  */
 const test = require('node:test');
 const assert = require('node:assert');
 const {
-  suggest, guide, parseGuide, currentValue,
+  guide, parseGuide, currentValue,
   complianceRate, sessionsThisWeek, journalStreak
 } = require('../services/goalCoach');
 
@@ -37,35 +39,9 @@ test('metrics compute from the record itself', () => {
   assert.strictEqual(sessionsThisWeek(sessions), 2);
 });
 
-test('suggest: rule goal cites their own numbers and their rule text', () => {
-  const goals = suggest({ user, system, sessions, movement: null, mindState });
-  const ruleGoal = goals.find(g => g.metric === 'RULE_COMPLIANCE');
-  assert.ok(ruleGoal, 'rule-compliance goal expected');
-  assert.strictEqual(ruleGoal.target, 80);
-  assert.match(ruleGoal.rationale, /2 of your last 5 recorded sessions/);
-  assert.ok(ruleGoal.rationale.includes('MSS on 30min after liquidity sweep'), 'must quote their rule');
-  assert.match(ruleGoal.rationale, /One rule at a time/);
-});
-
-test('suggest: low week volume proposes a sessions goal with the count', () => {
-  const goals = suggest({ user, system, sessions, movement: null, mindState: null });
-  const weekGoal = goals.find(g => g.metric === 'SESSIONS_PER_WEEK');
-  assert.ok(weekGoal, 'sessions-per-week goal expected');
-  assert.strictEqual(weekGoal.target, 3);
-  assert.match(weekGoal.rationale, /You logged 2 sessions/);
-});
-
-test('suggest: the active psychology theme becomes a behaviour goal', () => {
-  const goals = suggest({ user, system, sessions, movement: null, mindState });
-  const themeGoal = goals.find(g => /revenge trading/i.test(g.title + g.rationale));
-  assert.ok(themeGoal, 'theme goal expected');
-  assert.strictEqual(themeGoal.metric, 'CUSTOM');
-});
-
-test('suggest: empty record starts with one full loop', () => {
-  const goals = suggest({ user, system: null, sessions: [], movement: null, mindState: null });
-  assert.strictEqual(goals.length, 1);
-  assert.match(goals[0].title, /one full loop/i);
+test('goals are the trader\'s own — KAIZEN never proposes them', () => {
+  const goalCoach = require('../services/goalCoach');
+  assert.strictEqual(goalCoach.suggest, undefined, 'the propose-goals feature is removed on purpose');
 });
 
 test('guide: the gap is stated with their numbers — one rule at a time', () => {
@@ -92,22 +68,42 @@ test('guide: meeting the goal says hold, then tighten by one step', () => {
   assert.match(g.nextStep, /tighten the target by one step — never by two/);
 });
 
-test('guide: a goal without readings asks for one honest measurement', () => {
+test('guide: a goal without readings asks for one honest measurement — in its own words', () => {
   const goal = { title: 'Test goal', metric: 'CUSTOM', target: 5, unit: '', status: 'ACTIVE', progressLog: [] };
   const g = guide({ goal, user, system: null, sessions: [], movement: null, mindState: null });
   assert.match(g.assessment, /no readable number yet/);
+  assert.ok(g.assessment.includes('"Test goal"'), 'guidance must quote the goal as they wrote it');
   assert.match(g.nextStep, /One rule at a time/);
 });
 
-test('goal language stays out of money and predictions', () => {
-  const goals = suggest({ user, system, sessions, movement: null, mindState });
-  const text = goals.map(g => g.title + g.rationale).join(' ');
-  assert.ok(!/\b(profit|pips?|target price|p\/l|win rate)\b/i.test(text), 'no money language in goals');
-  assert.ok(!/\b(buy|sell|long|short)\b/i.test(text), 'no trade directions');
+test('guide: their written why is quoted back in the assessment', () => {
+  const goal = {
+    title: 'Journal every day this month',
+    metric: 'JOURNAL_STREAK', target: 30, unit: 'days', cadence: 'MONTHLY', status: 'ACTIVE',
+    progressLog: [], rationale: 'Be the trader who finishes the month with no hidden sessions.'
+  };
+  const g = guide({ goal, user, system: null, sessions: [], movement: null, mindState: null });
+  assert.ok(g.assessment.includes('Be the trader who finishes the month with no hidden sessions.'),
+    'their rationale must be quoted verbatim: ' + g.assessment);
+  assert.ok(g.assessment.includes('"Journal every day this month"'), 'quote their title');
 });
 
-test('parseGuide reads the ASSESSMENT/NEXT shape', () => {
-  const parsed = parseGuide('ASSESSMENT: You are at 40% on the goal.\nNEXT: Protect one rule in the next session.');
+test('goal language stays out of money and predictions', () => {
+  const goals = [
+    { title: 'Keep 8 of your last 10 sessions inside your rules', metric: 'RULE_COMPLIANCE', target: 80, unit: '%', cadence: 'WEEKLY', status: 'ACTIVE', progressLog: [] },
+    { title: 'Pass my Naira trader prop account', metric: 'CUSTOM', target: null, unit: '', cadence: 'WEEKLY', status: 'ACTIVE', progressLog: [], rationale: 'Get funded and stay funded.' },
+    { title: 'Test goal', metric: 'CUSTOM', target: 5, unit: '', status: 'ACTIVE', progressLog: [] }
+  ];
+  for (const goal of goals) {
+    const g = guide({ goal, user, system, sessions, movement: null, mindState });
+    const text = goal.title + ' ' + (goal.rationale || '') + ' ' + g.assessment + ' ' + g.nextStep;
+    assert.ok(!/\b(pips?|target price|p\/l|win rate|take profit)\b/i.test(text), 'no money language: ' + text);
+    assert.ok(!/\b(buy|sell|long|short)\b(?!\s+of)/i.test(text), 'no trade directions: ' + text);
+  }
+});
+
+test('parseGuide reads the ASSESSMENT/NEXT shape and strips asterisks', () => {
+  const parsed = parseGuide('ASSESSMENT: **You are at 40%** on the goal.\nNEXT: Protect one rule ✳ in the next session.');
   assert.strictEqual(parsed.assessment, 'You are at 40% on the goal.');
   assert.strictEqual(parsed.nextStep, 'Protect one rule in the next session.');
 });
@@ -126,6 +122,9 @@ test('prop-firm goals are recognized by metric or by their words', () => {
   assert.ok(isPropFirmGoal({ metric: 'CUSTOM', title: 'Pass my prop firm challenge' }));
   assert.ok(isPropFirmGoal({ metric: 'CUSTOM', title: 'Get funded this quarter' }));
   assert.ok(isPropFirmGoal({ metric: 'CUSTOM', title: 'Pass the evaluation', rationale: '' }));
+  assert.ok(isPropFirmGoal({ metric: 'CUSTOM', title: 'Pass my Naira trader prop account' }),
+    'traders phrase it their own way — "prop account" counts');
+  assert.ok(isPropFirmGoal({ metric: 'CUSTOM', title: 'Stay funded', rationale: 'Keep the account I earned.' }));
   assert.ok(!isPropFirmGoal({ metric: 'CUSTOM', title: 'Journal every day' }));
 });
 
@@ -141,6 +140,20 @@ test('prop-firm guidance is discipline + accountability, with their numbers', ()
   assert.match(g.assessment, /never what to trade/);
   assert.match(g.assessment, /2 of your last 5/); // their own record stays in the loop
   assert.match(g.nextStep, /One rule at a time/);
+});
+
+test('prop-firm guidance answers the goal in the trader\'s own words', () => {
+  const goal = {
+    title: 'Pass my Naira trader prop account',
+    metric: 'CUSTOM', target: null, unit: '', cadence: 'WEEKLY', status: 'ACTIVE',
+    progressLog: [], rationale: 'Get funded and stay funded.'
+  };
+  const g = guide({ goal, user, system, sessions, movement: null, mindState });
+  const text = g.assessment + ' ' + g.nextStep;
+  assert.ok(text.includes('Pass my Naira trader prop account'), 'must quote their goal: ' + text);
+  assert.ok(text.includes('Get funded and stay funded.'), 'must quote their why: ' + text);
+  assert.match(text, /daily loss limit/);
+  assert.match(text, /discipline|accountab/i);
 });
 
 test('prop-firm guidance never leaks trading insights or signals', () => {

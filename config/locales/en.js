@@ -956,7 +956,6 @@ module.exports = {
   "title.improve": "KAIZEN — Improvement",
   "goals.adapt": "Adapt the goal",
   "goals.addEntry": "Add entry",
-  "goals.adopt": "Adopt this goal",
   "goals.back": "Back to Cockpit",
   "goals.backToList": "All goals",
   "goals.cadenceLabel": "Cadence",

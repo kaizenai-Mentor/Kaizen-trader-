@@ -36,13 +36,12 @@ function userId(req) {
 
 async function getList(req, res) {
   try {
-    const ctx = await loadContext(userId(req));
+    // Goals are the trader's own (owner directive 20 Oct 2026): KAIZEN
+    // never proposes goals here — it only lists and guides what they set.
     const goals = await Goal.find({ userId: userId(req) }).sort({ status: 1, createdAt: -1 }).lean();
-    const suggestions = goalCoach.suggest(ctx);
     res.render('goals', {
       user: req.session.user,
       goals,
-      suggestions,
       metrics: METRICS
     });
   } catch (err) {
