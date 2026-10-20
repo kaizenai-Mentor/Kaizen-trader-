@@ -19,6 +19,21 @@
       </div>
     </div>
 
+    <!-- Your patterns — the emotional/behavioural layer, inside this room -->
+    <section class="k-card">
+      <div class="k-panel-title"><%= t('ai.patterns') %></div>
+      <% if (themes && themes.length) { %>
+        <div class="k-chiprow">
+          <% themes.slice(0, 8).forEach(function(th) { %>
+            <span class="k-chip<%= th.status === 'active' ? ' k-chip--warn' : (th.status === 'improving' ? ' k-chip--good' : '') %>"><%= th.name %> · <%= (typeof labels !== 'undefined' && labels.mindStatus && labels.mindStatus[th.status]) || th.status %></span>
+          <% }); %>
+        </div>
+        <p class="k-fieldhint"><%= t('ai.patternsHint') %></p>
+      <% } else { %>
+        <p class="k-emptyhint"><%= t('ai.patternsNone') %></p>
+      <% } %>
+    </section>
+
     <% if (aiResponse) { %>
     <section class="k-card k-card--featured">
       <div class="k-panel-title"><span class="k-kanji k-kanji--sm">改</span><%= t('ai.latestAnalysis') %></div>
