@@ -22,6 +22,7 @@
 
 const llm = require('./llm');
 const i18n = require('../config/locales');
+const cleanText = require('./cleanText');
 
 const { CRISIS_RE, CRISIS_RESPONSE } = require('./psychCoach');
 
@@ -187,7 +188,8 @@ async function converse({ user, system, sessions, threadMessages = [], userMessa
   if (llm.available() && prepared) {
     try {
       const raw = await llm.callLLM(prepared.systemPrompt, prepared.content, { maxTokens: 700 });
-      return { reply: raw.trim() };
+      // Asterisks never ship (owner directive 20 Oct 2026).
+      return { reply: cleanText(raw) };
     } catch (err) {
       console.error('tradeCoach API error:', err.message);
       // fall through to deterministic

@@ -33,13 +33,13 @@
           <% if (move.overall.same) { %>
             <span class="k-deltachip is-flat"><%= t('prog.firstReading') %></span>
           <% } else if (move.overall.delta > 0) { %>
-            <span class="k-deltachip is-up">▲ +<%= move.overall.delta %><%= t('prog.in30') %></span>
+            <span class="k-deltachip is-up">▲ +<%= move.overall.delta %> <%= t('prog.in30') %></span>
           <% } else if (move.overall.delta < 0) { %>
-            <span class="k-deltachip is-down">▼ <%= move.overall.delta %><%= t('prog.in30') %></span>
+            <span class="k-deltachip is-down">▼ <%= move.overall.delta %> <%= t('prog.in30') %></span>
           <% } else { %>
             <span class="k-deltachip is-flat"><%= t('prog.flat30') %></span>
           <% } %>
-          <span class="k-scoresub"><%= points.length %><%= t('prog.computed') %><%= points.length === 1 ? '' : 's' %><%= t('prog.onRecord') %><a class="k-link" href="/about#kaizen-score"><%= t('dash.howScored') %></a></span>
+          <span class="k-scoresub"><%= points.length %> <%= t('prog.computed') %><%= points.length === 1 ? '' : 's' %> <%= t('prog.onRecord') %><a class="k-link" href="/about#kaizen-score"><%= t('dash.howScored') %></a></span>
         </div>
       </div>
       <% if (points.length >= 2) { %>
@@ -121,11 +121,11 @@
     <section class="k-card">
       <div class="k-panel-title" style="display:flex;align-items:center;justify-content:space-between;">
         <span><%= t('prog.milestones') %></span>
-        <span class="k-milestone-meta"><%= totalSessions %><%= t('word.session') %><%= totalSessions === 1 ? '' : 's' %><%= t('word.total') %></span>
+        <span class="k-milestone-meta"><%= totalSessions %> <%= t('word.session') %><%= totalSessions === 1 ? '' : 's' %> <%= t('word.total') %></span>
       </div>
       <div class="k-milestone-label"><%= nextMilestone.label %></div>
       <div class="k-milestone-track"><span class="k-milestone-fill" data-meter="<%= nextMilestone.progress %>"></span></div>
-      <div class="k-milestone-meta"><% if (nextMilestone.remaining > 0) { %><%= nextMilestone.remaining %><%= t('dash.toGo') %><% } else { %><%= t('dash.reached') %><% } %></div>
+      <div class="k-milestone-meta"><% if (nextMilestone.remaining > 0) { %><%= nextMilestone.remaining %> <%= t('dash.toGo') %><% } else { %><%= t('dash.reached') %><% } %></div>
       <% if (badges.length) { %>
         <div class="k-badgegrid">
           <% badges.forEach(function(b){ %>
@@ -138,28 +138,6 @@
       <% } else { %>
         <div class="k-fieldhint"><%= t('prog.noMilestones') %></div>
       <% } %>
-    </section>
-
-    <!-- ═══ REGION B: COMMUNITY (carried, honest) ═══ -->
-
-    <section class="k-card">
-      <div class="k-panel-title"><%= t('prog.community') %></div>
-      <p class="k-cardsub"><%= t('prog.communityNote') %></p>
-
-      <div class="k-ranktabs">
-        <span class="k-ranktab is-active"><%= t('prog.allTime') %></span>
-      </div>
-      <div class="k-ranktable">
-        <% allTimeLeaders.forEach(function(u, i){ %>
-          <div class="k-rankrow <%= u._id == user.id ? 'is-me' : '' %>">
-            <span class="k-rankpos"><%= i + 1 %></span>
-            <span class="k-rankname"><%= u.username %><% if (u._id == user.id) { %> <span class="k-rankyou"><%= t('prog.you') %></span><% } %></span>
-            <span class="k-rankscore"><%= u.disciplineScore || 0 %></span>
-            <span class="k-rankmeta"><%= u.totalSessions || 0 %> sessions · <%= u.streak || 0 %>◆</span>
-          </div>
-        <% }); %>
-      </div>
-      <div class="k-fieldhint" style="margin-top:12px;"><%= t('prog.weekActive') %><%= weeklyLeaders.length %><%= t('prog.rankNote') %></div>
     </section>
 
   </main>

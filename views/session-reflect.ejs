@@ -30,11 +30,6 @@
     <form action="/dashboard/sessions/<%= session._id %>/reflect" method="POST">
 
       <div class="k-card k-formcard k-prompt">
-        <label class="k-fieldlabel"><%= t('reflect.whatHappened') %></label>
-        <textarea name="whatHappened" class="k-input" rows="3" placeholder="<%= t('reflect.ph1') %>"></textarea>
-      </div>
-
-      <div class="k-card k-formcard k-prompt">
         <label class="k-fieldlabel"><%= t('reflect.followed') %></label>
         <textarea name="followedProcess" class="k-input" rows="3" placeholder="<%= t('reflect.ph2') %>"></textarea>
       </div>

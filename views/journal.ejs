@@ -264,7 +264,7 @@
           <span style="font-weight:700;font-size:0.9rem;color:var(--text-primary);"><%= t('journal.past') %></span>
         </div>
         <span style="font-family:'DM Mono',monospace;font-size:0.58rem;color:var(--ash);letter-spacing:0.1em;text-transform:uppercase;">
-          <%= typeof journals !== 'undefined' ? journals.length : 0 %><%= t('journal.entries') %></span>
+          <%= typeof journals !== 'undefined' ? journals.length : 0 %> <%= t('journal.entries') %></span>
       </div>
 
       <% if (typeof journals !== 'undefined' && journals.length === 0) { %>

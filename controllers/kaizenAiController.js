@@ -82,6 +82,12 @@ async function getThread(req, res) {
     }).lean();
     if (!thread) return res.redirect('/kaizen-ai');
     const ctx = await loadContext(req.session.user.id);
+    // Old threads may hold asterisked replies — clean on the way out.
+    const cleanText = require('../services/cleanText');
+    if (thread.messages) {
+      thread.messages = thread.messages.map(m =>
+        m && m.role === 'kaizen' ? Object.assign({}, m, { text: cleanText(m.text) }) : m);
+    }
     res.render('kaizen-ai', {
       user: req.session.user,
       mode: 'thread',
@@ -131,6 +137,7 @@ async function postAsk(req, res) {
     if (!ctx) return res.status(401).json({ error: 'Not logged in.' });
 
     const tradeCoach = require('../services/tradeCoach');
+    const cleanText = require('../services/cleanText');
 
     // Pattern capture (five layers): every exchange is scanned for the
     // emotional/behavioral layer and written to the MindState, so the
@@ -189,15 +196,15 @@ async function postAsk(req, res) {
           emitted = true;
           send({ type: 'delta', text: chunk });
         }
-        await persist(full.trim());
+        await persist(cleanText(full));
         await capturePatterns();
-        send({ type: 'done', threadId: String(thread._id), messageCount: thread.messageCount });
+        send({ type: 'done', threadId: String(thread._id), messageCount: thread.messageCount, final: cleanText(full) });
       } catch (err) {
         console.error('KAIZEN AI stream error:', err.message);
         if (emitted) {
           try {
-            await persist(full.trim() || '…');
-            send({ type: 'done', threadId: String(thread._id), messageCount: thread.messageCount, partial: true });
+            await persist(cleanText(full) || '…');
+            send({ type: 'done', threadId: String(thread._id), messageCount: thread.messageCount, partial: true, final: cleanText(full) || '…' });
           } catch (e2) {
             send({ type: 'done', partial: true });
           }
