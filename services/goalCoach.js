@@ -46,6 +46,43 @@ function metricLabel(m) {
   return METRIC_LABELS[m] || METRIC_LABELS.CUSTOM;
 }
 
+/** Daily feedback, newest first — the process evidence the coach gauges from. */
+function feedbackLines(goal, n = 5) {
+  const entries = (goal && goal.progressLog) || [];
+  return entries.slice(-Math.max(1, n)).reverse().map(e => {
+    const when = e && e.at ? new Date(e.at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '';
+    const val = e && e.value != null ? `value ${e.value}${(goal && goal.unit) || ''}` : 'no value';
+    return `- [${when}] ${val} :: ${cleanText(e && e.note) || '(no note)'}`;
+  });
+}
+
+/** The reminder rule (owner directive 21 Oct 2026): an ACTIVE goal with
+ *  no feedback entry today is due — the dashboard and the goals list
+ *  both nudge from this one source of truth. */
+function feedbackDueToday(goal, now = new Date()) {
+  if (!goal || goal.status !== 'ACTIVE') return false;
+  const start = new Date(now);
+  start.setHours(0, 0, 0, 0);
+  return !(goal.progressLog || []).some(e => e && e.at && new Date(e.at) >= start);
+}
+
+/** Their feedback appended to the assessment: quote the latest words and
+ *  gauge the movement across entries — that is the accountability loop. */
+function feedbackFoot(goal) {
+  const entries = (goal && goal.progressLog) || [];
+  if (!entries.length) return '';
+  const latest = entries[entries.length - 1];
+  const when = latest && latest.at
+    ? new Date(latest.at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '';
+  const quote = cleanText(latest && latest.note);
+  const values = entries.filter(e => e && e.value != null).map(e => e.value);
+  const move = values.length >= 2 && values[values.length - 1] !== values[0]
+    ? ` Your logged value moved ${values[0]}${goal.unit || ''} \u2192 ${values[values.length - 1]}${goal.unit || ''} across ${values.length} entries.`
+    : '';
+  const said = quote ? ` Your feedback${when ? ` from ${when}` : ''}: \u201C${quote}\u201D.` : '';
+  return `${said}${move}`;
+}
+
 /** Their why, in their words — the anchor every assessment quotes. */
 function whyLine(goal) {
   const why = cleanText(goal && goal.rationale);
@@ -153,7 +190,7 @@ function guide({ goal, user, system, sessions, movement, mindState, now = new Da
         ? `You are meeting "${title}". Hold the standard: pre-set the daily loss limit before the next session and end the day when it hits — that habit is what funding desks actually evaluate. One rule at a time.`
         : `In the next session the job is not profit — it is finishing inside the daily loss limit and your entry rule, the two things this goal actually rides on. Write the plan first, log it either way. One rule at a time.`;
     }
-    return { assessment, nextStep };
+    return { assessment: assessment + feedbackFoot(goal), nextStep };
   }
 
   if (current == null || target == null) {
@@ -175,7 +212,7 @@ function guide({ goal, user, system, sessions, movement, mindState, now = new Da
     }
   }
 
-  return { assessment, nextStep };
+  return { assessment: assessment + feedbackFoot(goal), nextStep };
 }
 
 /** System prompt for the LLM path of goal guidance (structure pins). */
@@ -188,10 +225,12 @@ GOAL: ${goal.title} (metric: ${goal.metric}, target: ${goal.target}${goal.unit |
 THEIR WHY, AS THEY WROTE IT: ${goal.rationale || 'not written'}
 RECENT SESSIONS:
 ${lastSessions(sessions, 10).map(s => `- [${s.sessionType || 'LIVE'}] rules:${s.ruleCompliance === false ? 'BROKEN' : 'kept'} :: ${(s.notes || '').slice(0, 100)}`).join('\n') || 'None yet.'}
+DAILY FEEDBACK (their own words, newest first):
+${feedbackLines(goal).join('\n') || 'None yet.'}
 
 Write exactly this shape — answer THIS goal in the trader's own words, never a template that could fit any goal:
 
-ASSESSMENT: one short paragraph tracking the goal against the record. Quote the goal's title and their why; cite one real number from their record.
+ASSESSMENT: one short paragraph tracking the goal against the record. Quote the goal's title and their why; cite one real number from their record; gauge the process from their daily feedback — if they named an obstacle, acknowledge it in their words.
 NEXT: one concrete next step for the very next session.`;
 }
 
@@ -223,6 +262,8 @@ module.exports = {
   guideAsync,
   buildGuidePrompt,
   parseGuide,
+  feedbackLines,
+  feedbackDueToday,
   currentValue,
   complianceRate,
   sessionsThisWeek,

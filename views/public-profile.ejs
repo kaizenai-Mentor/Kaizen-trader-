@@ -2,9 +2,9 @@
 <html lang="<%= lang %>">
 <head>
   <%- include('partials/head') %>
-  <title><%= t('profile.titlePre') %><%= profileUser.username %><%= t('profile.titleSuf') %></title>
+  <title><%= t('profile.titlePre') %> <%= profileUser.username %><%= t('profile.titleSuf') %></title>
   <meta property="og:title" content="<%= profileUser.username %>'s KAIZEN Discipline Profile">
-  <meta property="og:description" content="Discipline Score: <%= profileUser.disciplineScore %>% | <%= profileUser.totalSessions %><%= t('profile.sessionsLogged') %><%= profileUser.streak %> day streak">
+  <meta property="og:description" content="Discipline Score: <%= profileUser.disciplineScore %>% | <%= profileUser.totalSessions %> <%= t('profile.sessionsLogged') %><%= profileUser.streak %> day streak">
   <meta property="og:url" content="https://kaizen-trader.onrender.com/trader/<%= profileUser.username %>">
 </head>
 <body class="app-page">
@@ -46,7 +46,7 @@
             <h1 style="font-size:1.4rem;font-weight:700;color:var(--text-primary);margin-bottom:4px;">
               <%= profileUser.username %>
             </h1>
-            <div style="font-size:0.75rem;color:var(--ash);"><%= t('profile.member') %><%= new Date(profileUser.memberSince).toLocaleDateString(({en:'en-US',fr:'fr-FR',zh:'zh-CN',ja:'ja-JP',af:'af-ZA'})[lang]||'en-US',{month:'long',year:'numeric'}) %>
+            <div style="font-size:0.75rem;color:var(--ash);"><%= t('profile.member') %> <%= new Date(profileUser.memberSince).toLocaleDateString(({en:'en-US',fr:'fr-FR',zh:'zh-CN',ja:'ja-JP',af:'af-ZA'})[lang]||'en-US',{month:'long',year:'numeric'}) %>
             </div>
           </div>
         </div>

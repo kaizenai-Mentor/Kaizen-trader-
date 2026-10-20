@@ -115,3 +115,70 @@ test('proposals no longer greet with a doubled "My proposal:"', () => {
   );
   assert.strictEqual(parsed.items[0].proposal, 'one honest week. One rule at a time.');
 });
+
+// ── Third pass (owner list, 20 Oct 2026 evening): spacing, asterisks,
+//    My Goals, Sun–Sat weeks, minimal reflect, no community block,
+//    reputation counts the right field. ──
+test('templates never glue labels to their numbers', () => {
+  const glueSites = [
+    ['views/weekly-summary.ejs', /<%= stats\.compliant %> <%= t\('wk\.of'\)%>|<%= stats\.compliant %> <%= t\('wk\.of'\) %> <%= stats\.checked %>/],
+    ['views/weekly-summary.ejs', /<%= stats\.loopCompleted %> <%= t\('wk\.throughLoop'\)/],
+    ['views/dashboard.ejs', /<%= totalSessions %> <%= t\('word\.session'\)/],
+    ['views/dashboard.ejs', /<%= badgeCount %> <%= t\('word\.milestone'\)/],
+    ['views/reputation.ejs', /<%= t\('rep\.basedOn'\) %> <%= totalSessions \|\| 0 %>/],
+    ['views/leaderboard.ejs', /<%= move\.overall\.delta %> <%= t\('prog\.in30'\)/],
+    ['views/journal.ejs', /journals\.length : 0 %> <%= t\('journal\.entries'\)/],
+    ['views/kaizen-ai.ejs', /<%= thr\.messageCount %> <%= t\('ai\.messageWord'\)/],
+    ['views/session-detail.ejs', /<%= session\.asset %> <%= t\('detail\.closed'\)/],
+    ['views/session-record.ejs', /<%= t\('record\.titlePre'\) %> <%= session\.sessionType %>/]
+  ];
+  for (const [file, re] of glueSites) {
+    assert.match(read(file), re, file + ' glued echo pair: ' + re);
+  }
+});
+
+test('reputation counts sessions with the real Journal field', () => {
+  const src = read('controllers/zaController.js');
+  assert.strictEqual((src.match(/countDocuments\(\{ userId: user\._id \}\)/g) || []).length, 2);
+  assert.ok(!/countDocuments\(\{ user: user\._id \}\)/.test(src), 'stale field still present');
+});
+
+test('a week runs Sunday to Saturday', () => {
+  const src = read('controllers/weeklyController.js');
+  assert.match(src, /now\.getDate\(\) - now\.getDay\(\)/, 'backs up to Sunday');
+  assert.match(src, /\$gte: weekStart, \$lt: weekEnd/, 'bounded Sun–Sat window');
+  assert.match(src, /weekStart\.getDate\(\) \+ 6/, 'Saturday endpoint for display');
+});
+
+test('reflect is minimal — the what-happened card is gone', () => {
+  const view = read('views/session-reflect.ejs');
+  assert.ok(!/name="whatHappened"/.test(view), 'what-happened input still on the page');
+  const en = require('../config/locales').dictionaries.en;
+  assert.match(en['reflect.four'], /^Three short answers/);
+});
+
+test('My Progress has no leaderboard block', () => {
+  const view = read('views/leaderboard.ejs');
+  assert.ok(!/prog\.community/.test(view), 'community ranks still rendered');
+  assert.ok(!/REGION B/.test(view), 'region B block still present');
+  const en = require('../config/locales').dictionaries.en;
+  assert.strictEqual(en['goals.h1'], 'My Goals');
+  assert.strictEqual(en['nav.goals'], 'My Goals');
+  assert.strictEqual(en['title.goals'], 'KAIZEN — My Goals');
+  assert.strictEqual(en['goals.suggested'], undefined, 'stale suggestion key');
+  assert.ok(!/adopt a suggestion/.test(en['goals.empty']), 'stale adopt copy');
+});
+
+test('KAIZEN replies never ship asterisks', () => {
+  const cleanText = require('../services/cleanText');
+  assert.strictEqual(cleanText('**Two sessions** broke ✳ a rule'), 'Two sessions broke a rule');
+  const coach = read('services/tradeCoach.js');
+  assert.match(coach, /reply: cleanText\(raw\)/, 'LLM reply cleaned at the source');
+  const ctrl = read('controllers/kaizenAiController.js');
+  assert.match(ctrl, /persist\(cleanText\(full\)\)/, 'stream persisted clean');
+  assert.match(ctrl, /final: cleanText\(full\)/, 'clean final sent to the browser');
+  assert.match(ctrl, /m\.role === 'kaizen' \? Object\.assign\(\{\}, m, \{ text: cleanText\(m\.text\) \}\)/,
+    'stored threads cleaned on render');
+  const view = read('views/kaizen-ai.ejs');
+  assert.match(view, /ev\.final != null && live/, 'live bubble swaps to the clean final');
+});
