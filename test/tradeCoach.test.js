@@ -159,3 +159,29 @@ test('LANGUAGE: the trading room is English-only (owner directive 19 Oct 2026)',
   assert.match(p, /Always reply in English/);
   assert.match(p, /Machine blocks stay in their fixed English format/);
 });
+
+test('KAIZEN AI embodies the core principle, 6-step framework, and plan-revision reasoning', async () => {
+  delete process.env.ANTHROPIC_API_KEY;
+  const { buildSystemPrompt, converse } = require('../services/tradeCoach');
+  const p = buildSystemPrompt({
+    user: tradeUser,
+    system,
+    sessions: [],
+    goals: [{ title: 'Pass my Naira Trader prop account', status: 'ACTIVE', rationale: 'Stay disciplined' }]
+  });
+  assert.match(p, /The trader documents the session\. KAIZEN interprets it\./);
+  assert.match(p, /Understand why the trader made each decision before judging it/);
+  assert.match(p, /INTERNAL 6-STEP COACHING FRAMEWORK/);
+  assert.match(p, /Pass my Naira Trader prop account/);
+
+  const out = await converse({
+    user: tradeUser,
+    system,
+    sessions: [],
+    threadMessages: [],
+    userMessage: 'After studying the weekend structure I observed price failed to break the previous high. I cross checked my bias and switched to a sell.'
+  });
+  assert.match(out.reply, /Your original plan evolved after additional market analysis/);
+  assert.match(out.reply, /disciplined adjustment rather than an emotional deviation/);
+});
+

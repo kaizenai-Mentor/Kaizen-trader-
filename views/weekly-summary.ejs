@@ -120,6 +120,21 @@
     </section>
     <% } %>
 
+    <!-- ═══ EMOTIONAL THEMES & DISCIPLINE TRENDS ═══ -->
+    <section class="k-card">
+      <div class="k-panel-title"><%= t('wk.emotionalThemes') %><span style="margin-left:auto;font-family:var(--font-mono);font-size:0.56rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);white-space:nowrap;"><%= dateRange %></span></div>
+      <% if (typeof themes !== 'undefined' && themes && themes.length) { %>
+        <div class="k-chiprow" style="margin-bottom:10px;">
+          <% themes.slice(0, 6).forEach(function(th) { %>
+            <span class="k-chip<%= th.status === 'active' ? ' k-chip--warn' : (th.status === 'improving' ? ' k-chip--good' : '') %>"><%= th.name %> · <%= (typeof labels !== 'undefined' && labels.mindStatus && labels.mindStatus[th.status]) || th.status %></span>
+          <% }); %>
+        </div>
+      <% } else { %>
+        <p class="k-emptyhint" style="margin-bottom:8px;"><%= t('ai.patternsNone') %></p>
+      <% } %>
+      <div class="k-fieldhint"><%= t('wk.emotionalSub') %></div>
+    </section>
+
     <!-- ═══ MILESTONES THIS WEEK ═══ -->
     <section class="k-card">
       <div class="k-panel-title"><%= t('wk.milestonesWeek') %><span style="margin-left:auto;font-family:var(--font-mono);font-size:0.56rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);white-space:nowrap;"><%= dateRange %></span></div>

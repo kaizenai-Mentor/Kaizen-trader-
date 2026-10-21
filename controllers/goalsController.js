@@ -38,8 +38,16 @@ async function getList(req, res) {
   try {
     // Goals are the trader's own (owner directive 20 Oct 2026): KAIZEN
     // never proposes goals here — it only lists and guides what they set.
-    const goals = (await Goal.find({ userId: userId(req) }).sort({ status: 1, createdAt: -1 }).lean())
-      .map(g => Object.assign(g, { dueToday: goalCoach.feedbackDueToday(g) }));
+    const uid = userId(req);
+    const [rawGoals, ctx] = await Promise.all([
+      Goal.find({ userId: uid }).sort({ status: 1, createdAt: -1 }).lean(),
+      loadContext(uid)
+    ]);
+    const goals = rawGoals.map(g => Object.assign(g, {
+      dueToday: goalCoach.feedbackDueToday(g),
+      current: goalCoach.currentValue(g, ctx.sessions),
+      guidance: goalCoach.guide(Object.assign({ goal: g }, ctx))
+    }));
     res.render('goals', {
       user: req.session.user,
       goals,

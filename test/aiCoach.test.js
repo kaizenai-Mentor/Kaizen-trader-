@@ -78,3 +78,65 @@ test('the record is the teacher: no conclusion without measured behavior', () =>
   assert.match(p, /GROUNDING \(frozen\)/);
   assert.match(p, /never evidence of discipline/);
 });
+
+// ── Deep interpretation & 6-Step Coaching Framework (21 Oct 2026) ──
+
+test('core principle & 6-step coaching framework live in the prompt', () => {
+  const { buildSystemPrompt } = require('../services/aiCoach');
+  const p = buildSystemPrompt({
+    user: { username: 'T' }, system: null,
+    session: { notes: 'test', plan: {}, outcome: 'Win' },
+    recentHistory: '', scoreBrief: ''
+  });
+  assert.match(p, /The trader documents the session\. KAIZEN interprets it\./);
+  assert.match(p, /Understand why the trader made each decision before judging it/);
+  for (const dim of ['chronology', 'causality', 'intention', 'justification', 'discipline', 'emotional context', 'contradictions', 'consistency with previous sessions']) {
+    assert.ok(p.includes(dim), 'missing journal reading dimension: ' + dim);
+  }
+  for (let i = 1; i <= 6; i++) {
+    assert.match(p, new RegExp(`Step ${i} —`), 'missing Step ' + i);
+  }
+});
+
+test('interpretJournal distinguishes a disciplined plan revision from an emotional deviation', () => {
+  const { interpretJournal, buildSessionReview, parseSessionReview, buildFallback } = require('../services/aiCoach');
+
+  // 1. Documented market-structure plan revision (the owner's exact scenario)
+  const revisedSession = {
+    asset: 'EURUSD',
+    sessionType: 'LIVE',
+    plan: { setup: 'Buy break of high', entryCondition: 'Break of previous high', skipped: false },
+    quickChecks: { followedPlan: 'NO', withinEntryCriteria: 'YES', respectedRisk: 'YES' },
+    notes: 'After studying the weekend structure I observed price failed to break the previous high. I cross checked my bias and switched to a sell.'
+  };
+  const revInterp = interpretJournal(revisedSession);
+  assert.strictEqual(revInterp.isPlanRevision, true, 'must recognize documented thesis revision');
+  assert.strictEqual(revInterp.isEmotionalDeviation, false);
+  assert.strictEqual(revInterp.classification, 'DISCIPLINED_PLAN_REVISION');
+
+  const review = buildSessionReview(revisedSession);
+  assert.match(review.summary, /Your original plan evolved after additional market analysis/);
+  assert.match(review.summary, /disciplined adjustment rather than an emotional deviation/);
+  assert.match(review.summary, /continue documenting what invalidated the original thesis/);
+
+  const parsed = parseSessionReview(buildFallback(revisedSession), revisedSession);
+  assert.match(parsed.summary, /disciplined adjustment rather than an emotional deviation/);
+  assert.ok(Array.isArray(parsed.noticed) && parsed.noticed.length >= 3, '3-4 observations in What I noticed');
+  assert.ok(parsed.concerns.length > 10, 'What concerns me populated');
+  assert.ok(parsed.didWell.length > 10, 'What you did well populated');
+  assert.ok(parsed.nextImprovement.length > 10, 'Your next improvement populated');
+
+  // 2. Emotional / impulsive direction change is NOT treated as a disciplined revision
+  const emotionalSession = {
+    asset: 'EURUSD',
+    sessionType: 'LIVE',
+    plan: { setup: 'Buy break of high', skipped: false },
+    quickChecks: { followedPlan: 'NO', withinEntryCriteria: 'NO', respectedRisk: 'NO' },
+    notes: 'Planned a buy, got frustrated after a red candle and impulsively switched to a revenge sell and moved my stop.'
+  };
+  const emoInterp = interpretJournal(emotionalSession);
+  assert.strictEqual(emoInterp.isPlanRevision, false, 'emotional impulse is never a plan revision');
+  assert.strictEqual(emoInterp.isEmotionalDeviation, true);
+  assert.strictEqual(emoInterp.classification, 'EMOTIONAL_DEVIATION');
+});
+

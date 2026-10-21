@@ -108,6 +108,7 @@ async function getWeekly(req, res) {
       letterCached,
       earned,
       rec,
+      themes: (mindState && mindState.themes) || [],
       dateRange,
       streak: user.streak || 0,
       weekStart,
