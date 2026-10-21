@@ -30,65 +30,103 @@
     <h1 style="font-size:clamp(1.4rem,3vw,2rem);font-weight:700;color:var(--text-primary);margin:0 0 20px;">
       <%= session.asset %> <%= t('detail.closed') %></h1>
 
-    <div style="display:grid;grid-template-columns:1.25fr 0.75fr;gap:14px;align-items:start;" class="k-detail-grid">
+    <%
+      var rev = (typeof review !== 'undefined' && review) ? review : null;
+      var noticedList = (rev && Array.isArray(rev.noticed) && rev.noticed.length) ? rev.noticed : [];
+    %>
 
-      <!-- LEFT: the coach's response -->
-      <div class="k-card k-card--featured">
-        <div class="k-panel-title" style="margin-bottom:16px;"><span class="k-kanji k-kanji--sm">改</span><%= t('kaizen.responds') %></div>
-        <div style="font-size:0.9rem;color:var(--text-primary);line-height:1.85;white-space:pre-wrap;"><%= session.aiAnalysis %></div>
+    <div style="display:grid;grid-template-columns:1.35fr 0.65fr;gap:16px;align-items:start;" class="k-detail-grid">
+
+      <!-- LEFT: the coach's conversational review -->
+      <div class="k-card k-card--featured" style="padding:24px;">
+        <div class="k-panel-title" style="margin-bottom:20px;"><span class="k-kanji k-kanji--sm">改</span><%= t('kaizen.responds') %></div>
+
+        <% if (rev) { %>
+          <!-- 1. Session Summary -->
+          <div style="padding-bottom:18px;border-bottom:1px solid var(--border);margin-bottom:18px;">
+            <div style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold);margin-bottom:8px;"><%= t('detail.sessionSummary') %></div>
+            <p style="font-size:0.94rem;color:var(--text-primary);line-height:1.8;margin:0;"><%= rev.summary %></p>
+          </div>
+
+          <!-- 2. What I noticed -->
+          <div style="padding-bottom:18px;border-bottom:1px solid var(--border);margin-bottom:18px;">
+            <div style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--ash);margin-bottom:10px;"><%= t('detail.whatINoticed') %></div>
+            <ul style="margin:0;padding-left:18px;display:flex;flex-direction:column;gap:8px;">
+              <% noticedList.forEach(function(obs) { %>
+                <li style="font-size:0.88rem;color:var(--text-primary);line-height:1.75;"><%= obs %></li>
+              <% }); %>
+            </ul>
+          </div>
+
+          <!-- 3. What concerns me -->
+          <div style="padding-bottom:18px;border-bottom:1px solid var(--border);margin-bottom:18px;">
+            <div style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--red, #e06c75);margin-bottom:8px;"><%= t('detail.whatConcernsMe') %></div>
+            <p style="font-size:0.88rem;color:var(--text-primary);line-height:1.78;margin:0;"><%= rev.concerns %></p>
+          </div>
+
+          <!-- 4. What you did well -->
+          <div style="padding-bottom:18px;border-bottom:1px solid var(--border);margin-bottom:18px;">
+            <div style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--green, #4ec9b0);margin-bottom:8px;"><%= t('detail.whatYouDidWell') %></div>
+            <p style="font-size:0.88rem;color:var(--text-primary);line-height:1.78;margin:0;"><%= rev.didWell %></p>
+          </div>
+
+          <!-- 5. Your next improvement (ONE clear action) -->
+          <div style="border-left:2px solid var(--gold);padding-left:14px;">
+            <div style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold);margin-bottom:6px;"><%= t('detail.yourNextImprovement') %></div>
+            <p style="font-size:0.92rem;font-weight:500;color:var(--text-primary);line-height:1.78;margin:0;"><%= rev.nextImprovement %></p>
+          </div>
+        <% } else { %>
+          <div style="font-size:0.9rem;color:var(--text-primary);line-height:1.85;white-space:pre-wrap;"><%= session.aiAnalysis %></div>
+        <% } %>
       </div>
 
-      <!-- RIGHT: the engine's numbers -->
-      <% if (score) { %>
-        <div class="k-card k-card--elevated">
-          <div class="k-metric-label" style="margin-bottom:14px;"><%= t('detail.engine') %></div>
-          <% if (score.overall !== null && score.overall !== undefined) { %>
-            <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:16px;">
-              <span style="font-family:var(--font-mono);font-size:2.4rem;color:var(--gold);font-weight:500;line-height:1;"><%= score.overall %></span>
-              <span style="font-family:var(--font-mono);font-size:0.58rem;letter-spacing:0.14em;color:var(--text-faint);">KAIZEN SCORE</span>
-            </div>
-            <% if (score.overallState === 'PARTIAL') { %>
-              <div class="k-fieldhint" style="margin-bottom:12px;"><%= t('detail.partialEst') %></div>
-            <% } %>
-            <div class="k-meters">
-              <% ['process','risk','execution','behavior','learning'].forEach(function(k){ %>
-                <% var d = score.dimensions && score.dimensions[k]; if (d && d.score !== null && d.score !== undefined) { %>
-                  <div class="k-meter" data-meter="<%= d.score %>">
-                    <span class="k-meter-label"><%= dimensionLabels[k] %></span>
-                    <span class="k-meter-track"><span class="k-meter-fill"></span></span>
-                    <span class="k-meter-value"><%= d.score %></span>
-                  </div>
-                <% } %>
-              <% }); %>
-            </div>
-            <% var anyReasons = ['process','risk','execution','behavior','learning'].some(function(k){ return score.dimensions && score.dimensions[k] && score.dimensions[k].reasons && score.dimensions[k].reasons.length; }); %>
-            <% if (anyReasons) { %>
-              <div style="border-top:1px solid var(--border);margin-top:16px;padding-top:14px;">
-                <div class="k-metric-label" style="margin-bottom:10px;">WHY</div>
+      <!-- RIGHT: the engine's numbers + session record -->
+      <div>
+        <% if (score) { %>
+          <div class="k-card k-card--elevated" style="margin-bottom:14px;">
+            <div class="k-metric-label" style="margin-bottom:14px;"><%= t('detail.engine') %></div>
+            <% if (score.overall !== null && score.overall !== undefined) { %>
+              <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:16px;">
+                <span style="font-family:var(--font-mono);font-size:2.4rem;color:var(--gold);font-weight:500;line-height:1;"><%= score.overall %></span>
+                <span style="font-family:var(--font-mono);font-size:0.58rem;letter-spacing:0.14em;color:var(--text-faint);">KAIZEN SCORE</span>
+              </div>
+              <% if (score.overallState === 'PARTIAL') { %>
+                <div class="k-fieldhint" style="margin-bottom:12px;"><%= t('detail.partialEst') %></div>
+              <% } %>
+              <div class="k-meters">
                 <% ['process','risk','execution','behavior','learning'].forEach(function(k){ %>
-                  <% var d = score.dimensions && score.dimensions[k]; if (d && d.reasons && d.reasons.length) { %>
-                    <p style="font-size:0.76rem;color:var(--text-secondary);line-height:1.7;margin:0 0 8px;">
-                      <span class="k-gold" style="font-family:var(--font-mono);font-size:0.62rem;"><%= dimensionLabels[k].toUpperCase() %></span> — <%= d.reasons[0] %>
-                    </p>
+                  <% var d = score.dimensions && score.dimensions[k]; if (d && d.score !== null && d.score !== undefined) { %>
+                    <div class="k-meter" data-meter="<%= d.score %>">
+                      <span class="k-meter-label"><%= dimensionLabels[k] %></span>
+                      <span class="k-meter-track"><span class="k-meter-fill"></span></span>
+                      <span class="k-meter-value"><%= d.score %></span>
+                    </div>
                   <% } %>
                 <% }); %>
               </div>
+            <% } else { %>
+              <p style="font-size:0.82rem;color:var(--text-secondary);line-height:1.75;margin:0;"><%= t('detail.baseline') %></p>
             <% } %>
-          <% } else { %>
-            <p style="font-size:0.82rem;color:var(--text-secondary);line-height:1.75;margin:0;"><%= t('detail.baseline') %></p>
-          <% } %>
-          <div style="border-top:1px solid var(--border);margin-top:14px;padding-top:12px;">
-            <a href="/dashboard" style="font-family:var(--font-mono);font-size:0.62rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);text-decoration:underline;"><%= t('detail.howScored') %></a>
+            <div style="border-top:1px solid var(--border);margin-top:14px;padding-top:12px;">
+              <a href="/dashboard" style="font-family:var(--font-mono);font-size:0.62rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);text-decoration:underline;"><%= t('detail.howScored') %></a>
+            </div>
           </div>
+        <% } %>
+
+        <!-- What you documented -->
+        <div class="k-card">
+          <div class="k-metric-label" style="margin-bottom:8px;"><%= t('detail.yourRecord') %></div>
+          <div style="font-size:0.84rem;color:var(--text-secondary);line-height:1.78;white-space:pre-wrap;"><%= session.notes %></div>
+          <% if (session.reflection && (session.reflection.learned || session.reflection.wouldChange)) { %>
+            <div style="border-top:1px solid var(--border);margin-top:12px;padding-top:12px;">
+              <div class="k-metric-label" style="margin-bottom:8px;"><%= t('detail.yourReflection') %></div>
+              <% if (session.reflection.learned) { %><p style="font-size:0.82rem;color:var(--text-secondary);line-height:1.7;margin:0 0 6px;"><span class="k-gold"><%= t('detail.learned') %></span> <%= session.reflection.learned %></p><% } %>
+              <% if (session.reflection.wouldChange) { %><p style="font-size:0.82rem;color:var(--text-secondary);line-height:1.7;margin:0;"><span class="k-gold"><%= t('detail.wouldChange') %></span> <%= session.reflection.wouldChange %></p><% } %>
+            </div>
+          <% } %>
         </div>
-      <% } %>
+      </div>
 
-    </div>
-
-    <!-- The record + reflection, for the record -->
-    <div class="k-card" style="margin-top:14px;">
-      <div class="k-metric-label" style="margin-bottom:10px;"><%= t('detail.yourRecord') %></div>
-      <div style="font-size:0.86rem;color:var(--text-secondary);line-height:1.85;white-space:pre-wrap;"><%= session.notes %></div>
     </div>
 
     <% if (session.hasChartImage) { %>
@@ -98,15 +136,6 @@
         <img src="/dashboard/sessions/<%= session._id %>/chart-image" alt="<%= t('detail.theChart') %>"
              style="width:100%;max-height:520px;object-fit:contain;border:1px solid var(--border);background:rgba(0,0,0,0.2);">
         <p style="font-size:0.72rem;color:var(--ash);margin:10px 0 0;"><%= t('detail.chartCaption') %></p>
-      </div>
-    <% } %>
-
-    <% if (session.reflection && (session.reflection.learned || session.reflection.wouldChange)) { %>
-      <div class="k-card" style="margin-top:14px;">
-        <div class="k-metric-label" style="margin-bottom:10px;"><%= t('detail.yourReflection') %></div>
-        <% if (session.reflection.whatHappened) { %><p style="font-size:0.84rem;color:var(--text-secondary);line-height:1.8;margin:0 0 10px;"><span class="k-gold"><%= t('detail.whatHappened') %></span> <%= session.reflection.whatHappened %></p><% } %>
-        <% if (session.reflection.learned) { %><p style="font-size:0.84rem;color:var(--text-secondary);line-height:1.8;margin:0 0 10px;"><span class="k-gold"><%= t('detail.learned') %></span> <%= session.reflection.learned %></p><% } %>
-        <% if (session.reflection.wouldChange) { %><p style="font-size:0.84rem;color:var(--text-secondary);line-height:1.8;margin:0;"><span class="k-gold"><%= t('detail.wouldChange') %></span> <%= session.reflection.wouldChange %></p><% } %>
       </div>
     <% } %>
 

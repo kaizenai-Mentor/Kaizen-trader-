@@ -221,3 +221,55 @@ test('daily reminder: cockpit strip + goals-list chip from one due rule', () => 
   assert.ok(en['dash.feedbackDue'] && en['dash.feedbackDueSub'], 'reminder copy');
   assert.ok(en['goals.loggedToday'] && en['goals.feedbackDue'], 'list chip copy');
 });
+
+// ── Fifth pass (owner product philosophy, 21 Oct 2026):
+//    1. Conversational Session Review (Session Summary, What I noticed,
+//       What concerns me, What you did well, Your next improvement).
+//    2. Pre-session Coach Meeting on My Goals (Your Goal, What you're
+//       doing well, Your biggest obstacle, Today's focus).
+//    3. Weekly Review includes Emotional Themes & Discipline Trends. ──
+test('session detail renders the 5-part conversational coaching review', () => {
+  const view = read('views/session-detail.ejs');
+  for (const key of [
+    'detail.sessionSummary',
+    'detail.whatINoticed',
+    'detail.whatConcernsMe',
+    'detail.whatYouDidWell',
+    'detail.yourNextImprovement'
+  ]) {
+    assert.ok(view.includes(key), 'session-detail missing ' + key);
+  }
+  const en = require('../config/locales').dictionaries.en;
+  assert.strictEqual(en['detail.sessionSummary'], 'Session Summary');
+  assert.strictEqual(en['detail.whatINoticed'], 'What I noticed');
+  assert.strictEqual(en['detail.whatConcernsMe'], 'What concerns me');
+  assert.strictEqual(en['detail.whatYouDidWell'], 'What you did well');
+  assert.strictEqual(en['detail.yourNextImprovement'], 'Your next improvement');
+});
+
+test('My Goals renders the pre-session coach meeting layout', () => {
+  const detail = read('views/goal-detail.ejs');
+  const list = read('views/goals.ejs');
+  for (const key of [
+    'goals.yourGoal',
+    'goals.whatDoingWell',
+    'goals.biggestObstacle',
+    'goals.todaysFocus'
+  ]) {
+    assert.ok(detail.includes(key), 'goal-detail missing ' + key);
+    assert.ok(list.includes(key), 'goals list missing ' + key);
+  }
+  const en = require('../config/locales').dictionaries.en;
+  assert.strictEqual(en['goals.yourGoal'], 'Your Goal');
+  assert.strictEqual(en['goals.whatDoingWell'], "What you're doing well");
+  assert.strictEqual(en['goals.biggestObstacle'], 'Your biggest obstacle');
+  assert.strictEqual(en['goals.todaysFocus'], "Today's focus");
+});
+
+test('Weekly Review surfaces emotional themes & discipline trends alongside compliance and progress', () => {
+  const wk = read('views/weekly-summary.ejs');
+  assert.ok(wk.includes("t('wk.emotionalThemes')"), 'weekly view missing emotional themes card');
+  const ctrl = read('controllers/weeklyController.js');
+  assert.match(ctrl, /themes:\s*\(mindState && mindState\.themes\)/, 'weekly controller passes themes');
+});
+

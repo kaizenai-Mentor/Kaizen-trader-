@@ -1,22 +1,23 @@
 /**
- * services/goalCoach.js — Goal Guidance (owner directive 19 Oct 2026):
- * AI assistance for setting, tracking and adapting trading improvement
- * goals over time.
+ * services/goalCoach.js — Goal Guidance & Pre-Session Coaching
+ * (owner directives 19–21 Oct 2026):
  *
- * Same contract as the other coaches:
+ * Instead of reading like a dry AI report, My Goals feels like your
+ * coach meeting you before today's trading session:
+ *   - Your Goal (target, reason, current pattern, progress)
+ *   - What you're doing well
+ *   - Your biggest obstacle (blockers)
+ *   - Today's focus (next action: protect discipline, not profits)
+ *
+ * Contract:
  * - English only. Personal — their numbers, their rule text, their words.
- *   Guidance answers the goal AS THEY WROTE IT: it quotes their title
- *   and their why, then checks it against the record (owner directive
- *   20 Oct 2026: "the guidance should be realistic and not just for
- *   having a guidance sake").
  * - Goals are behaviour targets, never profit targets. No market
  *   predictions, ever.
  * - Goals are the trader's own. KAIZEN never proposes or suggests
  *   goals (owner directive 20 Oct 2026) — it only guides the ones
  *   they set.
- * - Deterministic fallback without a provider key: the guidance is
- *   computed from the record itself, so tracking always works.
- * - One rule at a time: next steps are doable in the very next session.
+ * - Prop-firm goals: discipline and accountability ONLY — never trading
+ *   insights, signals, or market opinions.
  */
 const llm = require('./llm');
 const cleanText = require('./cleanText');
@@ -32,8 +33,7 @@ const METRIC_LABELS = {
 
 /** Prop-firm goals (owner directive 19 Oct 2026): KAIZEN coaches the
  *  discipline and accountability an evaluation measures — NEVER trading
- *  insights, signals, or market opinions. The words cover how traders
- *  actually phrase it ("pass my Naira trader prop account"). */
+ *  insights, signals, or market opinions. */
 const PROP_FIRM_RE = /\b(prop(\s*(firm|account|challenge|evaluation|trader|trading))?|propfirm|evaluation|challenge|funded(\s*(account|trader|trading))?|funding|ftmo|the5ers|myforex|e8\s*markets|surge|trueforex|audacity|alpha\s*capital|funded\s*trader|get\s*funded|stay\s*funded)\b/i;
 
 function isPropFirmGoal(goal) {
@@ -95,7 +95,7 @@ function lastSessions(sessions, n) {
 
 /** Checked = sessions where the rule question was answered. */
 function complianceRate(sessions) {
-  const checked = sessions.filter(s => s && s.ruleCompliance === true || s && s.ruleCompliance === false);
+  const checked = (sessions || []).filter(s => s && (s.ruleCompliance === true || s.ruleCompliance === false));
   if (!checked.length) return { value: null, kept: 0, checked: 0 };
   const kept = checked.filter(s => s.ruleCompliance === true).length;
   return { value: Math.round((kept / checked.length) * 100), kept, checked: checked.length };
@@ -103,7 +103,7 @@ function complianceRate(sessions) {
 
 function sessionsThisWeek(sessions, now = new Date()) {
   const weekAgo = new Date(now.getTime() - 7 * 864e5);
-  return sessions.filter(s => s && s.createdAt && new Date(s.createdAt) >= weekAgo).length;
+  return (sessions || []).filter(s => s && s.createdAt && new Date(s.createdAt) >= weekAgo).length;
 }
 
 function journalStreak(sessions, now = new Date()) {
@@ -116,7 +116,6 @@ function journalStreak(sessions, now = new Date()) {
     const key = cursor.toISOString().slice(0, 10);
     if (days.has(key)) { streak++; cursor.setUTCDate(cursor.getUTCDate() - 1); }
     else if (streak === 0 && key === now.toISOString().slice(0, 10)) {
-      // today not logged yet — keep looking back
       cursor.setUTCDate(cursor.getUTCDate() - 1);
     } else break;
     if (streak > 365) break;
@@ -143,8 +142,6 @@ function currentValue(goal, sessions, now = new Date()) {
     case 'JOURNAL_STREAK':
       return journalStreak(sessions, now);
     case 'PROP_FIRM': {
-      // The accountable behaviour: recent sessions inside their risk
-      // limits (respect-risk answers first, the rule answer as fallback).
       const recent = lastSessions(sessions, 10);
       const risk = recent.filter(s => s && s.quickChecks && s.quickChecks.respectedRisk);
       if (risk.length) {
@@ -160,13 +157,100 @@ function currentValue(goal, sessions, now = new Date()) {
 }
 
 /**
- * Guidance for one goal: track it against the record and say how to
- * adapt. Deterministic and personal — it answers the goal in the
- * trader's own words, not a generic template. Test pins: gap language
- * with their numbers, "one rule at a time".
+ * Build the pre-session coach meeting fields (owner directive 21 Oct 2026):
+ *   - What you're doing well (doingWell)
+ *   - Your biggest obstacle (obstacle / blockers)
+ *   - Today's focus (todaysFocus / nextAction)
+ *   - Accountability breakdown (target, reason, currentPattern, progress)
+ */
+function buildPreSessionBrief({ goal, sessions, mindState, current, comp }) {
+  const title = cleanText(goal && goal.title) || 'this goal';
+  const entries = (goal && goal.progressLog) || [];
+  const latestFeedback = entries.length ? entries[entries.length - 1] : null;
+  const activeTheme = mindState && Array.isArray(mindState.themes)
+    ? mindState.themes.find(t => t && (t.status === 'active' || t.status === 'improving'))
+    : null;
+  const recentNotes = lastSessions(sessions, 10).map(s => (s && s.notes) || '').join(' ');
+
+  // 1. What you're doing well
+  let doingWell;
+  if (comp && comp.checked > 0 && comp.kept > 0) {
+    doingWell = `You followed your trading rules in ${comp.kept} of your last ${comp.checked} sessions.${feedbackFoot(goal)}\nKeep protecting that habit.`;
+  } else if (entries.length > 0) {
+    doingWell = `You are showing up with honest daily feedback (${entries.length} ${entries.length === 1 ? 'entry' : 'entries'} logged).${feedbackFoot(goal)}\nKeep protecting that habit.`;
+  } else {
+    doingWell = `You set a clear behavioural standard with "${title}".\nKeep protecting that habit from your very first logged session.`;
+  }
+
+  // 2. Your biggest obstacle (blockers)
+  let obstacle;
+  const hasRevengeSignal = (activeTheme && /revenge/i.test(activeTheme.name)) ||
+    /\b(revenge|frustrat)/i.test(recentNotes);
+  if (hasRevengeSignal) {
+    obstacle = 'Your journal still shows revenge trading after frustrating outcomes.\nThat remains your biggest threat.';
+  } else if (activeTheme) {
+    obstacle = `Your journal still shows ${cleanText(activeTheme.name).toLowerCase()} when pressure rises.\nThat remains your biggest threat.`;
+  } else if (latestFeedback && latestFeedback.note) {
+    obstacle = `Your latest daily feedback named what stood in the way: "${cleanText(latestFeedback.note)}".\nThat remains your biggest threat.`;
+  } else if (comp && comp.checked > comp.kept) {
+    obstacle = `Your rules gave way in ${comp.checked - comp.kept} of your last ${comp.checked} recorded sessions — entering before confirmation or moving your stop.\nThat remains your biggest threat.`;
+  } else {
+    obstacle = 'Unlogged or rushed sessions where rules go unchecked.\nComplacency remains your biggest threat.';
+  }
+
+  // 3. Today's focus (next action)
+  let todaysFocus;
+  if (hasRevengeSignal || /revenge|frustrat/i.test(obstacle)) {
+    todaysFocus = 'If frustration appears today,\nwalk away for 15 minutes before considering another trade.\nProtect discipline.\nNot profits.';
+  } else if (isPropFirmGoal(goal)) {
+    todaysFocus = 'Before you open the chart today,\nwrite your daily loss limit and step away for 15 minutes if frustration appears.\nProtect discipline.\nNot profits.';
+  } else {
+    todaysFocus = 'Before considering a trade today,\nread your written entry rule once and walk away for 15 minutes if frustration appears.\nProtect discipline.\nNot profits.';
+  }
+
+  // Accountability metadata (target, reason, current pattern, progress)
+  const targetSummary = goal && goal.target != null
+    ? `${goal.target}${goal.unit || ''} (${goal.cadence || 'WEEKLY'})`
+    : (isPropFirmGoal(goal) ? 'Daily loss limit & rule compliance' : (goal && goal.cadence) || 'WEEKLY');
+  const reasonSummary = cleanText(goal && goal.rationale) || 'Stay accountable to your written trading process.';
+  const currentPattern = comp && comp.checked > 0
+    ? `${comp.kept} of last ${comp.checked} sessions inside your rules (${comp.value}%)`
+    : 'Building baseline from your next logged sessions';
+  const progressSummary = current != null
+    ? `${current}${(goal && goal.unit) || ''}${goal && goal.target != null ? ` of ${goal.target}${goal.unit || ''}` : ''}`
+    : (entries.length ? `${entries.length} feedback ${entries.length === 1 ? 'entry' : 'entries'} logged` : 'Awaiting first reading');
+
+  return {
+    yourGoal: title,
+    doingWell,
+    obstacle,
+    blockers: obstacle,
+    todaysFocus,
+    nextAction: todaysFocus,
+    targetSummary,
+    reasonSummary,
+    currentPattern,
+    progressSummary
+  };
+}
+
+/**
+ * Guidance for one goal: returns both the pre-session coach meeting
+ * sections (yourGoal, doingWell, obstacle, todaysFocus, currentPattern,
+ * progressSummary) AND the classic assessment/nextStep fields so every
+ * existing caller and test pin continues to pass.
  */
 function guide({ goal, user, system, sessions, movement, mindState, now = new Date() } = {}) {
-  if (!goal) return { assessment: 'No goal yet.', nextStep: 'Set one small goal — one rule at a time.' };
+  if (!goal) {
+    return {
+      assessment: 'No goal yet.',
+      nextStep: 'Set one small goal — one rule at a time.',
+      yourGoal: 'No goal yet',
+      doingWell: 'Start by setting one behavioural goal.',
+      obstacle: 'No goal on record yet.',
+      todaysFocus: 'Set one clear process rule for today.\nProtect discipline.\nNot profits.'
+    };
+  }
 
   const recent = lastSessions(sessions, 10);
   const current = currentValue(goal, sessions, now);
@@ -178,7 +262,6 @@ function guide({ goal, user, system, sessions, movement, mindState, now = new Da
   let nextStep;
 
   if (isPropFirmGoal(goal)) {
-    // Discipline and accountability only — the boundary is the product.
     const riskNow = currentValue({ metric: 'PROP_FIRM' }, sessions, now);
     const compNow = complianceRate(recent);
     if (riskNow == null) {
@@ -190,7 +273,8 @@ function guide({ goal, user, system, sessions, movement, mindState, now = new Da
         ? `You are meeting "${title}". Hold the standard: pre-set the daily loss limit before the next session and end the day when it hits — that habit is what funding desks actually evaluate. One rule at a time.`
         : `In the next session the job is not profit — it is finishing inside the daily loss limit and your entry rule, the two things this goal actually rides on. Write the plan first, log it either way. One rule at a time.`;
     }
-    return { assessment: assessment + feedbackFoot(goal), nextStep };
+    const brief = buildPreSessionBrief({ goal, sessions, mindState, current: riskNow, comp: compNow });
+    return Object.assign({}, brief, { assessment: assessment + feedbackFoot(goal), nextStep });
   }
 
   if (current == null || target == null) {
@@ -212,12 +296,13 @@ function guide({ goal, user, system, sessions, movement, mindState, now = new Da
     }
   }
 
-  return { assessment: assessment + feedbackFoot(goal), nextStep };
+  const brief = buildPreSessionBrief({ goal, sessions, mindState, current, comp });
+  return Object.assign({}, brief, { assessment: assessment + feedbackFoot(goal), nextStep });
 }
 
 /** System prompt for the LLM path of goal guidance (structure pins). */
 function buildGuidePrompt({ goal, user, system, sessions, movement, mindState }) {
-  return `You are KAIZEN, the goal coach inside a trader's improvement journal. English only.
+  return `You are KAIZEN, the accountability coach meeting the trader before today's session. English only.
 
 VOICE: second person, their numbers and their words, warm and honest. Goals are behaviour targets — never profit targets. No market predictions, no trading insights, no signals, no market opinions — for prop-firm goals KAIZEN coaches ONLY the discipline and accountability the evaluation measures (daily loss limit, max drawdown, consistency, the trader's own written rules). One rule at a time: the next step must be doable in the very next session. No asterisks, no markdown.
 
@@ -228,32 +313,43 @@ ${lastSessions(sessions, 10).map(s => `- [${s.sessionType || 'LIVE'}] rules:${s.
 DAILY FEEDBACK (their own words, newest first):
 ${feedbackLines(goal).join('\n') || 'None yet.'}
 
-Write exactly this shape — answer THIS goal in the trader's own words, never a template that could fit any goal:
+Write this exact shape — answer THIS goal in the trader's own words, like a coach meeting them before today's session:
 
+DOING WELL: two short lines on what they are doing well from their record (e.g. "You followed your trading rules in X of your last Y sessions. Keep protecting that habit.").
+OBSTACLE: two short lines naming their biggest obstacle or blocker from their journal or feedback.
+TODAY'S FOCUS: one concrete behavioural instruction for today's session, ending with "Protect discipline. Not profits."
 ASSESSMENT: one short paragraph tracking the goal against the record. Quote the goal's title and their why; cite one real number from their record; gauge the process from their daily feedback — if they named an obstacle, acknowledge it in their words.
 NEXT: one concrete next step for the very next session.`;
 }
 
-function parseGuide(text) {
+function parseGuide(text, fallback = {}) {
   const src = String(text || '');
+  const doingWell = cleanText((src.match(/DOING WELL:\s*([\s\S]*?)(?=\n\s*OBSTACLE:|\n\s*ASSESSMENT:)/) || [])[1] || '');
+  const obstacle = cleanText((src.match(/OBSTACLE:\s*([\s\S]*?)(?=\n\s*TODAY'S FOCUS:|\n\s*ASSESSMENT:)/) || [])[1] || '');
+  const todaysFocus = cleanText((src.match(/TODAY'S FOCUS:\s*([\s\S]*?)(?=\n\s*ASSESSMENT:|\n\s*NEXT:)/) || [])[1] || '');
   const assessment = cleanText((src.match(/ASSESSMENT:\s*([\s\S]*?)(?=\n\s*NEXT:)/) || [])[1] || '');
   const nextStep = cleanText((src.match(/NEXT:\s*([\s\S]*?)$/) || [])[1] || '');
-  return { assessment, nextStep };
+  const out = Object.assign({}, fallback, { assessment, nextStep });
+  if (doingWell) out.doingWell = doingWell;
+  if (obstacle) { out.obstacle = obstacle; out.blockers = obstacle; }
+  if (todaysFocus) { out.todaysFocus = todaysFocus; out.nextAction = todaysFocus; }
+  return out;
 }
 
 /** LLM path with deterministic fallback. */
 async function guideAsync(ctx) {
-  if (!llm.available()) return guide(ctx);
+  const det = guide(ctx);
+  if (!llm.available()) return det;
   try {
     const text = await llm.callLLM(
       buildGuidePrompt(ctx),
       [{ type: 'text', text: 'Guide me on this goal now.' }],
-      { maxTokens: 500 }
+      { maxTokens: 550 }
     );
-    const parsed = parseGuide(text);
+    const parsed = parseGuide(text, det);
     if (parsed.assessment && parsed.nextStep) return parsed;
   } catch (e) { /* fall through to the deterministic guide */ }
-  return guide(ctx);
+  return det;
 }
 
 module.exports = {

@@ -13,14 +13,16 @@ async function loadContext(userId) {
   const Journal = require('../models/Journal');
   const TradingSystem = require('../models/TradingSystem');
   const MindState = require('../models/MindState');
+  const Goal = require('../models/Goal');
   const user = await User.findById(userId);
   if (!user) return null;
-  const [sessions, system, mindState] = await Promise.all([
+  const [sessions, system, mindState, goals] = await Promise.all([
     Journal.find({ userId }).sort({ createdAt: -1 }).limit(5).lean(),
     TradingSystem.ensureForUser(user),
-    MindState.ensureForUser(userId)
+    MindState.ensureForUser(userId),
+    Goal.find({ userId, status: 'ACTIVE' }).lean().catch(() => [])
   ]);
-  return { user, sessions, system, mindState };
+  return { user, sessions, system, mindState, goals };
 }
 
 // Context-aware openers from the trader's real situation.
@@ -187,7 +189,7 @@ async function postAsk(req, res) {
       try {
         for await (const chunk of tradeCoach.streamConverse({
           user: ctx.user, system: ctx.system, sessions: ctx.sessions,
-          mindState: ctx.mindState,
+          mindState: ctx.mindState, goals: ctx.goals,
           threadMessages: thread.messages.slice(0, -1),
           userMessage: mode === 'quiz' ? 'Quiz me on my rules.' : message,
           imageDataUrl, mode
@@ -217,7 +219,7 @@ async function postAsk(req, res) {
 
     const { reply } = await tradeCoach.converse({
       user: ctx.user, system: ctx.system, sessions: ctx.sessions,
-      mindState: ctx.mindState,
+      mindState: ctx.mindState, goals: ctx.goals,
       threadMessages: thread.messages.slice(0, -1),
       userMessage: mode === 'quiz' ? 'Quiz me on my rules.' : message,
       imageDataUrl, mode

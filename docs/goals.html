@@ -259,13 +259,40 @@
       <div class="k-panel-title" style="margin-bottom:12px;">Your goals</div>
       
       
-        <a href="/goals/g1" style="display:flex;justify-content:space-between;align-items:center;gap:12px;border:1px solid var(--border);border-radius:10px;padding:12px 16px;margin-bottom:8px;text-decoration:none;">
-          <div>
-            <div style="font-weight:700;color:var(--text-primary);font-size:0.92rem;">Hold 9 of 10 inside your rules</div>
-            <div style="font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--ash);margin-top:3px;">RULE_COMPLIANCE · Target 90% · WEEKLY</div>
+        <a href="/goals/g1" style="display:block;border:1px solid var(--border);border-radius:10px;padding:16px 18px;margin-bottom:12px;text-decoration:none;">
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;">
+            <div>
+              <div style="font-family:'DM Mono',monospace;font-size:0.54rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:2px;">Your Goal</div>
+              <div style="font-weight:700;color:var(--text-primary);font-size:1.02rem;">Pass my Naira Trader prop account</div>
+              <div style="font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--ash);margin-top:3px;">PROP_FIRM · Target 80% · WEEKLY</div>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center;">
+              <span class="k-chip" style="padding:3px 9px;font-size:0.52rem;">ACTIVE</span>
+              <span class="k-chip" style="padding:3px 9px;font-size:0.52rem;border-color:var(--gold);color:var(--gold);">Feedback due today</span>
+            </div>
           </div>
-          <span class="k-chip" style="padding:3px 9px;font-size:0.52rem;">ACTIVE</span>
-          <span class="k-chip" style="padding:3px 9px;font-size:0.52rem;">Feedback logged today</span>
+
+          
+            <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;">
+              <div>
+                <div style="font-family:'DM Mono',monospace;font-size:0.54rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--green, #4ec9b0);margin-bottom:4px;">What you&#39;re doing well</div>
+                <p style="font-size:0.82rem;line-height:1.65;color:var(--text-primary);margin:0;white-space:pre-line;">You followed your trading rules in 8 of your last 10 sessions. Your feedback from Oct 20: “Followed the daily loss limit and stood aside after two trades.”.
+Keep protecting that habit.</p>
+              </div>
+              <div>
+                <div style="font-family:'DM Mono',monospace;font-size:0.54rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--red, #e06c75);margin-bottom:4px;">Your biggest obstacle</div>
+                <p style="font-size:0.82rem;line-height:1.65;color:var(--text-primary);margin:0;white-space:pre-line;">Your journal still shows revenge trading after frustrating outcomes.
+That remains your biggest threat.</p>
+              </div>
+              <div style="border-left:2px solid var(--gold);padding-left:10px;">
+                <div style="font-family:'DM Mono',monospace;font-size:0.54rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:4px;">Today&#39;s focus</div>
+                <p style="font-size:0.82rem;line-height:1.65;color:var(--text-primary);margin:0;white-space:pre-line;">If frustration appears today,
+walk away for 15 minutes before considering another trade.
+Protect discipline.
+Not profits.</p>
+              </div>
+            </div>
+          
         </a>
       
     </div>
@@ -275,6 +302,8 @@
       <form method="POST" action="/goals">
         <label style="display:block;font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);margin-bottom:6px;">Goal</label>
         <input class="k-input" name="title" required maxlength="140" style="margin-bottom:12px;" placeholder="e.g. Keep 8 of my last 10 sessions inside my rules">
+        <label style="display:block;font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);margin-bottom:6px;">Why this goal matters (optional)</label>
+        <input class="k-input" name="rationale" maxlength="500" style="margin-bottom:12px;" placeholder="e.g. Pass the evaluation honestly and keep the funded account">
         <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px;">
           <div>
             <label style="display:block;font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);margin-bottom:6px;">Metric</label>
@@ -287,6 +316,8 @@
                 <option value="RISK_LIMIT">RISK_LIMIT</option>
               
                 <option value="JOURNAL_STREAK">JOURNAL_STREAK</option>
+              
+                <option value="PROP_FIRM">PROP_FIRM</option>
               
                 <option value="CUSTOM">CUSTOM</option>
               

@@ -149,6 +149,11 @@ async function postRecord(req, res) {
     session.outcome = 'No Trade';
   }
   session.quickChecks = q;
+  const interpAtRecord = aiCoach.interpretJournal(session);
+  const anyRuleBroken = q.followedPlan === 'NO' || q.withinEntryCriteria === 'NO' || q.respectedRisk === 'NO';
+  session.ruleCompliance = interpAtRecord.isPlanRevision
+    ? (q.withinEntryCriteria !== 'NO' && q.respectedRisk !== 'NO')
+    : !anyRuleBroken;
   session.state = 'RECORDED';
 
   // Novelty guard (B6b): near-duplicate consecutive text earns reduced
@@ -215,6 +220,12 @@ async function postReflect(req, res) {
     wouldChange: (req.body.wouldChange || '').trim(),
     completedAt: new Date()
   };
+  const interpAtReflect = aiCoach.interpretJournal(session);
+  const qc = session.quickChecks || {};
+  const anyBroken = qc.followedPlan === 'NO' || qc.withinEntryCriteria === 'NO' || qc.respectedRisk === 'NO';
+  session.ruleCompliance = interpAtReflect.isPlanRevision
+    ? (qc.withinEntryCriteria !== 'NO' && qc.respectedRisk !== 'NO')
+    : !anyBroken;
   session.state = 'REFLECTED';
   await session.save();
 
@@ -245,9 +256,17 @@ async function postReflect(req, res) {
   });
 
   // Machine 2 — the coach (改): explains, never scores
+  const MindState = require('../models/MindState');
+  const Goal = require('../models/Goal');
+  const [mindState, goals] = await Promise.all([
+    MindState.ensureForUser(req.session.user.id).catch(() => null),
+    Goal.find({ userId: req.session.user.id, status: 'ACTIVE' }).lean().catch(() => [])
+  ]);
   const coachArgs = {
     session: session.toObject(), user: userDoc, system,
-    recentSessions: recentSessions.filter(s => String(s._id) !== String(session._id))
+    recentSessions: recentSessions.filter(s => String(s._id) !== String(session._id)),
+    mindState,
+    goals
   };
   const applyExtracted = (text) => {
     const ex = aiCoach.parseExtracted(text);
@@ -326,10 +345,13 @@ async function postReflect(req, res) {
 async function getDetail(req, res) {
   const session = await loadOwned(req, res);
   if (!session) return;
-  const latest = await ScoreSnapshot.findOne({ userId: req.session.user.id })
-    .sort({ computedAt: -1 }).lean();
+  const [latest, recentSessions] = await Promise.all([
+    ScoreSnapshot.findOne({ userId: req.session.user.id }).sort({ computedAt: -1 }).lean(),
+    Journal.find({ userId: req.session.user.id, _id: { $ne: session._id } }).sort({ createdAt: -1 }).limit(10).lean()
+  ]);
+  const review = aiCoach.parseSessionReview(session.aiAnalysis, session, { recentSessions });
   res.render('session-detail', {
-    user: req.session.user, session, score: latest,
+    user: req.session.user, session, score: latest, review,
     dimensionLabels: DIMENSION_LABELS, title: 'Session'
   });
 }

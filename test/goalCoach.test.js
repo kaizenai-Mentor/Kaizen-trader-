@@ -233,3 +233,34 @@ test('guide prompt carries the DAILY FEEDBACK block', () => {
   assert.ok(p.includes('Blocked by hesitation.'), 'their words reach the LLM');
   assert.match(p, /gauge the process from their daily feedback/);
 });
+
+test('pre-session coach meeting: What you\'re doing well, Your biggest obstacle, Today\'s focus', () => {
+  const tenSessions = [
+    day(9, { outcome: 'Win', ruleCompliance: true, notes: 'Followed plan.' }),
+    day(8, { outcome: 'Win', ruleCompliance: true, notes: 'Waited for sweep.' }),
+    day(7, { outcome: 'Loss', ruleCompliance: false, notes: 'Revenge trade after frustrating loss.' }),
+    day(6, { outcome: 'Win', ruleCompliance: true, notes: 'Inside rules.' }),
+    day(5, { outcome: 'Breakeven', ruleCompliance: true, notes: 'Stood aside.' }),
+    day(4, { outcome: 'Loss', ruleCompliance: false, notes: 'Entered early.' }),
+    day(3, { outcome: 'Win', ruleCompliance: true, notes: 'Clean execution.' }),
+    day(2, { outcome: 'Win', ruleCompliance: true, notes: 'Waited for confirmation.' }),
+    day(1, { outcome: 'Loss', ruleCompliance: false, notes: 'Frustrated size.' }),
+    day(0, { outcome: 'Win', ruleCompliance: true, notes: 'Followed rules.' })
+  ];
+  const g = goalCoach.guide({
+    goal: {
+      title: 'Pass my Naira Trader prop account',
+      metric: 'PROP_FIRM', target: 80, unit: '%', cadence: 'WEEKLY', status: 'ACTIVE',
+      rationale: 'Pass the evaluation honestly.',
+      progressLog: []
+    },
+    user, system, sessions: tenSessions, movement: null, mindState
+  });
+  assert.strictEqual(g.yourGoal, 'Pass my Naira Trader prop account');
+  assert.match(g.doingWell, /You followed your trading rules in 7 of your last 10 sessions\./);
+  assert.match(g.doingWell, /Keep protecting that habit\./);
+  assert.match(g.obstacle, /Your journal still shows revenge trading after frustrating outcomes\./);
+  assert.match(g.obstacle, /That remains your biggest threat\./);
+  assert.match(g.todaysFocus, /If frustration appears today,\nwalk away for 15 minutes before considering another trade\.\nProtect discipline\.\nNot profits\./);
+});
+

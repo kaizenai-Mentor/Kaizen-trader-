@@ -12,19 +12,35 @@
     <div style="margin-bottom:24px;">
       <div style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:6px;display:flex;align-items:center;gap:8px;">
         <span style="width:16px;height:1px;background:var(--gold);display:inline-block;"></span><%= t('goals.eyebrow') %></div>
-      <h1 style="font-size:1.5rem;font-weight:700;color:var(--text-primary);margin-bottom:6px;"><%= goal.title %></h1>
-      <p style="font-family:'DM Mono',monospace;font-size:0.68rem;color:var(--ash);">
-        <%= goal.metric %> <% if (goal.target != null) { %>· <%= t('goals.target') %> <%= goal.target %><%= goal.unit || '' %><% } %>
-        · <%= goal.cadence %> · <%= goal.status %>
-        <% if (current != null) { %>· <%= t('goals.now') %> <%= current %><%= goal.unit || '' %><% } %>
-      </p>
+      <div style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--ash);margin-bottom:4px;"><%= t('goals.yourGoal') %></div>
+      <h1 style="font-size:1.55rem;font-weight:700;color:var(--text-primary);margin-bottom:8px;"><%= goal.title %></h1>
+      <div style="display:flex;gap:14px;flex-wrap:wrap;font-family:'DM Mono',monospace;font-size:0.66rem;color:var(--ash);">
+        <% if (goal.target != null) { %><span><%= t('goals.target') %>: <%= goal.target %><%= goal.unit || '' %> (<%= goal.cadence %>)</span><% } else { %><span><%= goal.cadence %></span><% } %>
+        <% if (current != null) { %><span>· <%= t('goals.progress') %>: <%= current %><%= goal.unit || '' %></span><% } %>
+        <% if (guidance && guidance.currentPattern) { %><span>· <%= t('goals.currentPattern') %>: <%= guidance.currentPattern %></span><% } %>
+        <span>· <%= goal.status %></span>
+      </div>
+      <% if (goal.rationale) { %>
+        <p style="font-size:0.84rem;color:var(--text-secondary);font-style:italic;margin:8px 0 0;"><%= t('goals.reason') %>: "<%= goal.rationale %>"</p>
+      <% } %>
     </div>
 
-    <div class="k-card" style="margin-bottom:16px;">
-      <div class="k-panel-title" style="margin-bottom:10px;"><%= t('goals.guidance') %></div>
-      <p style="font-size:0.9rem;line-height:1.65;color:var(--text-primary);margin-bottom:12px;"><%= guidance.assessment %></p>
-      <div style="font-family:'DM Mono',monospace;font-size:0.56rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:4px;"><%= t('goals.next') %></div>
-      <p style="font-size:0.88rem;line-height:1.65;color:var(--text-primary);"><%= guidance.nextStep %></p>
+    <!-- Pre-session Coaching Meeting: What you're doing well · Your biggest obstacle · Today's focus -->
+    <div class="k-card k-card--featured" style="margin-bottom:16px;padding:24px;">
+      <div style="padding-bottom:18px;border-bottom:1px solid var(--border);margin-bottom:18px;">
+        <div style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--green, #4ec9b0);margin-bottom:8px;"><%= t('goals.whatDoingWell') %></div>
+        <p style="font-size:0.94rem;line-height:1.78;color:var(--text-primary);margin:0;white-space:pre-line;"><%= (guidance && guidance.doingWell) || guidance.assessment %></p>
+      </div>
+
+      <div style="padding-bottom:18px;border-bottom:1px solid var(--border);margin-bottom:18px;">
+        <div style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--red, #e06c75);margin-bottom:8px;"><%= t('goals.biggestObstacle') %></div>
+        <p style="font-size:0.94rem;line-height:1.78;color:var(--text-primary);margin:0;white-space:pre-line;"><%= (guidance && guidance.obstacle) || '' %></p>
+      </div>
+
+      <div style="border-left:2px solid var(--gold);padding-left:14px;">
+        <div style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold);margin-bottom:8px;"><%= t('goals.todaysFocus') %></div>
+        <p style="font-size:0.95rem;font-weight:500;line-height:1.8;color:var(--text-primary);margin:0;white-space:pre-line;"><%= (guidance && guidance.todaysFocus) || guidance.nextStep %></p>
+      </div>
     </div>
 
     <div class="k-card" style="margin-bottom:16px;">

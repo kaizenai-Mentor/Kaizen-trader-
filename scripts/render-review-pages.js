@@ -186,6 +186,7 @@ const pages = {
       ]
     },
     totalSessions: 5,
+    themes: mindState.themes,
     dateRange: 'Oct 18 – Oct 24, 2026',
     title: 'Weekly Review'
   },
@@ -219,9 +220,22 @@ const memories = [
   { type: 'psych', asset: '—', sessionData: 'Froze before clicking on a perfect setup.', response: 'The freeze is data, not failure. It appeared after two losses — we will watch that window together.', sessionScore: null, createdAt: new Date(Date.now() - 8 * 864e5) }
 ];
 
+const aiCoach = require(path.join(ROOT, 'services', 'aiCoach'));
+const goalCoach = require(path.join(ROOT, 'services', 'goalCoach'));
+const demoDetailSession = Object.assign({}, analyzedSession, {
+  hasChartImage: true,
+  aiAnalysis: 'Your entry timing improved on this one — the confirmation candle closed before you acted, and that patience is what moved your Execution up. The loss itself is noise; the process that produced it is signal. One thing to watch: your confidence was a 7 pre-session but your reflection says you almost added size at +1.5R. That gap between declared confidence and in-trade impulses is exactly what the after-loss window tracks. Keep logging that urge honestly — it is the raw material for the next improvement.'
+});
 pages['session-record'] = { user, session: plannedSession, title: 'The Record' };
 pages['session-reflect'] = { user, session: recordedSession, title: 'The Reflection' };
-pages['session-detail'] = { user, session: Object.assign({}, analyzedSession, { hasChartImage: true, aiAnalysis: 'Your entry timing improved on this one — the confirmation candle closed before you acted, and that patience is what moved your Execution up. The loss itself is noise; the process that produced it is signal. One thing to watch: your confidence was a 7 pre-session but your reflection says you almost added size at +1.5R. That gap between declared confidence and in-trade impulses is exactly what the after-loss window tracks. Keep logging that urge honestly — it is the raw material for the next improvement.' }), score: scoreEngine.computeScore([analyzedSession], null, null), title: 'Session' };
+pages['session-detail'] = {
+  user,
+  session: demoDetailSession,
+  review: aiCoach.parseSessionReview(demoDetailSession.aiAnalysis, demoDetailSession, { recentSessions: sessionsAsc }),
+  score: scoreEngine.computeScore([analyzedSession], null, null),
+  dimensionLabels: DIMENSION_LABELS,
+  title: 'Session'
+};
 pages['news'] = {
   user,
   articles: [
@@ -236,13 +250,35 @@ pages['news'] = {
   title: 'Market News'
 };
 pages['memories'] = { user, memories, title: 'Memories' };
+const demoGoal = {
+  _id: 'g1',
+  title: 'Pass my Naira Trader prop account',
+  metric: 'PROP_FIRM',
+  target: 80,
+  unit: '%',
+  cadence: 'WEEKLY',
+  status: 'ACTIVE',
+  rationale: 'Pass the evaluation honestly and stay funded.',
+  dueToday: true,
+  progressLog: [
+    { at: new Date(Date.now() - 864e5), value: 70, note: 'Followed the daily loss limit and stood aside after two trades.' }
+  ]
+};
+demoGoal.guidance = goalCoach.guide({
+  goal: demoGoal, user, system, sessions: sessionsAsc, movement: move,
+  mindState: { themes: [{ name: 'Revenge trading', status: 'active' }] }
+});
 pages['goals'] = {
-  user, metrics: ['RULE_COMPLIANCE', 'SESSIONS_PER_WEEK', 'RISK_LIMIT', 'JOURNAL_STREAK', 'CUSTOM'],
-  suggestions: [
-    { title: 'Keep 8 of your last 10 sessions inside your rules', metric: 'RULE_COMPLIANCE', target: 80, unit: '%', cadence: 'WEEKLY', rationale: '2 of your last 5 recorded sessions stayed inside your rules (40%). One rule at a time: your entry rule — "MSS on 30min after liquidity sweep" — is the one to protect.' },
-    { title: 'Run the loop on 3 sessions this week', metric: 'SESSIONS_PER_WEEK', target: 3, unit: 'sessions', cadence: 'WEEKLY', rationale: 'You logged 2 sessions in the last seven days. The loop compounds when it runs — three honest sessions beat ten rushed ones.' }
-  ],
-  goals: [{ _id: 'g1', title: 'Hold 9 of 10 inside your rules', metric: 'RULE_COMPLIANCE', target: 90, unit: '%', cadence: 'WEEKLY', status: 'ACTIVE' }]
+  user,
+  metrics: ['RULE_COMPLIANCE', 'SESSIONS_PER_WEEK', 'RISK_LIMIT', 'JOURNAL_STREAK', 'PROP_FIRM', 'CUSTOM'],
+  goals: [demoGoal]
+};
+pages['goal-detail'] = {
+  user,
+  goal: demoGoal,
+  guidance: demoGoal.guidance,
+  current: goalCoach.currentValue(demoGoal, sessionsAsc),
+  statuses: ['ACTIVE', 'PAUSED', 'ACHIEVED', 'ARCHIVED']
 };
 
 const ANNOUNCEMENT = {
