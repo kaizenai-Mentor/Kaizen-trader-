@@ -344,18 +344,15 @@ app.get('/goals/:id', (req, res) => {
   if (!req.session.user) return res.redirect('/auth/login');
   goalsController.getDetail(req, res);
 });
-app.post('/goals/:id/log', (req, res) => {
-  if (!req.session.user) return res.redirect('/auth/login');
-  goalsController.postLog(req, res);
+app.post('/goals/:id/feedback', (req, res) => {
+  // Wrap in session check
+  goalsController.postFeedback(req, res);
 });
 app.post('/goals/:id/status', (req, res) => {
   if (!req.session.user) return res.redirect('/auth/login');
   goalsController.postStatus(req, res);
 });
-app.post('/goals/:id/adapt', (req, res) => {
-  if (!req.session.user) return res.redirect('/auth/login');
-  goalsController.postAdapt(req, res);
-});
+
 app.post('/psychology/ask', (req, res) => {
   // Merged: psychology conversations live inside KAIZEN AI now.
   res.status(410).json({ error: 'This conversation now lives inside KAIZEN AI — open /kaizen-ai.' });

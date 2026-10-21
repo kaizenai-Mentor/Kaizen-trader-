@@ -24,6 +24,18 @@
       </div>
     </div>
 
+    <% if (typeof goalsDue !== 'undefined' && goalsDue && goalsDue.length) { %>
+      <section class="k-card" style="border-left:3px solid var(--gold);margin-bottom:4px;">
+        <div class="k-panel-title" style="margin-bottom:6px;"><span class="k-kanji k-kanji--sm">記</span> <%= t('dash.feedbackDue') %></div>
+        <p style="font-size:0.84rem;line-height:1.7;color:var(--text-primary);margin-bottom:8px;"><%= t('dash.feedbackDueSub') %></p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <% goalsDue.forEach(function (g) { %>
+            <a href="/goals/<%= g._id %>" class="k-chip" style="padding:5px 11px;font-size:0.6rem;text-decoration:none;"><%= g.title %></a>
+          <% }); %>
+        </div>
+      </section>
+    <% } %>
+
     <div class="k-cockpit-grid">
 
       <!-- ═══ THE SCORE INSTRUMENT ═══ -->
@@ -36,7 +48,7 @@
             <div class="k-scoremeta">
               <% if (score.overallState === 'READY') { %><span class="k-statechip is-ready"><%= t('dash.ready') %></span><% } %>
               <% if (score.overallState === 'PARTIAL') { %><span class="k-statechip is-partial"><%= t('dash.partial') %></span><% } %>
-              <span class="k-scoresub"><%= t('dash.fromLast') %><%= score.sessionsConsidered %><%= t('dash.sessionsDot') %><a class="k-link" href="/about#kaizen-score"><%= t('dash.howScored') %></a></span>
+              <span class="k-scoresub"><%= t('dash.fromLast') %> <%= score.sessionsConsidered %> <%= t('dash.sessionsDot') %><a class="k-link" href="/about#kaizen-score"><%= t('dash.howScored') %></a></span>
             </div>
           </div>
 
@@ -109,7 +121,7 @@
         <div class="k-milestone-label"><%= nextMilestone.label %></div>
         <div class="k-milestone-track"><span class="k-milestone-fill" data-meter="<%= nextMilestone.progress %>"></span></div>
         <div class="k-milestone-meta">
-          <% if (nextMilestone.remaining > 0) { %><%= nextMilestone.remaining %><%= t('dash.toGo') %><% } else { %><%= t('dash.reached') %><% } %>
+          <% if (nextMilestone.remaining > 0) { %><%= nextMilestone.remaining %> <%= t('dash.toGo') %><% } else { %><%= t('dash.reached') %><% } %>
           · <a class="k-link" href="/leaderboard"><%= t('dash.myProgress') %></a>
         </div>
       </section>
@@ -136,9 +148,9 @@
           </div>
         <% } %>
         <div class="k-essentialfoot">
-          <span><%= totalSessions %><%= t('word.session') %><%= totalSessions === 1 ? '' : 's' %><%= t('word.total') %></span>
+          <span><%= totalSessions %> <%= t('word.session') %><%= totalSessions === 1 ? '' : 's' %> <%= t('word.total') %></span>
           <span>·</span>
-          <span><%= badgeCount %><%= t('word.milestone') %><%= badgeCount === 1 ? '' : 's' %></span>
+          <span><%= badgeCount %> <%= t('word.milestone') %><%= badgeCount === 1 ? '' : 's' %></span>
           <span>·</span>
           <a class="k-link" href="/settings/trading-system"><%= t('dash.systemV') %><%= systemVersion %></a>
         </div>

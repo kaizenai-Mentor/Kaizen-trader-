@@ -70,7 +70,7 @@
               <div class="k-threadmain">
                 <span class="k-threadtitle"><%= thr.title %></span>
                 <span class="k-threadmeta">
-                  <%= thr.messageCount %><%= t('ai.messageWord') %><%= thr.messageCount === 1 ? '' : 's' %>
+                  <%= thr.messageCount %> <%= t('ai.messageWord') %><%= thr.messageCount === 1 ? '' : 's' %>
                   · <%= new Date(thr.lastMessageAt).toLocaleDateString(({en:'en-US',fr:'fr-FR',zh:'zh-CN',ja:'ja-JP',af:'af-ZA'})[lang]||'en-US',{month:'short',day:'numeric'}) %>
                 </span>
               </div>
@@ -235,7 +235,11 @@
               if (live) live.textContent += t;
               scrollBottom();
             },
-            onDone: finish,
+            onDone: function (ev) {
+              // The server ships the final reply asterisk-free — swap it in.
+              if (ev && ev.final != null && live) live.textContent = ev.final;
+              finish();
+            },
             onError: function (msg) {
               if (typing) typing.hidden = true;
               if (live && !live.textContent) {

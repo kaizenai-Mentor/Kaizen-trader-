@@ -18,13 +18,13 @@
         </div>
         <div class="k-versionchip">
           <span class="k-versionnum">v<%= system.version %></span>
-          <span class="k-versionmeta"><%= system.history.length %><%= t('ts.version') %><%= system.history.length === 1 ? '' : 's' %><%= t('ts.onRecord') %></span>
+          <span class="k-versionmeta"><%= system.history.length %> <%= t('ts.version') %><%= system.history.length === 1 ? '' : 's' %> <%= t('ts.onRecord') %></span>
         </div>
       </div>
 
       <% if (saved) { %>
         <div class="k-savenote">
-          <span class="k-badge-glyph">改</span><%= t('ts.savedAs') %><%= system.version %><%= t('ts.fromNowOn') %></div>
+          <span class="k-badge-glyph">改</span><%= t('ts.savedAs') %> <%= system.version %><%= t('ts.fromNowOn') %></div>
       <% } %>
 
       <form method="POST" action="/settings/trading-system" class="k-formgrid">
@@ -94,7 +94,7 @@
             <textarea class="k-input" id="noTradeConditions" name="noTradeConditions" rows="3" placeholder="<%= t('ts.noTradePh') %>"><%= (system.noTradeConditions || []).join('\n') %></textarea>
           </div>
           <div class="k-field">
-            <label class="k-fieldlabel" for="psychologicalRules"><%= t('system.psychRules') %><%= t('ts.perLine') %></label>
+            <label class="k-fieldlabel" for="psychologicalRules"><%= t('system.psychRules') %> <%= t('ts.perLine') %></label>
             <textarea class="k-input" id="psychologicalRules" name="psychologicalRules" rows="3" placeholder="<%= t('ts.positionPh') %>"><%= (system.psychologicalRules || []).join('\n') %></textarea>
           </div>
         </section>

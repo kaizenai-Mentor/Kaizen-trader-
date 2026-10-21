@@ -197,7 +197,7 @@ const linkZaAccount = async (req, res) => {
 
     // Reload fresh reputation page data, same shape as getReputation.
     const user = await User.findById(req.session.user.id);
-    const totalSessions = await Journal.countDocuments({ user: user._id });
+    const totalSessions = await Journal.countDocuments({ userId: user._id });
 
     const mantleProfile = await fetchMantleProfile(user._id);
 
@@ -311,7 +311,7 @@ const getReputation = async (req, res) => {
 
     if (!user) return res.redirect('/dashboard');
 
-    const totalSessions = await Journal.countDocuments({ user: user._id });
+    const totalSessions = await Journal.countDocuments({ userId: user._id });
 
     const mantleProfile = await fetchMantleProfile(user._id);
 

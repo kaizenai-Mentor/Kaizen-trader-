@@ -28,15 +28,41 @@
     </div>
 
     <div class="k-card" style="margin-bottom:16px;">
-      <div class="k-panel-title" style="margin-bottom:12px;"><%= t('goals.adapt') %></div>
-      <form method="POST" action="/goals/<%= goal._id %>/adapt" style="display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;">
-        <div>
-          <label style="display:block;font-family:'DM Mono',monospace;font-size:0.56rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);margin-bottom:6px;"><%= t('goals.newTarget') %></label>
-          <input class="k-input" name="target" type="number" step="any" value="<%= goal.target != null ? goal.target : '' %>" style="width:110px;">
+      <div class="k-panel-title" style="margin-bottom:4px;"><%= t('goals.feedback') %></div>
+      <p style="font-size:0.78rem;color:var(--ash);font-style:italic;line-height:1.7;margin-bottom:12px;"><%= t('goals.feedbackSub') %></p>
+      <form method="POST" action="/goals/<%= goal._id %>/feedback">
+        <label style="display:block;font-family:'DM Mono',monospace;font-size:0.56rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);margin-bottom:6px;"><%= t('goals.feedbackLabel') %></label>
+        <textarea name="note" class="k-input" rows="4" maxlength="800" required placeholder="<%= t('goals.feedbackPh') %>" style="margin-bottom:10px;line-height:1.7;resize:vertical;"></textarea>
+        <div style="display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;">
+          <div>
+            <label style="display:block;font-family:'DM Mono',monospace;font-size:0.56rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);margin-bottom:6px;"><%= t('goals.value') %></label>
+            <input class="k-input" name="value" type="number" step="any" style="width:120px;">
+          </div>
+          <button type="submit" class="k-btn" style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;"><%= t('goals.saveFeedback') %></button>
         </div>
-        <button type="submit" class="k-btn" style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;"><%= t('goals.reGuide') %></button>
       </form>
-      <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;">
+
+      <% if (goal.progressLog && goal.progressLog.length) { %>
+        <div style="margin-top:16px;">
+          <div class="k-metric-label" style="margin-bottom:8px;"><%= t('goals.feedbackFeed') %></div>
+          <div style="border-left:2px solid var(--gold);padding-left:14px;">
+            <% goal.progressLog.slice().reverse().forEach(function (e) { %>
+              <div style="padding:8px 0;border-bottom:1px solid var(--border);">
+                <div style="display:flex;justify-content:space-between;gap:10px;align-items:baseline;">
+                  <span style="color:var(--ash);font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.08em;"><%= e.at ? new Date(e.at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '' %></span>
+                  <% if (e.value != null) { %><span class="k-chip" style="padding:2px 8px;font-size:0.56rem;"><%= e.value %><%= goal.unit || '' %></span><% } %>
+                </div>
+                <p style="font-size:0.85rem;line-height:1.7;color:var(--text-primary);margin-top:4px;white-space:pre-wrap;"><%= e.note || '—' %></p>
+              </div>
+            <% }); %>
+          </div>
+        </div>
+      <% } %>
+    </div>
+
+    <div class="k-card" style="margin-bottom:16px;">
+      <div class="k-panel-title" style="margin-bottom:12px;"><%= t('goals.statusCard') %></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
         <% statuses.forEach(function (s) { %>
           <form method="POST" action="/goals/<%= goal._id %>/status">
             <input type="hidden" name="status" value="<%= s %>">
@@ -44,33 +70,6 @@
           </form>
         <% }); %>
       </div>
-    </div>
-
-    <div class="k-card" style="margin-bottom:16px;">
-      <div class="k-panel-title" style="margin-bottom:12px;"><%= t('goals.log') %></div>
-      <form method="POST" action="/goals/<%= goal._id %>/log" style="display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;">
-        <div>
-          <label style="display:block;font-family:'DM Mono',monospace;font-size:0.56rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);margin-bottom:6px;"><%= t('goals.value') %></label>
-          <input class="k-input" name="value" type="number" step="any" style="width:110px;">
-        </div>
-        <div style="flex:1;min-width:200px;">
-          <label style="display:block;font-family:'DM Mono',monospace;font-size:0.56rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);margin-bottom:6px;"><%= t('goals.note') %></label>
-          <input class="k-input" name="note" maxlength="300" placeholder="<%= t('goals.notePh') %>">
-        </div>
-        <button type="submit" class="k-btn" style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;"><%= t('goals.addEntry') %></button>
-      </form>
-
-      <% if (goal.progressLog && goal.progressLog.length) { %>
-        <div style="margin-top:14px;">
-          <% goal.progressLog.slice().reverse().forEach(function (e) { %>
-            <div style="display:flex;justify-content:space-between;gap:12px;border-top:1px solid var(--border);padding:8px 0;font-size:0.82rem;">
-              <span style="color:var(--ash);font-family:'DM Mono',monospace;font-size:0.66rem;"><%= e.at ? new Date(e.at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '' %></span>
-              <span style="flex:1;color:var(--text-primary);"><%= e.note || '—' %></span>
-              <span style="color:var(--gold);font-family:'DM Mono',monospace;"><%= e.value != null ? e.value + (goal.unit || '') : '' %></span>
-            </div>
-          <% }); %>
-        </div>
-      <% } %>
     </div>
 
     <a href="/goals" class="k-btn k-btn--ghost" style="font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.12em;text-transform:uppercase;"><%= t('goals.backToList') %></a>

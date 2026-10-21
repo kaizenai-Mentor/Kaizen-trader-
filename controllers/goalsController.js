@@ -38,7 +38,8 @@ async function getList(req, res) {
   try {
     // Goals are the trader's own (owner directive 20 Oct 2026): KAIZEN
     // never proposes goals here — it only lists and guides what they set.
-    const goals = await Goal.find({ userId: userId(req) }).sort({ status: 1, createdAt: -1 }).lean();
+    const goals = (await Goal.find({ userId: userId(req) }).sort({ status: 1, createdAt: -1 }).lean())
+      .map(g => Object.assign(g, { dueToday: goalCoach.feedbackDueToday(g) }));
     res.render('goals', {
       user: req.session.user,
       goals,
@@ -91,10 +92,18 @@ async function getDetail(req, res) {
   }
 }
 
-async function postLog(req, res) {
+/**
+ * Daily feedback (owner directive 21 Oct 2026): the journaling-style
+ * entry the reminder asks for every day. Text is the heart of it —
+ * the coach gauges the process from these words; the value is optional
+ * measurement alongside.
+ */
+async function postFeedback(req, res) {
   try {
     if (!mongoose.isValidObjectId(req.params.id)) return res.redirect('/goals');
     const value = req.body.value === '' || req.body.value == null ? null : Number(req.body.value);
+    const note = String(req.body.note || '').trim().slice(0, 800);
+    if (!note) return res.redirect('/goals/' + req.params.id);
     await Goal.updateOne(
       { _id: req.params.id, userId: userId(req) },
       {
@@ -102,14 +111,14 @@ async function postLog(req, res) {
           progressLog: {
             at: new Date(),
             value: Number.isFinite(value) ? value : null,
-            note: String(req.body.note || '').slice(0, 300)
+            note
           }
         }
       }
     );
     res.redirect('/goals/' + req.params.id);
   } catch (err) {
-    console.error('goal log:', err.message);
+    console.error('goal feedback:', err.message);
     res.redirect('/goals');
   }
 }
@@ -126,23 +135,4 @@ async function postStatus(req, res) {
   }
 }
 
-async function postAdapt(req, res) {
-  try {
-    if (!mongoose.isValidObjectId(req.params.id)) return res.redirect('/goals');
-    const goal = await Goal.findOne({ _id: req.params.id, userId: userId(req) });
-    if (!goal) return res.redirect('/goals');
-    const target = req.body.target === '' || req.body.target == null ? null : Number(req.body.target);
-    if (Number.isFinite(target)) goal.target = target;
-    const ctx = await loadContext(userId(req));
-    const guidance = await goalCoach.guideAsync(Object.assign({ goal: goal.toObject() }, ctx));
-    goal.guidance = (guidance.assessment || '') + '\n\nNEXT: ' + (guidance.nextStep || '');
-    goal.guidanceAt = new Date();
-    await goal.save();
-    res.redirect('/goals/' + req.params.id);
-  } catch (err) {
-    console.error('goal adapt:', err.message);
-    res.redirect('/goals');
-  }
-}
-
-module.exports = { getList, postCreate, getDetail, postLog, postStatus, postAdapt };
+module.exports = { getList, postCreate, getDetail, postFeedback, postStatus };

@@ -12,6 +12,8 @@ const DIMENSION_LABELS = {
 };
 
 const { SESSION_MILESTONES } = require('../services/progress');
+const Goal = require('../models/Goal');
+const goalCoach = require('../services/goalCoach');
 
 // ── THE COCKPIT (config/App.js D-sections, Step 5 M3) ───────────
 // The honest answer to "How am I improving?" — no P&L, no on-chain
@@ -152,7 +154,13 @@ const getDashboard = async (req, res) => {
       req.session.save(() => {});
     }
 
+    // Daily goal feedback reminder (owner directive 21 Oct 2026): the
+    // accountability nudge — ACTIVE goals with no feedback entry today.
+    const goalsDue = (await Goal.find({ userId: user._id, status: 'ACTIVE' }).lean())
+      .filter(g => goalCoach.feedbackDueToday(g));
+
     res.render('dashboard', {
+      goalsDue,
       user: userWithBadges,
       sessions: recentSessions.slice(0, 5),
       score,

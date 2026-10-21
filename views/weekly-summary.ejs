@@ -62,12 +62,12 @@
         <% }); %>
       </div>
       <div class="k-weekmeta">
-        <span><%= stats.loopCompleted %><%= t('wk.throughLoop') %></span>
+        <span><%= stats.loopCompleted %> <%= t('wk.throughLoop') %></span>
         <span>·</span>
-        <span><%= stats.loopOpen %><%= t('wk.stillOpen') %></span>
+        <span><%= stats.loopOpen %> <%= t('wk.stillOpen') %></span>
         <% if (stats.complianceRate != null) { %>
           <span>·</span>
-          <span><%= stats.compliant %><%= t('wk.of') %><%= stats.checked %><%= t('wk.insideRules') %></span>
+          <span><%= stats.compliant %> <%= t('wk.of') %> <%= stats.checked %> <%= t('wk.insideRules') %></span>
         <% } %>
       </div>
       <div class="k-fieldhint"><%= t('wk.complianceNote') %></div>
@@ -85,9 +85,9 @@
           <% if (move.overall.same) { %>
             <span class="k-deltachip is-flat"><%= t('prog.firstReading') %></span>
           <% } else if (move.overall.delta > 0) { %>
-            <span class="k-deltachip is-up">▲ +<%= move.overall.delta %><%= t('wk.thisWeek') %></span>
+            <span class="k-deltachip is-up">▲ +<%= move.overall.delta %> <%= t('wk.thisWeek') %></span>
           <% } else if (move.overall.delta < 0) { %>
-            <span class="k-deltachip is-down">▼ <%= move.overall.delta %><%= t('wk.thisWeek') %></span>
+            <span class="k-deltachip is-down">▼ <%= move.overall.delta %> <%= t('wk.thisWeek') %></span>
           <% } else { %>
             <span class="k-deltachip is-flat"><%= t('wk.flatWeek') %></span>
           <% } %>

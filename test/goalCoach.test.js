@@ -117,6 +117,9 @@ test('parseGuide reads the ASSESSMENT/NEXT shape and strips asterisks', () => {
 
 const { isPropFirmGoal } = require('../services/goalCoach');
 
+// Feedback-first batch (21 Oct 2026) — full module for the new surface.
+const goalCoach = require('../services/goalCoach');
+
 test('prop-firm goals are recognized by metric or by their words', () => {
   assert.ok(isPropFirmGoal({ metric: 'PROP_FIRM', title: 'Anything' }));
   assert.ok(isPropFirmGoal({ metric: 'CUSTOM', title: 'Pass my prop firm challenge' }));
@@ -186,4 +189,47 @@ test('the goal prompt states the boundary for the LLM path too', () => {
   const p = buildGuidePrompt({ goal, user, system, sessions, movement: null, mindState });
   assert.match(p, /no trading insights, no signals, no market opinions/);
   assert.match(p, /discipline and accountability the evaluation measures/);
+});
+
+test('daily feedback is quoted and gauged in the guidance', () => {
+  const g = goalCoach.guide({
+    goal: {
+      title: 'Keep risk tight', metric: 'CUSTOM', target: 3, unit: '',
+      cadence: 'WEEKLY', status: 'ACTIVE', rationale: 'Protect my capital.',
+      progressLog: [
+        { at: new Date('2026-10-20T10:00:00Z'), value: 1, note: 'Skipped a late-night entry.' },
+        { at: new Date('2026-10-21T10:00:00Z'), value: 3, note: 'Waited for confirmation all day.' }
+      ]
+    },
+    user: {}, sessions: [], movement: null, mindState: null,
+    now: new Date('2026-10-21T12:00:00Z')
+  });
+  assert.ok(g.assessment.includes('Waited for confirmation all day.'),
+    'latest feedback quoted in the assessment: ' + g.assessment);
+  assert.match(g.assessment, /moved 1 → 3 across 2 entries/,
+    'value movement gauged across entries');
+});
+
+test('feedback due rule: ACTIVE goal with no entry today', () => {
+  assert.strictEqual(goalCoach.feedbackDueToday({ status: 'ACTIVE', progressLog: [] }), true);
+  assert.strictEqual(
+    goalCoach.feedbackDueToday({ status: 'ACTIVE', progressLog: [{ at: new Date(), note: 'ok' }] }), false);
+  assert.strictEqual(
+    goalCoach.feedbackDueToday({ status: 'PAUSED', progressLog: [] }), false);
+  assert.strictEqual(
+    goalCoach.feedbackDueToday({ status: 'ACTIVE', progressLog: [{ at: new Date('2026-10-01T09:00:00Z'), note: 'old' }] }), true);
+});
+
+test('guide prompt carries the DAILY FEEDBACK block', () => {
+  const p = goalCoach.buildGuidePrompt({
+    goal: {
+      title: 'Journal every day', rationale: 'Build the habit.',
+      metric: 'CUSTOM', target: 5, unit: '', cadence: 'WEEKLY', status: 'ACTIVE',
+      progressLog: [{ at: new Date('2026-10-20T09:00:00Z'), value: 3, note: 'Blocked by hesitation.' }]
+    },
+    user: {}, sessions: [], movement: null, mindState: null
+  });
+  assert.match(p, /DAILY FEEDBACK/);
+  assert.ok(p.includes('Blocked by hesitation.'), 'their words reach the LLM');
+  assert.match(p, /gauge the process from their daily feedback/);
 });

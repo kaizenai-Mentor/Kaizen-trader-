@@ -26,12 +26,19 @@ async function getWeekly(req, res) {
   try {
     const userId = req.session.user.id;
     const now = new Date();
-    const weekStart = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+    // Owner directive (20 Oct 2026): a week runs SUNDAY → SATURDAY.
+    // weekStart is this week's Sunday 00:00; weekEnd is next Sunday
+    // (exclusive), so the window is exactly Sun–Sat.
+    const weekStart = new Date(now);
+    weekStart.setDate(now.getDate() - now.getDay());
+    weekStart.setHours(0, 0, 0, 0);
+    const weekEnd = new Date(weekStart);
+    weekEnd.setDate(weekStart.getDate() + 7);
 
     const [user, snapshotsAsc, weekSessions, mindState, allSessions] = await Promise.all([
       User.findById(userId),
       ScoreSnapshot.find({ userId }).sort({ computedAt: 1 }).limit(200).lean(),
-      Journal.find({ userId, createdAt: { $gte: weekStart } }).sort({ createdAt: -1 }).lean(),
+      Journal.find({ userId, createdAt: { $gte: weekStart, $lt: weekEnd } }).sort({ createdAt: -1 }).lean(),
       MindState.ensureForUser(userId),
       Journal.find({ userId }).sort({ createdAt: 1 }).limit(60).lean()
     ]);
@@ -41,13 +48,15 @@ async function getWeekly(req, res) {
     const move = progress.movement(snapshotsAsc, 7, now);
     const earned = weekly.badgesThisWeek(user.badges, weekStart);
 
-    // Visible dates on every card (owner directive 20 Oct 2026) — the
-    // summary must be dated so week-over-week records can be measured.
+    // Visible dates on every card (owner directive 20 Oct 2026) —
+    // always the calendar week: Sunday through Saturday.
+    const weekSat = new Date(weekStart);
+    weekSat.setDate(weekStart.getDate() + 6);
     const fShort = d => d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
     const fFull = d => d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-    const dateRange = weekStart.getFullYear() === now.getFullYear()
-      ? `${fShort(weekStart)} – ${fFull(now)}`
-      : `${fFull(weekStart)} – ${fFull(now)}`;
+    const dateRange = weekStart.getFullYear() === weekSat.getFullYear()
+      ? `${fShort(weekStart)} – ${fFull(weekSat)}`
+      : `${fFull(weekStart)} – ${fFull(weekSat)}`;
 
     // The coach's letter — honest empty state, or cached/generated letter.
     let letter;

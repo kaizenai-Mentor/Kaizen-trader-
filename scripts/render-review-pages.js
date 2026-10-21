@@ -186,7 +186,7 @@ const pages = {
       ]
     },
     totalSessions: 5,
-    dateRange: 'Oct 13 – Oct 20, 2026',
+    dateRange: 'Oct 18 – Oct 24, 2026',
     title: 'Weekly Review'
   },
   'trading-system': { user, system, saved: false, title: 'My Trading System' },
