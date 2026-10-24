@@ -38,6 +38,7 @@ const ANNOUNCEMENT = {
 // view name -> output file (public pages, rendered logged out)
 const PUBLIC_PAGES = {
   welcome: 'index.html',
+  landing: 'landing.html',
   about: 'about.html',
   services: 'services.html',
   help: 'help.html',
@@ -79,6 +80,8 @@ const REWRITES = [
   [/href="\/help"/g, 'href="help.html"'],
   [/href="\/privacy"/g, 'href="privacy.html"'],
   [/href="\/terms"/g, 'href="terms.html"'],
+  [/href="\/landing"/g, 'href="landing.html"'],
+  [/href="\/beta"/g, 'href="landing.html"'],
   [/href="\/#([^"]*)"/g, 'href="#$1"'],
   [/href="\/"/g, 'href="index.html"'],
   [/(href|src)="\/(css|js|images)\//g, '$1="$2/'],

@@ -6,7 +6,9 @@ const getRegister = (req, res) => {
   res.render('register', {
     error: null,
     step: 'join',
-    query: req.query
+    query: req.query,
+    username: req.query.username || '',
+    email: req.query.email || ''
   });
 };
 

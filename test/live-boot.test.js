@@ -116,3 +116,38 @@ test('old improve URL now lands in the Weekly Review', async () => {
   assert.strictEqual(res.status, 302);
   assert.strictEqual(res.headers.get('location'), '/weekly-summary');
 });
+
+test('separate shareable KAIZEN Landing Page V1 (/landing and /beta) serves Trader Development Platform wireframe & early-user pipeline (23 Oct 2026)', async () => {
+  const welcome = await get('/');
+  assert.strictEqual(welcome.res.status, 200);
+  assert.ok(welcome.body.includes('Most traders know'), 'welcome page (/) must remain intact as the welcome page');
+
+  const { res, body } = await get('/landing');
+  assert.strictEqual(res.status, 200);
+  assert.ok(body.includes('Trader Development Platform'), 'must position KAIZEN as Trader Development Platform');
+  assert.ok(body.includes('Join Beta'), 'must include Join Beta primary CTA');
+  assert.ok(body.includes('Built for traders committed to continuous improvement.'), 'must include hero trusted statement');
+  assert.ok(body.includes('I keep breaking my rules.') && body.includes('I revenge traded.'), 'must include Section 2 problem vertical timeline');
+  assert.ok(body.includes('Most trading tools analyze the market.') && body.includes('develops the trader.'), 'must include Section 6 signature quote');
+  assert.ok(body.includes('Starting Trader') && body.includes('Developed Trader'), 'must include Section 7 Performance Journey');
+  assert.ok(body.includes('Better Traders Aren\'t Found.') && body.includes('They\'re Built.'), 'must include Section 10 Final CTA');
+  assert.ok(body.includes('action="/beta/join"'), 'must include early-user Beta pipeline form');
+
+  const betaAlias = await get('/beta');
+  assert.strictEqual(betaAlias.res.status, 200);
+  assert.ok(betaAlias.body.includes('Join the KAIZEN Beta Cohort'));
+});
+
+test('Set a goal card has no metric, target, or cadence inputs and branded select assets ship (23 Oct 2026)', async () => {
+  const fs = require('fs');
+  const path = require('path');
+  const goalsEjs = fs.readFileSync(path.join(__dirname, '..', 'views', 'goals.ejs'), 'utf8');
+  assert.ok(!goalsEjs.includes('name="metric"'), 'metric input must be removed from Set a goal card');
+  assert.ok(!goalsEjs.includes('name="target"'), 'target input must be removed from Set a goal card');
+  assert.ok(!goalsEjs.includes('name="cadence"'), 'cadence input must be removed from Set a goal card');
+
+  const appJs = await get('/js/app.js');
+  assert.strictEqual(appJs.res.status, 200);
+  assert.ok(appJs.body.includes('initBrandedSelects') && appJs.body.includes('k-select-menu'), 'app.js must ship branded select dropdowns');
+});
+

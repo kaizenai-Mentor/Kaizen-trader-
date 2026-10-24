@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>KAIZEN — Trader Development Platform (Early Access Beta)</title>
+  <meta name="description" content="KAIZEN is the Trader Development Platform built for continuous behavioral improvement. Join the early-user Beta to test KAIZEN and develop the trader behind every trade.">
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#F5C518">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="images/kaizen-icon.png" type="image/png">
+<link rel="apple-touch-icon" href="images/kaizen-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<script src="js/feather.min.js"></script>
+<script>
+  // KAIZEN custom icon: "brain" for Psychology. Feather ships no brain glyph,
+  // so it is registered here in the same stroke style as the rest of the set
+  // (paths from the ISC-licensed lucide brain icon) and renders through the
+  // normal data-feather="brain" mechanism. Must run before feather.replace().
+  (function () {
+    try {
+      if (!window.feather || !feather.icons || !feather.icons.activity) return;
+      var Icon = feather.icons.activity.constructor;
+      feather.icons.brain = new Icon('brain',
+        '<path d="M12 18V5"/>' +
+        '<path d="M15 13a4.17 4.17 0 0 1-3-4 4.17 4.17 0 0 1-3 4"/>' +
+        '<path d="M17.598 6.5A3 3 0 1 0 12 5a3 3 0 1 0-5.598 1.5"/>' +
+        '<path d="M17.997 5.125a4 4 0 0 1 2.526 5.77"/>' +
+        '<path d="M18 18a4 4 0 0 0 2-7.464"/>' +
+        '<path d="M19.967 17.483A4 4 0 1 1 12 18a4 4 0 1 1-7.967-.517"/>' +
+        '<path d="M6 18a4 4 0 0 1-2-7.464"/>' +
+        '<path d="M6.003 5.125a4 4 0 0 0-2.526 5.77"/>');
+    } catch (e) { /* brain icon unavailable: Psychology links still work */ }
+  })();
+</script>
+<script>
+  // Apply saved theme BEFORE first paint to avoid a flash of the wrong theme
+  (function () {
+    try {
+      var t = localStorage.getItem('kaizen-theme');
+      if (!t) {
+        t = (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches)
+          ? 'light' : 'dark';
+      }
+      if (t !== 'dark' && t !== 'light') t = 'dark';
+      document.documentElement.setAttribute('data-theme', t);
+    } catch (e) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+  })();
+</script>
+
+<script>
+(function(){try{var u=new URL(window.location.href);if(u.searchParams.has('wallet')){u.searchParams.delete('wallet');window.history.replaceState({},document.title,u.toString());}}catch(e){}})();
+</script>
+
+</head>
+<body class="welcome-page kl-body">
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       NAVIGATION BAR — Minimal
+       LOGO | Features | How It Works | Resources | Beta | Login | Join Beta
+       ═══════════════════════════════════════════════════════════════ -->
+  <header class="kl-nav">
+    <div class="kl-nav-inner">
+      <a href="landing.html" class="kl-brand" aria-label="KAIZEN Landing">
+        <span class="kl-brand-kanji">改善</span>
+        <span>KAIZEN</span>
+      </a>
+
+      <nav class="kl-nav-links" aria-label="Landing Navigation">
+        <a href="#features" class="kl-nav-link">Features</a>
+        <a href="#how-it-works" class="kl-nav-link">How It Works</a>
+        <a href="#resources" class="kl-nav-link">Resources</a>
+        <a href="#beta" class="kl-nav-link">Beta</a>
+      </nav>
+
+      <div class="kl-nav-actions">
+        <a href="login.html" class="kl-nav-link" style="font-weight:600;">Login</a>
+        <a href="#beta" class="kl-btn-gold">Join Beta</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       SECTION 1 — HERO
+       Left: Headline, Subheading, Buttons
+       Right: Clean Dashboard Mockup (Today's Focus, Weekly Improvement, KAIZEN AI, Goals)
+       Below Hero: Small Trusted Statement
+       ═══════════════════════════════════════════════════════════════ -->
+  <section class="kl-hero">
+    <div class="kl-hero-grid">
+      <div>
+        <div class="kl-eyebrow">Trader Development Platform</div>
+        <h1 class="kl-hero-h1">
+          Develop the Trader<br>
+          Behind Every Trade.
+        </h1>
+        <p class="kl-hero-sub">
+          KAIZEN is the Trader Development Platform built for continuous behavioral improvement. Document your sessions, set clear goals, and turn honest daily reflection into lasting execution discipline.
+        </p>
+        <div class="kl-hero-ctas">
+          <a href="#beta" class="kl-btn-gold kl-btn-lg">Join Beta</a>
+          <a href="#how-it-works" class="kl-btn-blue kl-btn-lg">How It Works</a>
+        </div>
+      </div>
+
+      <!-- Right Side: Dashboard Mockup showing Today's Focus, Weekly Improvement, KAIZEN AI, Goals -->
+      <div class="kl-mockup" aria-label="KAIZEN Dashboard Preview">
+        <div class="kl-mockup-head">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span class="kl-brand-kanji" style="font-family:'Sora',sans-serif;font-size:0.95rem;">改善</span>
+            <span style="font-family:'Sora',sans-serif;font-size:0.86rem;font-weight:600;color:#F4F8FB;">KAIZEN Workspace</span>
+          </div>
+          <span class="kl-beta-badge">Session #24 · Active</span>
+        </div>
+
+        <div class="kl-mockup-grid">
+          <!-- 1. Today's Focus -->
+          <div class="kl-mini-card">
+            <div class="kl-mini-label">Today's Focus</div>
+            <div class="kl-mini-title">Wait for 15m structure close</div>
+            <p class="kl-mini-body">
+              Enter only after confirmation candle closes. No anticipatory entries during London open.
+            </p>
+          </div>
+
+          <!-- 2. Weekly Improvement -->
+          <div class="kl-mini-card">
+            <div class="kl-mini-label">Weekly Improvement</div>
+            <div class="kl-mini-title kl-num" style="display:flex;align-items:baseline;justify-content:space-between;">
+              <span>Execution Discipline</span>
+              <span style="color:#F5C518;font-size:1.05rem;">86%</span>
+            </div>
+            <p class="kl-mini-body kl-num">+14% vs last week across 5 logged sessions.</p>
+            <div class="kl-progress-track">
+              <div class="kl-progress-fill" style="width:86%;"></div>
+            </div>
+          </div>
+
+          <!-- 3. KAIZEN AI -->
+          <div class="kl-mini-card">
+            <div class="kl-mini-label" style="color:#F5C518;">KAIZEN AI</div>
+            <div class="kl-mini-title">Behavioral Observation</div>
+            <p class="kl-mini-body">
+              You respected your invalidation level on both trades today. Patience held when price retested the high.
+            </p>
+          </div>
+
+          <!-- 4. Goals -->
+          <div class="kl-mini-card">
+            <div class="kl-mini-label">Goals</div>
+            <div class="kl-mini-title">Zero impulsive re-entries</div>
+            <p class="kl-mini-body kl-num">
+              4 of 4 sessions aligned this week. Next step: maintain this standard through Friday's session.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Below Hero: Small Trusted Statement -->
+    <div class="kl-trusted-bar">
+      Built for traders committed to continuous improvement.
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       SECTION 2 — THE PROBLEM
+       Center-aligned. Large typography. No illustrations. Simple vertical timeline.
+       ═══════════════════════════════════════════════════════════════ -->
+  <section class="kl-section kl-section--border">
+    <div style="text-align:center;">
+      <div class="kl-eyebrow">The Pattern Every Trader Recognizes</div>
+      <h2 style="font-size:clamp(1.8rem,3.4vw,2.6rem);margin:0;">Strategy is rarely the real bottleneck.</h2>
+    </div>
+
+    <div class="kl-problem-flow" role="list" aria-label="The Trader Breakdown Loop">
+      <div class="kl-problem-step" role="listitem">“I keep breaking my rules.”</div>
+      <div class="kl-problem-arrow" aria-hidden="true">↓</div>
+      <div class="kl-problem-step" role="listitem">“I revenge traded.”</div>
+      <div class="kl-problem-arrow" aria-hidden="true">↓</div>
+      <div class="kl-problem-step" role="listitem">“I knew better.”</div>
+      <div class="kl-problem-arrow" aria-hidden="true">↓</div>
+      <div class="kl-problem-step" role="listitem">“I did it anyway.”</div>
+      <div class="kl-problem-arrow" aria-hidden="true">↓</div>
+      <div class="kl-problem-step" role="listitem" style="color:#F5C518;">“Now what?”</div>
+    </div>
+
+    <div class="kl-problem-bridge">
+      <div class="kl-eyebrow" style="margin-bottom:8px;">Enter KAIZEN</div>
+      <p style="font-size:1.02rem;line-height:1.75;color:#F4F8FB;margin:0;">
+        Knowing your edge is not the same as executing it. KAIZEN turns every trading session into structured behavioral feedback so you stop repeating the same mistakes.
+      </p>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       SECTION 3 — MEET KAIZEN
+       Two-column: Left UI preview, Right short explanation
+       ═══════════════════════════════════════════════════════════════ -->
+  <section class="kl-section kl-section--border">
+    <div class="kl-meet-grid">
+      <!-- Left: Large UI Preview -->
+      <div class="kl-mockup">
+        <div class="kl-mockup-head">
+          <span style="font-family:'Sora',sans-serif;font-size:0.88rem;font-weight:600;">Session Review · KAIZEN AI</span>
+          <span class="kl-beta-badge">London Session</span>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:14px;">
+          <div class="kl-mini-card">
+            <div class="kl-mini-label">Session Summary</div>
+            <p class="kl-mini-body">
+              You planned one continuation setup on NQ, waited 35 minutes for structure to align, and closed the platform after your target was reached.
+            </p>
+          </div>
+          <div class="kl-mini-card">
+            <div class="kl-mini-label" style="color:#F5C518;">What I Noticed</div>
+            <p class="kl-mini-body">
+              When initial momentum stalled, you adjusted your thesis objectively based on market structure rather than emotion.
+            </p>
+          </div>
+          <div class="kl-mini-card">
+            <div class="kl-mini-label">Your Next Improvement</div>
+            <p class="kl-mini-body">
+              Carry this exact pre-entry checklist into tomorrow's session before placing your first order.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Short explanation (2-4 lines per paragraph) -->
+      <div>
+        <div class="kl-eyebrow">Meet KAIZEN</div>
+        <h2 style="font-size:clamp(1.9rem,3.4vw,2.75rem);line-height:1.18;margin:0 0 20px;">
+          You document the session.<br>KAIZEN interprets it.
+        </h2>
+        <p style="font-size:1rem;line-height:1.75;color:rgba(244,248,251,0.78);margin:0 0 18px;">
+          KAIZEN is a Trader Development Platform designed around how you think, decide, and execute. Instead of drowning you in noisy chart indicators, it focuses on the habits that drive your performance.
+        </p>
+        <p style="font-size:1rem;line-height:1.75;color:rgba(244,248,251,0.78);margin:0 0 28px;">
+          Write down what you planned and what happened in plain language. KAIZEN connects today's decisions to your active goals and long-term behavioral memory.
+        </p>
+        <a href="#beta" class="kl-btn-gold">Join Beta</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       SECTION 4 — HOW KAIZEN WORKS
+       Horizontal Timeline: ① Sign Up → ② Set Goals → ③ Trade → ④ Reflect → ⑤ KAIZEN Understands → ⑥ Improve
+       ═══════════════════════════════════════════════════════════════ -->
+  <section class="kl-section kl-section--border" id="how-it-works">
+    <div style="max-width:640px;">
+      <div class="kl-eyebrow">How It Works</div>
+      <h2 style="font-size:clamp(1.9rem,3.4vw,2.7rem);margin:0 0 14px;">A calm, repeatable development loop.</h2>
+      <p style="font-size:0.98rem;line-height:1.72;color:rgba(244,248,251,0.74);margin:0;">
+        Six deliberate steps that turn everyday market participation into compounding personal mastery.
+      </p>
+    </div>
+
+    <div class="kl-timeline-horiz">
+      <div class="kl-tl-card">
+        <div class="kl-tl-num">①</div>
+        <h3 class="kl-tl-title">Sign Up</h3>
+        <p class="kl-tl-desc">Create your private development workspace and define your trading approach.</p>
+      </div>
+      <div class="kl-tl-card">
+        <div class="kl-tl-num">②</div>
+        <h3 class="kl-tl-title">Set Goals</h3>
+        <p class="kl-tl-desc">Write the behavioral goal you are working on and why it matters to your growth.</p>
+      </div>
+      <div class="kl-tl-card">
+        <div class="kl-tl-num">③</div>
+        <h3 class="kl-tl-title">Trade</h3>
+        <p class="kl-tl-desc">Execute your session in the market with your daily focus clearly in mind.</p>
+      </div>
+      <div class="kl-tl-card">
+        <div class="kl-tl-num">④</div>
+        <h3 class="kl-tl-title">Reflect</h3>
+        <p class="kl-tl-desc">Document your session honestly—what you planned, what happened, and why.</p>
+      </div>
+      <div class="kl-tl-card">
+        <div class="kl-tl-num">⑤</div>
+        <h3 class="kl-tl-title">KAIZEN Understands</h3>
+        <p class="kl-tl-desc">KAIZEN AI evaluates your reasoning, behavioral patterns, and rule alignment.</p>
+      </div>
+      <div class="kl-tl-card">
+        <div class="kl-tl-num">⑥</div>
+        <h3 class="kl-tl-title">Improve</h3>
+        <p class="kl-tl-desc">Apply one clear adjustment into your next session and watch consistency compound.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       SECTION 5 — YOUR DEVELOPMENT TOOLKIT (2 × 3 Grid)
+       Every card answers: "How does this help me become a better trader?"
+       ═══════════════════════════════════════════════════════════════ -->
+  <section class="kl-section kl-section--border" id="features">
+    <div style="max-width:660px;">
+      <div class="kl-eyebrow">Your Development Toolkit</div>
+      <h2 style="font-size:clamp(1.9rem,3.4vw,2.7rem);margin:0 0 14px;">Six systems powering one platform.</h2>
+      <p style="font-size:0.98rem;line-height:1.72;color:rgba(244,248,251,0.74);margin:0;">
+        Every part of KAIZEN is built to answer one question: how does this help you become a better trader?
+      </p>
+    </div>
+
+    <div class="kl-toolkit-grid">
+      <div class="kl-toolkit-card">
+        <div class="kl-toolkit-role">AI Coaching &amp; Analysis</div>
+        <h3 class="kl-toolkit-title">KAIZEN AI</h3>
+        <p class="kl-toolkit-body">
+          Your AI coach for reflection, behavioral analysis, and improvement. It understands the reasoning behind your decisions so you can separate disciplined thesis adjustments from emotional mistakes.
+        </p>
+      </div>
+
+      <div class="kl-toolkit-card">
+        <div class="kl-toolkit-role">Reflection</div>
+        <h3 class="kl-toolkit-title">Sessions</h3>
+        <p class="kl-toolkit-body">
+          Turn every trading day into a structured lesson. By writing down your plan and post-session reflection, you gain immediate clarity on whether you traded your process.
+        </p>
+      </div>
+
+      <div class="kl-toolkit-card">
+        <div class="kl-toolkit-role">Accountability</div>
+        <h3 class="kl-toolkit-title">Goals</h3>
+        <p class="kl-toolkit-body">
+          Focus on one meaningful behavioral commitment at a time. KAIZEN automatically tracks how each logged session aligns with your goal and gives you a clear focus before you trade.
+        </p>
+      </div>
+
+      <div class="kl-toolkit-card">
+        <div class="kl-toolkit-role">Progress</div>
+        <h3 class="kl-toolkit-title">Weekly Review</h3>
+        <p class="kl-toolkit-body">
+          Step back from single-session noise. Every Sunday-to-Saturday review synthesizes what held steady, where discipline slipped, and the single adjustment to carry into next week.
+        </p>
+      </div>
+
+      <div class="kl-toolkit-card">
+        <div class="kl-toolkit-role">Long-Term Behavioral Intelligence</div>
+        <h3 class="kl-toolkit-title">Memories</h3>
+        <p class="kl-toolkit-body">
+          Stop forgetting hard-won lessons. KAIZEN retains your recurring triggers, strengths, and behavioral tendencies across weeks and months so your coaching grows smarter with you.
+        </p>
+      </div>
+
+      <div class="kl-toolkit-card">
+        <div class="kl-toolkit-role">Measured Consistency</div>
+        <h3 class="kl-toolkit-title">Progress</h3>
+        <p class="kl-toolkit-body">
+          Measure yourself on execution quality rather than short-term P&amp;L luck. Track your behavioral consistency across sessions so you can see and prove your development over time.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       SECTION 6 — SIGNATURE QUOTE
+       Huge typography. Centered. Minimal. No paragraph.
+       ═══════════════════════════════════════════════════════════════ -->
+  <section class="kl-section kl-section--border">
+    <div class="kl-quote-block">
+      <p class="kl-quote-line1">Most trading tools analyze the market.</p>
+      <p class="kl-quote-line2"><span style="color:#F5C518;">KAIZEN</span> develops the trader.</p>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       SECTION 7 — PERFORMANCE JOURNEY (Instead of Testimonials)
+       Starting Trader ↓ Learning Trader ↓ Disciplined Trader ↓ Consistent Trader ↓ Developed Trader
+       ═══════════════════════════════════════════════════════════════ -->
+  <section class="kl-section kl-section--border">
+    <div style="text-align:center;max-width:640px;margin:0 auto;">
+      <div class="kl-eyebrow">The Performance Journey</div>
+      <h2 style="font-size:clamp(1.9rem,3.4vw,2.7rem);margin:0 0 12px;">KAIZEN supports every stage.</h2>
+      <p style="font-size:0.98rem;line-height:1.72;color:rgba(244,248,251,0.74);margin:0;">
+        Development is a progression of habits. Wherever you are today, the platform meets you at your current stage.
+      </p>
+    </div>
+
+    <div class="kl-journey-track">
+      <div class="kl-journey-stage">
+        <div class="kl-mini-label kl-num">Stage 01</div>
+        <h3 style="font-size:1.05rem;margin:0 0 8px;">Starting Trader</h3>
+        <p class="kl-mini-body">Build structured journaling and pre-session preparation before bad habits take root.</p>
+      </div>
+
+      <div class="kl-journey-stage">
+        <div class="kl-mini-label kl-num">Stage 02</div>
+        <h3 style="font-size:1.05rem;margin:0 0 8px;">Learning Trader</h3>
+        <p class="kl-mini-body">Identify the gap between your trading plan and your real-time emotional reactions.</p>
+      </div>
+
+      <div class="kl-journey-stage">
+        <div class="kl-mini-label kl-num">Stage 03</div>
+        <h3 style="font-size:1.05rem;margin:0 0 8px;">Disciplined Trader</h3>
+        <p class="kl-mini-body">Follow risk and entry rules consistently, even during drawdowns or slow sessions.</p>
+      </div>
+
+      <div class="kl-journey-stage">
+        <div class="kl-mini-label kl-num">Stage 04</div>
+        <h3 style="font-size:1.05rem;margin:0 0 8px;">Consistent Trader</h3>
+        <p class="kl-mini-body">Refine subtle execution details and adapt calmly when market conditions shift.</p>
+      </div>
+
+      <div class="kl-journey-stage is-culmination">
+        <div class="kl-mini-label kl-num" style="color:#F5C518;">Stage 05</div>
+        <h3 style="font-size:1.05rem;margin:0 0 8px;color:#F5C518;">Developed Trader</h3>
+        <p class="kl-mini-body">Operate with self-awareness, objective review, and repeatable professional execution.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       SECTION 8 — DASHBOARD SHOWCASE
+       Actual UI carousel: Sessions · AI · Goals · Progress · Weekly Review
+       ═══════════════════════════════════════════════════════════════ -->
+  <section class="kl-section kl-section--border" id="showcase">
+    <div style="max-width:640px;">
+      <div class="kl-eyebrow">Inside the Platform</div>
+      <h2 style="font-size:clamp(1.9rem,3.4vw,2.7rem);margin:0 0 12px;">Built for clarity, not clutter.</h2>
+      <p style="font-size:0.98rem;line-height:1.72;color:rgba(244,248,251,0.74);margin:0;">
+        Explore how each workspace inside KAIZEN keeps your attention on behavior and execution.
+      </p>
+    </div>
+
+    <div class="kl-showcase-tabs" role="tablist" aria-label="Dashboard Showcase Tabs">
+      <button type="button" class="kl-showcase-tab is-active" data-showcase-tab="sessions" role="tab" aria-selected="true">Sessions</button>
+      <button type="button" class="kl-showcase-tab" data-showcase-tab="ai" role="tab" aria-selected="false">AI</button>
+      <button type="button" class="kl-showcase-tab" data-showcase-tab="goals" role="tab" aria-selected="false">Goals</button>
+      <button type="button" class="kl-showcase-tab" data-showcase-tab="progress" role="tab" aria-selected="false">Progress</button>
+      <button type="button" class="kl-showcase-tab" data-showcase-tab="weekly" role="tab" aria-selected="false">Weekly Review</button>
+    </div>
+
+    <!-- Panel 1: Sessions -->
+    <div class="kl-showcase-panel is-active" data-showcase-panel="sessions" role="tabpanel">
+      <div class="kl-mockup-head">
+        <div>
+          <div class="kl-mini-label" style="margin-bottom:4px;">Sessions · Reflection</div>
+          <div style="font-family:'Sora',sans-serif;font-size:1.1rem;font-weight:600;">New York Session — Plan, Record &amp; Reflect</div>
+        </div>
+        <span class="kl-beta-badge">5-Part Conversational Review</span>
+      </div>
+      <div class="kl-mockup-grid">
+        <div class="kl-mini-card">
+          <div class="kl-mini-label">Session Narrative</div>
+          <p class="kl-mini-body">
+            “Waited for the 9:30 liquidity sweep before looking for longs. Took one clean setup at 10:05 and respected my stop size.”
+          </p>
+        </div>
+        <div class="kl-mini-card">
+          <div class="kl-mini-label" style="color:#F5C518;">KAIZEN Interpretation</div>
+          <p class="kl-mini-body">
+            Automatic behavioral read: Plan followed, risk respected, zero impulsive trades detected. Feeds directly into your active Goals.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Panel 2: AI -->
+    <div class="kl-showcase-panel" data-showcase-panel="ai" role="tabpanel">
+      <div class="kl-mockup-head">
+        <div>
+          <div class="kl-mini-label" style="margin-bottom:4px;">KAIZEN AI · Behavioral Coach</div>
+          <div style="font-family:'Sora',sans-serif;font-size:1.1rem;font-weight:600;">Context-Aware Coaching &amp; Pattern Analysis</div>
+        </div>
+        <span class="kl-beta-badge">Backed by Your Memories</span>
+      </div>
+      <div class="kl-mockup-grid">
+        <div class="kl-mini-card">
+          <div class="kl-mini-label">Trader Reflection</div>
+          <p class="kl-mini-body">
+            “I exited my GBPUSD trade early because higher-timeframe momentum stalled at resistance.”
+          </p>
+        </div>
+        <div class="kl-mini-card">
+          <div class="kl-mini-label" style="color:#F5C518;">KAIZEN AI Response</div>
+          <p class="kl-mini-body">
+            “Because you documented a clear market-structure reason before acting, this was a disciplined thesis adjustment rather than a fear-based exit.”
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Panel 3: Goals -->
+    <div class="kl-showcase-panel" data-showcase-panel="goals" role="tabpanel">
+      <div class="kl-mockup-head">
+        <div>
+          <div class="kl-mini-label" style="margin-bottom:4px;">Goals · Accountability</div>
+          <div style="font-family:'Sora',sans-serif;font-size:1.1rem;font-weight:600;">Pre-Session Coaching Brief</div>
+        </div>
+        <span class="kl-beta-badge">Automatic Tracking</span>
+      </div>
+      <div class="kl-mockup-grid">
+        <div class="kl-mini-card">
+          <div class="kl-mini-label">Your Goal &amp; What You're Doing Well</div>
+          <p class="kl-mini-body">
+            Goal: Stop forcing trades during midday chop. You have held your rule across 4 consecutive sessions.
+          </p>
+        </div>
+        <div class="kl-mini-card">
+          <div class="kl-mini-label" style="color:#F5C518;">Your Biggest Obstacle &amp; Today's Focus</div>
+          <p class="kl-mini-body">
+            Obstacle: Boredom after an early win. Today's Focus: Step away from the screen once your morning session plan is complete.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Panel 4: Progress -->
+    <div class="kl-showcase-panel" data-showcase-panel="progress" role="tabpanel">
+      <div class="kl-mockup-head">
+        <div>
+          <div class="kl-mini-label" style="margin-bottom:4px;">Progress · Behavioral Consistency</div>
+          <div style="font-family:'Sora',sans-serif;font-size:1.1rem;font-weight:600;">Five-Dimension Execution Tracking</div>
+        </div>
+        <span class="kl-beta-badge kl-num">KAIZEN Score · 79</span>
+      </div>
+      <div class="kl-mockup-grid">
+        <div class="kl-mini-card">
+          <div class="kl-mini-label">Rule Adherence &amp; Risk Discipline</div>
+          <p class="kl-mini-body kl-num">88% rule compliance over your last 20 sessions, up from 64% in your first month.</p>
+          <div class="kl-progress-track"><div class="kl-progress-fill" style="width:88%;"></div></div>
+        </div>
+        <div class="kl-mini-card">
+          <div class="kl-mini-label">Reflection Quality &amp; Patience</div>
+          <p class="kl-mini-body kl-num">Consistent post-session reflection streak: 12 sessions logged with full behavioral honesty.</p>
+          <div class="kl-progress-track"><div class="kl-progress-fill" style="width:82%;"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Panel 5: Weekly Review -->
+    <div class="kl-showcase-panel" data-showcase-panel="weekly" role="tabpanel">
+      <div class="kl-mockup-head">
+        <div>
+          <div class="kl-mini-label" style="margin-bottom:4px;">Weekly Review · Progress</div>
+          <div style="font-family:'Sora',sans-serif;font-size:1.1rem;font-weight:600;">Sunday-to-Saturday Development Synthesis</div>
+        </div>
+        <span class="kl-beta-badge">Weekly Cycle</span>
+      </div>
+      <div class="kl-mockup-grid">
+        <div class="kl-mini-card">
+          <div class="kl-mini-label">Week-over-Week Read</div>
+          <p class="kl-mini-body">
+            Your morning sessions showed calm preparation, while Thursday afternoon was the only session where an unplanned trade occurred.
+          </p>
+        </div>
+        <div class="kl-mini-card">
+          <div class="kl-mini-label" style="color:#F5C518;">Next Week's Priority</div>
+          <p class="kl-mini-body">
+            Cap daily execution at two setups maximum and log your session reflection immediately after closing charts.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       SECTION 9 — FAQ
+       Very clean accordion
+       ═══════════════════════════════════════════════════════════════ -->
+  <section class="kl-section kl-section--border" id="resources">
+    <div style="text-align:center;max-width:640px;margin:0 auto;">
+      <div class="kl-eyebrow">FAQ</div>
+      <h2 style="font-size:clamp(1.9rem,3.4vw,2.6rem);margin:0;">Common questions about KAIZEN.</h2>
+    </div>
+
+    <div class="kl-faq-list">
+      <div class="kl-faq-item is-open">
+        <button type="button" class="kl-faq-q" data-faq-toggle>
+          <span>What is KAIZEN?</span>
+          <span class="kl-faq-icon">+</span>
+        </button>
+        <div class="kl-faq-a">
+          KAIZEN is a Trader Development Platform. It combines structured session reflection, goal accountability, weekly progress synthesis, and KAIZEN AI behavioral coaching to help you develop consistent execution habits.
+        </div>
+      </div>
+
+      <div class="kl-faq-item">
+        <button type="button" class="kl-faq-q" data-faq-toggle>
+          <span>Does KAIZEN provide trading signals or market predictions?</span>
+          <span class="kl-faq-icon">+</span>
+        </button>
+        <div class="kl-faq-a">
+          Never. KAIZEN does not issue trade alerts, signals, or market predictions. Your strategy is yours—KAIZEN focuses entirely on how well you execute your plan and manage your behavior.
+        </div>
+      </div>
+
+      <div class="kl-faq-item">
+        <button type="button" class="kl-faq-q" data-faq-toggle>
+          <span>How does goal tracking work without complicated spreadsheets?</span>
+          <span class="kl-faq-icon">+</span>
+        </button>
+        <div class="kl-faq-a">
+          You simply state the goal you want to achieve and why it matters to you. Whenever you log and reflect on a trading session, KAIZEN interprets your session behavior and updates your goal progress automatically.
+        </div>
+      </div>
+
+      <div class="kl-faq-item">
+        <button type="button" class="kl-faq-q" data-faq-toggle>
+          <span>How do I join the Early Access Beta and test KAIZEN?</span>
+          <span class="kl-faq-icon">+</span>
+        </button>
+        <div class="kl-faq-a">
+          Enter your details in the Join Beta section below to join our early-user pipeline and proceed directly to create your Beta account and test the live platform.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       SECTION 10 — FINAL CTA & EARLY-USER BETA PIPELINE
+       Big typography + Early Tester Pipeline Form
+       ═══════════════════════════════════════════════════════════════ -->
+  <section class="kl-section kl-section--border kl-final-cta" id="beta">
+    <h2 class="kl-final-h1">
+      Better Traders Aren't Found.<br>
+      <span style="color:#F5C518;">They're Built.</span>
+    </h2>
+    <p class="kl-final-sub">
+      Every trading session is an opportunity to improve. KAIZEN helps you make the most of it.
+    </p>
+
+    <!-- Early-User Beta Pipeline Card -->
+    <div class="kl-mockup" style="max-width:560px;margin:0 auto;text-align:left;">
+      
+        <div class="kl-mockup-head" style="margin-bottom:18px;">
+          <div>
+            <div class="kl-mini-label" style="color:#F5C518;margin-bottom:4px;">Early Access Pipeline</div>
+            <div style="font-family:'Sora',sans-serif;font-size:1.08rem;font-weight:600;">Join the KAIZEN Beta Cohort</div>
+          </div>
+          <span class="kl-beta-badge">Open for Testers</span>
+        </div>
+
+        <form action="/beta/join" method="POST" style="display:flex;flex-direction:column;gap:14px;">
+          <div>
+            <label for="beta-name" style="display:block;font-size:0.78rem;color:rgba(244,248,251,0.72);margin-bottom:6px;">Your Name or Trader Handle</label>
+            <input id="beta-name" name="name" type="text" class="k-input" required placeholder="e.g. AlexTrader" style="border-radius:10px;">
+          </div>
+
+          <div>
+            <label for="beta-email" style="display:block;font-size:0.78rem;color:rgba(244,248,251,0.72);margin-bottom:6px;">Email Address</label>
+            <input id="beta-email" name="email" type="email" class="k-input" required placeholder="you@example.com" style="border-radius:10px;">
+          </div>
+
+          <div class="kl-mockup-grid">
+            <div>
+              <label for="beta-market" style="display:block;font-size:0.78rem;color:rgba(244,248,251,0.72);margin-bottom:6px;">Primary Market</label>
+              <select id="beta-market" name="primaryMarket" class="k-input">
+                <option value="Forex">Forex</option>
+                <option value="Futures / Indices">Futures / Indices</option>
+                <option value="Crypto">Crypto</option>
+                <option value="Stocks / Options">Stocks / Options</option>
+              </select>
+            </div>
+            <div>
+              <label for="beta-stage" style="display:block;font-size:0.78rem;color:rgba(244,248,251,0.72);margin-bottom:6px;">Current Stage</label>
+              <select id="beta-stage" name="stage" class="k-input">
+                <option value="Starting Trader">Starting Trader</option>
+                <option value="Learning Trader" selected>Learning Trader</option>
+                <option value="Disciplined Trader">Disciplined Trader</option>
+                <option value="Consistent Trader">Consistent Trader</option>
+                <option value="Prop Firm Trader">Prop Firm Trader</option>
+              </select>
+            </div>
+          </div>
+
+          <button type="submit" class="kl-btn-gold kl-btn-lg" style="width:100%;margin-top:6px;cursor:pointer;">
+            Join Beta
+          </button>
+        </form>
+      
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       FOOTER — Simple
+       Logo · Platform · Resources · Company · Legal · Socials
+       ═══════════════════════════════════════════════════════════════ -->
+  <footer class="kl-footer">
+    <div class="kl-footer-grid">
+      <div>
+        <a href="landing.html" class="kl-brand" style="margin-bottom:12px;">
+          <span class="kl-brand-kanji">改善</span>
+          <span>KAIZEN</span>
+        </a>
+        <p style="font-size:0.86rem;line-height:1.7;color:rgba(244,248,251,0.62);margin:10px 0 0;max-width:260px;">
+          The Trader Development Platform for disciplined execution, honest reflection, and continuous behavioral improvement.
+        </p>
+      </div>
+
+      <div>
+        <div class="kl-footer-col-title">Platform</div>
+        <ul class="kl-footer-links">
+          <li><a href="#features">KAIZEN AI</a></li>
+          <li><a href="#features">Sessions</a></li>
+          <li><a href="#features">Goals</a></li>
+          <li><a href="#features">Weekly Review</a></li>
+          <li><a href="#features">Memories</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <div class="kl-footer-col-title">Resources</div>
+        <ul class="kl-footer-links">
+          <li><a href="#how-it-works">How It Works</a></li>
+          <li><a href="#showcase">Platform Tour</a></li>
+          <li><a href="#resources">FAQ</a></li>
+          <li><a href="index.html">Welcome Page</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <div class="kl-footer-col-title">Company</div>
+        <ul class="kl-footer-links">
+          <li><a href="about.html">About KAIZEN</a></li>
+          <li><a href="#beta">Join Beta</a></li>
+          <li><a href="login.html">Login</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <div class="kl-footer-col-title">Legal &amp; Socials</div>
+        <ul class="kl-footer-links">
+          <li><a href="terms.html">Terms of Service</a></li>
+          <li><a href="privacy.html">Privacy Policy</a></li>
+          <li><a href="https://x.com" target="_blank" rel="noopener noreferrer">X (Twitter)</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="kl-footer-bottom">
+      <span>&copy; 2026 KAIZEN — Trader Development Platform. All rights reserved.</span>
+      <span>Continuous Improvement · 改善</span>
+    </div>
+  </footer>
+
+  <script src="js/app.js"></script>
+  <script>
+    if (window.feather) feather.replace();
+
+    // Interactive Dashboard Showcase Tabs
+    (function () {
+      var tabs = document.querySelectorAll('[data-showcase-tab]');
+      var panels = document.querySelectorAll('[data-showcase-panel]');
+      tabs.forEach(function (tab) {
+        tab.addEventListener('click', function () {
+          var target = tab.getAttribute('data-showcase-tab');
+          tabs.forEach(function (t) {
+            var active = t.getAttribute('data-showcase-tab') === target;
+            t.classList.toggle('is-active', active);
+            t.setAttribute('aria-selected', active ? 'true' : 'false');
+          });
+          panels.forEach(function (p) {
+            p.classList.toggle('is-active', p.getAttribute('data-showcase-panel') === target);
+          });
+        });
+      });
+
+      // FAQ Accordion
+      var faqBtns = document.querySelectorAll('[data-faq-toggle]');
+      faqBtns.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var item = btn.closest('.kl-faq-item');
+          if (!item) return;
+          item.classList.toggle('is-open');
+        });
+      });
+    })();
+  </script>
+</body>
+</html>
