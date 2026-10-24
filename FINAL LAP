@@ -1,281 +1,883 @@
-Yes. I went back through the product-reset decisions and everything we've discussed since then, rather than just the last couple of conversations.
+&lt;!DOCTYPE html&gt;
 
-The good news is: a lot has already been finalized. But I would not call V2 100% ready until you check a few specific items.
+&lt;html lang="en"&gt;
 
-What I found
+&lt;head&gt;
 
-🔴 1. Wallet connection — make sure it's removed
+&lt;meta charset="utf-8"&gt;
 
-We explicitly decided that wallet connection is NOT part of the current onboarding/dashboard.
+&lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
 
-Wallet infrastructure can remain for future:
+&lt;title&gt;KAIZEN – Trader Development Platform&lt;/title&gt;
 
-verified accounts
+&lt;meta name="description" content="KAIZEN is a Trader Development Platform. Set goals, reflect after every session, and build the habits of a consistent trader."&gt;
 
-opportunities
+&lt;link rel="preconnect" href="https://fonts.googleapis.com"&gt;
 
-rewards
+&lt;link rel="preconnect" href="https://fonts.gstatic.com" crossorigin&gt;
 
-payouts
+&lt;link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&amp;family=Sora:wght@400;600;700&amp;display=swap" rel="stylesheet"&gt;
 
-credentials
+&lt;style&gt;
 
+:root{--black:#0A0A0A;--white:#F4F8FB;--gold:#F5C518;--blue:#1A2F4A;--mute:#A3B1BF;--mute-d:#41566B;--line:#232B33;color-scheme:dark}
 
-But the current user experience should not require connecting a wallet.
+*{box-sizing:border-box;margin:0;padding:0}
 
-If wallet connection is still visible anywhere in V2 onboarding/dashboard, remove it.
+html{scroll-behavior:smooth}
 
+body{font-family:Inter,system-ui,sans-serif;background:var(--black);color:var(--white);line-height:1.65;font-size:17px;font-variant-numeric:tabular-nums}
 
----
+h1,h2,h3,.logo{font-family:Sora,system-ui,sans-serif;letter-spacing:-.02em;line-height:1.12}
 
-🔴 2. V2 score — verify the five dimensions
+a{color:inherit;text-decoration:none}
 
-The V2 score was frozen around these five dimensions:
+.wrap{max-width:1120px;margin:0 auto;padding:0 24px}
 
-1. Process
+section{padding:130px 0}
 
+.light{background:var(--white);color:var(--black)}
 
-2. Risk
+.light .sub{color:var(--mute-d)}
 
+.sub{color:var(--mute);max-width:32em}
 
-3. Execution
+h2{font-size:clamp(2rem,4.2vw,3rem);font-weight:600;margin-bottom:22px}
 
+:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
 
-4. Behavior
 
 
-5. Learning & Consistency
+/* buttons */
 
+.btn{display:inline-block;padding:14px 26px;border-radius:12px;font-weight:500;border:1.5px solid transparent;transition:background .25s,color .25s,border-color .25s;cursor:pointer;font-family:inherit;font-size:1rem}
 
+.btn.gold{background:var(--gold);color:var(--black)}
 
-The score should be off-chain.
+.btn.gold:hover{background:var(--white)}
 
-Also, we specifically wanted to avoid a score that can be gamed through simple self-reporting. It should eventually consider multiple signals, consistency, contradictions and improvement over time.
+.btn.blue{background:var(--blue);color:var(--white);border-color:var(--blue)}
 
-So check whether the current V2 actually reflects these five dimensions.
+.btn.blue:hover{border-color:var(--white)}
 
 
----
 
-🔴 3. The core loop needs to remain intact
+/* nav */
 
-We defined the KAIZEN loop as:
+nav{position:sticky;top:0;z-index:20;background:rgba(10,10,10,.88);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
 
-PLAN → TRADE → REFLECT → ANALYZE → IMPROVE → REPEAT
+nav .wrap{display:flex;align-items:center;justify-content:space-between;height:68px}
 
-Make sure V2 still communicates and supports this loop.
+.logo{font-weight:700;font-size:1.3rem}
 
-That is more important than adding another feature.
+.links{display:flex;gap:30px;align-items:center;font-size:.95rem;color:var(--mute)}
 
+.links a:hover,.links a.on{color:var(--gold)}
 
----
+nav .btn{padding:10px 20px}
 
-🟠 4. AI functions — verify the agreed scope
 
-The initial AI scope was finalized as:
 
-Pattern Detection & Explanation
+/* hero */
 
-Personalized Coaching
+.hero{min-height:88vh;display:flex;align-items:center;padding:80px 0}
 
-Performance Analysis
+.hero .wrap{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}
 
-Mistake Identification
+.hero h1{font-size:clamp(2.5rem,5.4vw,4.2rem);font-weight:700;margin-bottom:24px}
 
-Reflection
+.hero .sub{margin-bottom:34px;font-size:1.1rem}
 
-Progress Feedback
+.cta{display:flex;gap:12px;flex-wrap:wrap}
 
-Context-Aware Conversation
 
-Explaining the KAIZEN Score
 
+/* UI mock panels */
 
-Improvement Recommendations and Goal Guidance were deliberately deferred.
+.panel{background:var(--white);color:var(--black);border-radius:20px;padding:28px;box-shadow:0 30px 60px rgba(0,0,0,.45)}
 
-So if V2 currently contains those deferred functions, I'd remove/hide them rather than pretending they're ready.
+.light .panel{box-shadow:0 24px 50px rgba(26,47,74,.18);border:1px solid #DCE6EE}
 
+.panel h4{font-family:Sora,sans-serif;font-size:.95rem;font-weight:600;margin-bottom:6px}
 
----
+.blk{padding:14px 0;border-top:1px solid #DCE6EE}
 
-🔴 5. Charting is now the biggest architectural item
+.blk:first-child{border-top:0;padding-top:0}
 
-This one has evolved significantly since the reset.
+.blk p{font-size:.92rem;color:var(--mute-d);line-height:1.5}
 
-We decided that KAIZEN's chart cannot just be:
+.blk b{color:var(--black);font-weight:500}
 
-> Entry → SL → TP.
+.bar{height:8px;border-radius:9px;background:#DCE6EE;margin:8px 0 4px;overflow:hidden}
 
+.bar i{display:block;height:100%;background:var(--gold);border-radius:9px}
 
+.bar.b i{background:var(--blue)}
 
-The eventual chart needs to support actual market study:
+.kv{display:flex;justify-content:space-between;font-size:.88rem;color:var(--mute-d)}
 
-timeframes
+.kv strong{color:var(--black);font-family:Sora,sans-serif}
 
-drawings
 
-indicators
 
-support/resistance
+.trust{padding:0 0 40px;text-align:center;color:var(--mute);font-size:1rem}
 
-analysis
 
-thesis
 
-replay
+/* problem */
 
-backtesting/simulation
+.problem .wrap{max-width:760px}
 
-chart activity
+.chain{list-style:none;margin:48px 0}
 
-connection between chart analysis and trade
+.chain li{font-family:Sora,sans-serif;font-size:clamp(1.7rem,4vw,2.6rem);font-weight:600;padding-bottom:34px;position:relative;padding-left:34px}
 
-connection between trade and reflection
+.chain li::before{content:"";position:absolute;left:5px;top:.85em;width:2px;bottom:-.5em;background:var(--line)}
 
+.chain li::after{content:"";position:absolute;left:0;top:.55em;width:12px;height:12px;border-radius:50%;background:var(--mute-d)}
 
-And importantly:
+.chain li:last-child::before{display:none}
 
-> Journaling alone isn't enough.
+.chain li:last-child::after{background:var(--gold)}
 
+.problem .intro{font-family:Sora,sans-serif;font-size:1.4rem;font-weight:600}
 
 
-We want KAIZEN to understand how the trader studied the market and arrived at the decision.
 
-However, I would NOT make the full chart a V2 launch blocker now.
+/* meet */
 
-TradingView is still handling the Advanced Charts request, while we've already decided the native chart will eventually be KAIZEN-owned.
+.two{display:grid;grid-template-columns:1.25fr .85fr;gap:64px;align-items:center}
 
+.sess .q{font-size:.95rem;padding:12px 14px;border-radius:12px;background:#E8EFF5;margin-top:10px;color:var(--black)}
 
----
+.sess .a{font-size:.9rem;padding:12px 14px;border-radius:12px;background:var(--blue);color:var(--white);margin-top:10px}
 
-🟠 6. Replay/backtesting
 
-We also established that replay should eventually be a KAIZEN-owned feature, rather than depending on TradingView.
 
-And you wanted replay to be free.
+/* how */
 
-If V2 currently advertises replay/backtesting but doesn't actually work, don't market it as available yet.
+.steps{list-style:none;display:grid;grid-template-columns:repeat(6,1fr);gap:0;margin-top:56px;position:relative}
 
+.steps::before{content:"";position:absolute;top:19px;left:8%;right:8%;height:2px;background:var(--line)}
 
----
+.steps li{text-align:center;position:relative;padding:0 6px}
 
-🟠 7. Trader profile / "Personal KAIZEN"
+.steps .n{width:40px;height:40px;border-radius:50%;margin:0 auto 14px;background:var(--black);border:2px solid var(--mute-d);display:flex;align-items:center;justify-content:center;font-family:Sora,sans-serif;font-weight:600;font-size:.95rem}
 
-This was one of the bigger product ideas from the reset.
+.steps li:last-child .n{border-color:var(--gold);color:var(--gold)}
 
-KAIZEN shouldn't simply know:
+.steps span{font-size:.95rem;color:var(--mute)}
 
-> "You lost a trade."
 
 
+/* toolkit */
 
-It should eventually understand:
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:48px}
 
-> "This is how you trade, these are your recurring behaviours, these are the mistakes you repeatedly make, and this is how you're changing."
+.card{background:var(--white);color:var(--black);border-radius:18px;padding:30px}
 
+.card h3{font-size:1.2rem;font-weight:600;margin-bottom:10px}
 
+.card p{font-size:.95rem;color:var(--mute-d);line-height:1.55}
 
-That requires the underlying trader profile/data model.
 
-If you've already implemented the profile foundation, good.
 
-If not, the architecture should at least be designed now, even if the full intelligence comes later.
+/* quote */
 
+.quote{text-align:center;padding:170px 0}
 
----
+.quote p{font-family:Sora,sans-serif;font-weight:700;font-size:clamp(2.2rem,6.4vw,5rem);line-height:1.08;letter-spacing:-.03em}
 
-🟠 8. Trading-plan / rules data
+.quote p+p{color:var(--white)}
 
-We also identified the need for structured information about a trader's:
+.quote p:first-child{color:var(--mute-d)}
 
-trading rules
 
-strategy/system
 
-risk rules
+/* journey */
 
-planned behaviour
+.stages{list-style:none;display:grid;grid-template-columns:repeat(5,1fr);gap:18px;margin:52px 0 36px;position:relative}
 
+.stages li{padding-top:34px;position:relative;border-top:2px solid #C9D6E2}
 
-Otherwise KAIZEN can't properly distinguish:
+.stages li::before{content:"";position:absolute;top:-8px;left:0;width:14px;height:14px;border-radius:50%;background:var(--white);border:2px solid var(--blue)}
 
-> "You lost."
+.stages li.done{border-top-color:var(--gold)}
 
+.stages li.done::before{background:var(--gold);border-color:var(--gold)}
 
+.stages h3{font-size:1.05rem;font-weight:600;margin-bottom:6px}
 
-from:
+.stages p{font-size:.9rem;color:var(--mute-d);line-height:1.5}
 
-> "You broke your own rule and that's part of a recurring pattern."
+.stronger{font-family:Sora,sans-serif;font-weight:600;font-size:1.25rem}
 
 
 
-This is important for the Behavior and Process dimensions of the score.
+/* showcase */
 
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:34px 0 22px}
 
----
+.tab{background:none;border:1.5px solid var(--line);color:var(--mute);padding:9px 18px;border-radius:99px;font-family:inherit;font-size:.92rem;cursor:pointer;transition:all .25s}
 
-🟢 9. Survey — this part is effectively done
+.tab:hover{border-color:var(--blue);background:var(--blue);color:var(--white)}
 
-You wanted real trader feedback before rebuilding.
+.tab.on{border-color:var(--gold);color:var(--gold)}
 
-You've now got enough responses to make the V2 decision, and you've finalized the direction.
+.track{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:20px;scrollbar-width:none}
 
-We also added the useful question around:
+.track::-webkit-scrollbar{display:none}
 
-> “When reviewing a trade, what do you currently use to analyze your decision?”
+.slide{flex:0 0 min(640px,88%);scroll-snap-align:start}
 
+.slide .panel{min-height:320px}
 
+.nav2{display:flex;gap:10px;margin-top:22px}
 
-That was specifically intended to determine whether traders are actually studying/analyzing charts rather than simply logging trades.
+.nav2 .btn{padding:10px 20px}
 
-So I wouldn't hold V2 for more survey responses.
 
 
----
+/* faq */
 
-🟢 10. Product direction is now much clearer
+.faq .wrap{max-width:780px}
 
-One major change we've made is that KAIZEN isn't being positioned as simply:
+details{border-top:1px solid #C9D6E2;padding:22px 0}
 
-AI + Trading Journal.
+details:last-child{border-bottom:1px solid #C9D6E2}
 
-The direction is now closer to:
+summary{cursor:pointer;font-family:Sora,sans-serif;font-weight:600;font-size:1.12rem;list-style:none;display:flex;justify-content:space-between;gap:16px}
 
-Chart analysis → decision → execution → reflection → behavioural understanding → improvement.
+summary::-webkit-details-marker{display:none}
 
-And eventually the chart itself becomes a major source of behavioural intelligence.
+summary::after{content:"+";color:var(--blue);font-size:1.4rem;line-height:1}
 
-That's a significant product reset.
+details[open] summary::after{content:"–"}
 
+details p{margin-top:12px;color:var(--mute-d);max-width:38em}
 
----
 
-What I would check before Wednesday/Thursday
 
-If you want to ship V2 midweek, I'd do one V2 launch audit around these exact questions:
+/* final */
 
-Area	V2 status to verify
+.final{text-align:center;padding:170px 0}
 
-Wallet connection	❌ Should be removed
-Five score dimensions	🔍 Verify
-Off-chain score	🔍 Verify
-PLAN → TRADE → REFLECT → ANALYZE → IMPROVE → REPEAT	🔍 Verify
-8 agreed AI functions	🔍 Verify
-Deferred AI functions hidden	🔍 Verify
-Trader rules/system	🔍 Verify
-Trader profile foundation	🔍 Verify
-Journal	🔍 Verify
-Chart direction	🟠 Architecture/future work
-Replay	🟠 Future/own KAIZEN system
-Advanced Charts	⏳ Waiting on TradingView
-Survey research	✅ Enough to ship
-V2 product direction	✅ Finalized
+.final h2{font-size:clamp(2.4rem,6.2vw,4.8rem);font-weight:700;margin-bottom:26px}
 
+.final h2 span{display:block;color:var(--mute-d)}
 
-My biggest concern isn't TradingView.
+.final .sub{margin:0 auto 38px}
 
-It's whether the current V2 implementation actually reflects the decisions we made during the reset.
 
-If you want, the smartest next step is for us to do a proper V2 pre-launch audit: you show me the current V2 screens/features, and I'll compare them against this reset and mark each item ✅ implemented / ⚠️ needs adjustment / ❌ missing / 🟠 intentionally deferred.
 
-That would tell us whether Wednesday or Thursday is actually the right launch date.
+footer{border-top:1px solid var(--line);padding:70px 0 40px;font-size:.93rem;color:var(--mute)}
+
+.fgrid{display:grid;grid-template-columns:1.4fr repeat(5,1fr);gap:28px}
+
+footer h5{font-family:Sora,sans-serif;color:var(--white);font-size:.95rem;margin-bottom:12px;font-weight:600}
+
+footer li{list-style:none;margin-bottom:8px}
+
+footer a:hover{color:var(--gold)}
+
+.fine{margin-top:50px;font-size:.82rem}
+
+
+
+/* motion: fade + slide, very subtle */
+
+.rv{opacity:0;transform:translateY(18px);transition:opacity .8s ease,transform .8s ease}
+
+.rv.in{opacity:1;transform:none}
+
+@media (prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;transition:none}html{scroll-behavior:auto}}
+
+
+
+@media (max-width:900px){
+
+  section{padding:76px 0}.quote,.final{padding:96px 0}
+
+  .links a:not(.btn){display:none}
+
+  .hero{min-height:0;padding:44px 0 56px}
+
+  .hero .wrap,.two{grid-template-columns:1fr;gap:40px}
+
+  .grid{grid-template-columns:1fr 1fr}
+
+  .stages{grid-template-columns:1fr;gap:26px}
+
+  .steps{grid-template-columns:repeat(6,120px);overflow-x:auto;padding-bottom:10px}
+
+  .steps::before{left:60px;right:60px;width:auto}
+
+  .fgrid{grid-template-columns:1fr 1fr}
+
+}
+
+@media (max-width:560px){.grid{grid-template-columns:1fr}.panel{padding:22px}}
+
+&lt;/style&gt;
+
+&lt;/head&gt;
+
+&lt;body&gt;
+
+
+
+&lt;nav&gt;
+
+  &lt;div class="wrap"&gt;
+
+    &lt;a class="logo" href="#top"&gt;KAIZEN&lt;/a&gt;
+
+    &lt;div class="links"&gt;
+
+      &lt;a href="#toolkit"&gt;Features&lt;/a&gt;
+
+      &lt;a href="#how"&gt;How It Works&lt;/a&gt;
+
+      &lt;a href="#faq"&gt;Resources&lt;/a&gt;
+
+      &lt;a href="#join" class="on"&gt;Beta&lt;/a&gt;
+
+      &lt;a href="https://kaizen-trader.onrender.com/login"&gt;Login&lt;/a&gt;
+
+      &lt;a class="btn gold" href="https://kaizen-trader.onrender.com/register"&gt;Join Beta&lt;/a&gt;
+
+    &lt;/div&gt;
+
+  &lt;/div&gt;
+
+&lt;/nav&gt;
+
+
+
+&lt;main id="top"&gt;
+
+&lt;header class="hero"&gt;
+
+  &lt;div class="wrap"&gt;
+
+    &lt;div class="rv"&gt;
+
+      &lt;h1&gt;Develop the trader behind the trades.&lt;/h1&gt;
+
+      &lt;p class="sub"&gt;KAIZEN is a Trader Development Platform. Set goals, reflect after every session, and turn what you learn into habits that last.&lt;/p&gt;
+
+      &lt;div class="cta"&gt;
+
+        &lt;a class="btn gold" href="https://kaizen-trader.onrender.com/register"&gt;Join Beta&lt;/a&gt;
+
+        &lt;a class="btn blue" href="#how"&gt;See how it works&lt;/a&gt;
+
+      &lt;/div&gt;
+
+    &lt;/div&gt;
+
+    &lt;div class="panel rv" aria-label="Dashboard preview"&gt;
+
+      &lt;div class="blk"&gt;&lt;h4&gt;Today's Focus&lt;/h4&gt;&lt;p&gt;&lt;b&gt;Wait for the retest before entering.&lt;/b&gt; Skip any trade that breaks your checklist.&lt;/p&gt;&lt;/div&gt;
+
+      &lt;div class="blk"&gt;&lt;h4&gt;Weekly Improvement&lt;/h4&gt;&lt;div class="bar"&gt;&lt;i style="width:72%"&gt;&lt;/i&gt;&lt;/div&gt;&lt;div class="kv"&gt;&lt;span&gt;Rules followed&lt;/span&gt;&lt;strong&gt;72%&lt;/strong&gt;&lt;/div&gt;&lt;/div&gt;
+
+      &lt;div class="blk"&gt;&lt;h4&gt;KAIZEN AI&lt;/h4&gt;&lt;p&gt;You passed on a chase entry on Tuesday. That is the habit to repeat.&lt;/p&gt;&lt;/div&gt;
+
+      &lt;div class="blk"&gt;&lt;h4&gt;Goals&lt;/h4&gt;&lt;div class="bar b"&gt;&lt;i style="width:60%"&gt;&lt;/i&gt;&lt;/div&gt;&lt;div class="kv"&gt;&lt;span&gt;Journal after every session&lt;/span&gt;&lt;strong&gt;3 of 5&lt;/strong&gt;&lt;/div&gt;&lt;/div&gt;
+
+    &lt;/div&gt;
+
+  &lt;/div&gt;
+
+&lt;/header&gt;
+
+&lt;p class="trust rv"&gt;Built for traders committed to continuous improvement.&lt;/p&gt;
+
+
+
+&lt;section class="problem"&gt;
+
+  &lt;div class="wrap"&gt;
+
+    &lt;h2 class="rv"&gt;Every trader knows this loop.&lt;/h2&gt;
+
+    &lt;ul class="chain"&gt;
+
+      &lt;li class="rv"&gt;"I keep breaking my rules."&lt;/li&gt;
+
+      &lt;li class="rv"&gt;"I revenge traded."&lt;/li&gt;
+
+      &lt;li class="rv"&gt;"I knew better."&lt;/li&gt;
+
+      &lt;li class="rv"&gt;"I did it anyway."&lt;/li&gt;
+
+      &lt;li class="rv"&gt;"Now what?"&lt;/li&gt;
+
+    &lt;/ul&gt;
+
+    &lt;p class="intro rv"&gt;KAIZEN is where "now what" gets an answer.&lt;/p&gt;
+
+  &lt;/div&gt;
+
+&lt;/section&gt;
+
+
+
+&lt;section class="light" id="meet"&gt;
+
+  &lt;div class="wrap two"&gt;
+
+    &lt;div class="panel sess rv" aria-label="Sessions preview"&gt;
+
+      &lt;h4&gt;Session reflection&lt;/h4&gt;
+
+      &lt;p class="kv"&gt;&lt;span&gt;London session · 3 trades&lt;/span&gt;&lt;strong&gt;Today&lt;/strong&gt;&lt;/p&gt;
+
+      &lt;div class="q"&gt;What did you do well in this session?&lt;/div&gt;
+
+      &lt;div class="q"&gt;Which rule was hardest to follow?&lt;/div&gt;
+
+      &lt;div class="a"&gt;&lt;b&gt;KAIZEN AI:&lt;/b&gt; You said patience was hard. Two of your three trades waited for confirmation. That is progress.&lt;/div&gt;
+
+    &lt;/div&gt;
+
+    &lt;div class="rv"&gt;
+
+      &lt;h2&gt;Meet KAIZEN.&lt;/h2&gt;
+
+      &lt;p class="sub"&gt;KAIZEN is the platform. You trade, reflect, and track your growth in one calm place. KAIZEN AI sits inside it as your coach.&lt;/p&gt;
+
+    &lt;/div&gt;
+
+  &lt;/div&gt;
+
+&lt;/section&gt;
+
+
+
+&lt;section id="how"&gt;
+
+  &lt;div class="wrap"&gt;
+
+    &lt;h2 class="rv"&gt;How KAIZEN works&lt;/h2&gt;
+
+    &lt;ol class="steps rv"&gt;
+
+      &lt;li&gt;&lt;div class="n"&gt;1&lt;/div&gt;&lt;span&gt;Sign Up&lt;/span&gt;&lt;/li&gt;
+
+      &lt;li&gt;&lt;div class="n"&gt;2&lt;/div&gt;&lt;span&gt;Set Goals&lt;/span&gt;&lt;/li&gt;
+
+      &lt;li&gt;&lt;div class="n"&gt;3&lt;/div&gt;&lt;span&gt;Trade&lt;/span&gt;&lt;/li&gt;
+
+      &lt;li&gt;&lt;div class="n"&gt;4&lt;/div&gt;&lt;span&gt;Reflect&lt;/span&gt;&lt;/li&gt;
+
+      &lt;li&gt;&lt;div class="n"&gt;5&lt;/div&gt;&lt;span&gt;KAIZEN Understands&lt;/span&gt;&lt;/li&gt;
+
+      &lt;li&gt;&lt;div class="n"&gt;6&lt;/div&gt;&lt;span&gt;Improve&lt;/span&gt;&lt;/li&gt;
+
+    &lt;/ol&gt;
+
+  &lt;/div&gt;
+
+&lt;/section&gt;
+
+
+
+&lt;section id="toolkit" style="padding-top:20px"&gt;
+
+  &lt;div class="wrap"&gt;
+
+    &lt;h2 class="rv"&gt;Your Development Toolkit&lt;/h2&gt;
+
+    &lt;div class="grid"&gt;
+
+      &lt;div class="card rv"&gt;&lt;h3&gt;KAIZEN AI&lt;/h3&gt;&lt;p&gt;Your AI coach for reflection and behavioral analysis. It shows you the patterns you miss in the moment.&lt;/p&gt;&lt;/div&gt;
+
+      &lt;div class="card rv"&gt;&lt;h3&gt;Sessions&lt;/h3&gt;&lt;p&gt;Reflection while it is fresh, so the lesson from today's trades actually sticks.&lt;/p&gt;&lt;/div&gt;
+
+      &lt;div class="card rv"&gt;&lt;h3&gt;Goals&lt;/h3&gt;&lt;p&gt;Accountability. Pick one habit to improve and track it, so you know you are moving forward.&lt;/p&gt;&lt;/div&gt;
+
+      &lt;div class="card rv"&gt;&lt;h3&gt;Weekly Review&lt;/h3&gt;&lt;p&gt;Progress, in one page. See what improved this week and what to fix next.&lt;/p&gt;&lt;/div&gt;
+
+      &lt;div class="card rv"&gt;&lt;h3&gt;Memories&lt;/h3&gt;&lt;p&gt;Long-term behavioral intelligence. KAIZEN remembers your patterns so you stop repeating them.&lt;/p&gt;&lt;/div&gt;
+
+      &lt;div class="card rv"&gt;&lt;h3&gt;Progress&lt;/h3&gt;&lt;p&gt;See your growth over weeks and months, so you can trust the work you are putting in.&lt;/p&gt;&lt;/div&gt;
+
+    &lt;/div&gt;
+
+  &lt;/div&gt;
+
+&lt;/section&gt;
+
+
+
+&lt;section class="quote"&gt;
+
+  &lt;div class="wrap"&gt;
+
+    &lt;p class="rv"&gt;Most trading tools analyze the market.&lt;/p&gt;
+
+    &lt;p class="rv"&gt;KAIZEN develops the trader.&lt;/p&gt;
+
+  &lt;/div&gt;
+
+&lt;/section&gt;
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KAIZEN – Trader Development Platform</title>
+<meta name="description" content="KAIZEN is a Trader Development Platform. Set goals, reflect after every session, and build the habits of a consistent trader.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Sora:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--black:#0A0A0A;--white:#F4F8FB;--gold:#F5C518;--blue:#1A2F4A;--mute:#A3B1BF;--mute-d:#41566B;--line:#232B33;color-scheme:dark}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:Inter,system-ui,sans-serif;background:var(--black);color:var(--white);line-height:1.65;font-size:17px;font-variant-numeric:tabular-nums}
+h1,h2,h3,.logo{font-family:Sora,system-ui,sans-serif;letter-spacing:-.02em;line-height:1.12}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1120px;margin:0 auto;padding:0 24px}
+section{padding:130px 0}
+.light{background:var(--white);color:var(--black)}
+.light .sub{color:var(--mute-d)}
+.sub{color:var(--mute);max-width:32em}
+h2{font-size:clamp(2rem,4.2vw,3rem);font-weight:600;margin-bottom:22px}
+:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+
+/* buttons */
+.btn{display:inline-block;padding:14px 26px;border-radius:12px;font-weight:500;border:1.5px solid transparent;transition:background .25s,color .25s,border-color .25s;cursor:pointer;font-family:inherit;font-size:1rem}
+.btn.gold{background:var(--gold);color:var(--black)}
+.btn.gold:hover{background:var(--white)}
+.btn.blue{background:var(--blue);color:var(--white);border-color:var(--blue)}
+.btn.blue:hover{border-color:var(--white)}
+
+/* nav */
+nav{position:sticky;top:0;z-index:20;background:rgba(10,10,10,.88);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;align-items:center;justify-content:space-between;height:68px}
+.logo{font-weight:700;font-size:1.3rem}
+.links{display:flex;gap:30px;align-items:center;font-size:.95rem;color:var(--mute)}
+.links a:hover,.links a.on{color:var(--gold)}
+nav .btn{padding:10px 20px}
+
+/* hero */
+.hero{min-height:88vh;display:flex;align-items:center;padding:80px 0}
+.hero .wrap{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}
+.hero h1{font-size:clamp(2.5rem,5.4vw,4.2rem);font-weight:700;margin-bottom:24px}
+.hero .sub{margin-bottom:34px;font-size:1.1rem}
+.cta{display:flex;gap:12px;flex-wrap:wrap}
+
+/* UI mock panels */
+.panel{background:var(--white);color:var(--black);border-radius:20px;padding:28px;box-shadow:0 30px 60px rgba(0,0,0,.45)}
+.light .panel{box-shadow:0 24px 50px rgba(26,47,74,.18);border:1px solid #DCE6EE}
+.panel h4{font-family:Sora,sans-serif;font-size:.95rem;font-weight:600;margin-bottom:6px}
+.blk{padding:14px 0;border-top:1px solid #DCE6EE}
+.blk:first-child{border-top:0;padding-top:0}
+.blk p{font-size:.92rem;color:var(--mute-d);line-height:1.5}
+.blk b{color:var(--black);font-weight:500}
+.bar{height:8px;border-radius:9px;background:#DCE6EE;margin:8px 0 4px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--gold);border-radius:9px}
+.bar.b i{background:var(--blue)}
+.kv{display:flex;justify-content:space-between;font-size:.88rem;color:var(--mute-d)}
+.kv strong{color:var(--black);font-family:Sora,sans-serif}
+
+.trust{padding:0 0 40px;text-align:center;color:var(--mute);font-size:1rem}
+
+/* problem */
+.problem .wrap{max-width:760px}
+.chain{list-style:none;margin:48px 0}
+.chain li{font-family:Sora,sans-serif;font-size:clamp(1.7rem,4vw,2.6rem);font-weight:600;padding-bottom:34px;position:relative;padding-left:34px}
+.chain li::before{content:"";position:absolute;left:5px;top:.85em;width:2px;bottom:-.5em;background:var(--line)}
+.chain li::after{content:"";position:absolute;left:0;top:.55em;width:12px;height:12px;border-radius:50%;background:var(--mute-d)}
+.chain li:last-child::before{display:none}
+.chain li:last-child::after{background:var(--gold)}
+.problem .intro{font-family:Sora,sans-serif;font-size:1.4rem;font-weight:600}
+
+/* meet */
+.two{display:grid;grid-template-columns:1.25fr .85fr;gap:64px;align-items:center}
+.sess .q{font-size:.95rem;padding:12px 14px;border-radius:12px;background:#E8EFF5;margin-top:10px;color:var(--black)}
+.sess .a{font-size:.9rem;padding:12px 14px;border-radius:12px;background:var(--blue);color:var(--white);margin-top:10px}
+
+/* how */
+.steps{list-style:none;display:grid;grid-template-columns:repeat(6,1fr);gap:0;margin-top:56px;position:relative}
+.steps::before{content:"";position:absolute;top:19px;left:8%;right:8%;height:2px;background:var(--line)}
+.steps li{text-align:center;position:relative;padding:0 6px}
+.steps .n{width:40px;height:40px;border-radius:50%;margin:0 auto 14px;background:var(--black);border:2px solid var(--mute-d);display:flex;align-items:center;justify-content:center;font-family:Sora,sans-serif;font-weight:600;font-size:.95rem}
+.steps li:last-child .n{border-color:var(--gold);color:var(--gold)}
+.steps span{font-size:.95rem;color:var(--mute)}
+
+/* toolkit */
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:48px}
+.card{background:var(--white);color:var(--black);border-radius:18px;padding:30px}
+.card h3{font-size:1.2rem;font-weight:600;margin-bottom:10px}
+.card p{font-size:.95rem;color:var(--mute-d);line-height:1.55}
+
+/* quote */
+.quote{text-align:center;padding:170px 0}
+.quote p{font-family:Sora,sans-serif;font-weight:700;font-size:clamp(2.2rem,6.4vw,5rem);line-height:1.08;letter-spacing:-.03em}
+.quote p+p{color:var(--white)}
+.quote p:first-child{color:var(--mute-d)}
+
+/* journey */
+.stages{list-style:none;display:grid;grid-template-columns:repeat(5,1fr);gap:18px;margin:52px 0 36px;position:relative}
+.stages li{padding-top:34px;position:relative;border-top:2px solid #C9D6E2}
+.stages li::before{content:"";position:absolute;top:-8px;left:0;width:14px;height:14px;border-radius:50%;background:var(--white);border:2px solid var(--blue)}
+.stages li.done{border-top-color:var(--gold)}
+.stages li.done::before{background:var(--gold);border-color:var(--gold)}
+.stages h3{font-size:1.05rem;font-weight:600;margin-bottom:6px}
+.stages p{font-size:.9rem;color:var(--mute-d);line-height:1.5}
+.stronger{font-family:Sora,sans-serif;font-weight:600;font-size:1.25rem}
+
+/* showcase */
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:34px 0 22px}
+.tab{background:none;border:1.5px solid var(--line);color:var(--mute);padding:9px 18px;border-radius:99px;font-family:inherit;font-size:.92rem;cursor:pointer;transition:all .25s}
+.tab:hover{border-color:var(--blue);background:var(--blue);color:var(--white)}
+.tab.on{border-color:var(--gold);color:var(--gold)}
+.track{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:20px;scrollbar-width:none}
+.track::-webkit-scrollbar{display:none}
+.slide{flex:0 0 min(640px,88%);scroll-snap-align:start}
+.slide .panel{min-height:320px}
+.nav2{display:flex;gap:10px;margin-top:22px}
+.nav2 .btn{padding:10px 20px}
+
+/* faq */
+.faq .wrap{max-width:780px}
+details{border-top:1px solid #C9D6E2;padding:22px 0}
+details:last-child{border-bottom:1px solid #C9D6E2}
+summary{cursor:pointer;font-family:Sora,sans-serif;font-weight:600;font-size:1.12rem;list-style:none;display:flex;justify-content:space-between;gap:16px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";color:var(--blue);font-size:1.4rem;line-height:1}
+details[open] summary::after{content:"–"}
+details p{margin-top:12px;color:var(--mute-d);max-width:38em}
+
+/* final */
+.final{text-align:center;padding:170px 0}
+.final h2{font-size:clamp(2.4rem,6.2vw,4.8rem);font-weight:700;margin-bottom:26px}
+.final h2 span{display:block;color:var(--mute-d)}
+.final .sub{margin:0 auto 38px}
+
+footer{border-top:1px solid var(--line);padding:70px 0 40px;font-size:.93rem;color:var(--mute)}
+.fgrid{display:grid;grid-template-columns:1.4fr repeat(5,1fr);gap:28px}
+footer h5{font-family:Sora,sans-serif;color:var(--white);font-size:.95rem;margin-bottom:12px;font-weight:600}
+footer li{list-style:none;margin-bottom:8px}
+footer a:hover{color:var(--gold)}
+.fine{margin-top:50px;font-size:.82rem}
+
+/* motion: fade + slide, very subtle */
+.rv{opacity:0;transform:translateY(18px);transition:opacity .8s ease,transform .8s ease}
+.rv.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;transition:none}html{scroll-behavior:auto}}
+
+@media (max-width:900px){
+  section{padding:76px 0}.quote,.final{padding:96px 0}
+  .links a:not(.btn){display:none}
+  .hero{min-height:0;padding:44px 0 56px}
+  .hero .wrap,.two{grid-template-columns:1fr;gap:40px}
+  .grid{grid-template-columns:1fr 1fr}
+  .stages{grid-template-columns:1fr;gap:26px}
+  .steps{grid-template-columns:repeat(6,120px);overflow-x:auto;padding-bottom:10px}
+  .steps::before{left:60px;right:60px;width:auto}
+  .fgrid{grid-template-columns:1fr 1fr}
+}
+@media (max-width:560px){.grid{grid-template-columns:1fr}.panel{padding:22px}}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <a class="logo" href="#top">KAIZEN</a>
+    <div class="links">
+      <a href="#toolkit">Features</a>
+      <a href="#how">How It Works</a>
+      <a href="#faq">Resources</a>
+      <a href="#join" class="on">Beta</a>
+      <a href="https://kaizen-trader.onrender.com/login">Login</a>
+      <a class="btn gold" href="https://kaizen-trader.onrender.com/register">Join Beta</a>
+    </div>
+  </div>
+</nav>
+
+<main id="top">
+<header class="hero">
+  <div class="wrap">
+    <div class="rv">
+      <h1>Develop the trader behind the trades.</h1>
+      <p class="sub">KAIZEN is a Trader Development Platform. Set goals, reflect after every session, and turn what you learn into habits that last.</p>
+      <div class="cta">
+        <a class="btn gold" href="https://kaizen-trader.onrender.com/register">Join Beta</a>
+        <a class="btn blue" href="#how">See how it works</a>
+      </div>
+    </div>
+    <div class="panel rv" aria-label="Dashboard preview">
+      <div class="blk"><h4>Today's Focus</h4><p><b>Wait for the retest before entering.</b> Skip any trade that breaks your checklist.</p></div>
+      <div class="blk"><h4>Weekly Improvement</h4><div class="bar"><i style="width:72%"></i></div><div class="kv"><span>Rules followed</span><strong>72%</strong></div></div>
+      <div class="blk"><h4>KAIZEN AI</h4><p>You passed on a chase entry on Tuesday. That is the habit to repeat.</p></div>
+      <div class="blk"><h4>Goals</h4><div class="bar b"><i style="width:60%"></i></div><div class="kv"><span>Journal after every session</span><strong>3 of 5</strong></div></div>
+    </div>
+  </div>
+</header>
+<p class="trust rv">Built for traders committed to continuous improvement.</p>
+
+<section class="problem">
+  <div class="wrap">
+    <h2 class="rv">Every trader knows this loop.</h2>
+    <ul class="chain">
+      <li class="rv">"I keep breaking my rules."</li>
+      <li class="rv">"I revenge traded."</li>
+      <li class="rv">"I knew better."</li>
+      <li class="rv">"I did it anyway."</li>
+      <li class="rv">"Now what?"</li>
+    </ul>
+    <p class="intro rv">KAIZEN is where "now what" gets an answer.</p>
+  </div>
+</section>
+
+<section class="light" id="meet">
+  <div class="wrap two">
+    <div class="panel sess rv" aria-label="Sessions preview">
+      <h4>Session reflection</h4>
+      <p class="kv"><span>London session · 3 trades</span><strong>Today</strong></p>
+      <div class="q">What did you do well in this session?</div>
+      <div class="q">Which rule was hardest to follow?</div>
+      <div class="a"><b>KAIZEN AI:</b> You said patience was hard. Two of your three trades waited for confirmation. That is progress.</div>
+    </div>
+    <div class="rv">
+      <h2>Meet KAIZEN.</h2>
+      <p class="sub">KAIZEN is the platform. You trade, reflect, and track your growth in one calm place. KAIZEN AI sits inside it as your coach.</p>
+    </div>
+  </div>
+</section>
+
+<section id="how">
+  <div class="wrap">
+    <h2 class="rv">How KAIZEN works</h2>
+    <ol class="steps rv">
+      <li><div class="n">1</div><span>Sign Up</span></li>
+      <li><div class="n">2</div><span>Set Goals</span></li>
+      <li><div class="n">3</div><span>Trade</span></li>
+      <li><div class="n">4</div><span>Reflect</span></li>
+      <li><div class="n">5</div><span>KAIZEN Understands</span></li>
+      <li><div class="n">6</div><span>Improve</span></li>
+    </ol>
+  </div>
+</section>
+
+<section id="toolkit" style="padding-top:20px">
+  <div class="wrap">
+    <h2 class="rv">Your Development Toolkit</h2>
+    <div class="grid">
+      <div class="card rv"><h3>KAIZEN AI</h3><p>Your AI coach for reflection and behavioral analysis. It shows you the patterns you miss in the moment.</p></div>
+      <div class="card rv"><h3>Sessions</h3><p>Reflection while it is fresh, so the lesson from today's trades actually sticks.</p></div>
+      <div class="card rv"><h3>Goals</h3><p>Accountability. Pick one habit to improve and track it, so you know you are moving forward.</p></div>
+      <div class="card rv"><h3>Weekly Review</h3><p>Progress, in one page. See what improved this week and what to fix next.</p></div>
+      <div class="card rv"><h3>Memories</h3><p>Long-term behavioral intelligence. KAIZEN remembers your patterns so you stop repeating them.</p></div>
+      <div class="card rv"><h3>Progress</h3><p>See your growth over weeks and months, so you can trust the work you are putting in.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="quote">
+  <div class="wrap">
+    <p class="rv">Most trading tools analyze the market.</p>
+    <p class="rv">KAIZEN develops the trader.</p>
+  </div>
+</section>
+
+<section class="light" id="journey">
+  <div class="wrap">
+    <h2 class="rv">Your performance journey</h2>
+    <ol class="stages rv">
+      <li class="done"><h3>Starting Trader</h3><p>Learning to trade with a plan.</p></li>
+      <li class="done"><h3>Learning Trader</h3><p>Noticing your own patterns.</p></li>
+      <li><h3>Disciplined Trader</h3><p>Following your rules under pressure.</p></li>
+      <li><h3>Consistent Trader</h3><p>Repeating good habits week after week.</p></li>
+      <li><h3>Developed Trader</h3><p>Trading with clarity and confidence.</p></li>
+    </ol>
+    <p class="stronger rv">KAIZEN supports every stage.</p>
+  </div>
+</section>
+
+<section id="showcase">
+  <div class="wrap">
+    <h2 class="rv">Inside the platform</h2>
+    <div class="tabs" id="tabs" role="tablist"></div>
+    <div class="track" id="track"></div>
+    <div class="nav2">
+      <button class="btn blue" id="prev" aria-label="Previous screen">Previous</button>
+      <button class="btn blue" id="next" aria-label="Next screen">Next</button>
+    </div>
+  </div>
+</section>
+
+<section class="light faq" id="faq">
+  <div class="wrap">
+    <h2 class="rv">Questions, answered</h2>
+    <details><summary>What is KAIZEN?</summary><p>KAIZEN is a Trader Development Platform. It helps you set goals, reflect on your sessions, and improve your habits over time.</p></details>
+    <details><summary>What does KAIZEN AI do?</summary><p>KAIZEN AI is your coach inside the platform. It reads your reflections, points out patterns, and suggests what to work on next.</p></details>
+    <details><summary>Does KAIZEN place trades for me?</summary><p>No. KAIZEN does not trade for you. It helps you become a more disciplined trader on your own.</p></details>
+    <details><summary>Is this financial advice?</summary><p>No. KAIZEN does not tell you what to buy or sell. It focuses on your behavior and habits, not market predictions.</p></details>
+    <details><summary>How do I join the beta?</summary><p>Press Join Beta and create your account. You can start setting goals right away.</p></details>
+  </div>
+</section>
+
+<section class="final" id="join">
+  <div class="wrap">
+    <h2 class="rv">Better Traders Aren't Found.<span>They're Built.</span></h2>
+    <p class="sub rv">Every trading session is an opportunity to improve. KAIZEN helps you make the most of it.</p>
+    <a class="btn gold rv" href="https://kaizen-trader.onrender.com/register">Join Beta</a>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="fgrid">
+      <div><a class="logo" href="#top" style="font-size:1.2rem;color:var(--white)">KAIZEN</a><p style="margin-top:10px;max-width:16em">The Trader Development Platform.</p></div>
+      <div><h5>Platform</h5><ul><li><a href="#toolkit">Toolkit</a></li><li><a href="#how">How It Works</a></li></ul></div>
+      <div><h5>Resources</h5><ul><li><a href="#faq">FAQ</a></li><li><a href="#showcase">Screens</a></li></ul></div>
+      <div><h5>Company</h5><ul><li><a href="#">About</a></li><li><a href="#">Contact</a></li></ul></div>
+      <div><h5>Legal</h5><ul><li><a href="#">Terms</a></li><li><a href="#">Privacy</a></li></ul></div>
+      <div><h5>Socials</h5><ul><li><a href="#">X</a></li><li><a href="#">LinkedIn</a></li></ul></div>
+    </div>
+    <p class="fine">© 2026 KAIZEN. Trading involves risk. KAIZEN is a development tool, not financial advice.</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  // gentle fade-in on scroll
+  var els=document.querySelectorAll('.rv');
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.15});
+    els.forEach(function(el){io.observe(el)});
+  }else{els.forEach(function(el){el.classList.add('in')})}
+
+  // showcase: real-looking UI panels
+  var S=[
+   {t:'Sessions',h:'Session reflection',rows:[['London session','3 trades'],['Rules followed','2 of 3'],['Mood before','Calm']],bar:67,note:'Write what went well and what was hard while it is fresh.'},
+   {t:'KAIZEN AI',h:'Coach feedback',rows:[['Pattern spotted','Chasing after a loss'],['Strength','Waits for confirmation'],['Next focus','Write risk before entry']],bar:0,note:'"You waited for the retest twice this week. Keep that going."'},
+   {t:'Goals',h:'Active goals',rows:[['Journal after every session','3 of 5'],['No trades after two losses','4 of 5'],['Risk under 1% per trade','5 of 5']],bar:80,note:'One habit at a time. Each goal shows if you are on track.'},
+   {t:'Progress',h:'Last 8 weeks',rows:[['Rules followed','58% to 72%'],['Reflection streak','12 days'],['Stage','Learning Trader']],bar:72,note:'Your growth, week by week.'},
+   {t:'Weekly Review',h:'This week',rows:[['Improved','Patience at entries'],['Needs work','Moving stops'],['Next week','Keep stops fixed']],bar:0,note:'A short review that tells you what to do next.'}
+  ];
+  var tabs=document.getElementById('tabs'),track=document.getElementById('track');
+  S.forEach(function(s,i){
+    var b=document.createElement('button');b.className='tab'+(i?'':' on');b.textContent=s.t;b.setAttribute('role','tab');
+    b.onclick=function(){track.children[i].scrollIntoView({behavior:'smooth',inline:'start',block:'nearest'})};
+    tabs.appendChild(b);
+    var d=document.createElement('div');d.className='slide';
+    var rows=s.rows.map(function(r){return '<div class="blk"><div class="kv"><span>'+r[0]+'</span><strong>'+r[1]+'</strong></div></div>'}).join('');
+    d.innerHTML='<div class="panel"><h4>'+s.h+'</h4>'+rows+(s.bar?'<div class="bar"><i style="width:'+s.bar+'%"></i></div>':'')+'<p class="blk" style="border:0;padding-bottom:0"><span style="color:var(--mute-d);font-size:.92rem">'+s.note+'</span></p></div>';
+    track.appendChild(d);
+  });
+  function idx(){var w=track.children[0].offsetWidth+20;return Math.min(S.length-1,Math.round(track.scrollLeft/w))}
+  track.addEventListener('scroll',function(){var i=idx();[].forEach.call(tabs.children,function(t,j){t.classList.toggle('on',i===j)})});
+  document.getElementById('next').onclick=function(){track.children[Math.min(S.length-1,idx()+1)].scrollIntoView({behavior:'smooth',inline:'start',block:'nearest'})};
+  document.getElement
