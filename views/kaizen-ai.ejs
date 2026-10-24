@@ -7,11 +7,21 @@
 <body class="app-page k-chatbody">
   <%- include('partials/navbar') %>
 
+  <%
+    function splitParas(str) {
+      return String(str || '')
+        .replace(/\r\n/g, '\n')
+        .split(/\n{2,}|\n/)
+        .map(function (p) { return p.trim(); })
+        .filter(Boolean);
+    }
+  %>
+
   <% if (mode === 'index') { %>
 
-  <!-- ═══ CONVERSATIONS: list + start + legacy analysis ─═ -->
-  <main class="k-flow k-flow--wide">
-    <div class="k-cockpit-head">
+  <!-- ═══ CONVERSATIONS: aligned cards + composer + thread list ═══ -->
+  <main class="k-flow k-flow--wide k-ai-stack">
+    <div class="k-cockpit-head" style="margin-bottom:4px;">
       <div>
         <div class="k-eyebrow"><%= t('ai.eyebrow') %></div>
         <h1 class="k-page-title"><%= t('ai.title') %></h1>
@@ -19,31 +29,43 @@
       </div>
     </div>
 
-    <!-- Your patterns — the emotional/behavioural layer, inside this room -->
-    <section class="k-card">
-      <div class="k-panel-title"><%= t('ai.patterns') %></div>
+    <!-- Card 1: Your patterns — the emotional/behavioural layer, inside this room -->
+    <section class="k-card k-ai-card">
+      <div class="k-ai-cardhead">
+        <div class="k-panel-title"><%= t('ai.patterns') %></div>
+      </div>
       <% if (themes && themes.length) { %>
-        <div class="k-chiprow">
+        <div class="k-chiprow" style="margin-bottom:10px;">
           <% themes.slice(0, 8).forEach(function(th) { %>
             <span class="k-chip<%= th.status === 'active' ? ' k-chip--warn' : (th.status === 'improving' ? ' k-chip--good' : '') %>"><%= th.name %> · <%= (typeof labels !== 'undefined' && labels.mindStatus && labels.mindStatus[th.status]) || th.status %></span>
           <% }); %>
         </div>
-        <p class="k-fieldhint"><%= t('ai.patternsHint') %></p>
+        <p class="k-fieldhint" style="margin:0;"><%= t('ai.patternsHint') %></p>
       <% } else { %>
-        <p class="k-emptyhint"><%= t('ai.patternsNone') %></p>
+        <p class="k-emptyhint" style="margin:0;"><%= t('ai.patternsNone') %></p>
       <% } %>
     </section>
 
     <% if (aiResponse) { %>
-    <section class="k-card k-card--featured">
-      <div class="k-panel-title"><span class="k-kanji k-kanji--sm">改</span><%= t('ai.latestAnalysis') %></div>
-      <div class="k-legacyai"><%= aiResponse %></div>
-      <div class="k-fieldhint"><%= t('ai.fromLast') %><a class="k-link" href="/dashboard/sessions"><%= t('sessions.title') %></a>.</div>
+    <!-- Card 2 (optional): Latest session analysis -->
+    <section class="k-card k-card--featured k-ai-card">
+      <div class="k-ai-cardhead">
+        <div class="k-panel-title"><span class="k-kanji k-kanji--sm">改</span><%= t('ai.latestAnalysis') %></div>
+      </div>
+      <div class="k-legacyai">
+        <% splitParas(aiResponse).forEach(function(p) { %>
+          <p class="k-ai-para"><%= p %></p>
+        <% }); %>
+      </div>
+      <div class="k-fieldhint" style="margin-top:14px;"><%= t('ai.fromLast') %><a class="k-link" href="/dashboard/sessions"><%= t('sessions.title') %></a>.</div>
     </section>
     <% } %>
 
-    <section class="k-card">
-      <div class="k-panel-title" style="margin-bottom:14px;"><%= t('ai.startConv') %></div>
+    <!-- Card 3: Start a conversation -->
+    <section class="k-card k-ai-card">
+      <div class="k-ai-cardhead">
+        <div class="k-panel-title"><%= t('ai.startConv') %></div>
+      </div>
       <% if (openers && openers.length) { %>
         <div class="k-openerrow">
           <% openers.forEach(function(o){ %>
@@ -61,8 +83,11 @@
       <div class="k-attachmeta" id="attach-meta" hidden></div>
     </section>
 
-    <section class="k-card">
-      <div class="k-panel-title" style="margin-bottom:6px;"><%= t('ai.conversations') %></div>
+    <!-- Card 4: Past conversations -->
+    <section class="k-card k-ai-card">
+      <div class="k-ai-cardhead">
+        <div class="k-panel-title"><%= t('ai.conversations') %></div>
+      </div>
       <% if (threads && threads.length) { %>
         <div class="k-threadlist">
           <% threads.forEach(function(thr){ %>
@@ -79,7 +104,7 @@
           <% }); %>
         </div>
       <% } else { %>
-        <p class="k-emptyhint"><%= t('ai.none') %></p>
+        <p class="k-emptyhint" style="margin:0;"><%= t('ai.none') %></p>
       <% } %>
     </section>
   </main>
@@ -103,7 +128,11 @@
           <% } else { %>
             <div class="k-msg k-msg-kai">
               <span class="k-kanji k-kanji--sm">改</span>
-              <div class="k-msg-text"><%= m.text %></div>
+              <div class="k-msg-text">
+                <% splitParas(m.text).forEach(function(p) { %>
+                  <p class="k-ai-para"><%= p %></p>
+                <% }); %>
+              </div>
             </div>
           <% } %>
         <% }); %>
@@ -148,6 +177,23 @@
 
       function scrollBottom() { if (log) log.scrollTop = log.scrollHeight; }
       scrollBottom();
+
+      function renderCoachParas(container, rawText) {
+        if (!container) return;
+        container.innerHTML = '';
+        var paras = String(rawText || '')
+          .replace(/\r\n/g, '\n')
+          .split(/\n{2,}|\n/)
+          .map(function (s) { return s.trim(); })
+          .filter(Boolean);
+        if (!paras.length) return;
+        paras.forEach(function (pText) {
+          var p = document.createElement('p');
+          p.className = 'k-ai-para';
+          p.textContent = pText;
+          container.appendChild(p);
+        });
+      }
 
       document.querySelectorAll('.k-opener').forEach(function (b) {
         b.addEventListener('click', function () {
@@ -197,7 +243,7 @@
           k.textContent = '改';
           var t = document.createElement('div');
           t.className = 'k-msg-text';
-          t.textContent = text;
+          renderCoachParas(t, text);
           wrap.appendChild(k);
           wrap.appendChild(t);
         }
@@ -229,21 +275,23 @@
         // redirect into its own thread page.
         if (threadId && window.kaizenStream) {
           var live = addMsg('kaizen', '');
+          var streamBuf = '';
           window.kaizenStream('/kaizen-ai/ask', Object.assign({ threadId: threadId, stream: 1 }, payload), {
             onDelta: function (t) {
               if (typing) typing.hidden = true;
-              if (live) live.textContent += t;
+              streamBuf += t;
+              if (live) renderCoachParas(live, streamBuf);
               scrollBottom();
             },
             onDone: function (ev) {
               // The server ships the final reply asterisk-free — swap it in.
-              if (ev && ev.final != null && live) live.textContent = ev.final;
+              if (ev && ev.final != null && live) renderCoachParas(live, ev.final);
               finish();
             },
             onError: function (msg) {
               if (typing) typing.hidden = true;
               if (live && !live.textContent) {
-                live.textContent = msg || 'KAIZEN could not respond. Try again in a moment.';
+                renderCoachParas(live, msg || 'KAIZEN could not respond. Try again in a moment.');
               }
               finish();
             },

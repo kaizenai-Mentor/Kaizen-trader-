@@ -42,6 +42,20 @@ function isPropFirmGoal(goal) {
   return PROP_FIRM_RE.test(String(goal.title || '') + ' ' + String(goal.rationale || ''));
 }
 
+/**
+ * Infer how to measure a goal from the trader's own words so the UI
+ * never forces them to pick a metric, target, or cadence (owner
+ * directive 23 Oct 2026).
+ */
+function inferGoalMetric(title = '', rationale = '') {
+  const text = `${title} ${rationale}`;
+  if (PROP_FIRM_RE.test(text)) return 'PROP_FIRM';
+  if (/\b(streak|every day|daily journal|days in a row)\b/i.test(text)) return 'JOURNAL_STREAK';
+  if (/\b(risk|drawdown|daily loss|stop loss|sizing|position size)\b/i.test(text)) return 'RISK_LIMIT';
+  if (/\b(sessions? (a|per|this) week|log \d+ sessions)\b/i.test(text)) return 'SESSIONS_PER_WEEK';
+  return 'RULE_COMPLIANCE';
+}
+
 function metricLabel(m) {
   return METRIC_LABELS[m] || METRIC_LABELS.CUSTOM;
 }
@@ -354,6 +368,7 @@ async function guideAsync(ctx) {
 
 module.exports = {
   isPropFirmGoal,
+  inferGoalMetric,
   guide,
   guideAsync,
   buildGuidePrompt,
