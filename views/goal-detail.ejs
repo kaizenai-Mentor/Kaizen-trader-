@@ -15,10 +15,8 @@
       <div style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--ash);margin-bottom:4px;"><%= t('goals.yourGoal') %></div>
       <h1 style="font-size:1.55rem;font-weight:700;color:var(--text-primary);margin-bottom:8px;"><%= goal.title %></h1>
       <div style="display:flex;gap:14px;flex-wrap:wrap;font-family:'DM Mono',monospace;font-size:0.66rem;color:var(--ash);">
-        <% if (goal.target != null) { %><span><%= t('goals.target') %>: <%= goal.target %><%= goal.unit || '' %> (<%= goal.cadence %>)</span><% } else { %><span><%= goal.cadence %></span><% } %>
-        <% if (current != null) { %><span>· <%= t('goals.progress') %>: <%= current %><%= goal.unit || '' %></span><% } %>
-        <% if (guidance && guidance.currentPattern) { %><span>· <%= t('goals.currentPattern') %>: <%= guidance.currentPattern %></span><% } %>
-        <span>· <%= goal.status %></span>
+        <% if (guidance && guidance.currentPattern) { %><span><%= t('goals.currentPattern') %>: <%= guidance.currentPattern %></span> · <% } %>
+        <span><%= goal.status %></span>
       </div>
       <% if (goal.rationale) { %>
         <p style="font-size:0.84rem;color:var(--text-secondary);font-style:italic;margin:8px 0 0;"><%= t('goals.reason') %>: "<%= goal.rationale %>"</p>
@@ -50,10 +48,6 @@
         <label style="display:block;font-family:'DM Mono',monospace;font-size:0.56rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);margin-bottom:6px;"><%= t('goals.feedbackLabel') %></label>
         <textarea name="note" class="k-input" rows="4" maxlength="800" required placeholder="<%= t('goals.feedbackPh') %>" style="margin-bottom:10px;line-height:1.7;resize:vertical;"></textarea>
         <div style="display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;">
-          <div>
-            <label style="display:block;font-family:'DM Mono',monospace;font-size:0.56rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);margin-bottom:6px;"><%= t('goals.value') %></label>
-            <input class="k-input" name="value" type="number" step="any" style="width:120px;">
-          </div>
           <button type="submit" class="k-btn" style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;"><%= t('goals.saveFeedback') %></button>
         </div>
       </form>

@@ -8,7 +8,7 @@
 <link rel="icon" href="images/kaizen-icon.png" type="image/png">
 <link rel="apple-touch-icon" href="images/kaizen-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
 <script src="js/feather.min.js"></script>
 <script>
@@ -248,9 +248,11 @@
 
   
 
-  <!-- ═══ CONVERSATIONS: list + start + legacy analysis ─═ -->
-  <main class="k-flow k-flow--wide">
-    <div class="k-cockpit-head">
+  
+
+  <!-- ═══ CONVERSATIONS: aligned cards + composer + thread list ═══ -->
+  <main class="k-flow k-flow--wide k-ai-stack">
+    <div class="k-cockpit-head" style="margin-bottom:4px;">
       <div>
         <div class="k-eyebrow">COACH · 改</div>
         <h1 class="k-page-title">KAIZEN AI</h1>
@@ -258,25 +260,30 @@
       </div>
     </div>
 
-    <!-- Your patterns — the emotional/behavioural layer, inside this room -->
-    <section class="k-card">
-      <div class="k-panel-title">YOUR PATTERNS</div>
+    <!-- Card 1: Your patterns — the emotional/behavioural layer, inside this room -->
+    <section class="k-card k-ai-card">
+      <div class="k-ai-cardhead">
+        <div class="k-panel-title">YOUR PATTERNS</div>
+      </div>
       
-        <div class="k-chiprow">
+        <div class="k-chiprow" style="margin-bottom:10px;">
           
             <span class="k-chip k-chip--good">Performance anxiety · improving</span>
           
             <span class="k-chip k-chip--warn">Overconfidence after wins · active</span>
           
         </div>
-        <p class="k-fieldhint">Tracked across your conversations and sessions — trades and the feelings behind them, together.</p>
+        <p class="k-fieldhint" style="margin:0;">Tracked across your conversations and sessions — trades and the feelings behind them, together.</p>
       
     </section>
 
     
 
-    <section class="k-card">
-      <div class="k-panel-title" style="margin-bottom:14px;">START A CONVERSATION</div>
+    <!-- Card 3: Start a conversation -->
+    <section class="k-card k-ai-card">
+      <div class="k-ai-cardhead">
+        <div class="k-panel-title">START A CONVERSATION</div>
+      </div>
       
         <div class="k-openerrow">
           
@@ -296,8 +303,11 @@
       <div class="k-attachmeta" id="attach-meta" hidden></div>
     </section>
 
-    <section class="k-card">
-      <div class="k-panel-title" style="margin-bottom:6px;">CONVERSATIONS</div>
+    <!-- Card 4: Past conversations -->
+    <section class="k-card k-ai-card">
+      <div class="k-ai-cardhead">
+        <div class="k-panel-title">CONVERSATIONS</div>
+      </div>
       
         <div class="k-threadlist">
           
@@ -306,7 +316,7 @@
                 <span class="k-threadtitle">Why did I move my stop?</span>
                 <span class="k-threadmeta">
                   6 messages
-                  · Oct 21
+                  · Oct 26
                 </span>
               </div>
               <span class="k-threadarrow">→</span>
@@ -317,7 +327,7 @@
                 <span class="k-threadtitle">Backtest vs live gap</span>
                 <span class="k-threadmeta">
                   4 messages
-                  · Oct 21
+                  · Oct 26
                 </span>
               </div>
               <span class="k-threadarrow">→</span>
@@ -328,7 +338,7 @@
                 <span class="k-threadtitle">Fear of pulling the trigger</span>
                 <span class="k-threadmeta">
                   8 messages
-                  · Oct 21
+                  · Oct 26
                 </span>
               </div>
               <span class="k-threadarrow">→</span>
@@ -339,7 +349,7 @@
                 <span class="k-threadtitle">Pressure from needing income</span>
                 <span class="k-threadmeta">
                   5 messages
-                  · Oct 21
+                  · Oct 26
                 </span>
               </div>
               <span class="k-threadarrow">→</span>
@@ -381,6 +391,23 @@
 
       function scrollBottom() { if (log) log.scrollTop = log.scrollHeight; }
       scrollBottom();
+
+      function renderCoachParas(container, rawText) {
+        if (!container) return;
+        container.innerHTML = '';
+        var paras = String(rawText || '')
+          .replace(/\r\n/g, '\n')
+          .split(/\n{2,}|\n/)
+          .map(function (s) { return s.trim(); })
+          .filter(Boolean);
+        if (!paras.length) return;
+        paras.forEach(function (pText) {
+          var p = document.createElement('p');
+          p.className = 'k-ai-para';
+          p.textContent = pText;
+          container.appendChild(p);
+        });
+      }
 
       document.querySelectorAll('.k-opener').forEach(function (b) {
         b.addEventListener('click', function () {
@@ -430,7 +457,7 @@
           k.textContent = '改';
           var t = document.createElement('div');
           t.className = 'k-msg-text';
-          t.textContent = text;
+          renderCoachParas(t, text);
           wrap.appendChild(k);
           wrap.appendChild(t);
         }
@@ -462,21 +489,23 @@
         // redirect into its own thread page.
         if (threadId && window.kaizenStream) {
           var live = addMsg('kaizen', '');
+          var streamBuf = '';
           window.kaizenStream('/kaizen-ai/ask', Object.assign({ threadId: threadId, stream: 1 }, payload), {
             onDelta: function (t) {
               if (typing) typing.hidden = true;
-              if (live) live.textContent += t;
+              streamBuf += t;
+              if (live) renderCoachParas(live, streamBuf);
               scrollBottom();
             },
             onDone: function (ev) {
               // The server ships the final reply asterisk-free — swap it in.
-              if (ev && ev.final != null && live) live.textContent = ev.final;
+              if (ev && ev.final != null && live) renderCoachParas(live, ev.final);
               finish();
             },
             onError: function (msg) {
               if (typing) typing.hidden = true;
               if (live && !live.textContent) {
-                live.textContent = msg || 'KAIZEN could not respond. Try again in a moment.';
+                renderCoachParas(live, msg || 'KAIZEN could not respond. Try again in a moment.');
               }
               finish();
             },

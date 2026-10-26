@@ -786,6 +786,43 @@ app.get('/terms', (req, res) => res.render('terms', { user: req.session.user || 
 app.get('/help', (req, res) => res.render('help', { user: req.session.user || null }));
 app.get('/whitepaper', (req, res) => res.render('whitepaper', { user: req.session.user || null }));
 
+// Shareable Early-User Beta Landing Page (owner directive 23 Oct 2026)
+const renderLandingPage = (req, res) => {
+  res.render('landing', {
+    user: req.session.user || null,
+    joined: req.query.joined === '1',
+    joinedName: req.query.name || '',
+    joinedEmail: req.query.email || ''
+  });
+};
+app.get('/landing', renderLandingPage);
+app.get('/beta', renderLandingPage);
+
+app.post('/beta/join', async (req, res) => {
+  const name = String(req.body.name || '').trim();
+  const email = String(req.body.email || '').trim().toLowerCase();
+  const primaryMarket = String(req.body.primaryMarket || 'Forex').trim();
+  const stage = String(req.body.stage || 'Learning Trader').trim();
+  if (!name || !email) {
+    return res.redirect('/landing#beta');
+  }
+  try {
+    if (mongoose.connection.readyState === 1) {
+      const BetaTester = require('./models/BetaTester');
+      await BetaTester.findOneAndUpdate(
+        { email },
+        { $set: { name, email, primaryMarket, stage, createdAt: new Date() } },
+        { upsert: true, new: true }
+      );
+    }
+  } catch (err) {
+    console.error('[beta/join] non-fatal pipeline save error:', err.message);
+  }
+  return res.redirect(
+    `/landing?joined=1&name=${encodeURIComponent(name)}&email=${encodeURIComponent(email)}#beta`
+  );
+});
+
 // Support form submission
 app.post('/support/send', async (req, res) => {
   try {
