@@ -8,7 +8,7 @@
 <link rel="icon" href="images/kaizen-icon.png" type="image/png">
 <link rel="apple-touch-icon" href="images/kaizen-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
 <script src="js/feather.min.js"></script>
 <script>
@@ -264,7 +264,9 @@
             <div>
               <div style="font-family:'DM Mono',monospace;font-size:0.54rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);margin-bottom:2px;">Your Goal</div>
               <div style="font-weight:700;color:var(--text-primary);font-size:1.02rem;">Pass my Naira Trader prop account</div>
-              <div style="font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--ash);margin-top:3px;">PROP_FIRM · Target 80% · WEEKLY</div>
+              
+                <div style="font-size:0.78rem;color:var(--ash);font-style:italic;margin-top:3px;">"Pass the evaluation honestly and stay funded."</div>
+              
             </div>
             <div style="display:flex;gap:8px;align-items:center;">
               <span class="k-chip" style="padding:3px 9px;font-size:0.52rem;">ACTIVE</span>
@@ -276,7 +278,7 @@
             <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;">
               <div>
                 <div style="font-family:'DM Mono',monospace;font-size:0.54rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--green, #4ec9b0);margin-bottom:4px;">What you&#39;re doing well</div>
-                <p style="font-size:0.82rem;line-height:1.65;color:var(--text-primary);margin:0;white-space:pre-line;">You followed your trading rules in 8 of your last 10 sessions. Your feedback from Oct 20: “Followed the daily loss limit and stood aside after two trades.”.
+                <p style="font-size:0.82rem;line-height:1.65;color:var(--text-primary);margin:0;white-space:pre-line;">You followed your trading rules in 8 of your last 10 sessions. Your feedback from Oct 25: “Followed the daily loss limit and stood aside after two trades.”.
 Keep protecting that habit.</p>
               </div>
               <div>
@@ -303,38 +305,7 @@ Not profits.</p>
         <label style="display:block;font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);margin-bottom:6px;">Goal</label>
         <input class="k-input" name="title" required maxlength="140" style="margin-bottom:12px;" placeholder="e.g. Keep 8 of my last 10 sessions inside my rules">
         <label style="display:block;font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);margin-bottom:6px;">Why this goal matters (optional)</label>
-        <input class="k-input" name="rationale" maxlength="500" style="margin-bottom:12px;" placeholder="e.g. Pass the evaluation honestly and keep the funded account">
-        <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:12px;">
-          <div>
-            <label style="display:block;font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);margin-bottom:6px;">Metric</label>
-            <select class="k-input" name="metric">
-              
-                <option value="RULE_COMPLIANCE">RULE_COMPLIANCE</option>
-              
-                <option value="SESSIONS_PER_WEEK">SESSIONS_PER_WEEK</option>
-              
-                <option value="RISK_LIMIT">RISK_LIMIT</option>
-              
-                <option value="JOURNAL_STREAK">JOURNAL_STREAK</option>
-              
-                <option value="PROP_FIRM">PROP_FIRM</option>
-              
-                <option value="CUSTOM">CUSTOM</option>
-              
-            </select>
-          </div>
-          <div>
-            <label style="display:block;font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);margin-bottom:6px;">Target</label>
-            <input class="k-input" name="target" type="number" step="any" style="width:110px;">
-          </div>
-          <div>
-            <label style="display:block;font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);margin-bottom:6px;">Cadence</label>
-            <select class="k-input" name="cadence">
-              <option value="WEEKLY">WEEKLY</option>
-              <option value="MONTHLY">MONTHLY</option>
-            </select>
-          </div>
-        </div>
+        <input class="k-input" name="rationale" maxlength="500" style="margin-bottom:14px;" placeholder="e.g. Pass the evaluation honestly and keep the funded account">
         <button type="submit" class="k-btn" style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;">Create goal</button>
         <p style="font-size:0.78rem;color:var(--ash);font-style:italic;margin-top:12px;">A prop firm goal works too — &#34;Pass my evaluation and get funded&#34;, &#34;Stay funded&#34;. KAIZEN coaches the discipline and accountability your evaluation measures: the daily loss limit, the drawdown, your own rules. Never trading advice or market insights.</p>
       </form>

@@ -264,3 +264,12 @@ test('pre-session coach meeting: What you\'re doing well, Your biggest obstacle,
   assert.match(g.todaysFocus, /If frustration appears today,\nwalk away for 15 minutes before considering another trade\.\nProtect discipline\.\nNot profits\./);
 });
 
+test('inferGoalMetric infers metric from Goal + Why it matters when metric/target/cadence inputs are omitted (23 Oct 2026)', () => {
+  assert.strictEqual(goalCoach.inferGoalMetric('Pass my FTMO phase 1 evaluation', 'Funded account goal'), 'PROP_FIRM');
+  assert.strictEqual(goalCoach.inferGoalMetric('Never exceed 1% max risk per trade', 'Protect my stop loss'), 'RISK_LIMIT');
+  assert.strictEqual(goalCoach.inferGoalMetric('Log 5 sessions per week consistently', 'Stay accountable'), 'SESSIONS_PER_WEEK');
+  assert.strictEqual(goalCoach.inferGoalMetric('Maintain a daily journal streak', 'Build consistency'), 'JOURNAL_STREAK');
+  assert.strictEqual(goalCoach.inferGoalMetric('Wait for my 15m setup before entering', 'Follow my rules'), 'RULE_COMPLIANCE');
+});
+
+

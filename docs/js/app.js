@@ -184,3 +184,102 @@ window.kaizenStream = function (url, body, h) {
     return pump();
   });
 };
+
+/* ── KAIZEN Branded Selection Menu (progressive enhancement for <select>) ──
+   Replaces the unstyled native OS dropdown popup with a branded KAIZEN
+   menu (Crispy Black #0A0A0A, Ocean White #F4F8FB, Electric Gold #F5C518,
+   Burnt Blue #1A2F4A hover) while keeping the underlying <select> synced
+   so form posts and change listeners continue to work identically. */
+function initBrandedSelects() {
+  var selects = document.querySelectorAll('select:not([data-k-select-ready])');
+  selects.forEach(function (sel) {
+    sel.setAttribute('data-k-select-ready', '1');
+    var wrap = document.createElement('div');
+    wrap.className = 'k-select-wrap';
+    if (sel.style && sel.style.width) wrap.style.width = sel.style.width;
+    sel.parentNode.insertBefore(wrap, sel);
+    wrap.appendChild(sel);
+    sel.classList.add('k-select-native');
+
+    var trigger = document.createElement('button');
+    trigger.type = 'button';
+    trigger.className = 'k-select-trigger';
+    trigger.setAttribute('aria-haspopup', 'listbox');
+    trigger.setAttribute('aria-expanded', 'false');
+
+    var labelSpan = document.createElement('span');
+    labelSpan.className = 'k-select-label';
+    var arrowSpan = document.createElement('span');
+    arrowSpan.className = 'k-select-arrow';
+    arrowSpan.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12"><path d="M2 4l4 4 4-4" fill="none" stroke="#F5C518" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    trigger.appendChild(labelSpan);
+    trigger.appendChild(arrowSpan);
+
+    var menu = document.createElement('div');
+    menu.className = 'k-select-menu';
+    menu.setAttribute('role', 'listbox');
+
+    function rebuildOptions() {
+      menu.innerHTML = '';
+      var selectedOpt = sel.options[sel.selectedIndex] || sel.options[0];
+      labelSpan.textContent = selectedOpt ? selectedOpt.textContent : '';
+      Array.prototype.forEach.call(sel.options, function (opt, idx) {
+        var item = document.createElement('button');
+        item.type = 'button';
+        item.className = 'k-select-option' + (idx === sel.selectedIndex ? ' is-selected' : '');
+        item.setAttribute('role', 'option');
+        item.setAttribute('aria-selected', idx === sel.selectedIndex ? 'true' : 'false');
+        if (opt.disabled) item.disabled = true;
+        item.textContent = opt.textContent;
+        item.addEventListener('click', function (e) {
+          e.stopPropagation();
+          if (opt.disabled) return;
+          sel.selectedIndex = idx;
+          sel.dispatchEvent(new Event('change', { bubbles: true }));
+          rebuildOptions();
+          closeMenu();
+        });
+        menu.appendChild(item);
+      });
+    }
+
+    function openMenu() {
+      document.querySelectorAll('.k-select-wrap.is-open').forEach(function (w) {
+        if (w !== wrap) {
+          w.classList.remove('is-open');
+          var t = w.querySelector('.k-select-trigger');
+          if (t) t.setAttribute('aria-expanded', 'false');
+        }
+      });
+      wrap.classList.add('is-open');
+      trigger.setAttribute('aria-expanded', 'true');
+    }
+
+    function closeMenu() {
+      wrap.classList.remove('is-open');
+      trigger.setAttribute('aria-expanded', 'false');
+    }
+
+    trigger.addEventListener('click', function (e) {
+      e.stopPropagation();
+      if (sel.disabled) return;
+      if (wrap.classList.contains('is-open')) closeMenu();
+      else openMenu();
+    });
+
+    sel.addEventListener('change', rebuildOptions);
+    rebuildOptions();
+    wrap.appendChild(trigger);
+    wrap.appendChild(menu);
+  });
+}
+
+document.addEventListener('DOMContentLoaded', initBrandedSelects);
+document.addEventListener('click', function () {
+  document.querySelectorAll('.k-select-wrap.is-open').forEach(function (w) {
+    w.classList.remove('is-open');
+    var t = w.querySelector('.k-select-trigger');
+    if (t) t.setAttribute('aria-expanded', 'false');
+  });
+});
+

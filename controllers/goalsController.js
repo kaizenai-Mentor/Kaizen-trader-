@@ -61,16 +61,20 @@ async function getList(req, res) {
 
 async function postCreate(req, res) {
   try {
-    const metric = METRICS.includes(req.body.metric) ? req.body.metric : 'CUSTOM';
+    const title = String(req.body.title || 'Untitled goal').slice(0, 140);
+    const rationale = String(req.body.rationale || '').slice(0, 500);
+    const metric = METRICS.includes(req.body.metric)
+      ? req.body.metric
+      : goalCoach.inferGoalMetric(title, rationale);
     const target = req.body.target === '' || req.body.target == null ? null : Number(req.body.target);
     await Goal.create({
       userId: userId(req),
-      title: String(req.body.title || 'Untitled goal').slice(0, 140),
+      title,
       metric,
       target: Number.isFinite(target) ? target : null,
       unit: String(req.body.unit || '').slice(0, 12),
       cadence: req.body.cadence === 'MONTHLY' ? 'MONTHLY' : 'WEEKLY',
-      rationale: String(req.body.rationale || '').slice(0, 500)
+      rationale
     });
     res.redirect('/goals');
   } catch (err) {

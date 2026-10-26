@@ -1,531 +1,3 @@
-&lt;!DOCTYPE html&gt;
-
-&lt;html lang="en"&gt;
-
-&lt;head&gt;
-
-&lt;meta charset="utf-8"&gt;
-
-&lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
-
-&lt;title&gt;KAIZEN – Trader Development Platform&lt;/title&gt;
-
-&lt;meta name="description" content="KAIZEN is a Trader Development Platform. Set goals, reflect after every session, and build the habits of a consistent trader."&gt;
-
-&lt;link rel="preconnect" href="https://fonts.googleapis.com"&gt;
-
-&lt;link rel="preconnect" href="https://fonts.gstatic.com" crossorigin&gt;
-
-&lt;link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&amp;family=Sora:wght@400;600;700&amp;display=swap" rel="stylesheet"&gt;
-
-&lt;style&gt;
-
-:root{--black:#0A0A0A;--white:#F4F8FB;--gold:#F5C518;--blue:#1A2F4A;--mute:#A3B1BF;--mute-d:#41566B;--line:#232B33;color-scheme:dark}
-
-*{box-sizing:border-box;margin:0;padding:0}
-
-html{scroll-behavior:smooth}
-
-body{font-family:Inter,system-ui,sans-serif;background:var(--black);color:var(--white);line-height:1.65;font-size:17px;font-variant-numeric:tabular-nums}
-
-h1,h2,h3,.logo{font-family:Sora,system-ui,sans-serif;letter-spacing:-.02em;line-height:1.12}
-
-a{color:inherit;text-decoration:none}
-
-.wrap{max-width:1120px;margin:0 auto;padding:0 24px}
-
-section{padding:130px 0}
-
-.light{background:var(--white);color:var(--black)}
-
-.light .sub{color:var(--mute-d)}
-
-.sub{color:var(--mute);max-width:32em}
-
-h2{font-size:clamp(2rem,4.2vw,3rem);font-weight:600;margin-bottom:22px}
-
-:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
-
-
-
-/* buttons */
-
-.btn{display:inline-block;padding:14px 26px;border-radius:12px;font-weight:500;border:1.5px solid transparent;transition:background .25s,color .25s,border-color .25s;cursor:pointer;font-family:inherit;font-size:1rem}
-
-.btn.gold{background:var(--gold);color:var(--black)}
-
-.btn.gold:hover{background:var(--white)}
-
-.btn.blue{background:var(--blue);color:var(--white);border-color:var(--blue)}
-
-.btn.blue:hover{border-color:var(--white)}
-
-
-
-/* nav */
-
-nav{position:sticky;top:0;z-index:20;background:rgba(10,10,10,.88);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
-
-nav .wrap{display:flex;align-items:center;justify-content:space-between;height:68px}
-
-.logo{font-weight:700;font-size:1.3rem}
-
-.links{display:flex;gap:30px;align-items:center;font-size:.95rem;color:var(--mute)}
-
-.links a:hover,.links a.on{color:var(--gold)}
-
-nav .btn{padding:10px 20px}
-
-
-
-/* hero */
-
-.hero{min-height:88vh;display:flex;align-items:center;padding:80px 0}
-
-.hero .wrap{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}
-
-.hero h1{font-size:clamp(2.5rem,5.4vw,4.2rem);font-weight:700;margin-bottom:24px}
-
-.hero .sub{margin-bottom:34px;font-size:1.1rem}
-
-.cta{display:flex;gap:12px;flex-wrap:wrap}
-
-
-
-/* UI mock panels */
-
-.panel{background:var(--white);color:var(--black);border-radius:20px;padding:28px;box-shadow:0 30px 60px rgba(0,0,0,.45)}
-
-.light .panel{box-shadow:0 24px 50px rgba(26,47,74,.18);border:1px solid #DCE6EE}
-
-.panel h4{font-family:Sora,sans-serif;font-size:.95rem;font-weight:600;margin-bottom:6px}
-
-.blk{padding:14px 0;border-top:1px solid #DCE6EE}
-
-.blk:first-child{border-top:0;padding-top:0}
-
-.blk p{font-size:.92rem;color:var(--mute-d);line-height:1.5}
-
-.blk b{color:var(--black);font-weight:500}
-
-.bar{height:8px;border-radius:9px;background:#DCE6EE;margin:8px 0 4px;overflow:hidden}
-
-.bar i{display:block;height:100%;background:var(--gold);border-radius:9px}
-
-.bar.b i{background:var(--blue)}
-
-.kv{display:flex;justify-content:space-between;font-size:.88rem;color:var(--mute-d)}
-
-.kv strong{color:var(--black);font-family:Sora,sans-serif}
-
-
-
-.trust{padding:0 0 40px;text-align:center;color:var(--mute);font-size:1rem}
-
-
-
-/* problem */
-
-.problem .wrap{max-width:760px}
-
-.chain{list-style:none;margin:48px 0}
-
-.chain li{font-family:Sora,sans-serif;font-size:clamp(1.7rem,4vw,2.6rem);font-weight:600;padding-bottom:34px;position:relative;padding-left:34px}
-
-.chain li::before{content:"";position:absolute;left:5px;top:.85em;width:2px;bottom:-.5em;background:var(--line)}
-
-.chain li::after{content:"";position:absolute;left:0;top:.55em;width:12px;height:12px;border-radius:50%;background:var(--mute-d)}
-
-.chain li:last-child::before{display:none}
-
-.chain li:last-child::after{background:var(--gold)}
-
-.problem .intro{font-family:Sora,sans-serif;font-size:1.4rem;font-weight:600}
-
-
-
-/* meet */
-
-.two{display:grid;grid-template-columns:1.25fr .85fr;gap:64px;align-items:center}
-
-.sess .q{font-size:.95rem;padding:12px 14px;border-radius:12px;background:#E8EFF5;margin-top:10px;color:var(--black)}
-
-.sess .a{font-size:.9rem;padding:12px 14px;border-radius:12px;background:var(--blue);color:var(--white);margin-top:10px}
-
-
-
-/* how */
-
-.steps{list-style:none;display:grid;grid-template-columns:repeat(6,1fr);gap:0;margin-top:56px;position:relative}
-
-.steps::before{content:"";position:absolute;top:19px;left:8%;right:8%;height:2px;background:var(--line)}
-
-.steps li{text-align:center;position:relative;padding:0 6px}
-
-.steps .n{width:40px;height:40px;border-radius:50%;margin:0 auto 14px;background:var(--black);border:2px solid var(--mute-d);display:flex;align-items:center;justify-content:center;font-family:Sora,sans-serif;font-weight:600;font-size:.95rem}
-
-.steps li:last-child .n{border-color:var(--gold);color:var(--gold)}
-
-.steps span{font-size:.95rem;color:var(--mute)}
-
-
-
-/* toolkit */
-
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:48px}
-
-.card{background:var(--white);color:var(--black);border-radius:18px;padding:30px}
-
-.card h3{font-size:1.2rem;font-weight:600;margin-bottom:10px}
-
-.card p{font-size:.95rem;color:var(--mute-d);line-height:1.55}
-
-
-
-/* quote */
-
-.quote{text-align:center;padding:170px 0}
-
-.quote p{font-family:Sora,sans-serif;font-weight:700;font-size:clamp(2.2rem,6.4vw,5rem);line-height:1.08;letter-spacing:-.03em}
-
-.quote p+p{color:var(--white)}
-
-.quote p:first-child{color:var(--mute-d)}
-
-
-
-/* journey */
-
-.stages{list-style:none;display:grid;grid-template-columns:repeat(5,1fr);gap:18px;margin:52px 0 36px;position:relative}
-
-.stages li{padding-top:34px;position:relative;border-top:2px solid #C9D6E2}
-
-.stages li::before{content:"";position:absolute;top:-8px;left:0;width:14px;height:14px;border-radius:50%;background:var(--white);border:2px solid var(--blue)}
-
-.stages li.done{border-top-color:var(--gold)}
-
-.stages li.done::before{background:var(--gold);border-color:var(--gold)}
-
-.stages h3{font-size:1.05rem;font-weight:600;margin-bottom:6px}
-
-.stages p{font-size:.9rem;color:var(--mute-d);line-height:1.5}
-
-.stronger{font-family:Sora,sans-serif;font-weight:600;font-size:1.25rem}
-
-
-
-/* showcase */
-
-.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:34px 0 22px}
-
-.tab{background:none;border:1.5px solid var(--line);color:var(--mute);padding:9px 18px;border-radius:99px;font-family:inherit;font-size:.92rem;cursor:pointer;transition:all .25s}
-
-.tab:hover{border-color:var(--blue);background:var(--blue);color:var(--white)}
-
-.tab.on{border-color:var(--gold);color:var(--gold)}
-
-.track{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:20px;scrollbar-width:none}
-
-.track::-webkit-scrollbar{display:none}
-
-.slide{flex:0 0 min(640px,88%);scroll-snap-align:start}
-
-.slide .panel{min-height:320px}
-
-.nav2{display:flex;gap:10px;margin-top:22px}
-
-.nav2 .btn{padding:10px 20px}
-
-
-
-/* faq */
-
-.faq .wrap{max-width:780px}
-
-details{border-top:1px solid #C9D6E2;padding:22px 0}
-
-details:last-child{border-bottom:1px solid #C9D6E2}
-
-summary{cursor:pointer;font-family:Sora,sans-serif;font-weight:600;font-size:1.12rem;list-style:none;display:flex;justify-content:space-between;gap:16px}
-
-summary::-webkit-details-marker{display:none}
-
-summary::after{content:"+";color:var(--blue);font-size:1.4rem;line-height:1}
-
-details[open] summary::after{content:"–"}
-
-details p{margin-top:12px;color:var(--mute-d);max-width:38em}
-
-
-
-/* final */
-
-.final{text-align:center;padding:170px 0}
-
-.final h2{font-size:clamp(2.4rem,6.2vw,4.8rem);font-weight:700;margin-bottom:26px}
-
-.final h2 span{display:block;color:var(--mute-d)}
-
-.final .sub{margin:0 auto 38px}
-
-
-
-footer{border-top:1px solid var(--line);padding:70px 0 40px;font-size:.93rem;color:var(--mute)}
-
-.fgrid{display:grid;grid-template-columns:1.4fr repeat(5,1fr);gap:28px}
-
-footer h5{font-family:Sora,sans-serif;color:var(--white);font-size:.95rem;margin-bottom:12px;font-weight:600}
-
-footer li{list-style:none;margin-bottom:8px}
-
-footer a:hover{color:var(--gold)}
-
-.fine{margin-top:50px;font-size:.82rem}
-
-
-
-/* motion: fade + slide, very subtle */
-
-.rv{opacity:0;transform:translateY(18px);transition:opacity .8s ease,transform .8s ease}
-
-.rv.in{opacity:1;transform:none}
-
-@media (prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;transition:none}html{scroll-behavior:auto}}
-
-
-
-@media (max-width:900px){
-
-  section{padding:76px 0}.quote,.final{padding:96px 0}
-
-  .links a:not(.btn){display:none}
-
-  .hero{min-height:0;padding:44px 0 56px}
-
-  .hero .wrap,.two{grid-template-columns:1fr;gap:40px}
-
-  .grid{grid-template-columns:1fr 1fr}
-
-  .stages{grid-template-columns:1fr;gap:26px}
-
-  .steps{grid-template-columns:repeat(6,120px);overflow-x:auto;padding-bottom:10px}
-
-  .steps::before{left:60px;right:60px;width:auto}
-
-  .fgrid{grid-template-columns:1fr 1fr}
-
-}
-
-@media (max-width:560px){.grid{grid-template-columns:1fr}.panel{padding:22px}}
-
-&lt;/style&gt;
-
-&lt;/head&gt;
-
-&lt;body&gt;
-
-
-
-&lt;nav&gt;
-
-  &lt;div class="wrap"&gt;
-
-    &lt;a class="logo" href="#top"&gt;KAIZEN&lt;/a&gt;
-
-    &lt;div class="links"&gt;
-
-      &lt;a href="#toolkit"&gt;Features&lt;/a&gt;
-
-      &lt;a href="#how"&gt;How It Works&lt;/a&gt;
-
-      &lt;a href="#faq"&gt;Resources&lt;/a&gt;
-
-      &lt;a href="#join" class="on"&gt;Beta&lt;/a&gt;
-
-      &lt;a href="https://kaizen-trader.onrender.com/login"&gt;Login&lt;/a&gt;
-
-      &lt;a class="btn gold" href="https://kaizen-trader.onrender.com/register"&gt;Join Beta&lt;/a&gt;
-
-    &lt;/div&gt;
-
-  &lt;/div&gt;
-
-&lt;/nav&gt;
-
-
-
-&lt;main id="top"&gt;
-
-&lt;header class="hero"&gt;
-
-  &lt;div class="wrap"&gt;
-
-    &lt;div class="rv"&gt;
-
-      &lt;h1&gt;Develop the trader behind the trades.&lt;/h1&gt;
-
-      &lt;p class="sub"&gt;KAIZEN is a Trader Development Platform. Set goals, reflect after every session, and turn what you learn into habits that last.&lt;/p&gt;
-
-      &lt;div class="cta"&gt;
-
-        &lt;a class="btn gold" href="https://kaizen-trader.onrender.com/register"&gt;Join Beta&lt;/a&gt;
-
-        &lt;a class="btn blue" href="#how"&gt;See how it works&lt;/a&gt;
-
-      &lt;/div&gt;
-
-    &lt;/div&gt;
-
-    &lt;div class="panel rv" aria-label="Dashboard preview"&gt;
-
-      &lt;div class="blk"&gt;&lt;h4&gt;Today's Focus&lt;/h4&gt;&lt;p&gt;&lt;b&gt;Wait for the retest before entering.&lt;/b&gt; Skip any trade that breaks your checklist.&lt;/p&gt;&lt;/div&gt;
-
-      &lt;div class="blk"&gt;&lt;h4&gt;Weekly Improvement&lt;/h4&gt;&lt;div class="bar"&gt;&lt;i style="width:72%"&gt;&lt;/i&gt;&lt;/div&gt;&lt;div class="kv"&gt;&lt;span&gt;Rules followed&lt;/span&gt;&lt;strong&gt;72%&lt;/strong&gt;&lt;/div&gt;&lt;/div&gt;
-
-      &lt;div class="blk"&gt;&lt;h4&gt;KAIZEN AI&lt;/h4&gt;&lt;p&gt;You passed on a chase entry on Tuesday. That is the habit to repeat.&lt;/p&gt;&lt;/div&gt;
-
-      &lt;div class="blk"&gt;&lt;h4&gt;Goals&lt;/h4&gt;&lt;div class="bar b"&gt;&lt;i style="width:60%"&gt;&lt;/i&gt;&lt;/div&gt;&lt;div class="kv"&gt;&lt;span&gt;Journal after every session&lt;/span&gt;&lt;strong&gt;3 of 5&lt;/strong&gt;&lt;/div&gt;&lt;/div&gt;
-
-    &lt;/div&gt;
-
-  &lt;/div&gt;
-
-&lt;/header&gt;
-
-&lt;p class="trust rv"&gt;Built for traders committed to continuous improvement.&lt;/p&gt;
-
-
-
-&lt;section class="problem"&gt;
-
-  &lt;div class="wrap"&gt;
-
-    &lt;h2 class="rv"&gt;Every trader knows this loop.&lt;/h2&gt;
-
-    &lt;ul class="chain"&gt;
-
-      &lt;li class="rv"&gt;"I keep breaking my rules."&lt;/li&gt;
-
-      &lt;li class="rv"&gt;"I revenge traded."&lt;/li&gt;
-
-      &lt;li class="rv"&gt;"I knew better."&lt;/li&gt;
-
-      &lt;li class="rv"&gt;"I did it anyway."&lt;/li&gt;
-
-      &lt;li class="rv"&gt;"Now what?"&lt;/li&gt;
-
-    &lt;/ul&gt;
-
-    &lt;p class="intro rv"&gt;KAIZEN is where "now what" gets an answer.&lt;/p&gt;
-
-  &lt;/div&gt;
-
-&lt;/section&gt;
-
-
-
-&lt;section class="light" id="meet"&gt;
-
-  &lt;div class="wrap two"&gt;
-
-    &lt;div class="panel sess rv" aria-label="Sessions preview"&gt;
-
-      &lt;h4&gt;Session reflection&lt;/h4&gt;
-
-      &lt;p class="kv"&gt;&lt;span&gt;London session · 3 trades&lt;/span&gt;&lt;strong&gt;Today&lt;/strong&gt;&lt;/p&gt;
-
-      &lt;div class="q"&gt;What did you do well in this session?&lt;/div&gt;
-
-      &lt;div class="q"&gt;Which rule was hardest to follow?&lt;/div&gt;
-
-      &lt;div class="a"&gt;&lt;b&gt;KAIZEN AI:&lt;/b&gt; You said patience was hard. Two of your three trades waited for confirmation. That is progress.&lt;/div&gt;
-
-    &lt;/div&gt;
-
-    &lt;div class="rv"&gt;
-
-      &lt;h2&gt;Meet KAIZEN.&lt;/h2&gt;
-
-      &lt;p class="sub"&gt;KAIZEN is the platform. You trade, reflect, and track your growth in one calm place. KAIZEN AI sits inside it as your coach.&lt;/p&gt;
-
-    &lt;/div&gt;
-
-  &lt;/div&gt;
-
-&lt;/section&gt;
-
-
-
-&lt;section id="how"&gt;
-
-  &lt;div class="wrap"&gt;
-
-    &lt;h2 class="rv"&gt;How KAIZEN works&lt;/h2&gt;
-
-    &lt;ol class="steps rv"&gt;
-
-      &lt;li&gt;&lt;div class="n"&gt;1&lt;/div&gt;&lt;span&gt;Sign Up&lt;/span&gt;&lt;/li&gt;
-
-      &lt;li&gt;&lt;div class="n"&gt;2&lt;/div&gt;&lt;span&gt;Set Goals&lt;/span&gt;&lt;/li&gt;
-
-      &lt;li&gt;&lt;div class="n"&gt;3&lt;/div&gt;&lt;span&gt;Trade&lt;/span&gt;&lt;/li&gt;
-
-      &lt;li&gt;&lt;div class="n"&gt;4&lt;/div&gt;&lt;span&gt;Reflect&lt;/span&gt;&lt;/li&gt;
-
-      &lt;li&gt;&lt;div class="n"&gt;5&lt;/div&gt;&lt;span&gt;KAIZEN Understands&lt;/span&gt;&lt;/li&gt;
-
-      &lt;li&gt;&lt;div class="n"&gt;6&lt;/div&gt;&lt;span&gt;Improve&lt;/span&gt;&lt;/li&gt;
-
-    &lt;/ol&gt;
-
-  &lt;/div&gt;
-
-&lt;/section&gt;
-
-
-
-&lt;section id="toolkit" style="padding-top:20px"&gt;
-
-  &lt;div class="wrap"&gt;
-
-    &lt;h2 class="rv"&gt;Your Development Toolkit&lt;/h2&gt;
-
-    &lt;div class="grid"&gt;
-
-      &lt;div class="card rv"&gt;&lt;h3&gt;KAIZEN AI&lt;/h3&gt;&lt;p&gt;Your AI coach for reflection and behavioral analysis. It shows you the patterns you miss in the moment.&lt;/p&gt;&lt;/div&gt;
-
-      &lt;div class="card rv"&gt;&lt;h3&gt;Sessions&lt;/h3&gt;&lt;p&gt;Reflection while it is fresh, so the lesson from today's trades actually sticks.&lt;/p&gt;&lt;/div&gt;
-
-      &lt;div class="card rv"&gt;&lt;h3&gt;Goals&lt;/h3&gt;&lt;p&gt;Accountability. Pick one habit to improve and track it, so you know you are moving forward.&lt;/p&gt;&lt;/div&gt;
-
-      &lt;div class="card rv"&gt;&lt;h3&gt;Weekly Review&lt;/h3&gt;&lt;p&gt;Progress, in one page. See what improved this week and what to fix next.&lt;/p&gt;&lt;/div&gt;
-
-      &lt;div class="card rv"&gt;&lt;h3&gt;Memories&lt;/h3&gt;&lt;p&gt;Long-term behavioral intelligence. KAIZEN remembers your patterns so you stop repeating them.&lt;/p&gt;&lt;/div&gt;
-
-      &lt;div class="card rv"&gt;&lt;h3&gt;Progress&lt;/h3&gt;&lt;p&gt;See your growth over weeks and months, so you can trust the work you are putting in.&lt;/p&gt;&lt;/div&gt;
-
-    &lt;/div&gt;
-
-  &lt;/div&gt;
-
-&lt;/section&gt;
-
-
-
-&lt;section class="quote"&gt;
-
-  &lt;div class="wrap"&gt;
-
-    &lt;p class="rv"&gt;Most trading tools analyze the market.&lt;/p&gt;
-
-    &lt;p class="rv"&gt;KAIZEN develops the trader.&lt;/p&gt;
-
-  &lt;/div&gt;
-
-&lt;/section&gt;
-
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -533,15 +5,16 @@ footer a:hover{color:var(--gold)}
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>KAIZEN – Trader Development Platform</title>
 <meta name="description" content="KAIZEN is a Trader Development Platform. Set goals, reflect after every session, and build the habits of a consistent trader.">
+<link rel="icon" href="images/kaizen-icon.png" type="image/png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Sora:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@400;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{--black:#0A0A0A;--white:#F4F8FB;--gold:#F5C518;--blue:#1A2F4A;--mute:#A3B1BF;--mute-d:#41566B;--line:#232B33;color-scheme:dark}
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{font-family:Inter,system-ui,sans-serif;background:var(--black);color:var(--white);line-height:1.65;font-size:17px;font-variant-numeric:tabular-nums}
-h1,h2,h3,.logo{font-family:Sora,system-ui,sans-serif;letter-spacing:-.02em;line-height:1.12}
+body{font-family:Inter,system-ui,-apple-system,sans-serif;background:var(--black);color:var(--white);line-height:1.65;font-size:17px;font-variant-numeric:tabular-nums;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+h1,h2,h3,h4,.logo{font-family:Sora,system-ui,-apple-system,sans-serif;letter-spacing:-.02em;line-height:1.12}
 a{color:inherit;text-decoration:none}
 .wrap{max-width:1120px;margin:0 auto;padding:0 24px}
 section{padding:130px 0}
@@ -550,79 +23,101 @@ section{padding:130px 0}
 .sub{color:var(--mute);max-width:32em}
 h2{font-size:clamp(2rem,4.2vw,3rem);font-weight:600;margin-bottom:22px}
 :focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+::selection{background:rgba(245,197,24,.26);color:var(--white)}
+.light ::selection{background:rgba(245,197,24,.38);color:var(--black)}
+
+.eyebrow{font-family:'DM Mono',monospace;font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:14px;display:inline-flex;align-items:center;gap:8px}
+.eyebrow::before{content:"";width:18px;height:1.5px;background: currentColor;display:inline-block}
+.light .eyebrow{color:var(--blue)}
 
 /* buttons */
-.btn{display:inline-block;padding:14px 26px;border-radius:12px;font-weight:500;border:1.5px solid transparent;transition:background .25s,color .25s,border-color .25s;cursor:pointer;font-family:inherit;font-size:1rem}
-.btn.gold{background:var(--gold);color:var(--black)}
-.btn.gold:hover{background:var(--white)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:14px 26px;border-radius:12px;font-family:Sora,system-ui,sans-serif;font-weight:600;border:1.5px solid transparent;transition:background .25s,color .25s,border-color .25s,transform .2s,box-shadow .25s;cursor:pointer;font-size:.96rem;line-height:1.2}
+.btn.gold{background:var(--gold);color:var(--black);border-color:var(--gold)}
+.btn.gold:hover{background:var(--white);border-color:var(--white);color:var(--black);transform:translateY(-1px);box-shadow:0 10px 28px rgba(245,197,24,.24)}
+.light .btn.gold:hover{background:var(--black);border-color:var(--black);color:var(--white)}
 .btn.blue{background:var(--blue);color:var(--white);border-color:var(--blue)}
-.btn.blue:hover{border-color:var(--white)}
+.btn.blue:hover{border-color:var(--white);background:#223D60;transform:translateY(-1px)}
 
 /* nav */
-nav{position:sticky;top:0;z-index:20;background:rgba(10,10,10,.88);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
-nav .wrap{display:flex;align-items:center;justify-content:space-between;height:68px}
-.logo{font-weight:700;font-size:1.3rem}
-.links{display:flex;gap:30px;align-items:center;font-size:.95rem;color:var(--mute)}
+nav{position:sticky;top:0;z-index:50;background:rgba(10,10,10,.88);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;align-items:center;justify-content:space-between;height:70px;gap:20px}
+.logo{font-weight:700;font-size:1.25rem;display:inline-flex;align-items:center;gap:10px;letter-spacing:.02em}
+.logo-kanji{color:var(--gold);font-weight:700}
+.beta-pill{font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;padding:3px 9px;border-radius:99px;background:var(--blue);color:var(--white);border:1px solid rgba(244,248,251,.16)}
+.links{display:flex;gap:28px;align-items:center;font-size:.95rem;color:var(--mute)}
 .links a:hover,.links a.on{color:var(--gold)}
-nav .btn{padding:10px 20px}
+.links a.btn.gold{color:var(--black)}
+.links a.btn.gold:hover{color:var(--black)}
+nav .btn{padding:10px 20px;font-size:.9rem}
 
 /* hero */
-.hero{min-height:88vh;display:flex;align-items:center;padding:80px 0}
-.hero .wrap{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}
-.hero h1{font-size:clamp(2.5rem,5.4vw,4.2rem);font-weight:700;margin-bottom:24px}
-.hero .sub{margin-bottom:34px;font-size:1.1rem}
+.hero{min-height:86vh;display:flex;align-items:center;padding:84px 0 64px;position:relative}
+.hero::before{content:"";position:absolute;top:8%;right:6%;width:480px;height:480px;background:radial-gradient(circle,rgba(26,47,74,.38) 0%,rgba(245,197,24,.06) 45%,transparent 72%);pointer-events:none;z-index:0}
+.hero .wrap{display:grid;grid-template-columns:1.05fr .95fr;gap:64px;align-items:center;position:relative;z-index:1}
+.hero h1{font-size:clamp(2.5rem,5.2vw,4.15rem);font-weight:700;margin-bottom:24px;line-height:1.08}
+.hero h1 span{color:var(--gold)}
+.hero .sub{margin-bottom:34px;font-size:1.1rem;line-height:1.72}
 .cta{display:flex;gap:12px;flex-wrap:wrap}
 
 /* UI mock panels */
-.panel{background:var(--white);color:var(--black);border-radius:20px;padding:28px;box-shadow:0 30px 60px rgba(0,0,0,.45)}
-.light .panel{box-shadow:0 24px 50px rgba(26,47,74,.18);border:1px solid #DCE6EE}
-.panel h4{font-family:Sora,sans-serif;font-size:.95rem;font-weight:600;margin-bottom:6px}
+.panel{background:var(--white);color:var(--black);border-radius:20px;padding:28px;box-shadow:0 30px 60px rgba(0,0,0,.48);border:1px solid #DCE6EE}
+.light .panel{box-shadow:0 24px 50px rgba(26,47,74,.16);border:1px solid #DCE6EE;background:#FFFFFF}
+.panel-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-bottom:14px;margin-bottom:4px;border-bottom:1px solid #DCE6EE}
+.panel-tag{font-family:'DM Mono',monospace;font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;padding:4px 10px;border-radius:99px;background:var(--blue);color:var(--white)}
+.panel h4{font-family:Sora,sans-serif;font-size:.95rem;font-weight:600;margin-bottom:6px;color:var(--black)}
 .blk{padding:14px 0;border-top:1px solid #DCE6EE}
 .blk:first-child{border-top:0;padding-top:0}
-.blk p{font-size:.92rem;color:var(--mute-d);line-height:1.5}
-.blk b{color:var(--black);font-weight:500}
-.bar{height:8px;border-radius:9px;background:#DCE6EE;margin:8px 0 4px;overflow:hidden}
-.bar i{display:block;height:100%;background:var(--gold);border-radius:9px}
+.blk p{font-size:.92rem;color:var(--mute-d);line-height:1.55}
+.blk b{color:var(--black);font-weight:600}
+.bar{height:8px;border-radius:9px;background:#DCE6EE;margin:8px 0 6px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--gold);border-radius:9px;transition:width .6s ease}
 .bar.b i{background:var(--blue)}
-.kv{display:flex;justify-content:space-between;font-size:.88rem;color:var(--mute-d)}
-.kv strong{color:var(--black);font-family:Sora,sans-serif}
+.kv{display:flex;justify-content:space-between;align-items:baseline;font-size:.88rem;color:var(--mute-d)}
+.kv strong{color:var(--black);font-family:Sora,sans-serif;font-weight:600}
 
-.trust{padding:0 0 40px;text-align:center;color:var(--mute);font-size:1rem}
+.trust{padding:0 24px 48px;text-align:center;color:var(--mute);font-size:.98rem;letter-spacing:.01em}
 
 /* problem */
+.problem{border-top:1px solid var(--line)}
 .problem .wrap{max-width:760px}
 .chain{list-style:none;margin:48px 0}
-.chain li{font-family:Sora,sans-serif;font-size:clamp(1.7rem,4vw,2.6rem);font-weight:600;padding-bottom:34px;position:relative;padding-left:34px}
+.chain li{font-family:Sora,sans-serif;font-size:clamp(1.7rem,4vw,2.6rem);font-weight:600;padding-bottom:34px;position:relative;padding-left:36px;color:var(--white)}
 .chain li::before{content:"";position:absolute;left:5px;top:.85em;width:2px;bottom:-.5em;background:var(--line)}
 .chain li::after{content:"";position:absolute;left:0;top:.55em;width:12px;height:12px;border-radius:50%;background:var(--mute-d)}
+.chain li:last-child{color:var(--gold);padding-bottom:8px}
 .chain li:last-child::before{display:none}
-.chain li:last-child::after{background:var(--gold)}
-.problem .intro{font-family:Sora,sans-serif;font-size:1.4rem;font-weight:600}
+.chain li:last-child::after{background:var(--gold);box-shadow:0 0 14px rgba(245,197,24,.6)}
+.problem .intro{font-family:Sora,sans-serif;font-size:1.4rem;font-weight:600;color:var(--white);padding:24px 28px;border-radius:16px;background:rgba(26,47,74,.38);border:1px solid rgba(245,197,24,.28)}
 
 /* meet */
-.two{display:grid;grid-template-columns:1.25fr .85fr;gap:64px;align-items:center}
-.sess .q{font-size:.95rem;padding:12px 14px;border-radius:12px;background:#E8EFF5;margin-top:10px;color:var(--black)}
-.sess .a{font-size:.9rem;padding:12px 14px;border-radius:12px;background:var(--blue);color:var(--white);margin-top:10px}
+.two{display:grid;grid-template-columns:1.15fr .85fr;gap:64px;align-items:center}
+.sess .q{font-size:.94rem;padding:13px 16px;border-radius:12px;background:#E8EFF5;margin-top:10px;color:var(--black);font-weight:500}
+.sess .a{font-size:.92rem;padding:15px 18px;border-radius:12px;background:var(--blue);color:var(--white);margin-top:12px;line-height:1.65;border-left:4px solid var(--gold)}
 
 /* how */
-.steps{list-style:none;display:grid;grid-template-columns:repeat(6,1fr);gap:0;margin-top:56px;position:relative}
-.steps::before{content:"";position:absolute;top:19px;left:8%;right:8%;height:2px;background:var(--line)}
-.steps li{text-align:center;position:relative;padding:0 6px}
-.steps .n{width:40px;height:40px;border-radius:50%;margin:0 auto 14px;background:var(--black);border:2px solid var(--mute-d);display:flex;align-items:center;justify-content:center;font-family:Sora,sans-serif;font-weight:600;font-size:.95rem}
-.steps li:last-child .n{border-color:var(--gold);color:var(--gold)}
-.steps span{font-size:.95rem;color:var(--mute)}
+.steps{list-style:none;display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-top:56px;position:relative}
+.steps::before{content:"";position:absolute;top:20px;left:8%;right:8%;height:2px;background:var(--line);z-index:0}
+.steps li{text-align:center;position:relative;z-index:1;padding:0 8px}
+.steps .n{width:42px;height:42px;border-radius:50%;margin:0 auto 14px;background:var(--black);border:2px solid var(--mute-d);display:flex;align-items:center;justify-content:center;font-family:Sora,sans-serif;font-weight:600;font-size:.95rem;color:var(--white);transition:border-color .25s,transform .25s}
+.steps li:hover .n{border-color:var(--gold);transform:scale(1.06)}
+.steps li:last-child .n{border-color:var(--gold);color:var(--gold);background:rgba(245,197,24,.1)}
+.steps strong{display:block;font-family:Sora,sans-serif;font-size:.98rem;font-weight:600;color:var(--white);margin-bottom:6px}
+.steps span{display:block;font-size:.84rem;color:var(--mute);line-height:1.5}
 
 /* toolkit */
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:48px}
-.card{background:var(--white);color:var(--black);border-radius:18px;padding:30px}
-.card h3{font-size:1.2rem;font-weight:600;margin-bottom:10px}
-.card p{font-size:.95rem;color:var(--mute-d);line-height:1.55}
+.card{background:var(--white);color:var(--black);border-radius:18px;padding:30px;border:1px solid #DCE6EE;box-shadow:0 24px 48px rgba(0,0,0,.38);transition:transform .22s ease,box-shadow .22s ease}
+.card:hover{transform:translateY(-3px);box-shadow:0 30px 60px rgba(0,0,0,.5)}
+.card-role{font-family:'DM Mono',monospace;font-size:.64rem;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);font-weight:600;margin-bottom:8px}
+.card h3{font-size:1.22rem;font-weight:600;margin-bottom:10px;color:var(--black)}
+.card p{font-size:.95rem;color:var(--mute-d);line-height:1.6}
 
 /* quote */
-.quote{text-align:center;padding:170px 0}
-.quote p{font-family:Sora,sans-serif;font-weight:700;font-size:clamp(2.2rem,6.4vw,5rem);line-height:1.08;letter-spacing:-.03em}
+.quote{text-align:center;padding:160px 0;border-top:1px solid var(--line)}
+.quote p{font-family:Sora,sans-serif;font-weight:700;font-size:clamp(2.2rem,6vw,4.6rem);line-height:1.1;letter-spacing:-.03em}
+.quote p:first-child{color:var(--mute);margin-bottom:10px}
 .quote p+p{color:var(--white)}
-.quote p:first-child{color:var(--mute-d)}
+.quote p+p span{color:var(--gold)}
 
 /* journey */
 .stages{list-style:none;display:grid;grid-template-columns:repeat(5,1fr);gap:18px;margin:52px 0 36px;position:relative}
@@ -630,47 +125,53 @@ nav .btn{padding:10px 20px}
 .stages li::before{content:"";position:absolute;top:-8px;left:0;width:14px;height:14px;border-radius:50%;background:var(--white);border:2px solid var(--blue)}
 .stages li.done{border-top-color:var(--gold)}
 .stages li.done::before{background:var(--gold);border-color:var(--gold)}
-.stages h3{font-size:1.05rem;font-weight:600;margin-bottom:6px}
-.stages p{font-size:.9rem;color:var(--mute-d);line-height:1.5}
-.stronger{font-family:Sora,sans-serif;font-weight:600;font-size:1.25rem}
+.stages h3{font-size:1.05rem;font-weight:600;margin-bottom:6px;color:var(--black)}
+.stages p{font-size:.9rem;color:var(--mute-d);line-height:1.55}
+.stronger{font-family:Sora,sans-serif;font-weight:600;font-size:1.25rem;color:var(--black)}
 
 /* showcase */
 .tabs{display:flex;gap:8px;flex-wrap:wrap;margin:34px 0 22px}
-.tab{background:none;border:1.5px solid var(--line);color:var(--mute);padding:9px 18px;border-radius:99px;font-family:inherit;font-size:.92rem;cursor:pointer;transition:all .25s}
+.tab{background:none;border:1.5px solid var(--line);color:var(--mute);padding:9px 18px;border-radius:99px;font-family:Sora,sans-serif;font-weight:500;font-size:.9rem;cursor:pointer;transition:all .22s}
 .tab:hover{border-color:var(--blue);background:var(--blue);color:var(--white)}
-.tab.on{border-color:var(--gold);color:var(--gold)}
-.track{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:20px;scrollbar-width:none}
+.tab.on{border-color:var(--gold);color:var(--gold);background:rgba(245,197,24,.08)}
+.track{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:20px;scrollbar-width:none;padding-bottom:8px}
 .track::-webkit-scrollbar{display:none}
-.slide{flex:0 0 min(640px,88%);scroll-snap-align:start}
-.slide .panel{min-height:320px}
+.slide{flex:0 0 min(660px,90%);scroll-snap-align:start}
+.slide .panel{min-height:320px;display:flex;flex-direction:column;justify-content:space-between}
 .nav2{display:flex;gap:10px;margin-top:22px}
-.nav2 .btn{padding:10px 20px}
+.nav2 .btn{padding:10px 20px;font-size:.9rem}
 
 /* faq */
 .faq .wrap{max-width:780px}
 details{border-top:1px solid #C9D6E2;padding:22px 0}
 details:last-child{border-bottom:1px solid #C9D6E2}
-summary{cursor:pointer;font-family:Sora,sans-serif;font-weight:600;font-size:1.12rem;list-style:none;display:flex;justify-content:space-between;gap:16px}
+summary{cursor:pointer;font-family:Sora,sans-serif;font-weight:600;font-size:1.12rem;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:16px;color:var(--black)}
 summary::-webkit-details-marker{display:none}
-summary::after{content:"+";color:var(--blue);font-size:1.4rem;line-height:1}
+summary::after{content:"+";color:var(--blue);font-size:1.4rem;line-height:1;font-weight:600}
 details[open] summary::after{content:"–"}
-details p{margin-top:12px;color:var(--mute-d);max-width:38em}
+details p{margin-top:12px;color:var(--mute-d);max-width:42em;line-height:1.68}
 
-/* final */
-.final{text-align:center;padding:170px 0}
-.final h2{font-size:clamp(2.4rem,6.2vw,4.8rem);font-weight:700;margin-bottom:26px}
-.final h2 span{display:block;color:var(--mute-d)}
-.final .sub{margin:0 auto 38px}
+/* final + early-user beta pipeline */
+.final{text-align:center;padding:150px 0;border-top:1px solid var(--line)}
+.final h2{font-size:clamp(2.4rem,6vw,4.6rem);font-weight:700;margin-bottom:22px;line-height:1.08}
+.final h2 span{display:block;color:var(--gold)}
+.final .sub{margin:0 auto 42px;font-size:1.08rem}
+.beta-pipeline{max-width:560px;margin:0 auto;text-align:left}
+.beta-form{display:flex;flex-direction:column;gap:14px;margin-top:16px}
+.beta-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.beta-field label{display:block;font-family:Sora,sans-serif;font-size:.8rem;font-weight:600;color:var(--mute-d);margin-bottom:6px}
+.beta-input{width:100%;padding:12px 14px;border-radius:10px;border:1.5px solid #DCE6EE;background:#FFFFFF;color:var(--black);font-family:Inter,system-ui,sans-serif;font-size:.94rem;outline:none;transition:border-color .2s,box-shadow .2s}
+.beta-input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(26,47,74,.14)}
 
 footer{border-top:1px solid var(--line);padding:70px 0 40px;font-size:.93rem;color:var(--mute)}
 .fgrid{display:grid;grid-template-columns:1.4fr repeat(5,1fr);gap:28px}
 footer h5{font-family:Sora,sans-serif;color:var(--white);font-size:.95rem;margin-bottom:12px;font-weight:600}
 footer li{list-style:none;margin-bottom:8px}
 footer a:hover{color:var(--gold)}
-.fine{margin-top:50px;font-size:.82rem}
+.fine{margin-top:50px;padding-top:24px;border-top:1px solid var(--line);font-size:.82rem;display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
 
 /* motion: fade + slide, very subtle */
-.rv{opacity:0;transform:translateY(18px);transition:opacity .8s ease,transform .8s ease}
+.rv{opacity:0;transform:translateY(18px);transition:opacity .75s ease,transform .75s ease}
 .rv.in{opacity:1;transform:none}
 @media (prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;transition:none}html{scroll-behavior:auto}}
 
@@ -681,25 +182,32 @@ footer a:hover{color:var(--gold)}
   .hero .wrap,.two{grid-template-columns:1fr;gap:40px}
   .grid{grid-template-columns:1fr 1fr}
   .stages{grid-template-columns:1fr;gap:26px}
-  .steps{grid-template-columns:repeat(6,120px);overflow-x:auto;padding-bottom:10px}
-  .steps::before{left:60px;right:60px;width:auto}
+  .steps{grid-template-columns:repeat(3,1fr);gap:20px}
+  .steps::before{display:none}
   .fgrid{grid-template-columns:1fr 1fr}
 }
-@media (max-width:560px){.grid{grid-template-columns:1fr}.panel{padding:22px}}
+@media (max-width:560px){
+  .grid,.beta-row,.steps{grid-template-columns:1fr}
+  .panel{padding:22px}
+}
 </style>
 </head>
 <body>
 
 <nav>
   <div class="wrap">
-    <a class="logo" href="#top">KAIZEN</a>
+    <a class="logo" href="#top" aria-label="KAIZEN">
+      <span class="logo-kanji">改善</span>
+      <span>KAIZEN</span>
+      <span class="beta-pill">Beta</span>
+    </a>
     <div class="links">
       <a href="#toolkit">Features</a>
       <a href="#how">How It Works</a>
       <a href="#faq">Resources</a>
       <a href="#join" class="on">Beta</a>
-      <a href="https://kaizen-trader.onrender.com/login">Login</a>
-      <a class="btn gold" href="https://kaizen-trader.onrender.com/register">Join Beta</a>
+      <a href="login.html">Login</a>
+      <a class="btn gold" href="#join">Join Beta</a>
     </div>
   </div>
 </nav>
@@ -708,14 +216,19 @@ footer a:hover{color:var(--gold)}
 <header class="hero">
   <div class="wrap">
     <div class="rv">
-      <h1>Develop the trader behind the trades.</h1>
+      <div class="eyebrow">Trader Development Platform</div>
+      <h1>Develop the trader <span>behind the trades.</span></h1>
       <p class="sub">KAIZEN is a Trader Development Platform. Set goals, reflect after every session, and turn what you learn into habits that last.</p>
       <div class="cta">
-        <a class="btn gold" href="https://kaizen-trader.onrender.com/register">Join Beta</a>
+        <a class="btn gold" href="#join">Join Beta</a>
         <a class="btn blue" href="#how">See how it works</a>
       </div>
     </div>
     <div class="panel rv" aria-label="Dashboard preview">
+      <div class="panel-head">
+        <h4>KAIZEN Workspace</h4>
+        <span class="panel-tag">Session #24 · Active</span>
+      </div>
       <div class="blk"><h4>Today's Focus</h4><p><b>Wait for the retest before entering.</b> Skip any trade that breaks your checklist.</p></div>
       <div class="blk"><h4>Weekly Improvement</h4><div class="bar"><i style="width:72%"></i></div><div class="kv"><span>Rules followed</span><strong>72%</strong></div></div>
       <div class="blk"><h4>KAIZEN AI</h4><p>You passed on a chase entry on Tuesday. That is the habit to repeat.</p></div>
@@ -727,6 +240,7 @@ footer a:hover{color:var(--gold)}
 
 <section class="problem">
   <div class="wrap">
+    <div class="eyebrow rv">The Real Bottleneck</div>
     <h2 class="rv">Every trader knows this loop.</h2>
     <ul class="chain">
       <li class="rv">"I keep breaking my rules."</li>
@@ -742,43 +256,51 @@ footer a:hover{color:var(--gold)}
 <section class="light" id="meet">
   <div class="wrap two">
     <div class="panel sess rv" aria-label="Sessions preview">
-      <h4>Session reflection</h4>
-      <p class="kv"><span>London session · 3 trades</span><strong>Today</strong></p>
+      <div class="panel-head">
+        <h4>Session reflection</h4>
+        <span class="panel-tag">London Session</span>
+      </div>
+      <p class="kv" style="margin-top:10px"><span>London session · 3 trades</span><strong>Today</strong></p>
       <div class="q">What did you do well in this session?</div>
       <div class="q">Which rule was hardest to follow?</div>
       <div class="a"><b>KAIZEN AI:</b> You said patience was hard. Two of your three trades waited for confirmation. That is progress.</div>
     </div>
     <div class="rv">
+      <div class="eyebrow">Meet KAIZEN</div>
       <h2>Meet KAIZEN.</h2>
-      <p class="sub">KAIZEN is the platform. You trade, reflect, and track your growth in one calm place. KAIZEN AI sits inside it as your coach.</p>
+      <p class="sub" style="margin-bottom:16px">KAIZEN is the platform. You trade, reflect, and track your growth in one calm place. KAIZEN AI sits inside it as your coach.</p>
+      <p class="sub" style="margin-bottom:28px">You document the session in plain words. KAIZEN interprets your decisions, connects them to your active goals, and helps you improve one habit at a time.</p>
+      <a class="btn gold" href="#join">Join Beta</a>
     </div>
   </div>
 </section>
 
 <section id="how">
   <div class="wrap">
+    <div class="eyebrow rv">The Development Loop</div>
     <h2 class="rv">How KAIZEN works</h2>
     <ol class="steps rv">
-      <li><div class="n">1</div><span>Sign Up</span></li>
-      <li><div class="n">2</div><span>Set Goals</span></li>
-      <li><div class="n">3</div><span>Trade</span></li>
-      <li><div class="n">4</div><span>Reflect</span></li>
-      <li><div class="n">5</div><span>KAIZEN Understands</span></li>
-      <li><div class="n">6</div><span>Improve</span></li>
+      <li><div class="n">1</div><strong>Sign Up</strong><span>Create your trader workspace</span></li>
+      <li><div class="n">2</div><strong>Set Goals</strong><span>Commit to one habit at a time</span></li>
+      <li><div class="n">3</div><strong>Trade</strong><span>Execute with clear focus</span></li>
+      <li><div class="n">4</div><strong>Reflect</strong><span>Document the session honestly</span></li>
+      <li><div class="n">5</div><strong>KAIZEN Understands</strong><span>AI reads your patterns &amp; why</span></li>
+      <li><div class="n">6</div><strong>Improve</strong><span>Carry one fix into tomorrow</span></li>
     </ol>
   </div>
 </section>
 
 <section id="toolkit" style="padding-top:20px">
   <div class="wrap">
+    <div class="eyebrow rv">Powered by Five Core Systems</div>
     <h2 class="rv">Your Development Toolkit</h2>
     <div class="grid">
-      <div class="card rv"><h3>KAIZEN AI</h3><p>Your AI coach for reflection and behavioral analysis. It shows you the patterns you miss in the moment.</p></div>
-      <div class="card rv"><h3>Sessions</h3><p>Reflection while it is fresh, so the lesson from today's trades actually sticks.</p></div>
-      <div class="card rv"><h3>Goals</h3><p>Accountability. Pick one habit to improve and track it, so you know you are moving forward.</p></div>
-      <div class="card rv"><h3>Weekly Review</h3><p>Progress, in one page. See what improved this week and what to fix next.</p></div>
-      <div class="card rv"><h3>Memories</h3><p>Long-term behavioral intelligence. KAIZEN remembers your patterns so you stop repeating them.</p></div>
-      <div class="card rv"><h3>Progress</h3><p>See your growth over weeks and months, so you can trust the work you are putting in.</p></div>
+      <div class="card rv"><div class="card-role">AI Coaching &amp; Analysis</div><h3>KAIZEN AI</h3><p>Your AI coach for reflection and behavioral analysis. It shows you the patterns you miss in the moment.</p></div>
+      <div class="card rv"><div class="card-role">Reflection</div><h3>Sessions</h3><p>Reflection while it is fresh, so the lesson from today's trades actually sticks.</p></div>
+      <div class="card rv"><div class="card-role">Accountability</div><h3>Goals</h3><p>Accountability. Pick one habit to improve and track it, so you know you are moving forward.</p></div>
+      <div class="card rv"><div class="card-role">Progress Synthesis</div><h3>Weekly Review</h3><p>Progress, in one page. See what improved this week and what to fix next.</p></div>
+      <div class="card rv"><div class="card-role">Behavioral Memory</div><h3>Memories</h3><p>Long-term behavioral intelligence. KAIZEN remembers your patterns so you stop repeating them.</p></div>
+      <div class="card rv"><div class="card-role">Consistency</div><h3>Progress</h3><p>See your growth over weeks and months, so you can trust the work you are putting in.</p></div>
     </div>
   </div>
 </section>
@@ -786,12 +308,13 @@ footer a:hover{color:var(--gold)}
 <section class="quote">
   <div class="wrap">
     <p class="rv">Most trading tools analyze the market.</p>
-    <p class="rv">KAIZEN develops the trader.</p>
+    <p class="rv"><span>KAIZEN</span> develops the trader.</p>
   </div>
 </section>
 
 <section class="light" id="journey">
   <div class="wrap">
+    <div class="eyebrow rv">Every Trader's Path</div>
     <h2 class="rv">Your performance journey</h2>
     <ol class="stages rv">
       <li class="done"><h3>Starting Trader</h3><p>Learning to trade with a plan.</p></li>
@@ -806,32 +329,83 @@ footer a:hover{color:var(--gold)}
 
 <section id="showcase">
   <div class="wrap">
+    <div class="eyebrow rv">Product Tour</div>
     <h2 class="rv">Inside the platform</h2>
     <div class="tabs" id="tabs" role="tablist"></div>
     <div class="track" id="track"></div>
     <div class="nav2">
-      <button class="btn blue" id="prev" aria-label="Previous screen">Previous</button>
-      <button class="btn blue" id="next" aria-label="Next screen">Next</button>
+      <button class="btn blue" id="prev" type="button" aria-label="Previous screen">Previous</button>
+      <button class="btn blue" id="next" type="button" aria-label="Next screen">Next</button>
     </div>
   </div>
 </section>
 
 <section class="light faq" id="faq">
   <div class="wrap">
+    <div class="eyebrow rv">Resources &amp; FAQ</div>
     <h2 class="rv">Questions, answered</h2>
-    <details><summary>What is KAIZEN?</summary><p>KAIZEN is a Trader Development Platform. It helps you set goals, reflect on your sessions, and improve your habits over time.</p></details>
+    <details open><summary>What is KAIZEN?</summary><p>KAIZEN is a Trader Development Platform. It helps you set goals, reflect on your sessions, and improve your habits over time.</p></details>
     <details><summary>What does KAIZEN AI do?</summary><p>KAIZEN AI is your coach inside the platform. It reads your reflections, points out patterns, and suggests what to work on next.</p></details>
     <details><summary>Does KAIZEN place trades for me?</summary><p>No. KAIZEN does not trade for you. It helps you become a more disciplined trader on your own.</p></details>
     <details><summary>Is this financial advice?</summary><p>No. KAIZEN does not tell you what to buy or sell. It focuses on your behavior and habits, not market predictions.</p></details>
-    <details><summary>How do I join the beta?</summary><p>Press Join Beta and create your account. You can start setting goals right away.</p></details>
+    <details><summary>How do I join the beta?</summary><p>Enter your name and email below to join the early-user Beta pipeline or press Create Beta Account to start setting goals right away.</p></details>
   </div>
 </section>
 
 <section class="final" id="join">
   <div class="wrap">
+    <div class="eyebrow rv">Early Access Cohort</div>
     <h2 class="rv">Better Traders Aren't Found.<span>They're Built.</span></h2>
     <p class="sub rv">Every trading session is an opportunity to improve. KAIZEN helps you make the most of it.</p>
-    <a class="btn gold rv" href="https://kaizen-trader.onrender.com/register">Join Beta</a>
+
+    <div class="panel beta-pipeline rv">
+      
+        <div class="panel-head">
+          <div>
+            <h4>Join the KAIZEN Beta Cohort</h4>
+            <p style="font-size:.84rem;color:var(--mute-d)">Reserve your early-user access and test the live Trader Development Platform.</p>
+          </div>
+          <span class="panel-tag">Early Access</span>
+        </div>
+        <form class="beta-form" action="/beta/join" method="POST">
+          <div class="beta-row">
+            <div class="beta-field">
+              <label for="beta-name">Name or Trader Handle</label>
+              <input class="beta-input" id="beta-name" name="name" type="text" required placeholder="e.g. AlexTrader">
+            </div>
+            <div class="beta-field">
+              <label for="beta-email">Email Address</label>
+              <input class="beta-input" id="beta-email" name="email" type="email" required placeholder="you@example.com">
+            </div>
+          </div>
+          <div class="beta-row">
+            <div class="beta-field">
+              <label for="beta-market">Primary Market</label>
+              <select class="beta-input" id="beta-market" name="primaryMarket">
+                <option value="Forex">Forex</option>
+                <option value="Futures / Indices">Futures / Indices</option>
+                <option value="Crypto">Crypto</option>
+                <option value="Stocks / Options">Stocks / Options</option>
+              </select>
+            </div>
+            <div class="beta-field">
+              <label for="beta-stage">Current Stage</label>
+              <select class="beta-input" id="beta-stage" name="stage">
+                <option value="Starting Trader">Starting Trader</option>
+                <option value="Learning Trader" selected>Learning Trader</option>
+                <option value="Disciplined Trader">Disciplined Trader</option>
+                <option value="Consistent Trader">Consistent Trader</option>
+                <option value="Developed Trader">Developed Trader</option>
+              </select>
+            </div>
+          </div>
+          <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:6px">
+            <button class="btn gold" type="submit" style="flex:1">Join Beta</button>
+            <a class="btn blue" href="register.html">Direct Sign Up &rarr;</a>
+          </div>
+        </form>
+      
+    </div>
   </div>
 </section>
 </main>
@@ -839,14 +413,20 @@ footer a:hover{color:var(--gold)}
 <footer>
   <div class="wrap">
     <div class="fgrid">
-      <div><a class="logo" href="#top" style="font-size:1.2rem;color:var(--white)">KAIZEN</a><p style="margin-top:10px;max-width:16em">The Trader Development Platform.</p></div>
-      <div><h5>Platform</h5><ul><li><a href="#toolkit">Toolkit</a></li><li><a href="#how">How It Works</a></li></ul></div>
-      <div><h5>Resources</h5><ul><li><a href="#faq">FAQ</a></li><li><a href="#showcase">Screens</a></li></ul></div>
-      <div><h5>Company</h5><ul><li><a href="#">About</a></li><li><a href="#">Contact</a></li></ul></div>
-      <div><h5>Legal</h5><ul><li><a href="#">Terms</a></li><li><a href="#">Privacy</a></li></ul></div>
-      <div><h5>Socials</h5><ul><li><a href="#">X</a></li><li><a href="#">LinkedIn</a></li></ul></div>
+      <div>
+        <a class="logo" href="#top" style="font-size:1.2rem;color:var(--white)"><span class="logo-kanji">改善</span><span>KAIZEN</span></a>
+        <p style="margin-top:10px;max-width:16em">The Trader Development Platform.</p>
+      </div>
+      <div><h5>Platform</h5><ul><li><a href="#toolkit">Toolkit</a></li><li><a href="#how">How It Works</a></li><li><a href="#meet">KAIZEN AI</a></li></ul></div>
+      <div><h5>Resources</h5><ul><li><a href="#faq">FAQ</a></li><li><a href="#showcase">Screens</a></li><li><a href="#journey">Journey</a></li></ul></div>
+      <div><h5>Company</h5><ul><li><a href="about.html">About</a></li><li><a href="support.html">Contact</a></li><li><a href="index.html">Welcome Page</a></li></ul></div>
+      <div><h5>Legal</h5><ul><li><a href="terms.html">Terms</a></li><li><a href="privacy.html">Privacy</a></li></ul></div>
+      <div><h5>Account</h5><ul><li><a href="login.html">Login</a></li><li><a href="register.html">Join Beta</a></li></ul></div>
     </div>
-    <p class="fine">© 2026 KAIZEN. Trading involves risk. KAIZEN is a development tool, not financial advice.</p>
+    <div class="fine">
+      <span>© 2026 KAIZEN. Trading involves risk. KAIZEN is a development tool, not financial advice.</span>
+      <span>Continuous Improvement · 改善</span>
+    </div>
   </div>
 </footer>
 
@@ -855,29 +435,52 @@ footer a:hover{color:var(--gold)}
   // gentle fade-in on scroll
   var els=document.querySelectorAll('.rv');
   if('IntersectionObserver' in window){
-    var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.15});
+    var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.12});
     els.forEach(function(el){io.observe(el)});
   }else{els.forEach(function(el){el.classList.add('in')})}
 
   // showcase: real-looking UI panels
   var S=[
-   {t:'Sessions',h:'Session reflection',rows:[['London session','3 trades'],['Rules followed','2 of 3'],['Mood before','Calm']],bar:67,note:'Write what went well and what was hard while it is fresh.'},
-   {t:'KAIZEN AI',h:'Coach feedback',rows:[['Pattern spotted','Chasing after a loss'],['Strength','Waits for confirmation'],['Next focus','Write risk before entry']],bar:0,note:'"You waited for the retest twice this week. Keep that going."'},
-   {t:'Goals',h:'Active goals',rows:[['Journal after every session','3 of 5'],['No trades after two losses','4 of 5'],['Risk under 1% per trade','5 of 5']],bar:80,note:'One habit at a time. Each goal shows if you are on track.'},
-   {t:'Progress',h:'Last 8 weeks',rows:[['Rules followed','58% to 72%'],['Reflection streak','12 days'],['Stage','Learning Trader']],bar:72,note:'Your growth, week by week.'},
-   {t:'Weekly Review',h:'This week',rows:[['Improved','Patience at entries'],['Needs work','Moving stops'],['Next week','Keep stops fixed']],bar:0,note:'A short review that tells you what to do next.'}
+   {t:'Sessions',h:'Session reflection',tag:'London Session',rows:[['London session','3 trades'],['Rules followed','2 of 3'],['Mood before','Calm']],bar:67,note:'Write what went well and what was hard while it is fresh.'},
+   {t:'KAIZEN AI',h:'Coach feedback',tag:'Behavioral Read',rows:[['Pattern spotted','Chasing after a loss'],['Strength','Waits for confirmation'],['Next focus','Write risk before entry']],bar:0,note:'"You waited for the retest twice this week. Keep that going."'},
+   {t:'Goals',h:'Active goals',tag:'Accountability',rows:[['Journal after every session','3 of 5'],['No trades after two losses','4 of 5'],['Risk under 1% per trade','5 of 5']],bar:80,note:'One habit at a time. Each goal shows if you are on track.'},
+   {t:'Progress',h:'Last 8 weeks',tag:'Consistency',rows:[['Rules followed','58% to 72%'],['Reflection streak','12 days'],['Stage','Learning Trader']],bar:72,note:'Your growth, week by week.'},
+   {t:'Weekly Review',h:'This week',tag:'Sun – Sat Synthesis',rows:[['Improved','Patience at entries'],['Needs work','Moving stops'],['Next week','Keep stops fixed']],bar:0,note:'A short review that tells you what to do next.'}
   ];
   var tabs=document.getElementById('tabs'),track=document.getElementById('track');
-  S.forEach(function(s,i){
-    var b=document.createElement('button');b.className='tab'+(i?'':' on');b.textContent=s.t;b.setAttribute('role','tab');
-    b.onclick=function(){track.children[i].scrollIntoView({behavior:'smooth',inline:'start',block:'nearest'})};
-    tabs.appendChild(b);
-    var d=document.createElement('div');d.className='slide';
-    var rows=s.rows.map(function(r){return '<div class="blk"><div class="kv"><span>'+r[0]+'</span><strong>'+r[1]+'</strong></div></div>'}).join('');
-    d.innerHTML='<div class="panel"><h4>'+s.h+'</h4>'+rows+(s.bar?'<div class="bar"><i style="width:'+s.bar+'%"></i></div>':'')+'<p class="blk" style="border:0;padding-bottom:0"><span style="color:var(--mute-d);font-size:.92rem">'+s.note+'</span></p></div>';
-    track.appendChild(d);
-  });
-  function idx(){var w=track.children[0].offsetWidth+20;return Math.min(S.length-1,Math.round(track.scrollLeft/w))}
-  track.addEventListener('scroll',function(){var i=idx();[].forEach.call(tabs.children,function(t,j){t.classList.toggle('on',i===j)})});
-  document.getElementById('next').onclick=function(){track.children[Math.min(S.length-1,idx()+1)].scrollIntoView({behavior:'smooth',inline:'start',block:'nearest'})};
-  document.getElement
+  if(tabs && track){
+    S.forEach(function(s,i){
+      var b=document.createElement('button');b.type='button';b.className='tab'+(i?'':' on');b.textContent=s.t;b.setAttribute('role','tab');
+      b.onclick=function(){track.children[i].scrollIntoView({behavior:'smooth',inline:'start',block:'nearest'})};
+      tabs.appendChild(b);
+      var d=document.createElement('div');d.className='slide';
+      var rows=s.rows.map(function(r){return '<div class="blk"><div class="kv"><span>'+r[0]+'</span><strong>'+r[1]+'</strong></div></div>'}).join('');
+      d.innerHTML='<div class="panel"><div><div class="panel-head"><h4>'+s.h+'</h4><span class="panel-tag">'+s.tag+'</span></div>'+rows+(s.bar?'<div class="bar"><i style="width:'+s.bar+'%"></i></div>':'')+'</div><p class="blk" style="border:0;padding-bottom:0"><span style="color:var(--mute-d);font-size:.92rem">'+s.note+'</span></p></div>';
+      track.appendChild(d);
+    });
+    function idx(){
+      if(!track.children[0]) return 0;
+      var w=track.children[0].offsetWidth+20;
+      return Math.min(S.length-1,Math.max(0,Math.round(track.scrollLeft/w)));
+    }
+    track.addEventListener('scroll',function(){
+      var i=idx();
+      [].forEach.call(tabs.children,function(t,j){t.classList.toggle('on',i===j)});
+    });
+    var nextBtn=document.getElementById('next');
+    var prevBtn=document.getElementById('prev');
+    if(nextBtn){
+      nextBtn.onclick=function(){
+        track.children[Math.min(S.length-1,idx()+1)].scrollIntoView({behavior:'smooth',inline:'start',block:'nearest'});
+      };
+    }
+    if(prevBtn){
+      prevBtn.onclick=function(){
+        track.children[Math.max(0,idx()-1)].scrollIntoView({behavior:'smooth',inline:'start',block:'nearest'});
+      };
+    }
+  }
+})();
+</script>
+</body>
+</html>
