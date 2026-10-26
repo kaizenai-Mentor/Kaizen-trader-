@@ -48,7 +48,7 @@
             <div class="k-scoremeta">
               <% if (score.overallState === 'READY') { %><span class="k-statechip is-ready"><%= t('dash.ready') %></span><% } %>
               <% if (score.overallState === 'PARTIAL') { %><span class="k-statechip is-partial"><%= t('dash.partial') %></span><% } %>
-              <span class="k-scoresub"><%= t('dash.fromLast') %> <%= score.sessionsConsidered %> <%= t('dash.sessionsDot') %><a class="k-link" href="/about#kaizen-score"><%= t('dash.howScored') %></a></span>
+              <span class="k-scoresub"><%= t('dash.fromLast') %> <%= score.sessionsConsidered %> <%= t('dash.sessionsDot') %> <a class="k-link" href="/about#kaizen-score"><%= t('dash.howScored') %></a></span>
             </div>
           </div>
 
@@ -70,7 +70,7 @@
               <div class="k-metric-label"><%= t('dash.whyNumber') %></div>
               <% whyDims.slice(0,3).forEach(function(k){ %>
                 <p class="k-whyline">
-                  <span class="k-whydim"><%= dimensionLabels[k].toUpperCase() %></span> — <%= score.dimensions[k].reasons[0] %>
+                  <span class="k-whydim"><%= dimensionLabels[k].toUpperCase() %>:</span> <%= score.dimensions[k].reasons[0] %>
                 </p>
               <% }); %>
             </div>
@@ -162,7 +162,7 @@
   <% if (newBadges && newBadges.length) { %>
     <div class="k-toast" id="badgeToast">
       <% newBadges.forEach(function(b){ %>
-        <div class="k-toast-item"><span class="k-kanji k-kanji--sm">改</span><%= t('dash.milestoneReached') %><b><%= labels.badge(b.name) %></b></div>
+        <div class="k-toast-item"><span class="k-kanji k-kanji--sm">改</span> <%= t('dash.milestoneReached') %> <b><%= labels.badge(b.name) %></b></div>
       <% }); %>
     </div>
   <% } %>
@@ -173,9 +173,9 @@
       <div class="k-modal">
         <span class="k-kanji k-kanji--lg">改</span>
         <h2 class="k-modaltitle"><%= t('dash.howWorks') %></h2>
-        <p class="k-modaltext"><%= t('dash.exA') %><b><%= t('dash.exLoop') %></b><%= t('dash.exB') %><b><%= t('dash.exDims') %></b><%= t('dash.exC') %></p>
-        <p class="k-modaltext"><%= t('dash.exD') %><b><%= t('dash.exWhy') %></b><%= t('dash.exE') %></p>
-        <p class="k-modaltext"><%= t('dash.exF') %><b><%= t('dash.exBuilding') %></b><%= t('dash.exG') %></p>
+        <p class="k-modaltext"><%= t('dash.exA') %> <b><%= t('dash.exLoop') %></b> <%= t('dash.exB') %> <b><%= t('dash.exDims') %></b> <%= t('dash.exC') %></p>
+        <p class="k-modaltext"><%= t('dash.exD') %> <b><%= t('dash.exWhy') %></b> <%= t('dash.exE') %></p>
+        <p class="k-modaltext"><%= t('dash.exF') %> <b><%= t('dash.exBuilding') %></b> <%= t('dash.exG') %></p>
         <div class="k-modalactions">
           <a class="k-btn k-btn-primary" href="/dashboard/sessions/new"><%= t('dash.planSession') %></a>
           <button class="k-btn k-btn-ghost" type="button" onclick="document.getElementById('scoreIntroModal').remove()"><%= t('dash.gotIt') %></button>
@@ -190,9 +190,9 @@
       <div class="k-modal">
         <span class="k-kanji k-kanji--lg">改</span>
         <h2 class="k-modaltitle"><%= t('dash.renameTitle') %></h2>
-        <p class="k-modaltext"><%= t('dash.renameA') %><b><%= t('dash.exDims') %></b><%= t('dash.renameB') %></p>
-        <p class="k-modaltext"><%= t('dash.renameC') %><b>Building</b><%= t('dash.renameD') %></p>
-        <p class="k-modaltext"><%= t('dash.loopNow') %><b><%= t('dash.loopChain') %></b><%= t('dash.loopNote') %></p>
+        <p class="k-modaltext"><%= t('dash.renameA') %> <b><%= t('dash.exDims') %></b> <%= t('dash.renameB') %></p>
+        <p class="k-modaltext"><%= t('dash.renameC') %> <b>Building</b> <%= t('dash.renameD') %></p>
+        <p class="k-modaltext"><%= t('dash.loopNow') %> <b><%= t('dash.loopChain') %></b> <%= t('dash.loopNote') %></p>
         <div class="k-modalactions">
           <a class="k-btn k-btn-primary" href="/dashboard/sessions/new"><%= t('dash.planSession') %></a>
           <button class="k-btn k-btn-ghost" type="button" onclick="document.getElementById('cutoverModal').remove()"><%= t('dash.gotIt') %></button>

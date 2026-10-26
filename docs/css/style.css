@@ -2105,12 +2105,12 @@ html.k-anim [data-reveal].is-in {
 }
 .k-hero-h1 {
   font-family: var(--font-body);
-  font-size: clamp(2.6rem, 5.5vw, 5rem);
+  font-size: clamp(2.6rem, 5.5vw, 4.6rem);
   font-weight: 700;
-  line-height: 1.04;
+  line-height: 1.14;
   letter-spacing: -0.02em;
   color: var(--text-primary);
-  margin: 0 0 26px;
+  margin: 0 0 28px;
 }
 .k-hero-sub {
   font-size: 1.12rem;
@@ -2493,9 +2493,9 @@ html.k-anim [data-reveal].is-in {
   font-size: clamp(2.2rem, 5vw, 3.4rem);
   font-weight: 700;
   color: var(--text-primary);
-  line-height: 1.05;
+  line-height: 1.16;
   letter-spacing: -0.01em;
-  margin: 0 0 18px;
+  margin: 0 0 20px;
 }
 .k-page-sub {
   font-size: 1rem;
@@ -4429,4 +4429,15 @@ select.k-input, select.form-input {
   .kl-timeline-horiz { grid-template-columns: 1fr; }
   .kl-footer-grid { grid-template-columns: 1fr; }
 }
+
+/* Global rounded corners for all card surfaces (including Reputation, Profile, Bounties, News) */
+.app-main div[style*="background:var(--bg-card)"],
+.app-main section[style*="background:var(--bg-card)"],
+.app-main a[style*="background:var(--bg-card)"] {
+  border-radius: 16px;
+}
+.app-main div[style*="background:var(--bg-surface)"] {
+  border-radius: 12px;
+}
+
 

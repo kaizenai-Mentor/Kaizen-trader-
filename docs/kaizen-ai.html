@@ -53,7 +53,7 @@
 (function(){try{var u=new URL(window.location.href);if(u.searchParams.has('wallet')){u.searchParams.delete('wallet');window.history.replaceState({},document.title,u.toString());}}catch(e){}})();
 </script>
 
-  <title>KAIZEN — KAIZEN AI</title>
+  <title>KAIZEN | KAIZEN AI</title>
 </head>
 <body class="app-page k-chatbody">
   <!-- POPUP OVERLAY -->
@@ -179,7 +179,7 @@
 <div class="k-ticker" id="k-ticker" role="region" aria-label="Update">
   <button type="button" class="k-ticker-close" onclick="dismissTicker()" aria-label="Dismiss announcement">×</button>
   <div class="k-ticker-track">
-    <span class="k-ticker-text"><b>KAIZEN V2 IS COMING</b> — the score gets five dimensions · plan → record → reflect sessions · your own Trading System · rolling out over the next 30 days</span>
+    <span class="k-ticker-text"><b>KAIZEN V2 IS HERE</b> · the score spans five dimensions · plan → record → reflect sessions · your own Trading System</span>
   </div>
   <div class="k-ticker-badge">
     <div class="k-ticker-megaphone"><i data-feather="megaphone" width="12" height="12"></i></div>
@@ -235,11 +235,11 @@
         </form>
       </div>
       <div class="security-section" style="margin-top:24px;padding-top:24px;border-top:1px solid var(--border);">
-        <h4>Two-Factor Authentication</h4>
+        <h4>Two Factor Authentication</h4>
         <p style="font-size:0.85rem;color:var(--ash);margin-bottom:14px;">
           Add an extra layer of security to your account.
         </p>
-        <button class="btn-outline btn-full">Enable 2FA — Coming Soon</button>
+        <button class="btn-outline btn-full">Enable 2FA (Coming Soon)</button>
       </div>
     </div>
   </div>
@@ -256,7 +256,7 @@
       <div>
         <div class="k-eyebrow">COACH · 改</div>
         <h1 class="k-page-title">KAIZEN AI</h1>
-        <p class="k-page-sub">KAIZEN AI helps you understand your trades, your emotions, and the patterns connecting both — one conversation, anchored to your own system. No signals, no predictions: process.</p>
+        <p class="k-page-sub">KAIZEN AI helps you understand your trades, your emotions, and the patterns connecting both in one conversation, anchored to your own system. No signals, no predictions: process.</p>
       </div>
     </div>
 
@@ -273,7 +273,7 @@
             <span class="k-chip k-chip--warn">Overconfidence after wins · active</span>
           
         </div>
-        <p class="k-fieldhint" style="margin:0;">Tracked across your conversations and sessions — trades and the feelings behind them, together.</p>
+        <p class="k-fieldhint" style="margin:0;">Tracked across your conversations and sessions: trades and the feelings behind them, together.</p>
       
     </section>
 
@@ -422,7 +422,7 @@
         if (!f) return;
         if (f.size > 2 * 1024 * 1024) {
           attachMeta.hidden = false;
-          attachMeta.textContent = "Chart too large — keep it under 2 MB.";
+          attachMeta.textContent = "Chart too large. Keep it under 2 MB.";
           fileInput.value = '';
           return;
         }
@@ -430,7 +430,7 @@
         fr.onload = function () {
           imageData = fr.result;
           attachMeta.hidden = false;
-          attachMeta.textContent = '📎 ' + f.name + ' ' + "attached — describe what to check, or just send.";
+          attachMeta.textContent = '📎 ' + f.name + ' ' + "attached. Describe what to check, or just send.";
         };
         fr.readAsDataURL(f);
       });

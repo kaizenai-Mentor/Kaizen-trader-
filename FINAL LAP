@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>KAIZEN – Trader Development Platform</title>
+<title>KAIZEN | Trader Development Platform</title>
 <meta name="description" content="KAIZEN is a Trader Development Platform. Set goals, reflect after every session, and build the habits of a consistent trader.">
 <link rel="icon" href="images/kaizen-icon.png" type="image/png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -54,7 +54,7 @@ nav .btn{padding:10px 20px;font-size:.9rem}
 .hero{min-height:86vh;display:flex;align-items:center;padding:84px 0 64px;position:relative}
 .hero::before{content:"";position:absolute;top:8%;right:6%;width:480px;height:480px;background:radial-gradient(circle,rgba(26,47,74,.38) 0%,rgba(245,197,24,.06) 45%,transparent 72%);pointer-events:none;z-index:0}
 .hero .wrap{display:grid;grid-template-columns:1.05fr .95fr;gap:64px;align-items:center;position:relative;z-index:1}
-.hero h1{font-size:clamp(2.5rem,5.2vw,4.15rem);font-weight:700;margin-bottom:24px;line-height:1.08}
+.hero h1{font-size:clamp(2.5rem,5.2vw,4.15rem);font-weight:700;margin-bottom:24px;line-height:1.14}
 .hero h1 span{color:var(--gold)}
 .hero .sub{margin-bottom:34px;font-size:1.1rem;line-height:1.72}
 .cta{display:flex;gap:12px;flex-wrap:wrap}
@@ -227,12 +227,12 @@ footer a:hover{color:var(--gold)}
     <div class="panel rv" aria-label="Dashboard preview">
       <div class="panel-head">
         <h4>KAIZEN Workspace</h4>
-        <span class="panel-tag">Session #24 · Active</span>
+        <span class="panel-tag">Session #24 · XAUUSD</span>
       </div>
-      <div class="blk"><h4>Today's Focus</h4><p><b>Wait for the retest before entering.</b> Skip any trade that breaks your checklist.</p></div>
-      <div class="blk"><h4>Weekly Improvement</h4><div class="bar"><i style="width:72%"></i></div><div class="kv"><span>Rules followed</span><strong>72%</strong></div></div>
-      <div class="blk"><h4>KAIZEN AI</h4><p>You passed on a chase entry on Tuesday. That is the habit to repeat.</p></div>
-      <div class="blk"><h4>Goals</h4><div class="bar b"><i style="width:60%"></i></div><div class="kv"><span>Journal after every session</span><strong>3 of 5</strong></div></div>
+      <div class="blk"><h4>Trader Session Note</h4><p>"Took the London sweep on Gold, got stopped out for 1R, then jumped back in 6 minutes later at double size before the 15m candle closed."</p></div>
+      <div class="blk" style="background:#1A2F4A;color:#F4F8FB;padding:16px 18px;border-radius:14px;border-left:4px solid #F5C518;margin:6px 0"><h4 style="color:#F5C518;margin-bottom:6px;font-size:.82rem;letter-spacing:.08em;text-transform:uppercase">改 KAIZEN AI · Behavioral Read</h4><p style="color:#F4F8FB;font-size:.91rem;line-height:1.6">Your bias was not the problem today. Your ego after the first stop was. Trade 1 followed every rule in your playbook and happened to lose. Trade 2 was not a setup, it was you trying to erase how Trade 1 felt. Across your last 14 sessions, your win rate is <b style="color:#F5C518">68% on first entries</b> and drops to <b style="color:#F5C518">18% whenever you enter again within 20 minutes of a loss</b>. Tomorrow's only rule: one stop out means 20 minutes hands off the mouse.</p></div>
+      <div class="blk"><h4>Weekly Rule Compliance</h4><div class="bar"><i style="width:72%"></i></div><div class="kv"><span>First entry discipline</span><strong>72%</strong></div></div>
+      <div class="blk"><h4>Active Goal</h4><div class="bar b"><i style="width:60%"></i></div><div class="kv"><span>Mandatory 20m cooldown after any red trade</span><strong>3 of 5 sessions</strong></div></div>
     </div>
   </div>
 </header>
@@ -258,12 +258,16 @@ footer a:hover{color:var(--gold)}
     <div class="panel sess rv" aria-label="Sessions preview">
       <div class="panel-head">
         <h4>Session reflection</h4>
-        <span class="panel-tag">London Session</span>
+        <span class="panel-tag">London Session · XAUUSD</span>
       </div>
-      <p class="kv" style="margin-top:10px"><span>London session · 3 trades</span><strong>Today</strong></p>
-      <div class="q">What did you do well in this session?</div>
-      <div class="q">Which rule was hardest to follow?</div>
-      <div class="a"><b>KAIZEN AI:</b> You said patience was hard. Two of your three trades waited for confirmation. That is progress.</div>
+      <p class="kv" style="margin-top:10px"><span>London session · 2 trades (1 planned, 1 impulse)</span><strong>Today</strong></p>
+      <div class="q"><b>Your journal note:</b> "I knew the 15m candle had not closed yet, but after taking a loss earlier I could not stand watching my level run without me, so I entered early with double risk."</div>
+      <div class="a">
+        <b style="color:var(--gold);display:block;margin-bottom:6px">改 KAIZEN AI:</b>
+        <p style="margin-bottom:10px">Read that sentence back to yourself: you did not enter because your setup was ready. You entered because you could not stand the pain of being right on direction while sitting flat after a loss.</p>
+        <p style="margin-bottom:10px">This is the 4th time this month that a normal 1R loss turned into a 3R drawdown in under 15 minutes. Your strategy is profitable on Trade 1 (71% compliance). Almost all of your drawdown comes from the revenge trade you take right after.</p>
+        <p style="margin:0"><b style="color:var(--gold)">Tomorrow's focus:</b> When a trade stops you out, close the chart tab for one full 15m candle before you are allowed to touch the mouse again.</p>
+      </div>
     </div>
     <div class="rv">
       <div class="eyebrow">Meet KAIZEN</div>
@@ -299,7 +303,7 @@ footer a:hover{color:var(--gold)}
       <div class="card rv"><div class="card-role">Reflection</div><h3>Sessions</h3><p>Reflection while it is fresh, so the lesson from today's trades actually sticks.</p></div>
       <div class="card rv"><div class="card-role">Accountability</div><h3>Goals</h3><p>Accountability. Pick one habit to improve and track it, so you know you are moving forward.</p></div>
       <div class="card rv"><div class="card-role">Progress Synthesis</div><h3>Weekly Review</h3><p>Progress, in one page. See what improved this week and what to fix next.</p></div>
-      <div class="card rv"><div class="card-role">Behavioral Memory</div><h3>Memories</h3><p>Long-term behavioral intelligence. KAIZEN remembers your patterns so you stop repeating them.</p></div>
+      <div class="card rv"><div class="card-role">Behavioral Memory</div><h3>Memories</h3><p>Long term behavioral intelligence. KAIZEN remembers your patterns so you stop repeating them.</p></div>
       <div class="card rv"><div class="card-role">Consistency</div><h3>Progress</h3><p>See your growth over weeks and months, so you can trust the work you are putting in.</p></div>
     </div>
   </div>
@@ -348,7 +352,7 @@ footer a:hover{color:var(--gold)}
     <details><summary>What does KAIZEN AI do?</summary><p>KAIZEN AI is your coach inside the platform. It reads your reflections, points out patterns, and suggests what to work on next.</p></details>
     <details><summary>Does KAIZEN place trades for me?</summary><p>No. KAIZEN does not trade for you. It helps you become a more disciplined trader on your own.</p></details>
     <details><summary>Is this financial advice?</summary><p>No. KAIZEN does not tell you what to buy or sell. It focuses on your behavior and habits, not market predictions.</p></details>
-    <details><summary>How do I join the beta?</summary><p>Enter your name and email below to join the early-user Beta pipeline or press Create Beta Account to start setting goals right away.</p></details>
+    <details><summary>How do I join the beta?</summary><p>Enter your name and email below to join the early user Beta pipeline or press Create Beta Account to start setting goals right away.</p></details>
   </div>
 </section>
 
@@ -363,7 +367,7 @@ footer a:hover{color:var(--gold)}
         <div class="panel-head">
           <div>
             <h4>Join the KAIZEN Beta Cohort</h4>
-            <p style="font-size:.84rem;color:var(--mute-d)">Reserve your early-user access and test the live Trader Development Platform.</p>
+            <p style="font-size:.84rem;color:var(--mute-d)">Reserve your early user access and test the live Trader Development Platform.</p>
           </div>
           <span class="panel-tag">Early Access</span>
         </div>
@@ -442,10 +446,10 @@ footer a:hover{color:var(--gold)}
   // showcase: real-looking UI panels
   var S=[
    {t:'Sessions',h:'Session reflection',tag:'London Session',rows:[['London session','3 trades'],['Rules followed','2 of 3'],['Mood before','Calm']],bar:67,note:'Write what went well and what was hard while it is fresh.'},
-   {t:'KAIZEN AI',h:'Coach feedback',tag:'Behavioral Read',rows:[['Pattern spotted','Chasing after a loss'],['Strength','Waits for confirmation'],['Next focus','Write risk before entry']],bar:0,note:'"You waited for the retest twice this week. Keep that going."'},
+   {t:'KAIZEN AI',h:'Coach feedback',tag:'Behavioral Read',rows:[['Blind spot detected','Revenge entry within 15m of a loss'],['First trade win rate','68% (when following plan)'],['Post loss win rate','18% (when chasing recovery)']],bar:0,note:'KAIZEN AI: "You do not have a strategy problem. Your first trade of the day is disciplined and profitable. You are giving back your edge in the 15 minutes after a stop out."'},
    {t:'Goals',h:'Active goals',tag:'Accountability',rows:[['Journal after every session','3 of 5'],['No trades after two losses','4 of 5'],['Risk under 1% per trade','5 of 5']],bar:80,note:'One habit at a time. Each goal shows if you are on track.'},
    {t:'Progress',h:'Last 8 weeks',tag:'Consistency',rows:[['Rules followed','58% to 72%'],['Reflection streak','12 days'],['Stage','Learning Trader']],bar:72,note:'Your growth, week by week.'},
-   {t:'Weekly Review',h:'This week',tag:'Sun – Sat Synthesis',rows:[['Improved','Patience at entries'],['Needs work','Moving stops'],['Next week','Keep stops fixed']],bar:0,note:'A short review that tells you what to do next.'}
+   {t:'Weekly Review',h:'This week',tag:'Sun to Sat Synthesis',rows:[['Improved','Patience at entries'],['Needs work','Moving stops'],['Next week','Keep stops fixed']],bar:0,note:'A short review that tells you what to do next.'}
   ];
   var tabs=document.getElementById('tabs'),track=document.getElementById('track');
   if(tabs && track){
