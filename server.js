@@ -494,6 +494,7 @@ app.get('/test-ai', async (req, res) => {
 });
 
 // Market news — 30-minute cache so the page never waits on the API twice in a row.
+const { buildMarketNewsFeed } = require('./services/marketNews');
 const newsCache = { at: 0, articles: [] };
 const NEWS_TTL_MS = 30 * 60 * 1000;
 
@@ -501,31 +502,38 @@ app.get('/news', async (req, res) => {
   if (!req.session.user) return res.redirect('/auth/login');
   const renderNews = (articles) => res.render('news', {
     user: req.session.user,
-    articles,
+    articles: articles && articles.length ? articles : buildMarketNewsFeed([]),
     events: getActiveEvents()
   });
   try {
     if (Date.now() - newsCache.at >= NEWS_TTL_MS || newsCache.articles.length === 0) {
-      const axios = require('axios');
-      const response = await axios.get('https://api.marketaux.com/v1/news/all', {
-        params: {
-          api_token: process.env.MARKETAUX_KEY,
-          language: 'en',
-          limit: 20,
-          filter_entities: true
-        },
-        timeout: 8000
-      });
-      newsCache.articles = (response.data?.data || []).map((a) => ({
-        ...a,
-        publishedAt: a.publishedAt || a.published_at
-      }));
+      let rawArticles = [];
+      if (process.env.MARKETAUX_KEY) {
+        const axios = require('axios');
+        const response = await axios.get('https://api.marketaux.com/v1/news/all', {
+          params: {
+            api_token: process.env.MARKETAUX_KEY,
+            language: 'en',
+            limit: 30,
+            filter_entities: true,
+            search: 'Federal Reserve OR FOMC OR CPI OR PCE OR NFP OR ECB OR BOE OR BOJ OR Gold OR XAUUSD OR EURUSD OR USDJPY OR Treasury yields'
+          },
+          timeout: 6000
+        });
+        rawArticles = (response.data?.data || []).map((a) => ({
+          ...a,
+          publishedAt: a.publishedAt || a.published_at
+        }));
+      }
+      newsCache.articles = buildMarketNewsFeed(rawArticles);
       newsCache.at = Date.now();
     }
     renderNews(newsCache.articles);
   } catch (err) {
     console.error('News error:', err.message);
-    // On API failure serve the last good cache (even if stale) rather than an empty page.
+    if (!newsCache.articles || newsCache.articles.length === 0) {
+      newsCache.articles = buildMarketNewsFeed([]);
+    }
     renderNews(newsCache.articles);
   }
 });

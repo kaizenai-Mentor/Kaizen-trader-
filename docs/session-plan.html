@@ -53,7 +53,7 @@
 (function(){try{var u=new URL(window.location.href);if(u.searchParams.has('wallet')){u.searchParams.delete('wallet');window.history.replaceState({},document.title,u.toString());}}catch(e){}})();
 </script>
 
-  <title>KAIZEN — New Session</title>
+  <title>KAIZEN | New Session</title>
 </head>
 <body class="app-page">
   <!-- POPUP OVERLAY -->
@@ -179,7 +179,7 @@
 <div class="k-ticker" id="k-ticker" role="region" aria-label="Update">
   <button type="button" class="k-ticker-close" onclick="dismissTicker()" aria-label="Dismiss announcement">×</button>
   <div class="k-ticker-track">
-    <span class="k-ticker-text"><b>KAIZEN V2 IS COMING</b> — the score gets five dimensions · plan → record → reflect sessions · your own Trading System · rolling out over the next 30 days</span>
+    <span class="k-ticker-text"><b>KAIZEN V2 IS HERE</b> · the score spans five dimensions · plan → record → reflect sessions · your own Trading System</span>
   </div>
   <div class="k-ticker-badge">
     <div class="k-ticker-megaphone"><i data-feather="megaphone" width="12" height="12"></i></div>
@@ -235,11 +235,11 @@
         </form>
       </div>
       <div class="security-section" style="margin-top:24px;padding-top:24px;border-top:1px solid var(--border);">
-        <h4>Two-Factor Authentication</h4>
+        <h4>Two Factor Authentication</h4>
         <p style="font-size:0.85rem;color:var(--ash);margin-bottom:14px;">
           Add an extra layer of security to your account.
         </p>
-        <button class="btn-outline btn-full">Enable 2FA — Coming Soon</button>
+        <button class="btn-outline btn-full">Enable 2FA (Coming Soon)</button>
       </div>
     </div>
   </div>
@@ -287,7 +287,7 @@
       
         <div class="k-card k-formcard">
           <div class="k-field">
-            <label class="k-fieldlabel">SETUP <span style="color:var(--text-faint);text-transform:none;letter-spacing:0;">— from your Trading System</span></label>
+            <label class="k-fieldlabel">SETUP <span style="color:var(--text-faint);text-transform:none;letter-spacing:0;">from your Trading System</span></label>
             
               <select name="setup" class="k-input">
                 
@@ -295,7 +295,7 @@
                 
                   <option value="Range fakeout">Range fakeout</option>
                 
-                <option value="">Other / ad-hoc</option>
+                <option value="">Other / ad hoc</option>
               </select>
             
           </div>
@@ -314,7 +314,7 @@
             <label class="k-fieldlabel">RISK</label>
             
               <select name="predefinedRisk" id="risk-select" class="k-input">
-                <option value="1%">1% — from your system</option>
+                <option value="1%">1% from your system</option>
                 <option value="CUSTOM">Custom risk for this session</option>
                 <option value="">Different this time (say it in the record)</option>
               </select>
@@ -359,7 +359,7 @@
           </div>
 
           <div class="k-field">
-            <label class="k-fieldlabel">CONFIDENCE (1-10) — <span id="conf-val" class="k-gold">7</span>/10</label>
+            <label class="k-fieldlabel">CONFIDENCE (1 to 10) — <span id="conf-val" class="k-gold">7</span>/10</label>
             <input type="range" name="confidence" min="1" max="10" value="7" class="k-slider" oninput="document.getElementById('conf-val').textContent=this.value">
           </div>
         </div>
@@ -367,9 +367,9 @@
 
       <div class="k-actions">
         <button type="submit" class="btn-primary k-btn-lg">Lock in the plan</button>
-        <button type="submit" name="skip" value="1" class="btn-outline k-btn-lg">Skip the plan (be honest — it counts against you)</button>
+        <button type="submit" name="skip" value="1" class="btn-outline k-btn-lg">Skip the plan (be honest, it counts against you)</button>
       </div>
-      <p style="font-size:0.72rem;color:var(--ash);line-height:1.7;margin:14px 0 0;">Skipping is allowed — this session will carry less Process evidence. KAIZEN will nudge you to plan next time.</p>
+      <p style="font-size:0.72rem;color:var(--ash);line-height:1.7;margin:14px 0 0;">Skipping is allowed, though this session will carry less Process evidence. KAIZEN will nudge you to plan next time.</p>
     </form>
 
   </main>

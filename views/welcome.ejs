@@ -25,7 +25,7 @@
           <span class="k-gold"><%= t('welcome.hero3') %></span>
         </h1>
 
-        <p class="k-hero-sub"><%= t('welcome.sub1') %><strong style="color:var(--text-primary);"><%= t('welcome.sub2') %></strong>
+        <p class="k-hero-sub"><%= t('welcome.sub1') %> <strong style="color:var(--text-primary);"><%= t('welcome.sub2') %></strong>
         </p>
 
         <p class="k-hero-sub2"><%= t('welcome.tagline') %></p>
@@ -104,12 +104,16 @@
       </div>
 
       <div class="k-preview-card k-card k-card--featured" data-reveal style="transition-delay:80ms;">
-        <div class="k-card-label"><span class="k-kanji k-kanji--sm">改</span><%= t('welcome.aiResp') %></div>
+        <div class="k-card-label"><span class="k-kanji k-kanji--sm">改</span> <%= t('welcome.aiResp') %></div>
+        <div style="background:#E8EFF5;border-left:3px solid #1A2F4A;border-radius:10px;padding:10px 12px;margin-bottom:14px;font-size:0.8rem;color:#0A0A0A;line-height:1.55;">
+          <strong style="display:block;font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:#1A2F4A;margin-bottom:3px;">Trader Session Log · XAUUSD London</strong>
+          "Took the London sweep on Gold, got stopped out for 1R, then jumped back in 6 minutes later with double size because I knew my bias was right."
+        </div>
         <div class="k-metric-label"><%= t('welcome.aiWhere') %></div>
         <p class="k-ai-text"><%= t('welcome.aiWhereBody') %></p>
         <div class="k-metric-label" style="margin-top:16px;"><%= t('welcome.aiFocus') %></div>
         <p class="k-ai-text"><%= t('welcome.aiFocusBody') %></p>
-        <div class="k-ai-score-line"><%= t('welcome.scoreColon') %><strong>61</strong></div>
+        <div class="k-ai-score-line"><%= t('welcome.scoreColon') %> <strong>61</strong></div>
       </div>
 
       <div class="k-preview-card k-card k-card--hover" data-reveal style="transition-delay:160ms;">
@@ -282,7 +286,7 @@
     <!-- Final CTA -->
     <div class="k-final-cta" style="margin-top:72px;" data-reveal>
       <div class="k-eyebrow k-eyebrow--center"><%= t('welcome.final') %></div>
-      <h2 class="k-cta-h"><%= t('welcome.final1') %><span class="k-gold"><%= t('welcome.final2') %></span>
+      <h2 class="k-cta-h"><%= t('welcome.final1') %><br><span class="k-gold"><%= t('welcome.final2') %></span>
       </h2>
       <p class="k-cta-sub"><%= t('welcome.finalSub') %></p>
       <div class="k-cta-btns">

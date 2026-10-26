@@ -53,7 +53,7 @@
 (function(){try{var u=new URL(window.location.href);if(u.searchParams.has('wallet')){u.searchParams.delete('wallet');window.history.replaceState({},document.title,u.toString());}}catch(e){}})();
 </script>
 
-  <title>KAIZEN — Reputation</title>
+  <title>KAIZEN | Reputation</title>
 </head>
 <body class="app-page">
   <!-- POPUP OVERLAY -->
@@ -179,7 +179,7 @@
 <div class="k-ticker" id="k-ticker" role="region" aria-label="Update">
   <button type="button" class="k-ticker-close" onclick="dismissTicker()" aria-label="Dismiss announcement">×</button>
   <div class="k-ticker-track">
-    <span class="k-ticker-text"><b>KAIZEN V2 IS COMING</b> — the score gets five dimensions · plan → record → reflect sessions · your own Trading System · rolling out over the next 30 days</span>
+    <span class="k-ticker-text"><b>KAIZEN V2 IS HERE</b> · the score spans five dimensions · plan → record → reflect sessions · your own Trading System</span>
   </div>
   <div class="k-ticker-badge">
     <div class="k-ticker-megaphone"><i data-feather="megaphone" width="12" height="12"></i></div>
@@ -235,11 +235,11 @@
         </form>
       </div>
       <div class="security-section" style="margin-top:24px;padding-top:24px;border-top:1px solid var(--border);">
-        <h4>Two-Factor Authentication</h4>
+        <h4>Two Factor Authentication</h4>
         <p style="font-size:0.85rem;color:var(--ash);margin-bottom:14px;">
           Add an extra layer of security to your account.
         </p>
-        <button class="btn-outline btn-full">Enable 2FA — Coming Soon</button>
+        <button class="btn-outline btn-full">Enable 2FA (Coming Soon)</button>
       </div>
     </div>
   </div>
@@ -251,159 +251,162 @@
     <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:24px;flex-wrap:wrap;">
       <div>
         <div style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:6px;display:flex;align-items:center;gap:8px;">
-          <span style="width:16px;height:1px;background:var(--gold);display:inline-block;"></span>On-Chain Identity</div>
+          <span style="width:16px;height:1px;background:var(--gold);display:inline-block;"></span>Verified Identity</div>
         <h1 style="font-size:1.6rem;font-weight:700;color:var(--text-primary);margin-bottom:4px;">Reputation</h1>
-        <p style="font-size:0.82rem;color:var(--ash);font-style:italic;">Your discipline record — verified on two blockchains.</p>
+        <p style="font-size:0.82rem;color:var(--ash);font-style:italic;">Your discipline record, verified on two blockchains.</p>
       </div>
-      <a href="dashboard.html" style="display:inline-flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);border:1px solid var(--border);padding:10px 16px;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.color='var(--gold)';this.style.borderColor='rgba(245,197,24,0.3)'" onmouseout="this.style.color='var(--ash)';this.style.borderColor='var(--border)'">
-        <i data-feather="arrow-left" width="12" height="12"></i>Dashboard</a>
+      <a href="dashboard.html" style="display:inline-flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);border:1px solid var(--border);border-radius:10px;padding:10px 16px;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.color='var(--gold)';this.style.borderColor='rgba(245,197,24,0.3)'" onmouseout="this.style.color='var(--ash)';this.style.borderColor='var(--border)'">
+        <i data-feather="arrow-left" width="12" height="12"></i> Dashboard</a>
     </div>
 
-    <!-- KAIZEN DISCIPLINE SCORE -->
-    <div style="background:var(--bg-card);border:1px solid rgba(245,197,24,0.2);padding:28px;margin-bottom:16px;position:relative;overflow:hidden;">
-      <div style="position:absolute;top:0;right:0;width:160px;height:160px;background:radial-gradient(circle,rgba(245,197,24,0.06),transparent 70%);pointer-events:none;"></div>
+    <!-- KAIZEN DISCIPLINE SCORE CARD -->
+    <section class="k-card k-card--elevated" style="border-radius:16px;padding:28px;margin-bottom:20px;position:relative;overflow:hidden;">
+      <div style="font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.18em;text-transform:uppercase;color:#41566B;margin-bottom:16px;display:flex;align-items:center;gap:8px;font-weight:600;">
+        <i data-feather="bar-chart-2" width="13" height="13" style="color:var(--gold);"></i> KAIZEN Discipline Score</div>
 
-      <div style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--ash);margin-bottom:16px;display:flex;align-items:center;gap:8px;">
-        <i data-feather="bar-chart-2" width="12" height="12" style="color:var(--gold);"></i>KAIZEN Discipline Score</div>
-
-      <div style="display:flex;align-items:flex-end;gap:16px;margin-bottom:16px;flex-wrap:wrap;">
+      <div style="display:flex;align-items:flex-end;gap:18px;margin-bottom:20px;flex-wrap:wrap;">
         <div>
-          <div style="font-family:'DM Mono',monospace;font-size:4rem;font-weight:700;color:var(--gold);line-height:1;">
-            72<span style="font-size:1.5rem;">%</span>
+          <div style="font-family:var(--font-heading);font-size:3.8rem;font-weight:700;color:#0A0A0A;line-height:1;">
+            72<span style="font-size:1.5rem;color:var(--gold);">%</span>
           </div>
-          <div style="height:4px;background:rgba(245,197,24,0.1);margin-top:8px;width:200px;">
-            <div style="height:100%;background:var(--gold);width:72%;transition:width 1.2s ease;"></div>
+          <div style="height:6px;background:#DCE6EE;border-radius:99px;margin-top:10px;width:220px;overflow:hidden;">
+            <div style="height:100%;background:var(--gold);border-radius:99px;width:72%;transition:width 1.2s ease;"></div>
           </div>
         </div>
-        <div style="padding-bottom:8px;">
+        <div style="padding-bottom:6px;">
           <div style="
             font-family:'DM Mono',monospace;
-            font-size:0.7rem;
+            font-size:0.68rem;
             font-weight:700;
-            letter-spacing:0.15em;
+            letter-spacing:0.14em;
             text-transform:uppercase;
             padding:6px 14px;
-            border:1px solid rgba(245,197,24,0.3);
-            color:var(--gold);
-            background:rgba(245,197,24,0.06);
+            border-radius:99px;
+            border:1px solid #1A2F4A;
+            color:#F4F8FB;
+            background:#1A2F4A;
+            display:inline-block;
           ">
             CONSISTENT
           </div>
-          <div style="font-size:0.75rem;color:var(--ash);margin-top:8px;">Based on 48 sessions logged</div>
+          <div style="font-size:0.78rem;color:#41566B;margin-top:8px;">Based on 48 sessions logged</div>
         </div>
       </div>
 
       <!-- Stats row -->
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:2px;">
-        <div style="background:var(--bg-surface);border:1px solid var(--border);padding:12px;text-align:center;">
-          <div style="font-family:'DM Mono',monospace;font-size:1.2rem;font-weight:700;color:var(--text-primary);">48</div>
-          <div style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-top:3px;">Sessions</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;">
+        <div style="background:#FFFFFF;border:1px solid #DCE6EE;border-radius:12px;padding:14px;text-align:center;">
+          <div style="font-family:var(--font-heading);font-size:1.3rem;font-weight:700;color:#0A0A0A;">48</div>
+          <div style="font-family:'DM Mono',monospace;font-size:0.52rem;letter-spacing:0.1em;text-transform:uppercase;color:#41566B;margin-top:4px;">Sessions</div>
         </div>
-        <div style="background:var(--bg-surface);border:1px solid var(--border);padding:12px;text-align:center;">
-          <div style="font-family:'DM Mono',monospace;font-size:1.2rem;font-weight:700;color:var(--text-primary);">6</div>
-          <div style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-top:3px;">Day Streak</div>
+        <div style="background:#FFFFFF;border:1px solid #DCE6EE;border-radius:12px;padding:14px;text-align:center;">
+          <div style="font-family:var(--font-heading);font-size:1.3rem;font-weight:700;color:#0A0A0A;">6</div>
+          <div style="font-family:'DM Mono',monospace;font-size:0.52rem;letter-spacing:0.1em;text-transform:uppercase;color:#41566B;margin-top:4px;">Day Streak</div>
         </div>
-        <div style="background:var(--bg-surface);border:1px solid var(--border);padding:12px;text-align:center;">
-          <div style="font-family:'DM Mono',monospace;font-size:1.2rem;font-weight:700;color:var(--text-primary);">
-                        2
+        <div style="background:#FFFFFF;border:1px solid #DCE6EE;border-radius:12px;padding:14px;text-align:center;">
+          <div style="font-family:var(--font-heading);font-size:1.3rem;font-weight:700;color:#0A0A0A;">
+            2
           </div>
-          <div style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-top:3px;">Badges</div>
+          <div style="font-family:'DM Mono',monospace;font-size:0.52rem;letter-spacing:0.1em;text-transform:uppercase;color:#41566B;margin-top:4px;">Badges</div>
         </div>
       </div>
 
       <!-- DANGER ZONE -->
-      <div style="margin-top:24px;padding-top:20px;border-top:1px solid var(--border);">
-        <div style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.15em;text-transform:uppercase;color:#F87171;margin-bottom:10px;display:flex;align-items:center;gap:6px;">
-          <i data-feather="alert-triangle" width="11" height="11"></i>Danger Zone</div>
+      <div style="margin-top:24px;padding-top:20px;border-top:1px solid #DCE6EE;">
+        <div style="font-family:'DM Mono',monospace;font-size:0.56rem;letter-spacing:0.15em;text-transform:uppercase;color:#DC2626;margin-bottom:10px;display:flex;align-items:center;gap:6px;font-weight:600;">
+          <i data-feather="alert-triangle" width="12" height="12"></i> Danger Zone</div>
         <button onclick="if(confirm(&quot;Delete your account permanently? This cannot be undone.&quot;)) window.location='/auth/delete'" style="
-          background:transparent;
-          border:1px solid rgba(248,113,113,0.3);
-          color:#F87171;
+          background:rgba(220,38,38,0.06);
+          border:1px solid rgba(220,38,38,0.35);
+          border-radius:10px;
+          color:#DC2626;
           font-family:'DM Mono',monospace;
-          font-size:0.6rem;
+          font-size:0.62rem;
+          font-weight:600;
           letter-spacing:0.1em;
           text-transform:uppercase;
           padding:10px 20px;
           cursor:pointer;
-          display:flex;align-items:center;gap:6px;
+          display:inline-flex;align-items:center;gap:6px;
           transition:all 0.2s;
-        " onmouseover="this.style.background='rgba(248,113,113,0.06)'" onmouseout="this.style.background='transparent'">
-          <i data-feather="trash-2" width="12" height="12"></i>Delete Account</button>
+        " onmouseover="this.style.background='rgba(220,38,38,0.12)'" onmouseout="this.style.background='rgba(220,38,38,0.06)'">
+          <i data-feather="trash-2" width="12" height="12"></i> Delete Account</button>
       </div>
-    </div>
+    </section>
 
-    <!-- MANTLE AI BENCHMARK -->
-    <div style="background:var(--bg-card);border:1px solid rgba(59,130,246,0.15);padding:24px;">
+    <!-- MANTLE AI BENCHMARK CARD -->
+    <section class="k-card" style="border-radius:16px;padding:28px;">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px;">
-        <div style="display:flex;align-items:center;gap:10px;">
-          <div style="width:28px;height:28px;border:1px solid var(--navy-border);background:var(--navy-pale);display:flex;align-items:center;justify-content:center;color:var(--blue);">
-            <i data-feather="link" width="13" height="13"></i>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div style="width:34px;height:34px;border-radius:10px;border:1px solid #DCE6EE;background:#E8EFF5;display:flex;align-items:center;justify-content:center;color:#1A2F4A;">
+            <i data-feather="link" width="15" height="15"></i>
           </div>
           <div>
-            <div style="font-weight:700;font-size:0.95rem;color:var(--text-primary);">Mantle AI Benchmark</div>
-            <div style="font-size:0.72rem;color:var(--ash);">Mantle blockchain · AI performance record</div>
+            <div style="font-family:var(--font-heading);font-weight:700;font-size:1rem;color:#0A0A0A;">Mantle AI Benchmark</div>
+            <div style="font-size:0.76rem;color:#41566B;">Mantle blockchain · AI performance record</div>
           </div>
         </div>
-        <span style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;background:var(--navy);color:#F4F8FB;border:1px solid rgba(244,248,251,0.12);padding:4px 10px;">ON-CHAIN</span>
+        <span style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;background:#1A2F4A;color:#F4F8FB;border-radius:99px;padding:5px 12px;font-weight:600;">VERIFIED</span>
       </div>
 
-      <p style="font-size:0.85rem;color:var(--text-secondary);line-height:1.8;margin-bottom:20px;">Every significant KAIZEN AI output about your account is permanently recorded on Mantle blockchain — discipline score changes, pattern detections, and milestones. Verifiable by anyone. Tamper-proof.</p>
+      <p style="font-size:0.88rem;color:#41566B;line-height:1.75;margin-bottom:20px;">Every significant KAIZEN AI output about your account is permanently recorded on the Mantle blockchain, including discipline score changes, pattern detections, and milestones. Verifiable by anyone and tamper proof.</p>
 
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:2px;margin-bottom:20px;">
-        <div style="background:var(--bg-surface);border:1px solid rgba(59,130,246,0.1);padding:16px;text-align:center;">
-          <div style="font-family:'DM Mono',monospace;font-size:1.4rem;font-weight:700;color:var(--gold);">72%</div>
-          <div style="font-family:'DM Mono',monospace;font-size:0.48rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-top:4px;">On-Chain Score</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;margin-bottom:20px;">
+        <div style="background:#FFFFFF;border:1px solid #DCE6EE;border-radius:12px;padding:16px;text-align:center;">
+          <div style="font-family:var(--font-heading);font-size:1.4rem;font-weight:700;color:#0A0A0A;">72%</div>
+          <div style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;color:#41566B;margin-top:4px;">Verified Score</div>
         </div>
-        <div style="background:var(--bg-surface);border:1px solid rgba(59,130,246,0.1);padding:16px;text-align:center;">
-          <div style="font-family:'DM Mono',monospace;font-size:1.4rem;font-weight:700;color:var(--blue);">48</div>
-          <div style="font-family:'DM Mono',monospace;font-size:0.48rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-top:4px;">Sessions Logged</div>
+        <div style="background:#FFFFFF;border:1px solid #DCE6EE;border-radius:12px;padding:16px;text-align:center;">
+          <div style="font-family:var(--font-heading);font-size:1.4rem;font-weight:700;color:#1A2F4A;">48</div>
+          <div style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;color:#41566B;margin-top:4px;">Sessions Logged</div>
         </div>
-        <div style="background:var(--bg-surface);border:1px solid rgba(59,130,246,0.1);padding:16px;text-align:center;">
-          <div style="font-family:'DM Mono',monospace;font-size:1.4rem;font-weight:700;color:var(--text-primary);">2</div>
-          <div style="font-family:'DM Mono',monospace;font-size:0.48rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-top:4px;">Milestones</div>
+        <div style="background:#FFFFFF;border:1px solid #DCE6EE;border-radius:12px;padding:16px;text-align:center;">
+          <div style="font-family:var(--font-heading);font-size:1.4rem;font-weight:700;color:#0A0A0A;">2</div>
+          <div style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;color:#41566B;margin-top:4px;">Milestones</div>
         </div>
-        <div style="background:var(--bg-surface);border:1px solid rgba(59,130,246,0.1);padding:16px;text-align:center;">
-          <div style="font-family:'DM Mono',monospace;font-size:1.4rem;font-weight:700;color:var(--text-primary);">[object Object]</div>
-          <div style="font-family:'DM Mono',monospace;font-size:0.48rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-top:4px;">Total Network Events</div>
+        <div style="background:#FFFFFF;border:1px solid #DCE6EE;border-radius:12px;padding:16px;text-align:center;">
+          <div style="font-family:var(--font-heading);font-size:1.4rem;font-weight:700;color:#0A0A0A;">[object Object]</div>
+          <div style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;color:#41566B;margin-top:4px;">Total Network Events</div>
         </div>
       </div>
 
       
         <div style="margin-bottom:20px;">
-          <div style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);margin-bottom:10px;">Recent On-Chain Records</div>
+          <div style="font-family:'DM Mono',monospace;font-size:0.56rem;letter-spacing:0.12em;text-transform:uppercase;color:#41566B;margin-bottom:10px;font-weight:600;">Recent Blockchain Records</div>
           
-            <div style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);flex-wrap:wrap;">
-              <span style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.1em;color:var(--blue);border:1px solid rgba(59,130,246,0.25);padding:2px 7px;"></span>
-              <span style="font-size:0.78rem;color:var(--text-primary);"></span>
+            <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid #DCE6EE;border-radius:10px;background:#FFFFFF;margin-bottom:8px;flex-wrap:wrap;">
+              <span style="font-family:'DM Mono',monospace;font-size:0.52rem;letter-spacing:0.1em;color:#F4F8FB;background:#1A2F4A;border-radius:99px;padding:3px 9px;"></span>
+              <span style="font-size:0.8rem;color:#0A0A0A;font-weight:500;"></span>
               
               
-                <a href="https://sepolia.mantlescan.xyz/address/0x65fe9Ccd1701C680fb137dD9f0D571d9045c5A0E/tx/0x09afa48f904490f0154a670e94e2ae8bc0bfde822a1b4ec5d6d11c1e8c0df81a" target="_blank" style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--blue);text-decoration:none;">
+                <a href="https://sepolia.mantlescan.xyz/address/0x65fe9Ccd1701C680fb137dD9f0D571d9045c5A0E/tx/0x09afa48f904490f0154a670e94e2ae8bc0bfde822a1b4ec5d6d11c1e8c0df81a" target="_blank" style="font-family:'DM Mono',monospace;font-size:0.55rem;color:#1A2F4A;font-weight:600;text-decoration:none;">
                   0x09afa4… ↗
                 </a>
               
             </div>
           
-            <div style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);flex-wrap:wrap;">
-              <span style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.1em;color:var(--blue);border:1px solid rgba(59,130,246,0.25);padding:2px 7px;"></span>
-              <span style="font-size:0.78rem;color:var(--text-primary);"></span>
+            <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid #DCE6EE;border-radius:10px;background:#FFFFFF;margin-bottom:8px;flex-wrap:wrap;">
+              <span style="font-family:'DM Mono',monospace;font-size:0.52rem;letter-spacing:0.1em;color:#F4F8FB;background:#1A2F4A;border-radius:99px;padding:3px 9px;"></span>
+              <span style="font-size:0.8rem;color:#0A0A0A;font-weight:500;"></span>
               
               
-                <a href="https://sepolia.mantlescan.xyz/address/0x65fe9Ccd1701C680fb137dD9f0D571d9045c5A0E/tx/0xabc" target="_blank" style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--blue);text-decoration:none;">
+                <a href="https://sepolia.mantlescan.xyz/address/0x65fe9Ccd1701C680fb137dD9f0D571d9045c5A0E/tx/0xabc" target="_blank" style="font-family:'DM Mono',monospace;font-size:0.55rem;color:#1A2F4A;font-weight:600;text-decoration:none;">
                   0xabc… ↗
                 </a>
               
             </div>
           
-          <div style="font-family:'DM Mono',monospace;font-size:0.52rem;letter-spacing:0.06em;color:var(--ash);margin-top:8px;line-height:1.6;">Each record links to its immutable transaction — the same words are written on-chain, where they cannot be edited.</div>
+          <div style="font-family:'DM Mono',monospace;font-size:0.54rem;letter-spacing:0.06em;color:#41566B;margin-top:8px;line-height:1.6;">Each record links to its immutable transaction. The same words are written on the blockchain, where they cannot be edited.</div>
         </div>
       
 
-      <a href="https://sepolia.mantlescan.xyz/address/0x65fe9Ccd1701C680fb137dD9f0D571d9045c5A0E/address/" target="_blank" style="display:inline-flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--blue);border:1px solid rgba(59,130,246,0.2);background:rgba(59,130,246,0.04);padding:10px 18px;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.background='rgba(59,130,246,0.1)'" onmouseout="this.style.background='rgba(59,130,246,0.04)'">View on Mantle Explorer<i data-feather="external-link" width="11" height="11"></i>
+      <a href="https://sepolia.mantlescan.xyz/address/0x65fe9Ccd1701C680fb137dD9f0D571d9045c5A0E/address/" target="_blank" style="display:inline-flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:0.62rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#F4F8FB;background:#1A2F4A;border:1px solid #1A2F4A;border-radius:10px;padding:11px 18px;text-decoration:none;transition:all 0.2s;">
+        View on Mantle Explorer <i data-feather="external-link" width="11" height="11"></i>
       </a>
 
-      <p style="font-family:'DM Mono',monospace;font-size:0.52rem;letter-spacing:0.08em;color:rgba(245,197,24,0.3);margin-top:12px;text-transform:uppercase;">Powered by KaizenBenchmark.sol · Mantle Sepolia (testnet)
+      <p style="font-family:'DM Mono',monospace;font-size:0.54rem;letter-spacing:0.08em;color:#41566B;margin-top:14px;text-transform:uppercase;">Powered by KaizenBenchmark.sol · Mantle Sepolia (testnet)
       </p>
-    </div>
+    </section>
 
   </main>
 
@@ -423,7 +426,7 @@
 </footer>
 <script>if (window.feather) feather.replace();</script>
 
-    <script src="js/app.js"></script>
+  <script src="js/app.js"></script>
   <script>if (window.feather) feather.replace();</script>
 </body>
 </html>

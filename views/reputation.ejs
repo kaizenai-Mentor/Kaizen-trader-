@@ -16,157 +16,160 @@
         <h1 style="font-size:1.6rem;font-weight:700;color:var(--text-primary);margin-bottom:4px;"><%= t('rep.title') %></h1>
         <p style="font-size:0.82rem;color:var(--ash);font-style:italic;"><%= t('rep.sub') %></p>
       </div>
-      <a href="/dashboard" style="display:inline-flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);border:1px solid var(--border);padding:10px 16px;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.color='var(--gold)';this.style.borderColor='rgba(245,197,24,0.3)'" onmouseout="this.style.color='var(--ash)';this.style.borderColor='var(--border)'">
-        <i data-feather="arrow-left" width="12" height="12"></i><%= t('crumb.dashboard') %></a>
+      <a href="/dashboard" style="display:inline-flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);border:1px solid var(--border);border-radius:10px;padding:10px 16px;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.color='var(--gold)';this.style.borderColor='rgba(245,197,24,0.3)'" onmouseout="this.style.color='var(--ash)';this.style.borderColor='var(--border)'">
+        <i data-feather="arrow-left" width="12" height="12"></i> <%= t('crumb.dashboard') %></a>
     </div>
 
-    <!-- KAIZEN DISCIPLINE SCORE -->
-    <div style="background:var(--bg-card);border:1px solid rgba(245,197,24,0.2);padding:28px;margin-bottom:16px;position:relative;overflow:hidden;">
-      <div style="position:absolute;top:0;right:0;width:160px;height:160px;background:radial-gradient(circle,rgba(245,197,24,0.06),transparent 70%);pointer-events:none;"></div>
+    <!-- KAIZEN DISCIPLINE SCORE CARD -->
+    <section class="k-card k-card--elevated" style="border-radius:16px;padding:28px;margin-bottom:20px;position:relative;overflow:hidden;">
+      <div style="font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.18em;text-transform:uppercase;color:#41566B;margin-bottom:16px;display:flex;align-items:center;gap:8px;font-weight:600;">
+        <i data-feather="bar-chart-2" width="13" height="13" style="color:var(--gold);"></i> <%= t('rep.discScore') %></div>
 
-      <div style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--ash);margin-bottom:16px;display:flex;align-items:center;gap:8px;">
-        <i data-feather="bar-chart-2" width="12" height="12" style="color:var(--gold);"></i><%= t('rep.discScore') %></div>
-
-      <div style="display:flex;align-items:flex-end;gap:16px;margin-bottom:16px;flex-wrap:wrap;">
+      <div style="display:flex;align-items:flex-end;gap:18px;margin-bottom:20px;flex-wrap:wrap;">
         <div>
-          <div style="font-family:'DM Mono',monospace;font-size:4rem;font-weight:700;color:var(--gold);line-height:1;">
-            <%= disciplineScore %><span style="font-size:1.5rem;">%</span>
+          <div style="font-family:var(--font-heading);font-size:3.8rem;font-weight:700;color:#0A0A0A;line-height:1;">
+            <%= disciplineScore %><span style="font-size:1.5rem;color:var(--gold);">%</span>
           </div>
-          <div style="height:4px;background:rgba(245,197,24,0.1);margin-top:8px;width:200px;">
-            <div style="height:100%;background:var(--gold);width:<%= disciplineScore %>%;transition:width 1.2s ease;"></div>
+          <div style="height:6px;background:#DCE6EE;border-radius:99px;margin-top:10px;width:220px;overflow:hidden;">
+            <div style="height:100%;background:var(--gold);border-radius:99px;width:<%= disciplineScore %>%;transition:width 1.2s ease;"></div>
           </div>
         </div>
-        <div style="padding-bottom:8px;">
+        <div style="padding-bottom:6px;">
           <div style="
             font-family:'DM Mono',monospace;
-            font-size:0.7rem;
+            font-size:0.68rem;
             font-weight:700;
-            letter-spacing:0.15em;
+            letter-spacing:0.14em;
             text-transform:uppercase;
             padding:6px 14px;
-            border:1px solid rgba(245,197,24,0.3);
-            color:var(--gold);
-            background:rgba(245,197,24,0.06);
+            border-radius:99px;
+            border:1px solid #1A2F4A;
+            color:#F4F8FB;
+            background:#1A2F4A;
+            display:inline-block;
           ">
             <%= disciplineScore >= 80 ? 'ELITE' : disciplineScore >= 60 ? 'CONSISTENT' : disciplineScore >= 40 ? 'BUILDING' : 'DEVELOPING' %>
           </div>
-          <div style="font-size:0.75rem;color:var(--ash);margin-top:8px;"><%= t('rep.basedOn') %> <%= totalSessions || 0 %> <%= t('rep.sessionsLogged') %></div>
+          <div style="font-size:0.78rem;color:#41566B;margin-top:8px;"><%= t('rep.basedOn') %> <%= totalSessions || 0 %> <%= t('rep.sessionsLogged') %></div>
         </div>
       </div>
 
       <!-- Stats row -->
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:2px;">
-        <div style="background:var(--bg-surface);border:1px solid var(--border);padding:12px;text-align:center;">
-          <div style="font-family:'DM Mono',monospace;font-size:1.2rem;font-weight:700;color:var(--text-primary);"><%= totalSessions || 0 %></div>
-          <div style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-top:3px;"><%= t('rep.sessions') %></div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;">
+        <div style="background:#FFFFFF;border:1px solid #DCE6EE;border-radius:12px;padding:14px;text-align:center;">
+          <div style="font-family:var(--font-heading);font-size:1.3rem;font-weight:700;color:#0A0A0A;"><%= totalSessions || 0 %></div>
+          <div style="font-family:'DM Mono',monospace;font-size:0.52rem;letter-spacing:0.1em;text-transform:uppercase;color:#41566B;margin-top:4px;"><%= t('rep.sessions') %></div>
         </div>
-        <div style="background:var(--bg-surface);border:1px solid var(--border);padding:12px;text-align:center;">
-          <div style="font-family:'DM Mono',monospace;font-size:1.2rem;font-weight:700;color:<%= (streak || 0) >= 7 ? '#4ADE80' : 'var(--text-primary)' %>;"><%= streak || 0 %></div>
-          <div style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-top:3px;"><%= t('rep.dayStreak') %></div>
+        <div style="background:#FFFFFF;border:1px solid #DCE6EE;border-radius:12px;padding:14px;text-align:center;">
+          <div style="font-family:var(--font-heading);font-size:1.3rem;font-weight:700;color:<%= (streak || 0) >= 7 ? '#16A34A' : '#0A0A0A' %>;"><%= streak || 0 %></div>
+          <div style="font-family:'DM Mono',monospace;font-size:0.52rem;letter-spacing:0.1em;text-transform:uppercase;color:#41566B;margin-top:4px;"><%= t('rep.dayStreak') %></div>
         </div>
-        <div style="background:var(--bg-surface);border:1px solid var(--border);padding:12px;text-align:center;">
-          <div style="font-family:'DM Mono',monospace;font-size:1.2rem;font-weight:700;color:var(--text-primary);">
-                        <%= (profileUser && profileUser.badges ? profileUser.badges.length : (user && user.badges ? user.badges.length : 0)) %>
+        <div style="background:#FFFFFF;border:1px solid #DCE6EE;border-radius:12px;padding:14px;text-align:center;">
+          <div style="font-family:var(--font-heading);font-size:1.3rem;font-weight:700;color:#0A0A0A;">
+            <%= (profileUser && profileUser.badges ? profileUser.badges.length : (user && user.badges ? user.badges.length : 0)) %>
           </div>
-          <div style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-top:3px;"><%= t('rep.badges') %></div>
+          <div style="font-family:'DM Mono',monospace;font-size:0.52rem;letter-spacing:0.1em;text-transform:uppercase;color:#41566B;margin-top:4px;"><%= t('rep.badges') %></div>
         </div>
       </div>
 
       <!-- DANGER ZONE -->
-      <div style="margin-top:24px;padding-top:20px;border-top:1px solid var(--border);">
-        <div style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.15em;text-transform:uppercase;color:#F87171;margin-bottom:10px;display:flex;align-items:center;gap:6px;">
-          <i data-feather="alert-triangle" width="11" height="11"></i><%= t('rep.danger') %></div>
+      <div style="margin-top:24px;padding-top:20px;border-top:1px solid #DCE6EE;">
+        <div style="font-family:'DM Mono',monospace;font-size:0.56rem;letter-spacing:0.15em;text-transform:uppercase;color:#DC2626;margin-bottom:10px;display:flex;align-items:center;gap:6px;font-weight:600;">
+          <i data-feather="alert-triangle" width="12" height="12"></i> <%= t('rep.danger') %></div>
         <button onclick="if(confirm(<%- JSON.stringify(t('rep.deleteConfirm')).replace(/"/g, '&quot;') %>)) window.location='/auth/delete'" style="
-          background:transparent;
-          border:1px solid rgba(248,113,113,0.3);
-          color:#F87171;
+          background:rgba(220,38,38,0.06);
+          border:1px solid rgba(220,38,38,0.35);
+          border-radius:10px;
+          color:#DC2626;
           font-family:'DM Mono',monospace;
-          font-size:0.6rem;
+          font-size:0.62rem;
+          font-weight:600;
           letter-spacing:0.1em;
           text-transform:uppercase;
           padding:10px 20px;
           cursor:pointer;
-          display:flex;align-items:center;gap:6px;
+          display:inline-flex;align-items:center;gap:6px;
           transition:all 0.2s;
-        " onmouseover="this.style.background='rgba(248,113,113,0.06)'" onmouseout="this.style.background='transparent'">
-          <i data-feather="trash-2" width="12" height="12"></i><%= t('rep.delete') %></button>
+        " onmouseover="this.style.background='rgba(220,38,38,0.12)'" onmouseout="this.style.background='rgba(220,38,38,0.06)'">
+          <i data-feather="trash-2" width="12" height="12"></i> <%= t('rep.delete') %></button>
       </div>
-    </div>
+    </section>
 
-    <!-- MANTLE AI BENCHMARK -->
-    <div style="background:var(--bg-card);border:1px solid rgba(59,130,246,0.15);padding:24px;">
+    <!-- MANTLE AI BENCHMARK CARD -->
+    <section class="k-card" style="border-radius:16px;padding:28px;">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px;">
-        <div style="display:flex;align-items:center;gap:10px;">
-          <div style="width:28px;height:28px;border:1px solid var(--navy-border);background:var(--navy-pale);display:flex;align-items:center;justify-content:center;color:var(--blue);">
-            <i data-feather="link" width="13" height="13"></i>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div style="width:34px;height:34px;border-radius:10px;border:1px solid #DCE6EE;background:#E8EFF5;display:flex;align-items:center;justify-content:center;color:#1A2F4A;">
+            <i data-feather="link" width="15" height="15"></i>
           </div>
           <div>
-            <div style="font-weight:700;font-size:0.95rem;color:var(--text-primary);"><%= t('rep.mantleTitle') %></div>
-            <div style="font-size:0.72rem;color:var(--ash);"><%= t('rep.mantleSub') %></div>
+            <div style="font-family:var(--font-heading);font-weight:700;font-size:1rem;color:#0A0A0A;"><%= t('rep.mantleTitle') %></div>
+            <div style="font-size:0.76rem;color:#41566B;"><%= t('rep.mantleSub') %></div>
           </div>
         </div>
-        <span style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;background:var(--navy);color:#F4F8FB;border:1px solid rgba(244,248,251,0.12);padding:4px 10px;"><%= t('rep.onchain') %></span>
+        <span style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;background:#1A2F4A;color:#F4F8FB;border-radius:99px;padding:5px 12px;font-weight:600;"><%= t('rep.onchain') %></span>
       </div>
 
-      <p style="font-size:0.85rem;color:var(--text-secondary);line-height:1.8;margin-bottom:20px;"><%= t('rep.onchainBody') %></p>
+      <p style="font-size:0.88rem;color:#41566B;line-height:1.75;margin-bottom:20px;"><%= t('rep.onchainBody') %></p>
 
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:2px;margin-bottom:20px;">
-        <div style="background:var(--bg-surface);border:1px solid rgba(59,130,246,0.1);padding:16px;text-align:center;">
-          <div style="font-family:'DM Mono',monospace;font-size:1.4rem;font-weight:700;color:var(--gold);"><%= mantleUserStats.currentScore %>%</div>
-          <div style="font-family:'DM Mono',monospace;font-size:0.48rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-top:4px;"><%= t('rep.onchainScore') %></div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;margin-bottom:20px;">
+        <div style="background:#FFFFFF;border:1px solid #DCE6EE;border-radius:12px;padding:16px;text-align:center;">
+          <div style="font-family:var(--font-heading);font-size:1.4rem;font-weight:700;color:#0A0A0A;"><%= mantleUserStats.currentScore %>%</div>
+          <div style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;color:#41566B;margin-top:4px;"><%= t('rep.onchainScore') %></div>
         </div>
-        <div style="background:var(--bg-surface);border:1px solid rgba(59,130,246,0.1);padding:16px;text-align:center;">
-          <div style="font-family:'DM Mono',monospace;font-size:1.4rem;font-weight:700;color:var(--blue);"><%= mantleUserStats.sessionCount || 0 %></div>
-          <div style="font-family:'DM Mono',monospace;font-size:0.48rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-top:4px;"><%= t('rep.statSessions') %></div>
+        <div style="background:#FFFFFF;border:1px solid #DCE6EE;border-radius:12px;padding:16px;text-align:center;">
+          <div style="font-family:var(--font-heading);font-size:1.4rem;font-weight:700;color:#1A2F4A;"><%= mantleUserStats.sessionCount || 0 %></div>
+          <div style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;color:#41566B;margin-top:4px;"><%= t('rep.statSessions') %></div>
         </div>
-        <div style="background:var(--bg-surface);border:1px solid rgba(59,130,246,0.1);padding:16px;text-align:center;">
-          <div style="font-family:'DM Mono',monospace;font-size:1.4rem;font-weight:700;color:var(--text-primary);"><%= mantleUserStats.milestoneCount || 0 %></div>
-          <div style="font-family:'DM Mono',monospace;font-size:0.48rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-top:4px;"><%= t('rep.milestones') %></div>
+        <div style="background:#FFFFFF;border:1px solid #DCE6EE;border-radius:12px;padding:16px;text-align:center;">
+          <div style="font-family:var(--font-heading);font-size:1.4rem;font-weight:700;color:#0A0A0A;"><%= mantleUserStats.milestoneCount || 0 %></div>
+          <div style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;color:#41566B;margin-top:4px;"><%= t('rep.milestones') %></div>
         </div>
-        <div style="background:var(--bg-surface);border:1px solid rgba(59,130,246,0.1);padding:16px;text-align:center;">
-          <div style="font-family:'DM Mono',monospace;font-size:1.4rem;font-weight:700;color:<%= (streak||0) >= 7 ? '#4ADE80' : 'var(--text-primary)' %>;"><%= mantleEvents || 0 %></div>
-          <div style="font-family:'DM Mono',monospace;font-size:0.48rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);margin-top:4px;"><%= t('rep.totalEvents') %></div>
+        <div style="background:#FFFFFF;border:1px solid #DCE6EE;border-radius:12px;padding:16px;text-align:center;">
+          <div style="font-family:var(--font-heading);font-size:1.4rem;font-weight:700;color:<%= (streak||0) >= 7 ? '#16A34A' : '#0A0A0A' %>;"><%= mantleEvents || 0 %></div>
+          <div style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;color:#41566B;margin-top:4px;"><%= t('rep.totalEvents') %></div>
         </div>
       </div>
 
       <% if (mantleRecent && mantleRecent.length) { %>
         <div style="margin-bottom:20px;">
-          <div style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--ash);margin-bottom:10px;"><%= t('rep.recentRecords') %></div>
+          <div style="font-family:'DM Mono',monospace;font-size:0.56rem;letter-spacing:0.12em;text-transform:uppercase;color:#41566B;margin-bottom:10px;font-weight:600;"><%= t('rep.recentRecords') %></div>
           <% mantleRecent.forEach(function(ev){ %>
-            <div style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border);flex-wrap:wrap;">
-              <span style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.1em;color:var(--blue);border:1px solid rgba(59,130,246,0.25);padding:2px 7px;"><%= ev.type %></span>
-              <span style="font-size:0.78rem;color:var(--text-primary);"><%= ev.label %></span>
+            <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid #DCE6EE;border-radius:10px;background:#FFFFFF;margin-bottom:8px;flex-wrap:wrap;">
+              <span style="font-family:'DM Mono',monospace;font-size:0.52rem;letter-spacing:0.1em;color:#F4F8FB;background:#1A2F4A;border-radius:99px;padding:3px 9px;"><%= ev.type %></span>
+              <span style="font-size:0.8rem;color:#0A0A0A;font-weight:500;"><%= ev.label %></span>
               <% if (ev.ts) { %>
-                <span style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--ash);margin-left:auto;">
-                  <%= new Date(ev.ts).toLocaleDateString(({en:'en-US',fr:'fr-FR',zh:'zh-CN',ja:'ja-JP',af:'af-ZA'})[lang]||'en-US',{month:'short',day:'numeric'}) %>
+                <span style="font-family:'DM Mono',monospace;font-size:0.55rem;color:#41566B;margin-left:auto;">
+                  <%= new Date(ev.ts).toLocaleDateString('en-US',{month:'short',day:'numeric'}) %>
                 </span>
               <% } %>
               <% if (ev.txHash) { %>
-                <a href="<%= mantleExplorer %>/tx/<%= ev.txHash %>" target="_blank" style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--blue);text-decoration:none;">
+                <a href="<%= mantleExplorer %>/tx/<%= ev.txHash %>" target="_blank" style="font-family:'DM Mono',monospace;font-size:0.55rem;color:#1A2F4A;font-weight:600;text-decoration:none;">
                   <%= ev.txHash.substring(0, 8) %>… ↗
                 </a>
               <% } %>
             </div>
           <% }); %>
-          <div style="font-family:'DM Mono',monospace;font-size:0.52rem;letter-spacing:0.06em;color:var(--ash);margin-top:8px;line-height:1.6;"><%= t('rep.eachRecord') %></div>
+          <div style="font-family:'DM Mono',monospace;font-size:0.54rem;letter-spacing:0.06em;color:#41566B;margin-top:8px;line-height:1.6;"><%= t('rep.eachRecord') %></div>
         </div>
       <% } else if (mantleNote) { %>
-        <p style="font-size:0.78rem;color:var(--ash);line-height:1.7;margin-bottom:20px;padding:12px 14px;border:1px dashed var(--border);">
+        <p style="font-size:0.8rem;color:#41566B;line-height:1.7;margin-bottom:20px;padding:14px 16px;border:1px dashed #C9D6E2;border-radius:12px;background:#FFFFFF;">
           <%= mantleNote %>
         </p>
       <% } %>
 
-      <a href="<%= mantleExplorer %>/address/<%= process.env.MANTLE_CONTRACT_ADDRESS || '' %>" target="_blank" style="display:inline-flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--blue);border:1px solid rgba(59,130,246,0.2);background:rgba(59,130,246,0.04);padding:10px 18px;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.background='rgba(59,130,246,0.1)'" onmouseout="this.style.background='rgba(59,130,246,0.04)'"><%= t('rep.viewExplorer') %><i data-feather="external-link" width="11" height="11"></i>
+      <a href="<%= mantleExplorer %>/address/<%= process.env.MANTLE_CONTRACT_ADDRESS || '' %>" target="_blank" style="display:inline-flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:0.62rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#F4F8FB;background:#1A2F4A;border:1px solid #1A2F4A;border-radius:10px;padding:11px 18px;text-decoration:none;transition:all 0.2s;">
+        <%= t('rep.viewExplorer') %> <i data-feather="external-link" width="11" height="11"></i>
       </a>
 
-      <p style="font-family:'DM Mono',monospace;font-size:0.52rem;letter-spacing:0.08em;color:rgba(245,197,24,0.3);margin-top:12px;text-transform:uppercase;"><%= t('rep.poweredBy') %> <%= mantleNetwork || 'Mantle Sepolia Testnet' %>
+      <p style="font-family:'DM Mono',monospace;font-size:0.54rem;letter-spacing:0.08em;color:#41566B;margin-top:14px;text-transform:uppercase;"><%= t('rep.poweredBy') %> <%= mantleNetwork || 'Mantle Sepolia Testnet' %>
       </p>
-    </div>
+    </section>
 
   </main>
 
   <%- include('partials/footer') %>
-    <script src="/js/app.js"></script>
+  <script src="/js/app.js"></script>
   <script>if (window.feather) feather.replace();</script>
 </body>
 </html>

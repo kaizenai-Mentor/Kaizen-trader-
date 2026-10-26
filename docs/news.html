@@ -53,7 +53,7 @@
 (function(){try{var u=new URL(window.location.href);if(u.searchParams.has('wallet')){u.searchParams.delete('wallet');window.history.replaceState({},document.title,u.toString());}}catch(e){}})();
 </script>
 
-  <title>KAIZEN — Market News</title>
+  <title>KAIZEN | Market News</title>
 </head>
 <body class="app-page">
   <!-- POPUP OVERLAY -->
@@ -179,7 +179,7 @@
 <div class="k-ticker" id="k-ticker" role="region" aria-label="Update">
   <button type="button" class="k-ticker-close" onclick="dismissTicker()" aria-label="Dismiss announcement">×</button>
   <div class="k-ticker-track">
-    <span class="k-ticker-text"><b>KAIZEN V2 IS COMING</b> — the score gets five dimensions · plan → record → reflect sessions · your own Trading System · rolling out over the next 30 days</span>
+    <span class="k-ticker-text"><b>KAIZEN V2 IS HERE</b> · the score spans five dimensions · plan → record → reflect sessions · your own Trading System</span>
   </div>
   <div class="k-ticker-badge">
     <div class="k-ticker-megaphone"><i data-feather="megaphone" width="12" height="12"></i></div>
@@ -235,11 +235,11 @@
         </form>
       </div>
       <div class="security-section" style="margin-top:24px;padding-top:24px;border-top:1px solid var(--border);">
-        <h4>Two-Factor Authentication</h4>
+        <h4>Two Factor Authentication</h4>
         <p style="font-size:0.85rem;color:var(--ash);margin-bottom:14px;">
           Add an extra layer of security to your account.
         </p>
-        <button class="btn-outline btn-full">Enable 2FA — Coming Soon</button>
+        <button class="btn-outline btn-full">Enable 2FA (Coming Soon)</button>
       </div>
     </div>
   </div>
@@ -253,175 +253,267 @@
         <div style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:6px;display:flex;align-items:center;gap:8px;">
           <span style="width:16px;height:1px;background:var(--gold);display:inline-block;"></span>Market Intelligence</div>
         <h1 style="font-size:1.6rem;font-weight:700;color:var(--text-primary);margin-bottom:4px;">Market News</h1>
-        <p style="font-size:0.82rem;color:var(--ash);font-style:italic;">Stay informed. Trade with context.</p>
+        <p style="font-size:0.84rem;color:var(--ash);">Forex Factory style economic calendar and high impact financial market catalysts</p>
       </div>
-      <a href="dashboard.html" style="display:inline-flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);border:1px solid var(--border);padding:10px 16px;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.color='var(--gold)';this.style.borderColor='rgba(245,197,24,0.3)'" onmouseout="this.style.color='var(--ash)';this.style.borderColor='var(--border)'">
-        <i data-feather="arrow-left" width="12" height="12"></i>Dashboard</a>
+      <a href="dashboard.html" style="display:inline-flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);border:1px solid var(--border);border-radius:10px;padding:10px 16px;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.color='var(--gold)';this.style.borderColor='rgba(245,197,24,0.3)'" onmouseout="this.style.color='var(--ash)';this.style.borderColor='var(--border)'">
+        <i data-feather="arrow-left" width="12" height="12"></i> Dashboard</a>
     </div>
 
     <!-- WARNING BANNER -->
-    <div style="background:rgba(245,197,24,0.04);border:1px solid rgba(245,197,24,0.15);padding:14px 18px;margin-bottom:16px;display:flex;align-items:center;gap:10px;">
-      <i data-feather="alert-circle" width="13" height="13" style="color:var(--gold);flex-shrink:0;"></i>
-      <p style="font-size:0.78rem;color:var(--ash);margin:0;line-height:1.6;">News is for context only — not trading signals. Always apply your own analysis before making decisions.</p>
+    <div style="background:rgba(245,197,24,0.06);border:1px solid rgba(245,197,24,0.22);border-radius:14px;padding:14px 18px;margin-bottom:18px;display:flex;align-items:center;gap:10px;">
+      <i data-feather="alert-circle" width="14" height="14" style="color:var(--gold);flex-shrink:0;"></i>
+      <p style="font-size:0.8rem;color:var(--text-secondary);margin:0;line-height:1.6;">News is for context only, not trading signals. Always apply your own analysis before making decisions.</p>
     </div>
 
-    <!-- UPCOMING EVENTS -->
-    <div style="background:var(--bg-card);border:1px solid var(--border);padding:18px 20px;margin-bottom:16px;">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
-        <i data-feather="calendar" width="13" height="13" style="color:var(--gold);"></i>
-        <div style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);">UPCOMING EVENTS</div>
+    <!-- CURRENCY & IMPACT FILTER BAR -->
+    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:18px;" id="ffFilterBar">
+      <button type="button" class="k-chip is-ff-active" data-ff-filter="ALL" style="cursor:pointer;padding:6px 14px;border-radius:99px;background:var(--gold);color:#0A0A0A;border:1px solid var(--gold);font-weight:700;">All Market Catalysts</button>
+      <button type="button" class="k-chip" data-ff-filter="HIGH" style="cursor:pointer;padding:6px 14px;border-radius:99px;border:1px solid rgba(248,113,113,0.4);color:#F87171;background:rgba(248,113,113,0.08);">● Red Folder (High Impact)</button>
+      <button type="button" class="k-chip" data-ff-filter="USD" style="cursor:pointer;padding:6px 14px;border-radius:99px;">USD</button>
+      <button type="button" class="k-chip" data-ff-filter="XAU" style="cursor:pointer;padding:6px 14px;border-radius:99px;">XAU / Gold</button>
+      <button type="button" class="k-chip" data-ff-filter="EUR" style="cursor:pointer;padding:6px 14px;border-radius:99px;">EUR</button>
+      <button type="button" class="k-chip" data-ff-filter="GBP" style="cursor:pointer;padding:6px 14px;border-radius:99px;">GBP</button>
+      <button type="button" class="k-chip" data-ff-filter="JPY" style="cursor:pointer;padding:6px 14px;border-radius:99px;">JPY</button>
+    </div>
+
+    <!-- UPCOMING EVENTS (FOREX FACTORY STYLE ECONOMIC CALENDAR) -->
+    <section class="k-card k-card--elevated" style="border-radius:16px;padding:22px 24px;margin-bottom:22px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px;flex-wrap:wrap;">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <i data-feather="calendar" width="14" height="14" style="color:var(--gold);"></i>
+          <div style="font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.16em;text-transform:uppercase;color:#0A0A0A;font-weight:700;">UPCOMING EVENTS · FOREX FACTORY CALENDAR</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;font-family:'DM Mono',monospace;font-size:0.58rem;color:#41566B;">
+          <span style="display:inline-flex;align-items:center;gap:5px;"><span style="width:9px;height:9px;border-radius:2px;background:#DC2626;display:inline-block;"></span> High Impact</span>
+          <span style="display:inline-flex;align-items:center;gap:5px;"><span style="width:9px;height:9px;border-radius:2px;background:#EA580C;display:inline-block;"></span> Medium Impact</span>
+        </div>
       </div>
+
       
-        <div style="display:flex;flex-direction:column;gap:8px;">
+        <div style="display:flex;flex-direction:column;gap:10px;" id="ffEventsList">
           
-            <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:10px 12px;border:1px solid var(--border);">
-              <span style="font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--text-primary);white-space:nowrap;">Oct 29</span>
-              <span style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;border:1px solid rgba(245,197,24,0.25);color:var(--gold);padding:2px 8px;">HIGH</span>
-              <span style="font-size:0.82rem;color:var(--text-primary);font-weight:600;">US CPI (YoY)</span>
-              <span style="font-size:0.75rem;color:var(--ash);">Inflation print — expect volatility</span>
+            
+            
+            
+            <div class="ff-item" data-currency="USD" data-impact="HIGH" style="padding:14px 16px;border:1px solid #DCE6EE;border-left:4px solid #DC2626;border-radius:12px;background:#FFFFFF;">
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:6px;">
+                <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+                  <span style="font-family:'DM Mono',monospace;font-size:0.65rem;font-weight:700;color:#0A0A0A;background:#E8EFF5;padding:3px 9px;border-radius:6px;white-space:nowrap;">
+                    Oct 29
+                  </span>
+                  <span style="font-family:'DM Mono',monospace;font-size:0.65rem;font-weight:700;letter-spacing:0.08em;background:#1A2F4A;color:#F4F8FB;padding:3px 9px;border-radius:6px;">
+                    USD
+                  </span>
+                  <span style="font-family:'DM Mono',monospace;font-size:0.58rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;border:1px solid #DC2626;background:rgba(220,38,38,0.1);color:#DC2626;padding:3px 9px;border-radius:99px;">
+                    ● HIGH IMPACT
+                  </span>
+                  <span style="font-size:0.92rem;color:#0A0A0A;font-weight:700;">US CPI (YoY)</span>
+                </div>
+
+                
+              </div>
+
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;">
+                <span style="font-size:0.8rem;color:#41566B;line-height:1.5;">Inflation print — expect volatility</span>
+                
+              </div>
             </div>
           
-            <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:10px 12px;border:1px solid var(--border);">
-              <span style="font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--text-primary);white-space:nowrap;">Nov 1</span>
-              <span style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;border:1px solid rgba(245,197,24,0.25);color:var(--gold);padding:2px 8px;">MED</span>
-              <span style="font-size:0.82rem;color:var(--text-primary);font-weight:600;">ECB Rate Decision</span>
-              
+            
+            
+            
+            <div class="ff-item" data-currency="USD" data-impact="MED" style="padding:14px 16px;border:1px solid #DCE6EE;border-left:4px solid #EA580C;border-radius:12px;background:#FFFFFF;">
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:6px;">
+                <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+                  <span style="font-family:'DM Mono',monospace;font-size:0.65rem;font-weight:700;color:#0A0A0A;background:#E8EFF5;padding:3px 9px;border-radius:6px;white-space:nowrap;">
+                    Nov 1
+                  </span>
+                  <span style="font-family:'DM Mono',monospace;font-size:0.65rem;font-weight:700;letter-spacing:0.08em;background:#1A2F4A;color:#F4F8FB;padding:3px 9px;border-radius:6px;">
+                    USD
+                  </span>
+                  <span style="font-family:'DM Mono',monospace;font-size:0.58rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;border:1px solid #EA580C;background:rgba(234,88,12,0.1);color:#EA580C;padding:3px 9px;border-radius:99px;">
+                    ● MED IMPACT
+                  </span>
+                  <span style="font-size:0.92rem;color:#0A0A0A;font-weight:700;">ECB Rate Decision</span>
+                </div>
+
+                
+              </div>
+
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;">
+                
+                
+              </div>
             </div>
           
         </div>
       
+    </section>
+
+    <!-- HIGH-IMPACT FINANCIAL MARKET NEWS WIRE -->
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;flex-wrap:wrap;">
+      <div style="font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold);font-weight:700;">
+        HIGH IMPACT MARKET WIRE · MACRO, FX &amp; CENTRAL BANKS
+      </div>
+      <div style="font-family:'DM Mono',monospace;font-size:0.58rem;color:var(--ash);">
+        Filtered for financial market impact
+      </div>
     </div>
 
     
 
-      <div style="display:flex;flex-direction:column;gap:2px;">
+      <div style="display:flex;flex-direction:column;gap:12px;" id="ffArticlesList">
         
-          <a href="#" target="_blank" rel="noopener noreferrer" style="
-            background:var(--bg-card);
-            border:1px solid var(--border);
-            padding:20px;
+          
+          
+          <a href="#" target="_blank" rel="noopener noreferrer" class="k-card ff-item" data-currency="USD" data-impact="HIGH" style="
+            border-radius:16px;
+            padding:20px 22px;
             text-decoration:none;
             display:block;
-            transition:border-color 0.2s;
-          " onmouseover="this.style.borderColor='rgba(245,197,24,0.3)'" onmouseout="this.style.borderColor='var(--border)'">
+            transition:transform 0.2s, border-color 0.2s;
+          ">
 
             <div style="display:flex;align-items:flex-start;gap:16px;">
 
               
-                <div style="width:72px;height:72px;min-width:72px;background:var(--bg-surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                  <i data-feather="rss" width="20" height="20" style="color:var(--ash);"></i>
+                <div style="width:52px;height:52px;min-width:52px;background:#1A2F4A;color:#F5C518;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;font-family:'DM Mono',monospace;font-size:0.68rem;font-weight:700;">
+                  <span>FX</span>
                 </div>
               
 
               <div style="flex:1;min-width:0;">
-                <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap;">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap;">
+                  <span style="font-family:'DM Mono',monospace;font-size:0.56rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#DC2626;border:1px solid #DC2626;background:rgba(220,38,38,0.08);padding:2px 8px;border-radius:99px;">
+                    ● HIGH IMPACT
+                  </span>
                   
-                    <span style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(245,197,24,0.2);padding:2px 7px;">market-wire</span>
                   
-                  <span style="font-family:'DM Mono',monospace;font-size:0.52rem;color:var(--ash);">
-                    Oct 26, 03:01 AM
+                    <span style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:#41566B;padding:2px 7px;">market-wire</span>
+                  
+                  <span style="font-family:'DM Mono',monospace;font-size:0.55rem;color:#41566B;margin-left:auto;">
+                    Oct 26, 05:45 AM
                   </span>
                 </div>
 
-                <h3 style="font-size:0.9rem;font-weight:700;color:var(--text-primary);line-height:1.4;margin:0 0 6px;">
+                <h3 style="font-size:0.98rem;font-weight:700;color:#0A0A0A;line-height:1.45;margin:0 0 8px;">
                   Dollar steadies as markets await fresh inflation print
                 </h3>
 
                 
-                  <p style="font-size:0.78rem;color:var(--ash);line-height:1.6;margin:0;">
+                  <p style="font-size:0.84rem;color:#41566B;line-height:1.65;margin:0 0 10px;">
                     The dollar held its ground in quiet trade as traders positioned for this week&#39;s inflation data, with policy expectations little changed.
                   </p>
                 
 
-                <div style="display:flex;align-items:center;gap:4px;margin-top:8px;font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--ash);">Read full story<i data-feather="external-link" width="10" height="10"></i>
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:6px;">
+                  
+                  <div style="display:flex;align-items:center;gap:4px;font-family:'DM Mono',monospace;font-size:0.58rem;color:#1A2F4A;font-weight:600;">Read full story <i data-feather="external-link" width="11" height="11"></i>
+                  </div>
                 </div>
               </div>
 
             </div>
           </a>
         
-          <a href="#" target="_blank" rel="noopener noreferrer" style="
-            background:var(--bg-card);
-            border:1px solid var(--border);
-            padding:20px;
+          
+          
+          <a href="#" target="_blank" rel="noopener noreferrer" class="k-card ff-item" data-currency="USD" data-impact="HIGH" style="
+            border-radius:16px;
+            padding:20px 22px;
             text-decoration:none;
             display:block;
-            transition:border-color 0.2s;
-          " onmouseover="this.style.borderColor='rgba(245,197,24,0.3)'" onmouseout="this.style.borderColor='var(--border)'">
+            transition:transform 0.2s, border-color 0.2s;
+          ">
 
             <div style="display:flex;align-items:flex-start;gap:16px;">
 
               
-                <div style="width:72px;height:72px;min-width:72px;background:var(--bg-surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                  <i data-feather="rss" width="20" height="20" style="color:var(--ash);"></i>
+                <div style="width:52px;height:52px;min-width:52px;background:#1A2F4A;color:#F5C518;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;font-family:'DM Mono',monospace;font-size:0.68rem;font-weight:700;">
+                  <span>FX</span>
                 </div>
               
 
               <div style="flex:1;min-width:0;">
-                <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap;">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap;">
+                  <span style="font-family:'DM Mono',monospace;font-size:0.56rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#DC2626;border:1px solid #DC2626;background:rgba(220,38,38,0.08);padding:2px 8px;border-radius:99px;">
+                    ● HIGH IMPACT
+                  </span>
                   
-                    <span style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(245,197,24,0.2);padding:2px 7px;">desk-report</span>
                   
-                  <span style="font-family:'DM Mono',monospace;font-size:0.52rem;color:var(--ash);">
-                    Oct 26, 12:01 AM
+                    <span style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:#41566B;padding:2px 7px;">desk-report</span>
+                  
+                  <span style="font-family:'DM Mono',monospace;font-size:0.55rem;color:#41566B;margin-left:auto;">
+                    Oct 26, 02:45 AM
                   </span>
                 </div>
 
-                <h3 style="font-size:0.9rem;font-weight:700;color:var(--text-primary);line-height:1.4;margin:0 0 6px;">
+                <h3 style="font-size:0.98rem;font-weight:700;color:#0A0A0A;line-height:1.45;margin:0 0 8px;">
                   Gold eases from highs as risk appetite returns
                 </h3>
 
                 
-                  <p style="font-size:0.78rem;color:var(--ash);line-height:1.6;margin:0;">
+                  <p style="font-size:0.84rem;color:#41566B;line-height:1.65;margin:0 0 10px;">
                     Bullion pulled back from the week&#39;s high as equities rallied, though demand for haven assets stayed firm.
                   </p>
                 
 
-                <div style="display:flex;align-items:center;gap:4px;margin-top:8px;font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--ash);">Read full story<i data-feather="external-link" width="10" height="10"></i>
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:6px;">
+                  
+                  <div style="display:flex;align-items:center;gap:4px;font-family:'DM Mono',monospace;font-size:0.58rem;color:#1A2F4A;font-weight:600;">Read full story <i data-feather="external-link" width="11" height="11"></i>
+                  </div>
                 </div>
               </div>
 
             </div>
           </a>
         
-          <a href="#" target="_blank" rel="noopener noreferrer" style="
-            background:var(--bg-card);
-            border:1px solid var(--border);
-            padding:20px;
+          
+          
+          <a href="#" target="_blank" rel="noopener noreferrer" class="k-card ff-item" data-currency="USD" data-impact="HIGH" style="
+            border-radius:16px;
+            padding:20px 22px;
             text-decoration:none;
             display:block;
-            transition:border-color 0.2s;
-          " onmouseover="this.style.borderColor='rgba(245,197,24,0.3)'" onmouseout="this.style.borderColor='var(--border)'">
+            transition:transform 0.2s, border-color 0.2s;
+          ">
 
             <div style="display:flex;align-items:flex-start;gap:16px;">
 
               
-                <div style="width:72px;height:72px;min-width:72px;background:var(--bg-surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                  <i data-feather="rss" width="20" height="20" style="color:var(--ash);"></i>
+                <div style="width:52px;height:52px;min-width:52px;background:#1A2F4A;color:#F5C518;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;font-family:'DM Mono',monospace;font-size:0.68rem;font-weight:700;">
+                  <span>FX</span>
                 </div>
               
 
               <div style="flex:1;min-width:0;">
-                <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap;">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap;">
+                  <span style="font-family:'DM Mono',monospace;font-size:0.56rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#DC2626;border:1px solid #DC2626;background:rgba(220,38,38,0.08);padding:2px 8px;border-radius:99px;">
+                    ● HIGH IMPACT
+                  </span>
                   
-                    <span style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(245,197,24,0.2);padding:2px 7px;">macro-daily</span>
                   
-                  <span style="font-family:'DM Mono',monospace;font-size:0.52rem;color:var(--ash);">
-                    Oct 25, 08:01 PM
+                    <span style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:#41566B;padding:2px 7px;">macro-daily</span>
+                  
+                  <span style="font-family:'DM Mono',monospace;font-size:0.55rem;color:#41566B;margin-left:auto;">
+                    Oct 25, 10:45 PM
                   </span>
                 </div>
 
-                <h3 style="font-size:0.9rem;font-weight:700;color:var(--text-primary);line-height:1.4;margin:0 0 6px;">
+                <h3 style="font-size:0.98rem;font-weight:700;color:#0A0A0A;line-height:1.45;margin:0 0 8px;">
                   Central banks keep rates on hold — what it means for your sessions
                 </h3>
 
                 
-                  <p style="font-size:0.78rem;color:var(--ash);line-height:1.6;margin:0;">
+                  <p style="font-size:0.84rem;color:#41566B;line-height:1.65;margin:0 0 10px;">
                     Policy unchanged across major banks this month. The message is patience — the same skill your record keeps asking of you.
                   </p>
                 
 
-                <div style="display:flex;align-items:center;gap:4px;margin-top:8px;font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--ash);">Read full story<i data-feather="external-link" width="10" height="10"></i>
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:6px;">
+                  
+                  <div style="display:flex;align-items:center;gap:4px;font-family:'DM Mono',monospace;font-size:0.58rem;color:#1A2F4A;font-weight:600;">Read full story <i data-feather="external-link" width="11" height="11"></i>
+                  </div>
                 </div>
               </div>
 
@@ -451,6 +543,31 @@
 <script>if (window.feather) feather.replace();</script>
 
   <script src="js/app.js"></script>
-  <script>if (window.feather) feather.replace();</script>
+  <script>
+    if (window.feather) feather.replace();
+    (function () {
+      var bar = document.getElementById('ffFilterBar');
+      if (!bar) return;
+      var btns = bar.querySelectorAll('[data-ff-filter]');
+      var items = document.querySelectorAll('.ff-item');
+      btns.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var filter = btn.getAttribute('data-ff-filter');
+          btns.forEach(function (b) {
+            var active = b === btn;
+            b.style.background = active ? 'var(--gold)' : '';
+            b.style.color = active ? '#0A0A0A' : '';
+            b.style.fontWeight = active ? '700' : '';
+          });
+          items.forEach(function (el) {
+            var cur = el.getAttribute('data-currency') || '';
+            var imp = el.getAttribute('data-impact') || '';
+            var show = filter === 'ALL' || (filter === 'HIGH' ? imp === 'HIGH' : cur === filter);
+            el.style.display = show ? '' : 'none';
+          });
+        });
+      });
+    })();
+  </script>
 </body>
 </html>

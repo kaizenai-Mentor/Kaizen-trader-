@@ -14,86 +14,153 @@
         <div style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:6px;display:flex;align-items:center;gap:8px;">
           <span style="width:16px;height:1px;background:var(--gold);display:inline-block;"></span><%= t('news.intel') %></div>
         <h1 style="font-size:1.6rem;font-weight:700;color:var(--text-primary);margin-bottom:4px;"><%= t('news.title') %></h1>
-        <p style="font-size:0.82rem;color:var(--ash);font-style:italic;"><%= t('news.sub') %></p>
+        <p style="font-size:0.84rem;color:var(--ash);">Forex Factory style economic calendar and high impact financial market catalysts</p>
       </div>
-      <a href="/dashboard" style="display:inline-flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);border:1px solid var(--border);padding:10px 16px;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.color='var(--gold)';this.style.borderColor='rgba(245,197,24,0.3)'" onmouseout="this.style.color='var(--ash)';this.style.borderColor='var(--border)'">
-        <i data-feather="arrow-left" width="12" height="12"></i><%= t('crumb.dashboard') %></a>
+      <a href="/dashboard" style="display:inline-flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--ash);border:1px solid var(--border);border-radius:10px;padding:10px 16px;text-decoration:none;transition:all 0.2s;" onmouseover="this.style.color='var(--gold)';this.style.borderColor='rgba(245,197,24,0.3)'" onmouseout="this.style.color='var(--ash)';this.style.borderColor='var(--border)'">
+        <i data-feather="arrow-left" width="12" height="12"></i> <%= t('crumb.dashboard') %></a>
     </div>
 
     <!-- WARNING BANNER -->
-    <div style="background:rgba(245,197,24,0.04);border:1px solid rgba(245,197,24,0.15);padding:14px 18px;margin-bottom:16px;display:flex;align-items:center;gap:10px;">
-      <i data-feather="alert-circle" width="13" height="13" style="color:var(--gold);flex-shrink:0;"></i>
-      <p style="font-size:0.78rem;color:var(--ash);margin:0;line-height:1.6;"><%= t('news.disclaimer') %></p>
+    <div style="background:rgba(245,197,24,0.06);border:1px solid rgba(245,197,24,0.22);border-radius:14px;padding:14px 18px;margin-bottom:18px;display:flex;align-items:center;gap:10px;">
+      <i data-feather="alert-circle" width="14" height="14" style="color:var(--gold);flex-shrink:0;"></i>
+      <p style="font-size:0.8rem;color:var(--text-secondary);margin:0;line-height:1.6;"><%= t('news.disclaimer') %></p>
     </div>
 
-    <!-- UPCOMING EVENTS -->
-    <div style="background:var(--bg-card);border:1px solid var(--border);padding:18px 20px;margin-bottom:16px;">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
-        <i data-feather="calendar" width="13" height="13" style="color:var(--gold);"></i>
-        <div style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);"><%= t('news.upcomingEvents') %></div>
+    <!-- CURRENCY & IMPACT FILTER BAR -->
+    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:18px;" id="ffFilterBar">
+      <button type="button" class="k-chip is-ff-active" data-ff-filter="ALL" style="cursor:pointer;padding:6px 14px;border-radius:99px;background:var(--gold);color:#0A0A0A;border:1px solid var(--gold);font-weight:700;">All Market Catalysts</button>
+      <button type="button" class="k-chip" data-ff-filter="HIGH" style="cursor:pointer;padding:6px 14px;border-radius:99px;border:1px solid rgba(248,113,113,0.4);color:#F87171;background:rgba(248,113,113,0.08);">● Red Folder (High Impact)</button>
+      <button type="button" class="k-chip" data-ff-filter="USD" style="cursor:pointer;padding:6px 14px;border-radius:99px;">USD</button>
+      <button type="button" class="k-chip" data-ff-filter="XAU" style="cursor:pointer;padding:6px 14px;border-radius:99px;">XAU / Gold</button>
+      <button type="button" class="k-chip" data-ff-filter="EUR" style="cursor:pointer;padding:6px 14px;border-radius:99px;">EUR</button>
+      <button type="button" class="k-chip" data-ff-filter="GBP" style="cursor:pointer;padding:6px 14px;border-radius:99px;">GBP</button>
+      <button type="button" class="k-chip" data-ff-filter="JPY" style="cursor:pointer;padding:6px 14px;border-radius:99px;">JPY</button>
+    </div>
+
+    <!-- UPCOMING EVENTS (FOREX FACTORY STYLE ECONOMIC CALENDAR) -->
+    <section class="k-card k-card--elevated" style="border-radius:16px;padding:22px 24px;margin-bottom:22px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px;flex-wrap:wrap;">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <i data-feather="calendar" width="14" height="14" style="color:var(--gold);"></i>
+          <div style="font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.16em;text-transform:uppercase;color:#0A0A0A;font-weight:700;"><%= t('news.upcomingEvents') %> · FOREX FACTORY CALENDAR</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;font-family:'DM Mono',monospace;font-size:0.58rem;color:#41566B;">
+          <span style="display:inline-flex;align-items:center;gap:5px;"><span style="width:9px;height:9px;border-radius:2px;background:#DC2626;display:inline-block;"></span> High Impact</span>
+          <span style="display:inline-flex;align-items:center;gap:5px;"><span style="width:9px;height:9px;border-radius:2px;background:#EA580C;display:inline-block;"></span> Medium Impact</span>
+        </div>
       </div>
+
       <% if (typeof events !== 'undefined' && events && events.length > 0) { %>
-        <div style="display:flex;flex-direction:column;gap:8px;">
+        <div style="display:flex;flex-direction:column;gap:10px;" id="ffEventsList">
           <% events.forEach(function(ev) { %>
-            <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:10px 12px;border:1px solid var(--border);">
-              <span style="font-family:'DM Mono',monospace;font-size:0.62rem;color:var(--text-primary);white-space:nowrap;"><%= new Date(ev.date).toLocaleDateString(({en:'en-US',fr:'fr-FR',zh:'zh-CN',ja:'ja-JP',af:'af-ZA'})[lang]||'en-US',{month:'short',day:'numeric'}) %></span>
-              <span style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.12em;text-transform:uppercase;border:1px solid rgba(245,197,24,0.25);color:var(--gold);padding:2px 8px;"><%= ev.impact %></span>
-              <span style="font-size:0.82rem;color:var(--text-primary);font-weight:600;"><%= ev.title %></span>
-              <% if (ev.note) { %><span style="font-size:0.75rem;color:var(--ash);"><%= ev.note %></span><% } %>
+            <% var isHigh = String(ev.impact || '').toUpperCase() === 'HIGH'; %>
+            <% var folderColor = isHigh ? '#DC2626' : '#EA580C'; %>
+            <% var folderBg = isHigh ? 'rgba(220,38,38,0.1)' : 'rgba(234,88,12,0.1)'; %>
+            <div class="ff-item" data-currency="<%= ev.currency || 'USD' %>" data-impact="<%= (ev.impact || 'HIGH').toUpperCase() %>" style="padding:14px 16px;border:1px solid #DCE6EE;border-left:4px solid <%= folderColor %>;border-radius:12px;background:#FFFFFF;">
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:6px;">
+                <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+                  <span style="font-family:'DM Mono',monospace;font-size:0.65rem;font-weight:700;color:#0A0A0A;background:#E8EFF5;padding:3px 9px;border-radius:6px;white-space:nowrap;">
+                    <%= new Date(ev.date).toLocaleDateString('en-US',{month:'short',day:'numeric'}) %><% if (ev.timeLabel) { %> · <%= ev.timeLabel %><% } %>
+                  </span>
+                  <span style="font-family:'DM Mono',monospace;font-size:0.65rem;font-weight:700;letter-spacing:0.08em;background:#1A2F4A;color:#F4F8FB;padding:3px 9px;border-radius:6px;">
+                    <%= ev.currency || 'USD' %>
+                  </span>
+                  <span style="font-family:'DM Mono',monospace;font-size:0.58rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;border:1px solid <%= folderColor %>;background:<%= folderBg %>;color:<%= folderColor %>;padding:3px 9px;border-radius:99px;">
+                    ● <%= ev.impact %> IMPACT
+                  </span>
+                  <span style="font-size:0.92rem;color:#0A0A0A;font-weight:700;"><%= ev.title %></span>
+                </div>
+
+                <% if (ev.forecast || ev.previous) { %>
+                  <div style="display:flex;align-items:center;gap:14px;font-family:'DM Mono',monospace;font-size:0.65rem;color:#41566B;">
+                    <% if (ev.forecast) { %><span>Forecast: <strong style="color:#0A0A0A;"><%= ev.forecast %></strong></span><% } %>
+                    <% if (ev.previous) { %><span>Previous: <strong style="color:#0A0A0A;"><%= ev.previous %></strong></span><% } %>
+                  </div>
+                <% } %>
+              </div>
+
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;">
+                <% if (ev.note) { %><span style="font-size:0.8rem;color:#41566B;line-height:1.5;"><%= ev.note %></span><% } %>
+                <% if (ev.instruments) { %>
+                  <span style="font-family:'DM Mono',monospace;font-size:0.58rem;color:#1A2F4A;background:#E8EFF5;padding:2px 8px;border-radius:6px;white-space:nowrap;"><%= ev.instruments %></span>
+                <% } %>
+              </div>
             </div>
           <% }); %>
         </div>
       <% } else { %>
         <p style="font-size:0.78rem;color:var(--ash);margin:0;line-height:1.6;"><%= t('news.noEvents') %></p>
       <% } %>
+    </section>
+
+    <!-- HIGH-IMPACT FINANCIAL MARKET NEWS WIRE -->
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;flex-wrap:wrap;">
+      <div style="font-family:'DM Mono',monospace;font-size:0.65rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold);font-weight:700;">
+        HIGH IMPACT MARKET WIRE · MACRO, FX &amp; CENTRAL BANKS
+      </div>
+      <div style="font-family:'DM Mono',monospace;font-size:0.58rem;color:var(--ash);">
+        Filtered for financial market impact
+      </div>
     </div>
 
     <% if (typeof articles !== 'undefined' && articles && articles.length > 0) { %>
 
-      <div style="display:flex;flex-direction:column;gap:2px;">
-        <% articles.forEach(function(article, i) { %>
-          <a href="<%= article.url %>" target="_blank" rel="noopener noreferrer" style="
-            background:var(--bg-card);
-            border:1px solid var(--border);
-            padding:20px;
+      <div style="display:flex;flex-direction:column;gap:12px;" id="ffArticlesList">
+        <% articles.forEach(function(article) { %>
+          <% var artImpact = String(article.impact || 'HIGH').toUpperCase(); %>
+          <% var artColor = artImpact === 'HIGH' ? '#DC2626' : '#EA580C'; %>
+          <a href="<%= article.url %>" target="_blank" rel="noopener noreferrer" class="k-card ff-item" data-currency="<%= article.currency || 'USD' %>" data-impact="<%= artImpact %>" style="
+            border-radius:16px;
+            padding:20px 22px;
             text-decoration:none;
             display:block;
-            transition:border-color 0.2s;
-          " onmouseover="this.style.borderColor='rgba(245,197,24,0.3)'" onmouseout="this.style.borderColor='var(--border)'">
+            transition:transform 0.2s, border-color 0.2s;
+          ">
 
             <div style="display:flex;align-items:flex-start;gap:16px;">
 
               <% if (article.image_url || article.urlToImage) { %>
-                <div style="width:72px;height:72px;min-width:72px;background:var(--bg-surface);border:1px solid var(--border);overflow:hidden;flex-shrink:0;">
+                <div style="width:68px;height:68px;min-width:68px;background:#E8EFF5;border:1px solid #DCE6EE;border-radius:12px;overflow:hidden;flex-shrink:0;">
                   <img src="<%= article.image_url || article.urlToImage %>" alt="" style="width:100%;height:100%;object-fit:cover;" onerror="this.parentElement.style.display='none'">
                 </div>
               <% } else { %>
-                <div style="width:72px;height:72px;min-width:72px;background:var(--bg-surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                  <i data-feather="rss" width="20" height="20" style="color:var(--ash);"></i>
+                <div style="width:52px;height:52px;min-width:52px;background:#1A2F4A;color:#F5C518;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;font-family:'DM Mono',monospace;font-size:0.68rem;font-weight:700;">
+                  <span><%= article.currency || 'FX' %></span>
                 </div>
               <% } %>
 
               <div style="flex:1;min-width:0;">
-                <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap;">
-                  <% if (article.source_id || article.source?.name) { %>
-                    <span style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);border:1px solid rgba(245,197,24,0.2);padding:2px 7px;"><%= article.source_id || article.source?.name %></span>
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap;">
+                  <span style="font-family:'DM Mono',monospace;font-size:0.56rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:<%= artColor %>;border:1px solid <%= artColor %>;background:<%= artImpact === 'HIGH' ? 'rgba(220,38,38,0.08)' : 'rgba(234,88,12,0.08)' %>;padding:2px 8px;border-radius:99px;">
+                    ● <%= artImpact %> IMPACT
+                  </span>
+                  <% if (article.category) { %>
+                    <span style="font-family:'DM Mono',monospace;font-size:0.56rem;letter-spacing:0.08em;text-transform:uppercase;color:#1A2F4A;background:#E8EFF5;padding:2px 8px;border-radius:6px;font-weight:600;"><%= article.category %></span>
                   <% } %>
-                  <span style="font-family:'DM Mono',monospace;font-size:0.52rem;color:var(--ash);">
-                    <%= article.pubDate ? new Date(article.pubDate).toLocaleDateString(({en:'en-US',fr:'fr-FR',zh:'zh-CN',ja:'ja-JP',af:'af-ZA'})[lang]||'en-US',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}) : article.publishedAt ? new Date(article.publishedAt).toLocaleDateString(({en:'en-US',fr:'fr-FR',zh:'zh-CN',ja:'ja-JP',af:'af-ZA'})[lang]||'en-US',{month:'short',day:'numeric'}) : '' %>
+                  <% if (article.source_id || (article.source && article.source.name)) { %>
+                    <span style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:#41566B;padding:2px 7px;"><%= article.source_id || article.source.name %></span>
+                  <% } %>
+                  <span style="font-family:'DM Mono',monospace;font-size:0.55rem;color:#41566B;margin-left:auto;">
+                    <%= article.pubDate ? new Date(article.pubDate).toLocaleDateString('en-US',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}) : article.publishedAt ? new Date(article.publishedAt).toLocaleDateString('en-US',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}) : '' %>
                   </span>
                 </div>
 
-                <h3 style="font-size:0.9rem;font-weight:700;color:var(--text-primary);line-height:1.4;margin:0 0 6px;">
+                <h3 style="font-size:0.98rem;font-weight:700;color:#0A0A0A;line-height:1.45;margin:0 0 8px;">
                   <%= article.title %>
                 </h3>
 
                 <% if (article.description) { %>
-                  <p style="font-size:0.78rem;color:var(--ash);line-height:1.6;margin:0;">
-                    <%= article.description.substring(0, 140) %><%= article.description.length > 140 ? '...' : '' %>
+                  <p style="font-size:0.84rem;color:#41566B;line-height:1.65;margin:0 0 10px;">
+                    <%= article.description.substring(0, 220) %><%= article.description.length > 220 ? '...' : '' %>
                   </p>
                 <% } %>
 
-                <div style="display:flex;align-items:center;gap:4px;margin-top:8px;font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--ash);"><%= t('news.readFull') %><i data-feather="external-link" width="10" height="10"></i>
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:6px;">
+                  <% if (article.instruments) { %>
+                    <span style="font-family:'DM Mono',monospace;font-size:0.58rem;color:#1A2F4A;background:#E8EFF5;padding:3px 9px;border-radius:6px;font-weight:600;">Affected: <%= article.instruments %></span>
+                  <% } %>
+                  <div style="display:flex;align-items:center;gap:4px;font-family:'DM Mono',monospace;font-size:0.58rem;color:#1A2F4A;font-weight:600;"><%= t('news.readFull') %> <i data-feather="external-link" width="11" height="11"></i>
+                  </div>
                 </div>
               </div>
 
@@ -104,12 +171,12 @@
 
     <% } else { %>
 
-      <div style="background:var(--bg-card);border:1px solid var(--border);padding:80px 32px;text-align:center;">
-        <div style="width:44px;height:44px;border:1px solid var(--border);background:var(--bg-surface);display:flex;align-items:center;justify-content:center;color:var(--ash);margin:0 auto 16px;">
+      <div class="k-card" style="border-radius:16px;padding:80px 32px;text-align:center;">
+        <div style="width:44px;height:44px;border:1px solid #DCE6EE;border-radius:12px;background:#E8EFF5;display:flex;align-items:center;justify-content:center;color:#1A2F4A;margin:0 auto 16px;">
           <i data-feather="rss" width="18" height="18"></i>
         </div>
-        <h2 style="font-size:1rem;font-weight:700;color:var(--text-primary);margin-bottom:8px;"><%= t('news.none') %></h2>
-        <p style="font-size:0.85rem;color:var(--ash);max-width:320px;margin:0 auto;line-height:1.7;"><%= t('news.noneNote') %></p>
+        <h2 style="font-size:1rem;font-weight:700;color:#0A0A0A;margin-bottom:8px;"><%= t('news.none') %></h2>
+        <p style="font-size:0.85rem;color:#41566B;max-width:320px;margin:0 auto;line-height:1.7;"><%= t('news.noneNote') %></p>
       </div>
 
     <% } %>
@@ -118,6 +185,31 @@
 
   <%- include('partials/footer') %>
   <script src="/js/app.js"></script>
-  <script>if (window.feather) feather.replace();</script>
+  <script>
+    if (window.feather) feather.replace();
+    (function () {
+      var bar = document.getElementById('ffFilterBar');
+      if (!bar) return;
+      var btns = bar.querySelectorAll('[data-ff-filter]');
+      var items = document.querySelectorAll('.ff-item');
+      btns.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var filter = btn.getAttribute('data-ff-filter');
+          btns.forEach(function (b) {
+            var active = b === btn;
+            b.style.background = active ? 'var(--gold)' : '';
+            b.style.color = active ? '#0A0A0A' : '';
+            b.style.fontWeight = active ? '700' : '';
+          });
+          items.forEach(function (el) {
+            var cur = el.getAttribute('data-currency') || '';
+            var imp = el.getAttribute('data-impact') || '';
+            var show = filter === 'ALL' || (filter === 'HIGH' ? imp === 'HIGH' : cur === filter);
+            el.style.display = show ? '' : 'none';
+          });
+        });
+      });
+    })();
+  </script>
 </body>
 </html>

@@ -151,3 +151,56 @@ test('Set a goal card has no metric, target, or cadence inputs and branded selec
   assert.ok(appJs.body.includes('initBrandedSelects') && appJs.body.includes('k-select-menu'), 'app.js must ship branded select dropdowns');
 });
 
+test('Batch 11: dash-free site copy, public hero spacing, compelling KAIZEN AI card, Forex Factory news, My Progress chart panel below 5-dimension scoring, and Reputation rounded cards (26 Oct 2026)', async () => {
+  const fs = require('fs');
+  const path = require('path');
+
+  // 1. Public page hero spacing (/ , /about , /services)
+  const welcomeRes = await get('/');
+  assert.strictEqual(welcomeRes.res.status, 200);
+  assert.ok(!welcomeRes.body.includes('canprove'), 'welcome hero subtitle must not glue canprove');
+  assert.ok(welcomeRes.body.includes('Your first trade on XAUUSD followed every rule in your playbook'), 'welcome KAIZEN AI card must carry compelling trader-specific response');
+
+  const aboutRes = await get('/about');
+  assert.strictEqual(aboutRes.res.status, 200);
+  assert.ok(!aboutRes.body.includes('About<span class="k-gold">KAIZEN'), 'about hero h1 must have space before KAIZEN');
+  assert.ok(!aboutRes.body.includes('says<b>Building</b>instead'), 'about score explanation must have spaces around Building');
+
+  const servicesRes = await get('/services');
+  assert.strictEqual(servicesRes.res.status, 200);
+  assert.ok(!servicesRes.body.includes('What<span class="k-gold">KAIZEN</span>Gives'), 'services hero h1 must have spaces around KAIZEN');
+
+  // 2. Compelling KAIZEN AI response card & matching site header logo on /landing
+  const landingRes = await get('/landing');
+  assert.strictEqual(landingRes.res.status, 200);
+  assert.ok(landingRes.body.includes('>改 KAIZEN</a>'), 'landing page header logo must match 改 KAIZEN on the rest of the site');
+  assert.ok(landingRes.body.includes('Your bias was not the problem today. Your ego after the first stop was.'), 'landing hero KAIZEN AI response must be deeply compelling');
+  assert.ok(landingRes.body.includes('Read that sentence back to yourself: you did not enter because your setup was ready.'), 'landing session reflection KAIZEN AI response must speak directly to trader behavior');
+
+  // 3. Forex Factory style market-impact news & calendar
+  const { isMarketMovingArticle, buildMarketNewsFeed } = require('../services/marketNews');
+  const { getActiveEvents } = require('../config/Events');
+  assert.strictEqual(isMarketMovingArticle({ title: 'Federal Reserve signals rate cut after Core PCE inflation cools' }), true);
+  assert.strictEqual(isMarketMovingArticle({ title: 'Local Widget Corp appoints new vice president of marketing' }), false);
+  const feed = buildMarketNewsFeed([
+    { title: 'Local Widget Corp appoints new vice president of marketing', description: 'Non-market fluff' },
+    { title: 'ECB holds interest rates as EUR/USD tests key London liquidity level', description: 'Central bank macro catalyst' }
+  ]);
+  assert.ok(feed.some((a) => a.title.includes('ECB holds interest rates')), 'market-impact news must be kept');
+  assert.ok(!feed.some((a) => a.title.includes('Local Widget Corp')), 'non-market fluff must be filtered out');
+  const ffEvents = getActiveEvents();
+  assert.ok(ffEvents.length >= 5 && ffEvents.some((e) => e.impact === 'HIGH' && e.currency === 'USD'), 'Forex Factory high-impact calendar events must be present');
+
+  // 4. My Progress: 5-dimension scoring card followed by chart-like progress panel below it
+  const leaderboardEjs = fs.readFileSync(path.join(__dirname, '..', 'views', 'leaderboard.ejs'), 'utf8');
+  const dimCardIdx = leaderboardEjs.indexOf("t('prog.dimMove')");
+  const chartPanelIdx = leaderboardEjs.indexOf('id="kaizenProgressChartPanel"');
+  assert.ok(dimCardIdx > -1 && chartPanelIdx > dimCardIdx, 'Chart-like progress panel must be rendered below the 5-dimension scoring card on My Progress');
+  assert.ok(leaderboardEjs.includes('chartPaneTrajectory') && leaderboardEjs.includes('chartPaneDimensions'), 'Chart panel must include trajectory and 5-dimension breakdown chart views');
+
+  // 5. Reputation page rounded corners
+  const repEjs = fs.readFileSync(path.join(__dirname, '..', 'views', 'reputation.ejs'), 'utf8');
+  assert.ok(repEjs.includes('class="k-card k-card--elevated"') && repEjs.includes('border-radius:16px'), 'Reputation cards must have rounded corners matching the rest of the site');
+});
+
+
