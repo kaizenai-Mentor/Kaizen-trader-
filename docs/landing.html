@@ -40,10 +40,8 @@ h2{font-size:clamp(2rem,4.2vw,3rem);font-weight:600;margin-bottom:22px}
 
 /* nav */
 nav{position:sticky;top:0;z-index:50;background:rgba(10,10,10,.88);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
-nav .wrap{display:flex;align-items:center;justify-content:space-between;height:70px;gap:20px}
-.logo{font-weight:700;font-size:1.25rem;display:inline-flex;align-items:center;gap:10px;letter-spacing:.02em}
-.logo-kanji{color:var(--gold);font-weight:700}
-.beta-pill{font-family:'DM Mono',monospace;font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;padding:3px 9px;border-radius:99px;background:var(--blue);color:var(--white);border:1px solid rgba(244,248,251,.16)}
+nav .wrap{display:flex;align-items:center;justify-content:space-between;height:68px;gap:20px}
+.logo,.nav-logo{font-family:Sora,system-ui,-apple-system,sans-serif;font-weight:700;font-size:1.25rem;color:var(--white);letter-spacing:-.02em;display:inline-flex;align-items:center;gap:8px}
 .links{display:flex;gap:28px;align-items:center;font-size:.95rem;color:var(--mute)}
 .links a:hover,.links a.on{color:var(--gold)}
 .links a.btn.gold{color:var(--black)}
@@ -196,11 +194,7 @@ footer a:hover{color:var(--gold)}
 
 <nav>
   <div class="wrap">
-    <a class="logo" href="#top" aria-label="KAIZEN">
-      <span class="logo-kanji">改善</span>
-      <span>KAIZEN</span>
-      <span class="beta-pill">Beta</span>
-    </a>
+    <a class="logo nav-logo" href="index.html" aria-label="KAIZEN">改 KAIZEN</a>
     <div class="links">
       <a href="#toolkit">Features</a>
       <a href="#how">How It Works</a>
@@ -418,7 +412,7 @@ footer a:hover{color:var(--gold)}
   <div class="wrap">
     <div class="fgrid">
       <div>
-        <a class="logo" href="#top" style="font-size:1.2rem;color:var(--white)"><span class="logo-kanji">改善</span><span>KAIZEN</span></a>
+        <a class="logo nav-logo" href="#top" style="font-size:1.2rem;color:var(--white)">改 KAIZEN</a>
         <p style="margin-top:10px;max-width:16em">The Trader Development Platform.</p>
       </div>
       <div><h5>Platform</h5><ul><li><a href="#toolkit">Toolkit</a></li><li><a href="#how">How It Works</a></li><li><a href="#meet">KAIZEN AI</a></li></ul></div>

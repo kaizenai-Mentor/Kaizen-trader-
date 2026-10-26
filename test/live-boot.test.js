@@ -170,9 +170,10 @@ test('Batch 11: dash-free site copy, public hero spacing, compelling KAIZEN AI c
   assert.strictEqual(servicesRes.res.status, 200);
   assert.ok(!servicesRes.body.includes('What<span class="k-gold">KAIZEN</span>Gives'), 'services hero h1 must have spaces around KAIZEN');
 
-  // 2. Compelling KAIZEN AI response card on /landing
+  // 2. Compelling KAIZEN AI response card & matching site header logo on /landing
   const landingRes = await get('/landing');
   assert.strictEqual(landingRes.res.status, 200);
+  assert.ok(landingRes.body.includes('>改 KAIZEN</a>'), 'landing page header logo must match 改 KAIZEN on the rest of the site');
   assert.ok(landingRes.body.includes('Your bias was not the problem today. Your ego after the first stop was.'), 'landing hero KAIZEN AI response must be deeply compelling');
   assert.ok(landingRes.body.includes('Read that sentence back to yourself: you did not enter because your setup was ready.'), 'landing session reflection KAIZEN AI response must speak directly to trader behavior');
 
