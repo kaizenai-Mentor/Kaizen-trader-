@@ -549,12 +549,25 @@ async function getDetail(req, res) {
   });
 }
 
-// ── BROKER STATEMENT IMPORT (MT4 / MT5 / cTrader / TradingView HTML or CSV) ──
+// ── BROKER STATEMENT IMPORT (MT4 / MT5 Mobile Quick Sync / cTrader / TradingView HTML or CSV) ──
 async function postImportBroker(req, res) {
   const brokerVerify = require('../services/brokerVerify');
   const rawFile = (req.file && req.file.buffer) ? req.file.buffer.toString('utf8') : '';
   const rawBody = String(req.body.brokerText || '').trim();
-  const content = rawFile || rawBody;
+
+  // Support Quick MT5 Mobile App entry (when exporting a desktop HTML/CSV report isn't available on mobile)
+  let quickRow = '';
+  const mt5Sym = String(req.body.mt5Symbol || '').trim();
+  const mt5Dir = String(req.body.mt5Direction || '').trim();
+  const mt5Entry = String(req.body.mt5Entry || '').trim();
+  const mt5Exit = String(req.body.mt5Exit || '').trim();
+  const mt5Stop = String(req.body.mt5Stop || '').trim();
+  const mt5Date = String(req.body.mt5Date || '').trim() || new Date().toISOString().slice(0, 10);
+  if (mt5Sym && mt5Dir && mt5Entry && mt5Exit) {
+    quickRow = [mt5Date, mt5Dir, mt5Sym, mt5Entry, mt5Stop || '0', mt5Exit].join(', ');
+  }
+
+  const content = [quickRow, rawFile, rawBody].filter(Boolean).join('\n');
   const returnTo = (req.body.returnTo && String(req.body.returnTo).startsWith('/'))
     ? String(req.body.returnTo)
     : '/dashboard/sessions';

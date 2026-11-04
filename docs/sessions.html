@@ -267,21 +267,58 @@
     <div id="broker-import-panel" class="k-card" style="display:none;margin:18px 0;padding:22px;">
       <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:10px;">
         <div class="k-panel-title"><span class="k-kanji k-kanji--sm">改</span>PRIVACY-FIRST BROKER HISTORY SYNC</div>
-        <span style="font-family:var(--font-mono);font-size:0.56rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);">MT4 · MT5 · cTrader · TradingView</span>
+        <span style="font-family:var(--font-mono);font-size:0.56rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);">MT5 Mobile · MT4/MT5 Desktop · cTrader · TradingView</span>
       </div>
       <p style="font-size:0.84rem;color:var(--text-secondary);line-height:1.7;margin:0 0 14px;">
-        Upload your exported broker Trade History (<strong>.html</strong> or <strong>.csv</strong>) or paste trade rows below. KAIZEN automatically strips out account numbers, logins, deposits, dollar balances, and lot sizes, keeping only pair, direction, timestamps, and prices to verify your live sessions.
+        Using the <strong>MT5 Mobile App</strong> (where there is no HTML export button)? Enter the closed trade from your mobile History tab below, or upload an exported Desktop Trade History (<strong>.html</strong> / <strong>.csv</strong>). KAIZEN never collects account numbers, logins, deposits, or dollar balances.
       </p>
       <form action="/dashboard/sessions/import-broker" method="POST" enctype="multipart/form-data">
         <input type="hidden" name="returnTo" value="/dashboard/sessions">
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+        <div style="font-family:var(--font-mono);font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:8px;font-weight:700;">
+          OPTION 1: QUICK MT5 MOBILE APP TRADE SYNC
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(125px,1fr));gap:10px;margin-bottom:14px;">
           <div>
-            <label class="k-fieldlabel">UPLOAD BROKER REPORT (.HTML / .CSV)</label>
-            <input type="file" name="brokerFile" accept=".html,.htm,.csv,.txt" class="k-input">
+            <label class="k-fieldlabel">PAIR / SYMBOL</label>
+            <input type="text" name="mt5Symbol" class="k-input" placeholder="e.g. AUDJPY, XAUUSD">
           </div>
           <div>
-            <label class="k-fieldlabel">OR PASTE TRADE HISTORY ROWS</label>
-            <input type="text" name="brokerText" class="k-input" placeholder="e.g. 2026-10-29 09:15, buy, AUDJPY, 101.20, 100.90, 101.85, 101.80">
+            <label class="k-fieldlabel">BUY / SELL</label>
+            <select name="mt5Direction" class="k-input">
+              <option value="Buy">Buy</option>
+              <option value="Sell">Sell</option>
+            </select>
+          </div>
+          <div>
+            <label class="k-fieldlabel">ENTRY PRICE</label>
+            <input type="text" name="mt5Entry" class="k-input" placeholder="e.g. 101.420">
+          </div>
+          <div>
+            <label class="k-fieldlabel">EXIT PRICE</label>
+            <input type="text" name="mt5Exit" class="k-input" placeholder="e.g. 100.820">
+          </div>
+          <div>
+            <label class="k-fieldlabel">STOP LOSS (OPT)</label>
+            <input type="text" name="mt5Stop" class="k-input" placeholder="e.g. 101.720">
+          </div>
+          <div>
+            <label class="k-fieldlabel">TRADE DATE</label>
+            <input type="date" name="mt5Date" class="k-input" value="2026-11-04">
+          </div>
+        </div>
+        <div style="border-top:1px solid var(--border);padding-top:12px;margin-bottom:14px;">
+          <div style="font-family:var(--font-mono);font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-secondary);margin-bottom:8px;">
+            OPTION 2: DESKTOP REPORT UPLOAD (.HTML / .CSV) OR BULK PASTE
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+            <div>
+              <label class="k-fieldlabel">UPLOAD BROKER REPORT (.HTML / .CSV)</label>
+              <input type="file" name="brokerFile" accept=".html,.htm,.csv,.txt" class="k-input">
+            </div>
+            <div>
+              <label class="k-fieldlabel">OR PASTE TRADE HISTORY ROWS</label>
+              <input type="text" name="brokerText" class="k-input" placeholder="e.g. 2026-10-29 09:15, buy, AUDJPY, 101.20, 100.90, 101.85, 101.80">
+            </div>
           </div>
         </div>
         <div style="display:flex;align-items:center;gap:12px;">

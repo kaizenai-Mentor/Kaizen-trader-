@@ -261,12 +261,12 @@
 
     <!-- KAIZEN DISCIPLINE SCORE CARD -->
     <section class="k-card k-card--elevated" style="border-radius:16px;padding:28px;margin-bottom:20px;position:relative;overflow:hidden;">
-      <div style="font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.18em;text-transform:uppercase;color:#41566B;margin-bottom:16px;display:flex;align-items:center;gap:8px;font-weight:600;">
+      <div style="font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--text-secondary);margin-bottom:16px;display:flex;align-items:center;gap:8px;font-weight:600;">
         <i data-feather="bar-chart-2" width="13" height="13" style="color:var(--gold);"></i> KAIZEN Discipline Score</div>
 
       <div style="display:flex;align-items:flex-end;gap:18px;margin-bottom:20px;flex-wrap:wrap;">
         <div>
-          <div style="font-family:var(--font-heading);font-size:3.8rem;font-weight:700;color:#0A0A0A;line-height:1;">
+          <div style="font-family:var(--font-heading);font-size:3.8rem;font-weight:700;color:var(--gold);line-height:1;">
             72<span style="font-size:1.5rem;color:var(--gold);">%</span>
           </div>
           <div style="height:6px;background:#DCE6EE;border-radius:99px;margin-top:10px;width:220px;overflow:hidden;">
@@ -289,7 +289,7 @@
           ">
             CONSISTENT
           </div>
-          <div style="font-size:0.78rem;color:#41566B;margin-top:8px;">Based on 48 sessions logged</div>
+          <div style="font-size:0.78rem;color:var(--text-secondary);margin-top:8px;">Based on 48 sessions logged</div>
         </div>
       </div>
 
@@ -312,7 +312,7 @@
       </div>
 
       <!-- DANGER ZONE -->
-      <div style="margin-top:24px;padding-top:20px;border-top:1px solid #DCE6EE;">
+      <div style="margin-top:24px;padding-top:20px;border-top:1px solid var(--border);">
         <div style="font-family:'DM Mono',monospace;font-size:0.56rem;letter-spacing:0.15em;text-transform:uppercase;color:#DC2626;margin-bottom:10px;display:flex;align-items:center;gap:6px;font-weight:600;">
           <i data-feather="alert-triangle" width="12" height="12"></i> Danger Zone</div>
         <button onclick="if(confirm(&quot;Delete your account permanently? This cannot be undone.&quot;)) window.location='/auth/delete'" style="
@@ -342,19 +342,19 @@
             <i data-feather="link" width="15" height="15"></i>
           </div>
           <div>
-            <div style="font-family:var(--font-heading);font-weight:700;font-size:1rem;color:#0A0A0A;">Mantle AI Benchmark</div>
-            <div style="font-size:0.76rem;color:#41566B;">Mantle blockchain · AI performance record</div>
+            <div style="font-family:var(--font-heading);font-weight:700;font-size:1rem;color:var(--text-primary);">Mantle AI Benchmark</div>
+            <div style="font-size:0.76rem;color:var(--text-secondary);">Mantle blockchain · AI performance record</div>
           </div>
         </div>
         <span style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;background:#1A2F4A;color:#F4F8FB;border-radius:99px;padding:5px 12px;font-weight:600;">VERIFIED</span>
       </div>
 
-      <p style="font-size:0.88rem;color:#41566B;line-height:1.75;margin-bottom:20px;">Every significant KAIZEN AI output about your account is permanently recorded on the Mantle blockchain, including discipline score changes, pattern detections, and milestones. Verifiable by anyone and tamper proof.</p>
+      <p style="font-size:0.88rem;color:var(--text-secondary);line-height:1.75;margin-bottom:20px;">Every significant KAIZEN AI output about your account is permanently recorded on the Mantle blockchain, including discipline score changes, pattern detections, and milestones. Verifiable by anyone and tamper proof.</p>
 
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;margin-bottom:20px;">
-        <div style="background:#FFFFFF;border:1px solid #DCE6EE;border-radius:12px;padding:16px;text-align:center;">
-          <div style="font-family:var(--font-heading);font-size:1.4rem;font-weight:700;color:#0A0A0A;">72%</div>
-          <div style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;color:#41566B;margin-top:4px;">Verified Score</div>
+        <div style="background:#0A0A0A;border:1px solid rgba(245,197,24,0.45);border-radius:12px;padding:16px;text-align:center;">
+          <div style="font-family:var(--font-heading);font-size:1.4rem;font-weight:700;color:#F5C518;">72%</div>
+          <div style="font-family:'DM Mono',monospace;font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;color:#A3B1BF;margin-top:4px;">Verified Score</div>
         </div>
         <div style="background:#FFFFFF;border:1px solid #DCE6EE;border-radius:12px;padding:16px;text-align:center;">
           <div style="font-family:var(--font-heading);font-size:1.4rem;font-weight:700;color:#1A2F4A;">48</div>
@@ -410,19 +410,27 @@
 
     
 
-    <!-- ═══ BRANDED KAIZEN TRADER'S CARD & AUTO-MEMORY DOSSIER ═══ -->
-    <section id="traders-card" style="background:linear-gradient(180deg, #101824 0%, #0A0A0A 100%);border:1.5px solid rgba(245,197,24,0.45);border-radius:20px;padding:30px;margin-top:24px;box-shadow:0 28px 56px rgba(0,0,0,0.48);color:#F4F8FB;">
+    <!-- ═══ BRANDED KAIZEN TRADER'S CARD & OFFICIAL CERTIFICATE DOSSIER ═══ -->
+    <section id="traders-card" style="position:relative;overflow:hidden;background:linear-gradient(180deg, #101824 0%, #0A0A0A 100%);border:2px solid #F5C518;box-shadow:inset 0 0 0 4px #0A0A0A, inset 0 0 0 5px rgba(245,197,24,0.45), 0 28px 56px rgba(0,0,0,0.48);border-radius:20px;padding:32px;margin-top:24px;color:#F4F8FB;">
+
+      <!-- Centered KAIZEN Logo Watermark (Certificate Vibe) -->
+      <div aria-hidden="true" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;user-select:none;z-index:0;opacity:0.06;transform:rotate(-14deg);">
+        <div style="font-family:var(--font-cjk);font-size:13rem;line-height:1;color:#F5C518;font-weight:700;">改</div>
+        <div style="font-family:var(--font-heading);font-size:4.2rem;letter-spacing:0.24em;color:#F4F8FB;font-weight:800;margin-top:-10px;">KAIZEN</div>
+      </div>
+
+      <div style="position:relative;z-index:1;">
       <!-- Top Brand Crest & Official Logo -->
-      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;padding-bottom:20px;border-bottom:1px solid rgba(244,248,251,0.12);margin-bottom:22px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;padding-bottom:20px;border-bottom:1px solid rgba(245,197,24,0.28);margin-bottom:22px;">
         <div style="display:flex;align-items:center;gap:12px;">
-          <span class="k-kanji k-kanji--md" style="background:rgba(245,197,24,0.12);border-color:rgba(245,197,24,0.5);color:#F5C518;">改</span>
+          <span class="k-kanji k-kanji--md" style="background:rgba(245,197,24,0.14);border-color:rgba(245,197,24,0.65);color:#F5C518;">改</span>
           <div>
-            <div style="font-family:var(--font-heading);font-weight:700;font-size:1.1rem;letter-spacing:0.06em;color:#F4F8FB;">KAIZEN TRADER'S CARD &amp; DOSSIER</div>
+            <div style="font-family:var(--font-heading);font-weight:700;font-size:1.12rem;letter-spacing:0.06em;color:#F4F8FB;">KAIZEN OFFICIAL TRADER CERTIFICATE &amp; DOSSIER</div>
             <div style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.14em;text-transform:uppercase;color:#F5C518;">AUTO-GENERATED FROM KAIZEN MEMORIES &amp; BROKER VERIFICATION</div>
           </div>
         </div>
         <div style="text-align:right;">
-          <div style="font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.14em;color:#F4F8FB;background:#1A2F4A;border:1px solid rgba(245,197,24,0.4);padding:6px 12px;border-radius:999px;">KZN-2026-VERIFIED</div>
+          <div style="font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.14em;color:#0A0A0A;background:#F5C518;border:1px solid #F5C518;padding:6px 12px;border-radius:999px;font-weight:700;">KZN-2026-VERIFIED</div>
         </div>
       </div>
 
@@ -435,15 +443,15 @@
           <div style="font-family:var(--font-heading);font-size:1.15rem;font-weight:700;color:#F4F8FB;margin-top:4px;">Kaizen</div>
           <div style="font-family:'DM Mono',monospace;font-size:0.54rem;color:#F5C518;margin-top:2px;">Member since 2026</div>
         </div>
-        <div style="background:#F4F8FB;border:1px solid #DCE6EE;border-radius:14px;padding:16px;color:#0A0A0A;">
-          <div style="font-family:'DM Mono',monospace;font-size:0.52rem;letter-spacing:0.12em;text-transform:uppercase;color:#41566B;">KAIZEN SCORE</div>
-          <div style="font-family:var(--font-heading);font-size:1.45rem;font-weight:700;color:#0A0A0A;margin-top:4px;">72%</div>
-          <div style="font-family:'DM Mono',monospace;font-size:0.54rem;color:#1A2F4A;margin-top:2px;">Rule Compliance: 72%</div>
+        <div style="background:#0A0A0A;border:1px solid rgba(245,197,24,0.5);border-radius:14px;padding:16px;color:#F4F8FB;">
+          <div style="font-family:'DM Mono',monospace;font-size:0.52rem;letter-spacing:0.12em;text-transform:uppercase;color:#A3B1BF;">KAIZEN SCORE</div>
+          <div style="font-family:var(--font-heading);font-size:1.5rem;font-weight:700;color:#F5C518;margin-top:4px;">72%</div>
+          <div style="font-family:'DM Mono',monospace;font-size:0.54rem;color:#F5C518;margin-top:2px;">Rule Compliance: 72%</div>
         </div>
         <div style="background:#F4F8FB;border:1px solid #DCE6EE;border-radius:14px;padding:16px;color:#0A0A0A;">
           <div style="font-family:'DM Mono',monospace;font-size:0.52rem;letter-spacing:0.12em;text-transform:uppercase;color:#41566B;">LOGGED SESSIONS</div>
           <div style="font-family:var(--font-heading);font-size:1.45rem;font-weight:700;color:#0A0A0A;margin-top:4px;">48</div>
-          <div style="font-family:'DM Mono',monospace;font-size:0.54rem;color:#41566B;margin-top:2px;">Broker-Verified: 0</div>
+          <div style="font-family:'DM Mono',monospace;font-size:0.54rem;color:#1A2F4A;margin-top:2px;font-weight:600;">Broker-Verified: 0</div>
         </div>
         <div style="background:#F4F8FB;border:1px solid #DCE6EE;border-radius:14px;padding:16px;color:#0A0A0A;" id="dossier-focus-box">
           <div style="font-family:'DM Mono',monospace;font-size:0.52rem;letter-spacing:0.12em;text-transform:uppercase;color:#41566B;">PRIMARY FOCUS</div>
@@ -453,34 +461,34 @@
       </div>
 
       <!-- Auto-Written Executive Summary from KAIZEN Memories -->
-      <div style="background:#F4F8FB;color:#0A0A0A;border:1px solid #DCE6EE;border-radius:16px;padding:22px;margin-bottom:18px;">
+      <div style="background:rgba(244,248,251,0.95);color:#0A0A0A;border:1px solid #DCE6EE;border-radius:16px;padding:22px;margin-bottom:18px;">
         <div style="font-family:'DM Mono',monospace;font-size:0.58rem;letter-spacing:0.14em;text-transform:uppercase;color:#1A2F4A;font-weight:600;margin-bottom:8px;">HOW THIS TRADER OPERATES (AUTO-GENERATED BY KAIZEN MEMORY)</div>
         <p style="font-size:0.9rem;color:#0A0A0A;line-height:1.78;margin:0 0 12px;" data-redactable="summary">Kaizen operates a structured trading methodology governed by pre-trade checklist confirmation and strict risk discipline.</p>
         <p style="font-size:0.86rem;color:#41566B;line-height:1.75;margin:0;">KAIZEN Memory tracks pre-session plans, chart studies, and post-session reflections to establish a verified behavioral track record.</p>
       </div>
 
-      <!-- Auto-Selected Defining Trading & Study Decisions from Memories -->
+      <!-- Auto-Selected Defining Trading & Study Decisions from Memories (Balanced Good & Lesson Sessions) -->
       
 
       <!-- One-Click Privacy Redaction Controls (Trader Right to Redact) -->
       <div style="background:rgba(26,47,74,0.45);border:1px solid rgba(244,248,251,0.14);border-radius:14px;padding:14px 18px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
         <div style="font-size:0.78rem;color:#C4D0DC;">
-          <strong style="color:#F5C518;">Privacy &amp; Redaction Controls:</strong> Zero bank details, logins, or dollar balances are ever collected. Toggle to redact details on your card:
+          <strong style="color:#F5C518;">Privacy &amp; Redaction Controls:</strong> Zero bank details, logins, or dollar balances are ever collected. Toggle to redact details on your card &amp; PDF:
         </div>
         <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;font-family:'DM Mono',monospace;font-size:0.6rem;">
-          <label style="cursor:pointer;display:inline-flex;align-items:center;gap:6px;"><input type="checkbox" onchange="toggleDossierRedact('instruments', this.checked)"> Redact Pairs</label>
-          <label style="cursor:pointer;display:inline-flex;align-items:center;gap:6px;"><input type="checkbox" onchange="toggleDossierRedact('dates', this.checked)"> Redact Dates</label>
-          <label style="cursor:pointer;display:inline-flex;align-items:center;gap:6px;"><input type="checkbox" onchange="var b=document.getElementById('dossier-decisions-box');if(b)b.style.display=this.checked?'none':'block';"> Hide Decision Quotes</label>
+          <label style="cursor:pointer;display:inline-flex;align-items:center;gap:6px;"><input type="checkbox" id="chk-redact-pairs" onchange="toggleDossierRedact('instruments', this.checked);updatePdfDownloadHref();"> Redact Pairs</label>
+          <label style="cursor:pointer;display:inline-flex;align-items:center;gap:6px;"><input type="checkbox" id="chk-redact-dates" onchange="toggleDossierRedact('dates', this.checked);updatePdfDownloadHref();"> Redact Dates</label>
+          <label style="cursor:pointer;display:inline-flex;align-items:center;gap:6px;"><input type="checkbox" id="chk-hide-quotes" onchange="var b=document.getElementById('dossier-decisions-box');if(b)b.style.display=this.checked?'none':'block';updatePdfDownloadHref();"> Hide Decision Quotes</label>
         </div>
       </div>
 
       <!-- Official KAIZEN Logo + Founder Authentication Signature & Vermillion Seal -->
-      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:18px;padding-top:18px;border-top:1px solid rgba(244,248,251,0.14);">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:18px;padding-top:18px;border-top:1px solid rgba(245,197,24,0.28);">
         <div style="display:flex;align-items:center;gap:12px;">
           <span class="k-seal" title="Verified by KAIZEN">改</span>
           <div>
             <div style="font-family:var(--font-heading);font-size:0.84rem;font-weight:700;color:#F4F8FB;">AUTHENTICATED BY KAIZEN</div>
-            <div style="font-size:0.74rem;color:#A3B1BF;">Tamper-evident behavioral &amp; execution credential · Mantle Sepolia (testnet)</div>
+            <div style="font-size:0.74rem;color:#A3B1BF;">Tamper-evident behavioral &amp; execution certificate · Mantle Sepolia (testnet)</div>
           </div>
         </div>
         <div style="text-align:right;">
@@ -489,31 +497,75 @@
         </div>
       </div>
 
-      <!-- Actions: Print / Save Card & Sync Broker Report -->
-      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-top:20px;padding-top:16px;border-top:1px dashed rgba(244,248,251,0.12);">
-        <button type="button" onclick="window.print()" class="btn-primary" style="font-size:0.8rem;padding:11px 20px;">
-          Download / Print Branded Trader's Card &amp; Dossier
-        </button>
-        <button type="button" onclick="var f=document.getElementById('rep-broker-sync');if(f)f.style.display=f.style.display==='none'?'block':'none';" class="btn-outline" style="font-size:0.78rem;padding:10px 18px;color:#F4F8FB;border-color:rgba(244,248,251,0.28);">
-          Sync Broker History (MT4 / MT5 / CSV / HTML)
+      <!-- Actions: Direct Download as PDF (with KAIZEN Watermark) & Sync Broker History -->
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-top:20px;padding-top:16px;border-top:1px dashed rgba(244,248,251,0.16);">
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+          <a id="dossier-pdf-link" href="reputation.html" download="KAIZEN-Trader-Certificate-Kaizen.pdf" class="btn-primary" style="font-size:0.82rem;padding:12px 22px;text-decoration:none;display:inline-flex;align-items:center;gap:8px;">
+            <i data-feather="download" width="14" height="14"></i> Download Certificate &amp; Dossier as PDF
+          </a>
+        </div>
+        <button type="button" onclick="var f=document.getElementById('rep-broker-sync');if(f)f.style.display=f.style.display==='none'?'block':'none';" class="btn-outline" style="font-size:0.78rem;padding:10px 18px;color:#F4F8FB;border-color:rgba(245,197,24,0.45);">
+          Sync MT5 Mobile / Broker History
         </button>
       </div>
 
-      <div id="rep-broker-sync" style="display:none;margin-top:16px;padding:18px;border-radius:14px;background:rgba(10,10,10,0.65);border:1px solid rgba(245,197,24,0.35);">
+      <div id="rep-broker-sync" style="display:none;margin-top:16px;padding:20px;border-radius:14px;background:rgba(10,10,10,0.82);border:1px solid rgba(245,197,24,0.45);">
+        <div style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.14em;text-transform:uppercase;color:#F5C518;margin-bottom:8px;font-weight:700;">
+          OPTION 1: QUICK MT5 MOBILE APP SYNC (ENTER CLOSED TRADE FROM YOUR PHONE HISTORY TAB)
+        </div>
+        <p style="font-size:0.78rem;color:#A3B1BF;margin:0 0 12px;line-height:1.6;">
+          On the MT5 Mobile App (where there is no HTML report export button), enter the closed trade details from your MT5 History tab below to verify your session right away:
+        </p>
         <form action="/dashboard/sessions/import-broker" method="POST" enctype="multipart/form-data">
-          <input type="hidden" name="returnTo" value="/za/reputation/">
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
+          <input type="hidden" name="returnTo" value="/za/reputation/#traders-card">
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(125px,1fr));gap:10px;margin-bottom:14px;">
             <div>
-              <label class="k-fieldlabel" style="color:#F5C518;">UPLOAD BROKER REPORT (.HTML / .CSV)</label>
-              <input type="file" name="brokerFile" accept=".html,.htm,.csv,.txt" class="k-input">
+              <label class="k-fieldlabel" style="color:#F5C518;">PAIR / SYMBOL</label>
+              <input type="text" name="mt5Symbol" class="k-input" placeholder="e.g. AUDJPY, XAUUSD">
             </div>
             <div>
-              <label class="k-fieldlabel" style="color:#F5C518;">OR PASTE TRADE ROWS</label>
-              <input type="text" name="brokerText" class="k-input" placeholder="e.g. 2026-10-29 09:15, buy, AUDJPY, 101.20, 100.90, 101.85, 101.80">
+              <label class="k-fieldlabel" style="color:#F5C518;">BUY / SELL</label>
+              <select name="mt5Direction" class="k-input">
+                <option value="Buy">Buy</option>
+                <option value="Sell">Sell</option>
+              </select>
+            </div>
+            <div>
+              <label class="k-fieldlabel" style="color:#F5C518;">ENTRY PRICE</label>
+              <input type="text" name="mt5Entry" class="k-input" placeholder="e.g. 101.420">
+            </div>
+            <div>
+              <label class="k-fieldlabel" style="color:#F5C518;">EXIT PRICE</label>
+              <input type="text" name="mt5Exit" class="k-input" placeholder="e.g. 100.820">
+            </div>
+            <div>
+              <label class="k-fieldlabel" style="color:#F5C518;">STOP LOSS (OPT)</label>
+              <input type="text" name="mt5Stop" class="k-input" placeholder="e.g. 101.720">
+            </div>
+            <div>
+              <label class="k-fieldlabel" style="color:#F5C518;">TRADE DATE</label>
+              <input type="date" name="mt5Date" class="k-input" value="2026-11-04">
             </div>
           </div>
-          <button type="submit" class="btn-primary" style="font-size:0.8rem;padding:10px 18px;">Verify &amp; Update Trader's Card</button>
+
+          <div style="border-top:1px solid rgba(244,248,251,0.12);padding-top:14px;margin-top:6px;">
+            <div style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.14em;text-transform:uppercase;color:#A3B1BF;margin-bottom:10px;">
+              OPTION 2: DESKTOP MT4 / MT5 / TRADINGVIEW FILE UPLOAD (.HTML / .CSV) OR BULK PASTE
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
+              <div>
+                <label class="k-fieldlabel" style="color:#C4D0DC;">UPLOAD REPORT (.HTML / .CSV)</label>
+                <input type="file" name="brokerFile" accept=".html,.htm,.csv,.txt" class="k-input">
+              </div>
+              <div>
+                <label class="k-fieldlabel" style="color:#C4D0DC;">OR PASTE MULTIPLE TRADE ROWS</label>
+                <input type="text" name="brokerText" class="k-input" placeholder="e.g. 2026-10-29 09:15, sell, AUDJPY, 101.42, 101.72, 100.82">
+              </div>
+            </div>
+          </div>
+          <button type="submit" class="btn-primary" style="font-size:0.82rem;padding:11px 20px;">Verify &amp; Sync to Trader's Card</button>
         </form>
+      </div>
       </div>
     </section>
 
@@ -525,6 +577,19 @@
           if (!el.getAttribute('data-orig')) el.setAttribute('data-orig', el.textContent);
           el.textContent = redact ? '[REDACTED BY TRADER]' : el.getAttribute('data-orig');
         }
+      }
+      function updatePdfDownloadHref() {
+        var link = document.getElementById('dossier-pdf-link');
+        if (!link) return;
+        var base = '/za/reputation//dossier.pdf';
+        var params = [];
+        var p = document.getElementById('chk-redact-pairs');
+        var d = document.getElementById('chk-redact-dates');
+        var q = document.getElementById('chk-hide-quotes');
+        if (p && p.checked) params.push('redactPairs=1');
+        if (d && d.checked) params.push('redactDates=1');
+        if (q && q.checked) params.push('hideQuotes=1');
+        link.href = base + (params.length ? ('?' + params.join('&')) : '');
       }
     </script>
 

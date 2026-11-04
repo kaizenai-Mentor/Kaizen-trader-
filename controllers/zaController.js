@@ -483,10 +483,64 @@ const getReputation = async (req, res) => {
   }
 };
 
+// GET /za/reputation/:userId/dossier.pdf
+const downloadDossierPdf = async (req, res) => {
+  try {
+    const User = require('../models/User');
+    const Journal = require('../models/Journal');
+    const TradingSystem = require('../models/TradingSystem');
+    const Memory = require('../models/Memory');
+    const MindState = require('../models/MindState');
+    const { computeScore } = require('../services/scoreEngine');
+    const { runV1Extraction } = require('../services/extraction');
+    const { buildAutoTraderDossier } = require('../services/brokerVerify');
+    const { generateDossierPdfBuffer } = require('../services/pdfDossier');
+
+    const user = await User.findById(req.params.userId);
+    if (!user) return res.status(404).send('Trader not found');
+
+    const system = await TradingSystem.ensureForUser(user);
+    let extracted = user.v1Evidence || null;
+    if (!extracted) {
+      extracted = await runV1Extraction(user, Journal) || null;
+    }
+    const [recentSessions, memories, mindState] = await Promise.all([
+      Journal.find({ userId: user._id, state: { $ne: 'PLANNED' } }).sort({ createdAt: -1 }).limit(60).lean(),
+      Memory.find({ userId: user._id }).sort({ createdAt: -1 }).limit(15).lean().catch(() => []),
+      MindState.findOne({ userId: user._id }).lean().catch(() => null)
+    ]);
+    const computed = computeScore(recentSessions, system, extracted);
+    const dossier = buildAutoTraderDossier({
+      user,
+      system,
+      sessions: recentSessions,
+      memories,
+      mindState,
+      score: computed
+    });
+
+    const pdfBuf = generateDossierPdfBuffer(dossier, {
+      redactPairs: req.query.redactPairs === '1',
+      redactDates: req.query.redactDates === '1',
+      hideQuotes: req.query.hideQuotes === '1'
+    });
+
+    const safeName = String(user.username || 'Trader').replace(/[^a-zA-Z0-9_-]/g, '_');
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename="KAIZEN-Trader-Certificate-${safeName}.pdf"`);
+    res.setHeader('Content-Length', String(pdfBuf.length));
+    return res.send(pdfBuf);
+  } catch (err) {
+    console.error('downloadDossierPdf error:', err.message);
+    return res.redirect('/za/reputation/' + req.params.userId);
+  }
+};
+
 module.exports = {
   getBounties,
   getBountyById,
   getReputation,
+  downloadDossierPdf,
   linkZaAccount,
   unlinkZaAccount,
   parseZaLinkInput,
