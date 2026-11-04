@@ -334,23 +334,53 @@ function buildAutoTraderDossier({ user = {}, system = {}, sessions = [], memorie
     : `KAIZEN Memory is actively indexing this trader's pre-trade plans, chart studies, and post-session reflections to establish a verified behavioral track record.`;
 
   // 3. Auto-selected "Defining Trading & Study Decisions" (pulled automatically from Sessions & Memories)
-  const memorableDecisions = [];
-  for (const s of allSessions.slice(0, 12)) {
-    if (memorableDecisions.length >= 3) break;
+  // Balances good sessions (wins / compliant executions / structured studies) with constructive lesson
+  // sessions (losses / rule breakdowns) so the dossier reflects both edge and honest accountability.
+  const toDecisionItem = (s) => {
     const ctx = resolveSessionContext(s);
     const narrative = extractCompleteNarrative(s.notes, 200);
-    if (!narrative) continue;
+    if (!narrative) return null;
     const lesson = (s.reflection && s.reflection.learned) ? cleanText(s.reflection.learned) : '';
     const vMatch = matchSessionWithBrokerHistory(s, brokerTrades);
-    memorableDecisions.push({
+    const isGood = s.outcome === 'Win' || (s.ruleCompliance !== false && s.outcome !== 'Loss');
+    let qualityLabel = 'CLEAN PROCESS';
+    if (ctx.isStudyOrBacktest) qualityLabel = 'STRUCTURED STUDY';
+    else if (s.outcome === 'Win' && s.ruleCompliance !== false) qualityLabel = 'DISCIPLINED WIN';
+    else if (s.outcome === 'Loss' || s.ruleCompliance === false) qualityLabel = 'GROWTH & LESSON';
+    return {
       date: s.createdAt ? new Date(s.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'Recent',
       instrument: ctx.instrument || s.asset || 'Market Session',
       strategy: ctx.strategy || (s.plan && s.plan.setup) || 'Declared System',
       mode: ctx.isStudyOrBacktest ? 'STUDY / BACKTEST' : (vMatch.verified ? 'BROKER-VERIFIED LIVE' : 'LIVE SESSION'),
+      qualityLabel,
+      isGood,
       narrative: cleanText(narrative),
-      lesson: lesson || 'Verified checklist alignment before acting on bias.',
+      lesson: lesson || (isGood ? 'Executed inside declared checklist and risk boundaries.' : 'Documented breakdown honestly to tighten next session execution.'),
       compliant: s.ruleCompliance !== false
-    });
+    };
+  };
+
+  const goodPool = [];
+  const lessonPool = [];
+  for (const s of allSessions.slice(0, 30)) {
+    const item = toDecisionItem(s);
+    if (!item) continue;
+    if (item.isGood) goodPool.push(item);
+    else lessonPool.push(item);
+  }
+
+  const memorableDecisions = [];
+  // Target a balanced mix (up to 2 good sessions + up to 2 lesson sessions, or 2 good + 1 lesson),
+  // falling back gracefully if one side has fewer entries.
+  const maxTotal = 4;
+  let gIdx = 0, lIdx = 0;
+  while (memorableDecisions.length < maxTotal && (gIdx < goodPool.length || lIdx < lessonPool.length)) {
+    if (gIdx < goodPool.length && (memorableDecisions.filter(d => d.isGood).length < 2 || lIdx >= lessonPool.length)) {
+      memorableDecisions.push(goodPool[gIdx++]);
+    }
+    if (memorableDecisions.length < maxTotal && lIdx < lessonPool.length && (memorableDecisions.filter(d => !d.isGood).length < 2 || gIdx >= goodPool.length)) {
+      memorableDecisions.push(lessonPool[lIdx++]);
+    }
   }
 
   // Fallback to Memory records if sessions list is empty

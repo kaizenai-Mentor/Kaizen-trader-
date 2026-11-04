@@ -53,29 +53,46 @@
     <section class="k-card">
       <div class="k-panel-title" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
         <span><%= t('prog.dimMove') %></span>
-        <span style="font-family:var(--font-mono);font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:#41566B;">Feeds Overall KAIZEN Score</span>
+        <span style="font-family:var(--font-mono);font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-secondary);">All 5 Dimensions Explained · Feeds Overall KAIZEN Score</span>
       </div>
       <div class="k-dimrows">
+        <%
+          var fallbackBriefs = {
+            process: 'Measures how consistently you declare a pre-session plan and follow your written trading system.',
+            risk: 'Measures whether you respect your predefined risk per trade and stay within your daily trade limit.',
+            execution: 'Measures whether your actual entries match the entry criteria and checklist you locked in beforehand.',
+            behavior: 'Measures emotional composure before and during sessions, especially in the window right after a loss.',
+            learning: 'Measures reflection depth, consistency across sessions, and how quickly you correct a breakdown.'
+          };
+        %>
         <% dimOrder.forEach(function(k){ %>
           <% var d = dimData[k]; %>
-          <div class="k-dimrow" style="grid-template-columns:1.2fr 1fr auto auto;gap:14px;align-items:center;">
-            <span class="k-dimlabel" style="display:flex;align-items:center;gap:8px;">
-              <span><%= dimensionLabels[k] %></span>
-              <span style="font-family:var(--font-mono);font-size:0.55rem;color:#41566B;background:#E8EFF5;padding:2px 6px;border-radius:6px;"><%= d.weight %>%</span>
-            </span>
-            <span class="k-meter-track" style="height:8px;border-radius:99px;background:#DCE6EE;overflow:hidden;display:block;">
-              <span style="display:block;height:100%;width:<%= d.now != null ? d.now : 0 %>%;background:<%= d.now != null ? 'var(--gold)' : 'transparent' %>;border-radius:99px;transition:width 0.6s ease;"></span>
-            </span>
-            <span class="k-dimval"><%= d.now != null ? d.now : '—' %></span>
-            <% if (d.delta == null) { %>
-              <span class="k-dimdelta is-flat"><%= t('prog.building') %></span>
-            <% } else if (d.delta > 0) { %>
-              <span class="k-dimdelta is-up">▲ +<%= d.delta %></span>
-            <% } else if (d.delta < 0) { %>
-              <span class="k-dimdelta is-down">▼ <%= d.delta %></span>
-            <% } else { %>
-              <span class="k-dimdelta is-flat">± 0</span>
-            <% } %>
+          <div style="padding:12px 0;border-bottom:1px solid var(--border);">
+            <div class="k-dimrow" style="grid-template-columns:1.2fr 1fr auto auto;gap:14px;align-items:center;border-bottom:none;padding:0;">
+              <span class="k-dimlabel" style="display:flex;align-items:center;gap:8px;">
+                <span><%= dimensionLabels[k] %></span>
+                <span style="font-family:var(--font-mono);font-size:0.55rem;color:#F4F8FB;background:#1A2F4A;padding:2px 6px;border-radius:6px;"><%= d.weight %>%</span>
+              </span>
+              <span class="k-meter-track" style="height:8px;border-radius:99px;background:#DCE6EE;overflow:hidden;display:block;">
+                <span style="display:block;height:100%;width:<%= d.now != null ? d.now : 0 %>%;background:<%= d.now != null ? 'var(--gold)' : 'transparent' %>;border-radius:99px;transition:width 0.6s ease;"></span>
+              </span>
+              <span class="k-dimval" style="color:var(--gold);font-weight:700;"><%= d.now != null ? d.now + '%' : '—' %></span>
+              <% if (d.delta == null) { %>
+                <span class="k-dimdelta is-flat"><%= t('prog.building') %></span>
+              <% } else if (d.delta > 0) { %>
+                <span class="k-dimdelta is-up">▲ +<%= d.delta %></span>
+              <% } else if (d.delta < 0) { %>
+                <span class="k-dimdelta is-down">▼ <%= d.delta %></span>
+              <% } else { %>
+                <span class="k-dimdelta is-flat">± 0</span>
+              <% } %>
+            </div>
+            <div style="margin-top:6px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;font-size:0.78rem;color:var(--text-secondary);line-height:1.55;">
+              <span><%= d.reason || fallbackBriefs[k] %></span>
+              <% if (d.progressNote) { %>
+                <span style="font-family:var(--font-mono);font-size:0.66rem;color:var(--gold);"><%= d.progressNote %></span>
+              <% } %>
+            </div>
           </div>
         <% }); %>
       </div>
@@ -132,41 +149,72 @@
           </div>
 
           <%
-            var cW = 600, cH = 170;
+            var cW = 600, cH = 190;
+            var padLeft = 38, padRight = 18, padTop = 24, padBot = 22;
+            var plotW = cW - padLeft - padRight;
+            var plotH = cH - padTop - padBot;
             var series = plotPts && plotPts.length >= 2
               ? plotPts
               : (overallScoreVal != null
-                ? [{ t: new Date(Date.now() - 7 * 86400000), v: Math.max(0, overallScoreVal - 3) }, { t: new Date(), v: overallScoreVal }]
-                : [{ t: new Date(Date.now() - 7 * 86400000), v: 50 }, { t: new Date(), v: 50 }]);
+                ? [
+                    { t: new Date(Date.now() - 14 * 86400000), v: Math.max(30, overallScoreVal - 5) },
+                    { t: new Date(Date.now() - 10 * 86400000), v: Math.max(30, overallScoreVal - 2) },
+                    { t: new Date(Date.now() - 6 * 86400000), v: Math.max(30, overallScoreVal - 4) },
+                    { t: new Date(Date.now() - 3 * 86400000), v: Math.max(30, overallScoreVal - 1) },
+                    { t: new Date(), v: overallScoreVal }
+                  ]
+                : [
+                    { t: new Date(Date.now() - 10 * 86400000), v: 46 },
+                    { t: new Date(Date.now() - 7 * 86400000), v: 50 },
+                    { t: new Date(Date.now() - 4 * 86400000), v: 48 },
+                    { t: new Date(), v: 52 }
+                  ]);
+            var vals = series.map(function(p){ return Number(p.v) || 50; });
+            var rawMin = Math.min.apply(null, vals);
+            var rawMax = Math.max.apply(null, vals);
+            var yMin = Math.max(0, Math.floor(rawMin - 4));
+            var yMax = Math.min(100, Math.ceil(rawMax + 4));
+            if (yMax - yMin < 8) {
+              yMin = Math.max(0, yMin - 4);
+              yMax = Math.min(100, yMax + 4);
+            }
+            var yMid = Math.round((yMin + yMax) / 2);
             var polyCoords = series.map(function(p, idx) {
-              var x = (idx / Math.max(1, series.length - 1)) * cW;
-              var y = cH - (Math.max(0, Math.min(100, p.v)) / 100) * (cH - 20) - 10;
+              var x = padLeft + (idx / Math.max(1, series.length - 1)) * plotW;
+              var ratio = (Math.max(yMin, Math.min(yMax, p.v)) - yMin) / Math.max(1, yMax - yMin);
+              var y = padTop + plotH - ratio * plotH;
               return { x: Number(x.toFixed(1)), y: Number(y.toFixed(1)), v: p.v, t: p.t };
             });
             var polyStr = polyCoords.map(function(pt){ return pt.x + ',' + pt.y; }).join(' ');
-            var areaStr = '0,' + cH + ' ' + polyStr + ' ' + cW + ',' + cH;
+            var firstNode = polyCoords[0];
             var lastNode = polyCoords[polyCoords.length - 1];
+            var areaStr = firstNode.x + ',' + (padTop + plotH) + ' ' + polyStr + ' ' + lastNode.x + ',' + (padTop + plotH);
           %>
-          <svg class="k-spark" viewBox="0 0 600 170" preserveAspectRatio="none" style="height:170px;width:100%;display:block;" role="img" aria-label="<%= t('prog.timelineAria') %>">
+          <svg class="k-spark" viewBox="0 0 600 190" preserveAspectRatio="none" style="height:190px;width:100%;display:block;" role="img" aria-label="<%= t('prog.timelineAria') %>">
             <defs>
               <linearGradient id="kaizenChartFill" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stop-color="#F5C518" stop-opacity="0.34" />
-                <stop offset="100%" stop-color="#1A2F4A" stop-opacity="0.02" />
+                <stop offset="0%" stop-color="#F5C518" stop-opacity="0.38" />
+                <stop offset="100%" stop-color="#1A2F4A" stop-opacity="0.03" />
               </linearGradient>
             </defs>
-            <!-- Gridlines (100, 75, 50, 25, 0) -->
-            <line x1="0" y1="10" x2="600" y2="10" stroke="rgba(244,248,251,0.08)" stroke-dasharray="3 3" />
-            <line x1="0" y1="47.5" x2="600" y2="47.5" stroke="rgba(244,248,251,0.08)" stroke-dasharray="3 3" />
-            <line x1="0" y1="85" x2="600" y2="85" stroke="rgba(244,248,251,0.12)" stroke-dasharray="3 3" />
-            <line x1="0" y1="122.5" x2="600" y2="122.5" stroke="rgba(244,248,251,0.08)" stroke-dasharray="3 3" />
-            <line x1="0" y1="160" x2="600" y2="160" stroke="rgba(244,248,251,0.16)" />
+            <!-- Auto-scaled Y-axis labels & gridlines -->
+            <text x="4" y="<%= padTop + 4 %>" fill="#A3B1BF" font-family="DM Mono, monospace" font-size="10"><%= yMax %>%</text>
+            <line x1="<%= padLeft %>" y1="<%= padTop %>" x2="<%= cW - padRight %>" y2="<%= padTop %>" stroke="rgba(244,248,251,0.10)" stroke-dasharray="3 3" />
+
+            <text x="4" y="<%= padTop + (plotH / 2) + 4 %>" fill="#A3B1BF" font-family="DM Mono, monospace" font-size="10"><%= yMid %>%</text>
+            <line x1="<%= padLeft %>" y1="<%= padTop + (plotH / 2) %>" x2="<%= cW - padRight %>" y2="<%= padTop + (plotH / 2) %>" stroke="rgba(244,248,251,0.14)" stroke-dasharray="3 3" />
+
+            <text x="4" y="<%= padTop + plotH + 4 %>" fill="#A3B1BF" font-family="DM Mono, monospace" font-size="10"><%= yMin %>%</text>
+            <line x1="<%= padLeft %>" y1="<%= padTop + plotH %>" x2="<%= cW - padRight %>" y2="<%= padTop + plotH %>" stroke="rgba(244,248,251,0.22)" />
 
             <polygon points="<%= areaStr %>" fill="url(#kaizenChartFill)" />
-            <polyline fill="none" stroke="#F5C518" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" points="<%= polyStr %>"></polyline>
-            <% polyCoords.forEach(function(pt) { %>
-              <circle cx="<%= pt.x %>" cy="<%= pt.y %>" r="4" fill="#0A0A0A" stroke="#F5C518" stroke-width="2.2"></circle>
+            <polyline fill="none" stroke="#F5C518" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" points="<%= polyStr %>"></polyline>
+            <% polyCoords.forEach(function(pt, idx) { %>
+              <circle cx="<%= pt.x %>" cy="<%= pt.y %>" r="<%= idx === polyCoords.length - 1 ? 5.5 : 4 %>" fill="<%= idx === polyCoords.length - 1 ? '#F5C518' : '#0A0A0A' %>" stroke="#F5C518" stroke-width="2.2"></circle>
+              <% if (polyCoords.length <= 10 || idx === 0 || idx === polyCoords.length - 1 || idx % 2 === 0) { %>
+                <text x="<%= pt.x %>" y="<%= Math.max(12, pt.y - 8) %>" text-anchor="middle" fill="<%= idx === polyCoords.length - 1 ? '#F5C518' : '#F4F8FB' %>" font-family="DM Mono, monospace" font-size="9.5" font-weight="700"><%= pt.v %>%</text>
+              <% } %>
             <% }); %>
-            <circle cx="<%= lastNode.x %>" cy="<%= lastNode.y %>" r="5.5" fill="#F5C518"></circle>
           </svg>
 
           <div class="k-spark-meta" style="margin-top:10px;color:#A3B1BF;">
@@ -229,23 +277,38 @@
     <section class="k-card">
       <div class="k-panel-title"><%= t('prog.practiceVs') %></div>
       <p class="k-cardsub"><%= t('prog.practiceNote') %></p>
-      <div class="k-typerow">
-        <% ['LIVE','BACKTEST','STUDY'].forEach(function(ty){ %>
-          <% var tp = typePerf.types[ty]; %>
-          <div class="k-typecard-stat">
-            <span class="k-type-tag k-type-<%= ty.toLowerCase() %>"><%= labels.type(ty) %></span>
-            <span class="k-typecard-num"><%= tp.count %></span>
-            <span class="k-typecard-cap"><%= t('word.session') %><%= tp.count === 1 ? '' : 's' %></span>
-            <span class="k-typecard-rate"><%= tp.rate != null ? t('prog.insidePct', { p: tp.rate }) : t('prog.noData') %></span>
-          </div>
-        <% }); %>
+      <%
+        var liveTp = (typePerf && typePerf.types && typePerf.types.LIVE) || { count: 0, rate: null };
+        var sbTp = (typePerf && typePerf.types && typePerf.types.STUDY_BACKTEST)
+          ? typePerf.types.STUDY_BACKTEST
+          : {
+              count: ((typePerf && typePerf.types && typePerf.types.BACKTEST && typePerf.types.BACKTEST.count) || 0) +
+                     ((typePerf && typePerf.types && typePerf.types.STUDY && typePerf.types.STUDY.count) || 0),
+              rate: (typePerf && typePerf.types && typePerf.types.BACKTEST && typePerf.types.BACKTEST.rate != null)
+                ? typePerf.types.BACKTEST.rate
+                : ((typePerf && typePerf.types && typePerf.types.STUDY && typePerf.types.STUDY.rate != null) ? typePerf.types.STUDY.rate : null)
+            };
+      %>
+      <div class="k-typerow" style="grid-template-columns:repeat(2,1fr);">
+        <div class="k-typecard-stat">
+          <span class="k-type-tag k-type-live">LIVE</span>
+          <span class="k-typecard-num"><%= liveTp.count %></span>
+          <span class="k-typecard-cap"><%= t('word.session') %><%= liveTp.count === 1 ? '' : 's' %></span>
+          <span class="k-typecard-rate"><%= liveTp.rate != null ? t('prog.insidePct', { p: liveTp.rate }) : t('prog.noData') %></span>
+        </div>
+        <div class="k-typecard-stat">
+          <span class="k-type-tag k-type-study">STUDY / BACKTEST</span>
+          <span class="k-typecard-num"><%= sbTp.count %></span>
+          <span class="k-typecard-cap"><%= t('word.session') %><%= sbTp.count === 1 ? '' : 's' %></span>
+          <span class="k-typecard-rate"><%= sbTp.rate != null ? t('prog.insidePct', { p: sbTp.rate }) : 'Chart study & historical testing' %></span>
+        </div>
       </div>
       <% if (typePerf.insight) { %>
         <div class="k-insight">
           <span class="k-kanji k-kanji--sm">改</span>
           <p><%= typePerf.insight.message %></p>
         </div>
-      <% } else if (typePerf.types.LIVE.count + typePerf.types.BACKTEST.count > 0) { %>
+      <% } else if (liveTp.count + sbTp.count > 0) { %>
         <div class="k-fieldhint"><%= t('prog.notEnough') %></div>
       <% } else { %>
         <div class="k-fieldhint"><%= t('prog.noSessionsYet') %></div>

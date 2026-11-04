@@ -239,15 +239,54 @@ test('brokerVerify strips sensitive account data, matches delayed live sessions,
   assert.match(unmatched.verificationNote, /I skimmed your synced broker history for a matching GBPUSD buy execution and could not find this trade on record yet/);
 
   // Auto-generated Dossier from Memories & Sessions requires zero manual writing
+  // and balances good sessions with lesson/challenging sessions
+  const lossLessonSession = {
+    asset: 'EURUSD',
+    sessionType: 'LIVE',
+    outcome: 'Loss',
+    ruleCompliance: false,
+    createdAt: new Date('2026-10-30T14:00:00Z'),
+    plan: { setup: 'Daily Candlestick Liquidity', skipped: false },
+    notes: 'Entered early on EURUSD before the 30m displacement candle closed and got stopped out.',
+    reflection: { learned: 'Wait for the full 30m candle body close before executing.' }
+  };
+  const winSession2 = {
+    asset: 'Japan 225',
+    sessionType: 'STUDY',
+    outcome: 'Win',
+    ruleCompliance: true,
+    createdAt: new Date('2026-10-29T10:00:00Z'),
+    plan: { setup: 'Daily Candlestick Liquidity', skipped: false },
+    notes: 'Studied continuation DCL trend on Japan 225 and waited for the 15m retest.',
+    reflection: { learned: 'Multi-timeframe alignment keeps drawdowns shallow.' }
+  };
   const dossier = buildAutoTraderDossier({
     user: { username: 'Dennis', disciplineScore: 84, brokerTrades: trades },
     system: { setups: [{ name: 'Daily Candlestick Liquidity' }], riskRules: { riskPerTrade: '1%' } },
-    sessions: [delayedLiveSession]
+    sessions: [lossLessonSession, delayedLiveSession, winSession2]
   });
   assert.match(dossier.verificationId, /^KZN-\d{4}-[A-F0-9]{8}$/);
   assert.match(dossier.howITrade, /Daily Candlestick Liquidity/);
   assert.match(dossier.howITrade, /AUDJPY/);
-  assert.strictEqual(dossier.memorableDecisions.length, 1);
+  assert.strictEqual(dossier.memorableDecisions.length, 3);
+  const goodCount = dossier.memorableDecisions.filter(d => d.isGood).length;
+  const lessonCount = dossier.memorableDecisions.filter(d => !d.isGood).length;
+  assert.strictEqual(goodCount, 2, 'must include good/compliant sessions');
+  assert.strictEqual(lessonCount, 1, 'must balance with lesson/challenging session');
+
+  // Direct PDF Certificate & Dossier generator embeds KAIZEN watermark & Founder signature
+  const { generateDossierPdfBuffer } = require('../services/pdfDossier');
+  const pdfBuf = generateDossierPdfBuffer(dossier, { redactPairs: false });
+  const pdfStr = pdfBuf.toString('utf8');
+  assert.ok(pdfStr.startsWith('%PDF-1.4'), 'must output valid PDF 1.4 header');
+  assert.match(pdfStr, /\(KAIZEN\)/, 'must embed centered KAIZEN watermark');
+  assert.match(pdfStr, /Dennis  -  Kaizen Mentor/, 'must embed Founder signature');
+
+  // Merged STUDY_BACKTEST bucket in progress.typePerformance
+  const { typePerformance } = require('../services/progress');
+  const tp = typePerformance([delayedLiveSession, lossLessonSession, winSession2]);
+  assert.strictEqual(tp.types.LIVE.count, 2);
+  assert.strictEqual(tp.types.STUDY_BACKTEST.count, 1);
 });
 
 

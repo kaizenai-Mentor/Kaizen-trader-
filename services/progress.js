@@ -86,6 +86,15 @@ function typePerformance(sessions) {
   }
   for (const t of Object.values(types)) t.rate = t.count ? Math.round((t.compliant / t.count) * 100) : null;
 
+  // Unified STUDY / BACKTEST bucket so My Progress matches the unified Session page
+  const sbCount = types.BACKTEST.count + types.STUDY.count;
+  const sbCompliant = types.BACKTEST.compliant + types.STUDY.compliant;
+  types.STUDY_BACKTEST = {
+    count: sbCount,
+    compliant: sbCompliant,
+    rate: types.BACKTEST.count ? types.BACKTEST.rate : (sbCount ? Math.round((sbCompliant / sbCount) * 100) : null)
+  };
+
   let insight = null;
   const { LIVE, BACKTEST } = types;
   if (LIVE.count >= 3 && BACKTEST.count >= 3 &&
