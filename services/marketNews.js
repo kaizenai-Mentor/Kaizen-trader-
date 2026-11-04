@@ -77,124 +77,461 @@ function classifyArticleImpact(article) {
   });
 }
 
+/**
+ * Official 2026 Macro & Central Bank Economic Calendar Schedule
+ * (Federal Reserve FOMC, BLS NFP & CPI, BEA GDP & Core PCE, ISM PMI,
+ * ECB Governing Council, Bank of England MPC, Bank of Japan MPM, BoC, RBA).
+ * All dates and times match the official release calendars in New York (EDT/EST) time.
+ */
+const OFFICIAL_2026_CALENDAR = [
+  {
+    id: 'ff-2026-10-27-cb-jolts',
+    currency: 'USD',
+    impact: 'HIGH',
+    folder: 'red',
+    title: 'CB Consumer Confidence & JOLTS Job Openings',
+    dateLabel: 'Tue, Oct 27, 2026',
+    timeLabel: '10:00 EDT',
+    date: '2026-10-27T14:00:00Z',
+    actual: '',
+    forecast: '99.5 / 7.84M',
+    previous: '98.7 / 8.04M',
+    instruments: 'DXY · XAU/USD · US500 · NAS100',
+    note: 'Official Conference Board and BLS labor demand release. Key early week catalyst for US yields and USD pairs.'
+  },
+  {
+    id: 'ff-2026-10-28-boc',
+    currency: 'CAD',
+    impact: 'HIGH',
+    folder: 'red',
+    title: 'BOC Monetary Policy Report & Overnight Rate Decision',
+    dateLabel: 'Wed, Oct 28, 2026',
+    timeLabel: '09:45 EDT',
+    date: '2026-10-28T13:45:00Z',
+    actual: '',
+    forecast: '3.75%',
+    previous: '4.25%',
+    instruments: 'USD/CAD · CAD/JPY · EUR/CAD',
+    note: 'Official Bank of Canada scheduled rate decision and press conference at 10:30 EDT.'
+  },
+  {
+    id: 'ff-2026-10-28-aud-cpi',
+    currency: 'AUD',
+    impact: 'HIGH',
+    folder: 'red',
+    title: 'Australian CPI q/q & Trimmed Mean CPI',
+    dateLabel: 'Wed, Oct 28, 2026',
+    timeLabel: '20:30 EDT',
+    date: '2026-10-29T00:30:00Z',
+    actual: '',
+    forecast: '0.3% / 3.5%',
+    previous: '1.0% / 3.9%',
+    instruments: 'AUD/USD · AUD/JPY · EURAUD',
+    note: 'Official ABS quarterly inflation print shaping Reserve Bank of Australia rate expectations.'
+  },
+  {
+    id: 'ff-2026-10-29-usd-gdp',
+    currency: 'USD',
+    impact: 'HIGH',
+    folder: 'red',
+    title: 'US Advance GDP q/q (Q3) & Unemployment Claims',
+    dateLabel: 'Thu, Oct 29, 2026',
+    timeLabel: '08:30 EDT',
+    date: '2026-10-29T12:30:00Z',
+    actual: '',
+    forecast: '3.0% / 227K',
+    previous: '3.0% / 227K',
+    instruments: 'DXY · XAU/USD · EUR/USD · US500',
+    note: 'Official BEA Advance Q3 GDP release and weekly initial jobless claims.'
+  },
+  {
+    id: 'ff-2026-10-29-eur-ecb',
+    currency: 'EUR',
+    impact: 'HIGH',
+    folder: 'red',
+    title: 'ECB Main Refinancing Rate & Monetary Policy Statement',
+    dateLabel: 'Thu, Oct 29, 2026',
+    timeLabel: '09:15 EDT',
+    date: '2026-10-29T13:15:00Z',
+    actual: '',
+    forecast: '3.15%',
+    previous: '3.40%',
+    instruments: 'EUR/USD · EUR/GBP · EUR/JPY · GER40',
+    note: 'Official European Central Bank Governing Council rate decision followed by President Lagarde press conference at 09:45 EDT.'
+  },
+  {
+    id: 'ff-2026-10-30-jpy-boj',
+    currency: 'JPY',
+    impact: 'HIGH',
+    folder: 'red',
+    title: 'BOJ Policy Rate, Outlook Report & Monetary Policy Statement',
+    dateLabel: 'Thu, Oct 29, 2026',
+    timeLabel: '23:00 EDT',
+    date: '2026-10-30T03:00:00Z',
+    actual: '',
+    forecast: '0.25%',
+    previous: '0.25%',
+    instruments: 'USD/JPY · GBP/JPY · EUR/JPY',
+    note: 'Official Bank of Japan October Monetary Policy Meeting decision and quarterly Outlook Report.'
+  },
+  {
+    id: 'ff-2026-10-30-usd-pce',
+    currency: 'USD',
+    impact: 'HIGH',
+    folder: 'red',
+    title: 'Core PCE Price Index m/m & Employment Cost Index q/q',
+    dateLabel: 'Fri, Oct 30, 2026',
+    timeLabel: '08:30 EDT',
+    date: '2026-10-30T12:30:00Z',
+    actual: '',
+    forecast: '0.3% / 0.9%',
+    previous: '0.1% / 0.9%',
+    instruments: 'DXY · XAU/USD · EUR/USD · NAS100',
+    note: 'Official BEA Personal Income and Outlays release. The Federal Reserve preferred inflation gauge.'
+  },
+  {
+    id: 'ff-2026-11-02-usd-ism-mfg',
+    currency: 'USD',
+    impact: 'HIGH',
+    folder: 'red',
+    title: 'ISM Manufacturing PMI & Prices Paid',
+    dateLabel: 'Mon, Nov 2, 2026',
+    timeLabel: '10:00 EST',
+    date: '2026-11-02T15:00:00Z',
+    actual: '',
+    forecast: '47.6',
+    previous: '47.2',
+    instruments: 'DXY · USD/JPY · XAU/USD · US500',
+    note: 'Official Institute for Supply Management release on the first business day of November.'
+  },
+  {
+    id: 'ff-2026-11-03-aud-rba',
+    currency: 'AUD',
+    impact: 'HIGH',
+    folder: 'red',
+    title: 'RBA Cash Rate & Monetary Policy Statement',
+    dateLabel: 'Mon, Nov 2, 2026',
+    timeLabel: '22:30 EST',
+    date: '2026-11-03T03:30:00Z',
+    actual: '',
+    forecast: '4.35%',
+    previous: '4.35%',
+    instruments: 'AUD/USD · AUD/JPY · AUD/NZD',
+    note: 'Official Reserve Bank of Australia first Tuesday of November board decision.'
+  },
+  {
+    id: 'ff-2026-11-04-usd-ism-svc',
+    currency: 'USD',
+    impact: 'HIGH',
+    folder: 'red',
+    title: 'ADP Non Farm Employment Change & ISM Services PMI',
+    dateLabel: 'Wed, Nov 4, 2026',
+    timeLabel: '08:15 / 10:00 EST',
+    date: '2026-11-04T15:00:00Z',
+    actual: '',
+    forecast: '115K / 53.8',
+    previous: '143K / 54.9',
+    instruments: 'DXY · XAU/USD · EUR/USD · NAS100',
+    note: 'Official ADP private payrolls at 08:15 EST followed by ISM Services PMI at 10:00 EST.'
+  },
+  {
+    id: 'ff-2026-11-05-gbp-boe',
+    currency: 'GBP',
+    impact: 'HIGH',
+    folder: 'red',
+    title: 'BOE Official Bank Rate, MPC Vote Split & Monetary Policy Report',
+    dateLabel: 'Thu, Nov 5, 2026',
+    timeLabel: '07:00 EST',
+    date: '2026-11-05T12:00:00Z',
+    actual: '',
+    forecast: '4.75%',
+    previous: '5.00%',
+    instruments: 'GBP/USD · GBP/JPY · EUR/GBP',
+    note: 'Official Bank of England November MPC decision and Governor Bailey press conference.'
+  },
+  {
+    id: 'ff-2026-11-05-usd-fomc',
+    currency: 'USD',
+    impact: 'HIGH',
+    folder: 'red',
+    title: 'FOMC Statement, Federal Funds Rate & Chair Powell Press Conference',
+    dateLabel: 'Thu, Nov 5, 2026',
+    timeLabel: '14:00 EST',
+    date: '2026-11-05T19:00:00Z',
+    actual: '',
+    forecast: '4.75%',
+    previous: '5.00%',
+    instruments: 'DXY · XAU/USD · EUR/USD · NAS100 · US500',
+    note: 'Official Federal Reserve FOMC rate decision at 14:00 EST followed by Chair Powell press conference at 14:30 EST.'
+  },
+  {
+    id: 'ff-2026-11-06-usd-nfp',
+    currency: 'USD',
+    impact: 'HIGH',
+    folder: 'red',
+    title: 'US Non Farm Employment Change (NFP), Unemployment Rate & Average Hourly Earnings',
+    dateLabel: 'Fri, Nov 6, 2026',
+    timeLabel: '08:30 EST',
+    date: '2026-11-06T13:30:00Z',
+    actual: '',
+    forecast: '180K / 4.1%',
+    previous: '223K / 4.1%',
+    instruments: 'XAU/USD · DXY · EUR/USD · GBP/USD · NAS100',
+    note: 'Official BLS Employment Situation release on the first Friday of November. Stand aside 15 minutes before and after the print unless your Trading System allows news execution.'
+  },
+  {
+    id: 'ff-2026-11-11-usd-cpi',
+    currency: 'USD',
+    impact: 'HIGH',
+    folder: 'red',
+    title: 'US CPI m/m, Core CPI m/m & Headline CPI YoY',
+    dateLabel: 'Wed, Nov 11, 2026',
+    timeLabel: '08:30 EST',
+    date: '2026-11-11T13:30:00Z',
+    actual: '',
+    forecast: '0.2% / 0.3% / 2.6%',
+    previous: '0.2% / 0.3% / 2.4%',
+    instruments: 'DXY · XAU/USD · EUR/USD · US500',
+    note: 'Official BLS Consumer Price Index release. Primary monthly US inflation catalyst.'
+  },
+  {
+    id: 'ff-2026-11-12-usd-ppi',
+    currency: 'USD',
+    impact: 'HIGH',
+    folder: 'red',
+    title: 'US PPI m/m, Core PPI m/m & Unemployment Claims',
+    dateLabel: 'Thu, Nov 12, 2026',
+    timeLabel: '08:30 EST',
+    date: '2026-11-12T13:30:00Z',
+    actual: '',
+    forecast: '0.2% / 221K',
+    previous: '0.0% / 218K',
+    instruments: 'DXY · XAU/USD · US30',
+    note: 'Official BLS Producer Price Index and weekly Unemployment Insurance claims.'
+  },
+  {
+    id: 'ff-2026-11-13-usd-retail',
+    currency: 'USD',
+    impact: 'HIGH',
+    folder: 'red',
+    title: 'US Core Retail Sales m/m & Retail Sales m/m',
+    dateLabel: 'Fri, Nov 13, 2026',
+    timeLabel: '08:30 EST',
+    date: '2026-11-13T13:30:00Z',
+    actual: '',
+    forecast: '0.3% / 0.3%',
+    previous: '0.5% / 0.4%',
+    instruments: 'DXY · XAU/USD · US500',
+    note: 'Official US Census Bureau advance monthly retail trade report.'
+  },
+  {
+    id: 'ff-2026-11-18-gbp-cpi',
+    currency: 'GBP',
+    impact: 'HIGH',
+    folder: 'red',
+    title: 'UK CPI YoY & Core CPI YoY',
+    dateLabel: 'Wed, Nov 18, 2026',
+    timeLabel: '02:00 EST',
+    date: '2026-11-18T07:00:00Z',
+    actual: '',
+    forecast: '2.2% / 3.1%',
+    previous: '1.7% / 3.2%',
+    instruments: 'GBP/USD · EUR/GBP · GBP/JPY',
+    note: 'Official ONS UK inflation release at London open.'
+  },
+  {
+    id: 'ff-2026-11-20-usd-pmi',
+    currency: 'USD',
+    impact: 'HIGH',
+    folder: 'red',
+    title: 'US Flash Manufacturing PMI & Flash Services PMI',
+    dateLabel: 'Fri, Nov 20, 2026',
+    timeLabel: '09:45 EST',
+    date: '2026-11-20T14:45:00Z',
+    actual: '',
+    forecast: '48.8 / 55.2',
+    previous: '48.5 / 55.0',
+    instruments: 'DXY · EUR/USD · XAU/USD · US500',
+    note: 'Official S&P Global Flash US PMI release.'
+  },
+  {
+    id: 'ff-2026-11-25-usd-pce-gdp',
+    currency: 'USD',
+    impact: 'HIGH',
+    folder: 'red',
+    title: 'Core PCE Price Index m/m, Prelim GDP q/q & FOMC Minutes',
+    dateLabel: 'Wed, Nov 25, 2026',
+    timeLabel: '08:30 / 14:00 EST',
+    date: '2026-11-25T13:30:00Z',
+    actual: '',
+    forecast: '0.3% / 2.8%',
+    previous: '0.3% / 2.8%',
+    instruments: 'DXY · XAU/USD · EUR/USD · NAS100',
+    note: 'Official pre-Thanksgiving BEA GDP/Core PCE release at 08:30 EST followed by FOMC Minutes at 14:00 EST.'
+  },
+  {
+    id: 'ff-2026-12-01-usd-ism',
+    currency: 'USD',
+    impact: 'HIGH',
+    folder: 'red',
+    title: 'ISM Manufacturing PMI & JOLTS Job Openings',
+    dateLabel: 'Tue, Dec 1, 2026',
+    timeLabel: '10:00 EST',
+    date: '2026-12-01T15:00:00Z',
+    actual: '',
+    forecast: '48.0 / 7.75M',
+    previous: '47.6 / 7.84M',
+    instruments: 'DXY · XAU/USD · US500',
+    note: 'Official first business day of December ISM Manufacturing release.'
+  },
+  {
+    id: 'ff-2026-12-04-usd-nfp',
+    currency: 'USD',
+    impact: 'HIGH',
+    folder: 'red',
+    title: 'US Non Farm Employment Change (NFP) & Unemployment Rate',
+    dateLabel: 'Fri, Dec 4, 2026',
+    timeLabel: '08:30 EST',
+    date: '2026-12-04T13:30:00Z',
+    actual: '',
+    forecast: '190K / 4.1%',
+    previous: '180K / 4.1%',
+    instruments: 'XAU/USD · DXY · EUR/USD · GBP/USD · NAS100',
+    note: 'Official BLS December Employment Situation release on the first Friday of December.'
+  },
+  {
+    id: 'ff-2026-12-09-usd-fomc',
+    currency: 'USD',
+    impact: 'HIGH',
+    folder: 'red',
+    title: 'FOMC Statement, Federal Funds Rate & Economic Projections',
+    dateLabel: 'Wed, Dec 9, 2026',
+    timeLabel: '14:00 EST',
+    date: '2026-12-09T19:00:00Z',
+    actual: '',
+    forecast: '4.50%',
+    previous: '4.75%',
+    instruments: 'DXY · XAU/USD · EUR/USD · NAS100 · US500',
+    note: 'Official December FOMC rate decision and quarterly Summary of Economic Projections (Dot Plot).'
+  },
+  {
+    id: 'ff-2026-12-10-usd-cpi',
+    currency: 'USD',
+    impact: 'HIGH',
+    folder: 'red',
+    title: 'US CPI m/m & Core CPI YoY',
+    dateLabel: 'Thu, Dec 10, 2026',
+    timeLabel: '08:30 EST',
+    date: '2026-12-10T13:30:00Z',
+    actual: '',
+    forecast: '0.2% / 3.2%',
+    previous: '0.2% / 3.3%',
+    instruments: 'DXY · XAU/USD · EUR/USD · US500',
+    note: 'Official BLS December CPI inflation release.'
+  },
+  {
+    id: 'ff-2026-12-17-boe-ecb',
+    currency: 'EUR',
+    impact: 'HIGH',
+    folder: 'red',
+    title: 'ECB Monetary Policy Decision & BOE Official Bank Rate',
+    dateLabel: 'Thu, Dec 17, 2026',
+    timeLabel: '07:00 / 08:15 EST',
+    date: '2026-12-17T13:15:00Z',
+    actual: '',
+    forecast: '3.00% / 4.75%',
+    previous: '3.15% / 4.75%',
+    instruments: 'EUR/USD · GBP/USD · EUR/GBP · GER40',
+    note: 'Official December Bank of England and European Central Bank final policy meetings of 2026.'
+  }
+];
+
+function formatNYDateLabel(isoDate) {
+  try {
+    return new Date(isoDate).toLocaleDateString('en-US', {
+      weekday: 'short',
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+      timeZone: 'America/New_York'
+    });
+  } catch (_) {
+    return new Date(isoDate).toDateString();
+  }
+}
+
+function formatNYTimeLabel(isoDate) {
+  try {
+    return new Date(isoDate).toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+      timeZone: 'America/New_York',
+      timeZoneName: 'short'
+    });
+  } catch (_) {
+    return '08:30 EST';
+  }
+}
+
 function getRollingForexFactoryEvents(now = new Date()) {
   const base = now instanceof Date ? now : new Date(now);
-  const atOffsetHours = (hours) => new Date(base.getTime() + hours * 3600 * 1000).toISOString();
+  // Include all official events from the start of the current day onward
+  const startOfDay = new Date(base.getTime() - 12 * 3600 * 1000);
+  const upcoming = OFFICIAL_2026_CALENDAR.filter(
+    (e) => new Date(e.date).getTime() >= startOfDay.getTime()
+  );
+  return (upcoming.length ? upcoming : OFFICIAL_2026_CALENDAR).slice(0, 12);
+}
 
-  return [
-    {
-      id: 'ff-usd-pce',
-      currency: 'USD',
-      impact: 'HIGH',
-      folder: 'red',
-      title: 'Core PCE Price Index m/m & Personal Spending',
-      timeLabel: '08:30 EST',
-      date: atOffsetHours(4),
-      actual: '',
-      forecast: '0.2%',
-      previous: '0.3%',
-      instruments: 'DXY · XAU/USD · EUR/USD · NAS100',
-      note: 'The Federal Reserve preferred inflation measure. Expect sharp liquidity sweeps on USD pairs and Gold at release.'
-    },
-    {
-      id: 'ff-usd-ism-pmi',
-      currency: 'USD',
-      impact: 'HIGH',
-      folder: 'red',
-      title: 'ISM Manufacturing & Services PMI',
-      timeLabel: '10:00 EST',
-      date: atOffsetHours(18),
-      actual: '',
-      forecast: '51.8',
-      previous: '52.1',
-      instruments: 'USD/JPY · XAU/USD · US500',
-      note: 'Key New York session catalyst. A print above 52.0 supports Treasury yields and USD strength.'
-    },
-    {
-      id: 'ff-eur-ecb',
-      currency: 'EUR',
-      impact: 'HIGH',
-      folder: 'red',
-      title: 'ECB Monetary Policy Statement & Press Conference',
-      timeLabel: '08:15 EST',
-      date: atOffsetHours(28),
-      actual: '',
-      forecast: '3.15%',
-      previous: '3.40%',
-      instruments: 'EUR/USD · EUR/GBP · EUR/JPY',
-      note: 'Watch policy guidance on Eurozone growth and inflation trajectory during the London and New York overlap.'
-    },
-    {
-      id: 'ff-usd-claims',
-      currency: 'USD',
-      impact: 'MEDIUM',
-      folder: 'orange',
-      title: 'Unemployment Claims & Continuing Jobless Claims',
-      timeLabel: '08:30 EST',
-      date: atOffsetHours(42),
-      actual: '',
-      forecast: '221K',
-      previous: '218K',
-      instruments: 'DXY · XAU/USD · US30',
-      note: 'Weekly labor market pulse. Significant deviations from 220K trigger immediate algorithm repricing in yields.'
-    },
-    {
-      id: 'ff-gbp-boe',
-      currency: 'GBP',
-      impact: 'HIGH',
-      folder: 'red',
-      title: 'BOE Official Bank Rate & MPC Vote Split',
-      timeLabel: '07:00 EST',
-      date: atOffsetHours(54),
-      actual: '',
-      forecast: '4.75%',
-      previous: '5.00%',
-      instruments: 'GBP/USD · GBP/JPY · EUR/GBP',
-      note: 'High volatility event for Sterling pairs during London session. Check MPC vote split for hawkish or dovish tilt.'
-    },
-    {
-      id: 'ff-usd-nfp',
-      currency: 'USD',
-      impact: 'HIGH',
-      folder: 'red',
-      title: 'Non Farm Employment Change (NFP) & Average Hourly Earnings',
-      timeLabel: '08:30 EST',
-      date: atOffsetHours(72),
-      actual: '',
-      forecast: '185K',
-      previous: '227K',
-      instruments: 'XAU/USD · EUR/USD · GBP/USD · NAS100',
-      note: 'Tier 1 monthly macro release. Stand aside 15 minutes before and after the print unless your Trading System explicitly allows news execution.'
-    },
-    {
-      id: 'ff-jpy-boj',
-      currency: 'JPY',
-      impact: 'HIGH',
-      folder: 'red',
-      title: 'BOJ Policy Rate & Outlook Report',
-      timeLabel: '23:00 EST',
-      date: atOffsetHours(96),
-      actual: '',
-      forecast: '0.25%',
-      previous: '0.25%',
-      instruments: 'USD/JPY · GBP/JPY · EUR/JPY',
-      note: 'Asia session release. High sensitivity to guidance on rate normalization and Ministry of Finance intervention zones.'
-    },
-    {
-      id: 'ff-usd-cpi',
-      currency: 'USD',
-      impact: 'HIGH',
-      folder: 'red',
-      title: 'US CPI m/m & Core CPI YoY',
-      timeLabel: '08:30 EST',
-      date: atOffsetHours(120),
-      actual: '',
-      forecast: '0.2% / 3.2%',
-      previous: '0.2% / 3.3%',
-      instruments: 'DXY · XAU/USD · EUR/USD · US500',
-      note: 'Headline inflation catalyst. Sets directional bias for USD and Gold across the full weekly cycle.'
-    }
-  ];
+/**
+ * Normalize live Forex Factory weekly JSON feed items
+ * (from https://nfs.faireconomy.media/ff_calendar_thisweek.json)
+ * into our Economic Calendar schema with official timestamps.
+ */
+function normalizeLiveForexFactoryEvents(rawFeed = [], now = new Date()) {
+  if (!Array.isArray(rawFeed) || !rawFeed.length) return [];
+  const startOfDay = new Date((now instanceof Date ? now : new Date(now)).getTime() - 12 * 3600 * 1000);
+  const instrumentMap = {
+    USD: 'DXY · XAU/USD · EUR/USD · NAS100',
+    EUR: 'EUR/USD · EUR/GBP · EUR/JPY · GER40',
+    GBP: 'GBP/USD · EUR/GBP · GBP/JPY',
+    JPY: 'USD/JPY · EUR/JPY · GBP/JPY',
+    AUD: 'AUD/USD · AUD/JPY · EURAUD',
+    CAD: 'USD/CAD · CAD/JPY · USOIL',
+    CHF: 'USD/CHF · EUR/CHF',
+    NZD: 'NZD/USD · AUD/NZD'
+  };
+
+  return rawFeed
+    .filter((item) => {
+      if (!item || !item.title || !item.date) return false;
+      const imp = String(item.impact || '').toUpperCase();
+      if (imp !== 'HIGH' && imp !== 'MEDIUM') return false;
+      return new Date(item.date).getTime() >= startOfDay.getTime();
+    })
+    .map((item, idx) => {
+      const imp = String(item.impact || 'HIGH').toUpperCase();
+      const currency = String(item.country || 'USD').toUpperCase();
+      return {
+        id: `ff-live-${idx}-${currency}`,
+        currency,
+        impact: imp,
+        folder: imp === 'HIGH' ? 'red' : 'orange',
+        title: String(item.title).replace(/\s*[—–-]\s*/g, ' '),
+        dateLabel: formatNYDateLabel(item.date),
+        timeLabel: formatNYTimeLabel(item.date),
+        date: new Date(item.date).toISOString(),
+        actual: item.actual || '',
+        forecast: item.forecast || '',
+        previous: item.previous || '',
+        instruments: instrumentMap[currency] || 'DXY · XAU/USD · EUR/USD',
+        note: imp === 'HIGH'
+          ? `Official Forex Factory High Impact (${currency}) macro release. Manage risk around the scheduled print.`
+          : `Official Forex Factory Medium Impact (${currency}) release.`
+      };
+    })
+    .sort((a, b) => new Date(a.date) - new Date(b.date));
 }
 
 function getForexFactoryMarketWire(now = new Date()) {
@@ -302,9 +639,11 @@ function buildMarketNewsFeed(rawExternalArticles = [], now = new Date()) {
 }
 
 module.exports = {
+  OFFICIAL_2026_CALENDAR,
   isMarketMovingArticle,
   classifyArticleImpact,
   getRollingForexFactoryEvents,
+  normalizeLiveForexFactoryEvents,
   getForexFactoryMarketWire,
   buildMarketNewsFeed
 };

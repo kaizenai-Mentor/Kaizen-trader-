@@ -85,8 +85,18 @@ function aggregateExtraction(journals) {
     const count = b.yes + b.no;
     out[dim] = count > 0 ? { rate: b.yes / count, count: journals.length } : { rate: null, count: 0 };
   }
-  // Only meaningful if at least one dimension has explicit evidence
+  // If legacy journals come from MongoDB with boolean ruleCompliance and
+  // freeform notes did not trigger explicit regexes for process/risk/execution,
+  // use ruleCompliance as fallback evidence so legacy history is never lost.
   const anyExplicit = ['process', 'risk', 'execution'].some(d => buckets[d].yes + buckets[d].no > 0);
+  const withCompliance = journals.filter(j => j && typeof j.ruleCompliance === 'boolean');
+  if (!anyExplicit && withCompliance.length > 0) {
+    const compRate = withCompliance.filter(j => j.ruleCompliance === true).length / withCompliance.length;
+    out.process = { rate: compRate, count: withCompliance.length };
+    out.risk = { rate: compRate, count: withCompliance.length };
+    out.execution = { rate: compRate, count: withCompliance.length };
+    return out;
+  }
   if (!anyExplicit) {
     return { process: null, risk: null, execution: null, behavior: out.behavior, learning: out.learning };
   }
@@ -95,26 +105,45 @@ function aggregateExtraction(journals) {
 
 /**
  * One-time runner: extracts evidence for a user's legacy journals and
- * stamps them. Guarded by user.v1ExtractedAt — never runs twice.
- * @returns {object|null} the aggregated extraction (to persist on the
- *                        first ScoreSnapshot), or null.
+ * stamps them. Also repairs user.v1Evidence if v1ExtractedAt was set
+ * previously without persisting user.v1Evidence.
+ * @returns {object|null} the aggregated extraction (to persist on User
+ *                        and ScoreSnapshot), or null.
  */
 async function runV1Extraction(user, Journal) {
-  if (!user || user.v1ExtractedAt) return null;
+  if (!user) return null;
+  const hasSavedEvidence = user.v1Evidence && (
+    (user.v1Evidence.process && user.v1Evidence.process.count > 0) ||
+    (user.v1Evidence.behavior && user.v1Evidence.behavior.count > 0)
+  );
+  if (user.v1ExtractedAt && hasSavedEvidence) return user.v1Evidence;
 
   const cutoff = user.v1CutoverAt || new Date();
-  const legacy = await Journal.find({
+  const allUserJournals = await Journal.find({
     userId: user._id,
-    createdAt: { $lt: cutoff },
-    plan: { $exists: false }
+    createdAt: { $lte: cutoff }
   }).lean();
 
-  if (!legacy.length) { user.v1ExtractedAt = new Date(); await user.save(); return null; }
+  // Legacy entries are those without a populated V2 plan setup and without explicit V2 YES/NO quickChecks
+  const legacy = allUserJournals.filter(j => {
+    const hasV2Plan = j.plan && (j.plan.setup || j.plan.entryCondition || j.plan.invalidation || j.plan.skipped === true);
+    const hasV2Checks = j.quickChecks && (
+      ['YES', 'NO'].includes(j.quickChecks.followedPlan) ||
+      ['YES', 'NO'].includes(j.quickChecks.withinEntryCriteria) ||
+      ['YES', 'NO'].includes(j.quickChecks.respectedRisk)
+    );
+    return !hasV2Plan && !hasV2Checks;
+  });
+
+  if (!legacy.length) {
+    user.v1ExtractedAt = user.v1ExtractedAt || new Date();
+    await user.save();
+    return null;
+  }
 
   const agg = aggregateExtraction(legacy);
 
   // Stamp each legacy doc with its extracted tag (evidence trail, one-time)
-  const { facts } = { facts: [] };
   for (const j of legacy) {
     const f = extractFacts(j).facts.map(x => ({ dimension: x.dimension, kind: x.kind, yes: x.yes }));
     if (f.length) {
@@ -122,7 +151,8 @@ async function runV1Extraction(user, Journal) {
     }
   }
 
-  user.v1ExtractedAt = new Date();
+  user.v1Evidence = agg;
+  user.v1ExtractedAt = user.v1ExtractedAt || new Date();
   await user.save();
   return agg;
 }

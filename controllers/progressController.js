@@ -10,21 +10,62 @@ const Journal = require('../models/Journal');
 const TradingSystem = require('../models/TradingSystem');
 const ScoreSnapshot = require('../models/ScoreSnapshot');
 const { computeScore, WEIGHTS } = require('../services/scoreEngine');
+const { runV1Extraction } = require('../services/extraction');
 const progress = require('../services/progress');
 
 async function getProgress(req, res) {
   try {
     const userId = req.session.user.id;
 
-    const [user, snapshotsAsc, sessions] = await Promise.all([
+    const [user, snapshotsAscRaw, sessions] = await Promise.all([
       User.findById(userId),
       ScoreSnapshot.find({ userId }).sort({ computedAt: 1 }).limit(200).lean(),
       Journal.find({ userId }).sort({ createdAt: -1 }).limit(500).lean()
     ]);
 
     const system = user ? await TradingSystem.ensureForUser(user) : null;
-    const liveComputed = computeScore(sessions, system, user && user.v1Evidence);
-    const latestSnap = snapshotsAsc.length ? snapshotsAsc[snapshotsAsc.length - 1] : liveComputed;
+    let extracted = (user && user.v1Evidence) || null;
+    if (user && !extracted) {
+      extracted = await runV1Extraction(user, Journal) || null;
+    }
+    const scoredSessions = sessions.filter(s => s.state !== 'PLANNED');
+    const liveComputed = computeScore(scoredSessions, system, extracted);
+    const snapshotsAsc = Array.isArray(snapshotsAscRaw) ? [...snapshotsAscRaw] : [];
+    const lastExisting = snapshotsAsc.length ? snapshotsAsc[snapshotsAsc.length - 1] : null;
+
+    if (
+      user &&
+      liveComputed &&
+      liveComputed.overall !== null &&
+      (!lastExisting ||
+        lastExisting.overall !== liveComputed.overall ||
+        lastExisting.sessionsConsidered !== liveComputed.sessionsConsidered)
+    ) {
+      try {
+        const created = await ScoreSnapshot.create({
+          userId: user._id,
+          formulaVersion: liveComputed.formulaVersion,
+          overall: liveComputed.overall,
+          overallState: liveComputed.overallState,
+          dimensions: liveComputed.dimensions,
+          evidenceMix: liveComputed.evidenceMix,
+          sessionsConsidered: liveComputed.sessionsConsidered
+        });
+        snapshotsAsc.push(created.toObject());
+      } catch (_) { /* non-fatal */ }
+    }
+
+    if (user && liveComputed && liveComputed.overall !== null && user.disciplineScore !== liveComputed.overall) {
+      user.disciplineScore = liveComputed.overall;
+      await user.save().catch(() => {});
+      if (req.session && req.session.user) {
+        req.session.user.disciplineScore = liveComputed.overall;
+      }
+    }
+
+    const latestSnap = liveComputed && liveComputed.overall !== null
+      ? liveComputed
+      : (snapshotsAsc.length ? snapshotsAsc[snapshotsAsc.length - 1] : liveComputed);
 
     const points = progress.timeline(snapshotsAsc);
     const move = progress.movement(snapshotsAsc, 30);

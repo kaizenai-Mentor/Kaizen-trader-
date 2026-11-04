@@ -190,6 +190,7 @@ test('Batch 11: dash-free site copy, public hero spacing, compelling KAIZEN AI c
   assert.ok(!feed.some((a) => a.title.includes('Local Widget Corp')), 'non-market fluff must be filtered out');
   const ffEvents = getActiveEvents();
   assert.ok(ffEvents.length >= 5 && ffEvents.some((e) => e.impact === 'HIGH' && e.currency === 'USD'), 'Forex Factory high-impact calendar events must be present');
+  assert.ok(ffEvents.every((e) => e.dateLabel && /\b(2026|2027)\b/.test(e.dateLabel)), 'Calendar events must carry official release dateLabels');
 
   // 4. My Progress: 5-dimension scoring card followed by chart-like progress panel below it
   const leaderboardEjs = fs.readFileSync(path.join(__dirname, '..', 'views', 'leaderboard.ejs'), 'utf8');
@@ -201,6 +202,20 @@ test('Batch 11: dash-free site copy, public hero spacing, compelling KAIZEN AI c
   // 5. Reputation page rounded corners
   const repEjs = fs.readFileSync(path.join(__dirname, '..', 'views', 'reputation.ejs'), 'utf8');
   assert.ok(repEjs.includes('class="k-card k-card--elevated"') && repEjs.includes('border-radius:16px'), 'Reputation cards must have rounded corners matching the rest of the site');
+
+  // 6. Session flow refinements: Reflect page without followedProcess card, Plan page custom risk/setup reveal boxes, Record page without redundant pipsGained
+  const reflectEjs = fs.readFileSync(path.join(__dirname, '..', 'views', 'session-reflect.ejs'), 'utf8');
+  assert.ok(!reflectEjs.includes('name="followedProcess"'), 'Reflect page must not duplicate "Did you follow your process?" card');
+
+  const planEjs = fs.readFileSync(path.join(__dirname, '..', 'views', 'session-plan.ejs'), 'utf8');
+  assert.ok(planEjs.includes('id="risk-custom-box"') && planEjs.includes('name="customRisk"'), 'Plan page must include automatic custom risk input box below predefinedRisk');
+  assert.ok(!planEjs.includes('plan.riskDifferent'), 'Plan page must not have a dead "Different this time" option that fails to open the input box');
+  assert.ok(planEjs.includes('id="setup-custom-box"') && planEjs.includes('name="customSetup"'), 'Plan page must include automatic custom setup input box below setup select');
+
+  const recordEjs = fs.readFileSync(path.join(__dirname, '..', 'views', 'session-record.ejs'), 'utf8');
+  assert.ok(recordEjs.includes('name="rrAchieved"'), 'Record page must keep R Achieved input');
+  assert.ok(!recordEjs.includes('name="pipsGained"'), 'Record page must remove redundant Pips input');
+  assert.ok(recordEjs.includes('id="record-actual-risk-box"') && recordEjs.includes('name="actualRisk"'), 'Record page must reveal exact risk input box when respectedRisk is NO');
 });
 
 

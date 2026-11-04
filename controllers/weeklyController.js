@@ -44,6 +44,25 @@ async function getWeekly(req, res) {
     ]);
     const system = await TradingSystem.ensureForUser(user);
 
+    // Auto-heal any weekSessions where `asset` was previously saved as the strategy name
+    // (e.g. "Daily Candlestick Liquidity") instead of the real currency pair (e.g. "AUDJPY").
+    let healedAnyAsset = false;
+    for (const s of weekSessions) {
+      const ctx = aiCoach.resolveSessionContext(s);
+      const setupName = (s.plan && s.plan.setup) || '';
+      const assetWasStrategy = setupName && s.asset && s.asset.toLowerCase() === setupName.toLowerCase();
+      if (ctx.instrument && s.asset !== ctx.instrument) {
+        s.asset = ctx.instrument;
+        healedAnyAsset = true;
+        await Journal.updateOne({ _id: s._id }, { $set: { asset: ctx.instrument } }).catch(() => {});
+      } else if (assetWasStrategy && !ctx.instrument) {
+        const cleanAsset = s.sessionType === 'STUDY' ? 'Market Study' : 'General';
+        s.asset = cleanAsset;
+        healedAnyAsset = true;
+        await Journal.updateOne({ _id: s._id }, { $set: { asset: cleanAsset } }).catch(() => {});
+      }
+    }
+
     const stats = weekly.weekStats(weekSessions);
     const move = progress.movement(snapshotsAsc, 7, now);
     const earned = weekly.badgesThisWeek(user.badges, weekStart);
@@ -65,10 +84,12 @@ async function getWeekly(req, res) {
       letter = weekly.EMPTY_WEEK_LETTER;
       letterCached = true; // deterministic — nothing to bill
     } else {
-      const cacheKey = `weekOf|${weekStart.toISOString().slice(0, 10)}|sessions|${stats.total}`;
-      const cached = await Memory.findOne({
-        userId, asset: 'Weekly Report', sessionData: cacheKey
-      }).sort({ createdAt: -1 }).lean();
+      const cacheKey = `weekOf|${weekStart.toISOString().slice(0, 10)}|sessions|${stats.total}|v2`;
+      const cached = !healedAnyAsset
+        ? await Memory.findOne({
+            userId, asset: 'Weekly Report', sessionData: cacheKey
+          }).sort({ createdAt: -1 }).lean()
+        : null;
       if (cached) {
         letter = cached.response;
         letterCached = true;

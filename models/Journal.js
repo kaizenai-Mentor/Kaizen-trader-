@@ -123,6 +123,21 @@ const JournalSchema = new mongoose.Schema({
     lowSignal: { type: Boolean, default: false },
     extracted: { type: mongoose.Schema.Types.Mixed, default: null }
   },
+  brokerVerification: {
+    status: {
+      type: String,
+      enum: ['VERIFIED', 'UNVERIFIED', 'STUDY_EXEMPT'],
+      default: 'UNVERIFIED'
+    },
+    tradeHash: { type: String, default: '' },
+    matchedInstrument: { type: String, default: '' },
+    matchedDirection: { type: String, default: '' },
+    entryPrice: { type: String, default: '' },
+    exitPrice: { type: String, default: '' },
+    openTime: { type: Date, default: null },
+    closeTime: { type: Date, default: null },
+    verifiedAt: { type: Date, default: null }
+  },
   // ── END V2 EXTENSION ────────────────────────────────────────────
 
   aiAnalysis: {

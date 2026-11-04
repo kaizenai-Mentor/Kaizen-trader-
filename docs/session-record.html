@@ -309,6 +309,10 @@
               <label class="k-opt"><input type="radio" name="respectedRisk" value="NO"><span>No</span></label>
             </div>
           </div>
+          <div id="record-actual-risk-box" style="display:none;margin:8px 0 12px;padding:12px;border:1px solid rgba(245,197,24,0.25);border-radius:10px;background:rgba(245,197,24,0.04);">
+            <label class="k-fieldlabel" style="margin-bottom:6px;">EXACT RISK USED DURING THIS TRADE</label>
+            <input type="text" name="actualRisk" id="record-actual-risk-input" class="k-input" placeholder="State the exact risk used (e.g. 1.5%, 2%, $400)">
+          </div>
 
           <div class="k-checkrow">
             <span class="k-checklabel">Outcome</span>
@@ -325,14 +329,10 @@
             </div>
           </div>
 
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px;">
+          <div style="margin-top:16px;">
             <div class="k-field" style="margin:0;">
               <label class="k-fieldlabel">R ACHIEVED</label>
               <input type="text" name="rrAchieved" class="k-input" placeholder="e.g. 1:2.5">
-            </div>
-            <div class="k-field" style="margin:0;">
-              <label class="k-fieldlabel">PIPS</label>
-              <input type="text" name="pipsGained" class="k-input" placeholder="e.g. +45">
             </div>
           </div>
         </div>
@@ -375,18 +375,42 @@
       var out = document.getElementById('autodetect');
       var assetEl = document.getElementById('asset');
       var tfEl = document.getElementById('timeframe');
-      var ASSETS = /\b(EURUSD|GBPUSD|USDJPY|AUDJPY|USDCAD|XAUUSD|NAS100|SPX500|BTCUSD|ETHUSD|XAU|DXY)\b/i;
+      var initialAsset = assetEl ? assetEl.value : '';
+      var ASSETS = /\b(EUR\/?USD|GBP\/?USD|USD\/?JPY|AUD\/?JPY|GBP\/?JPY|EUR\/?JPY|AUD\/?USD|USD\/?CAD|USD\/?CHF|NZD\/?USD|EUR\/?GBP|EUR\/?AUD|GBP\/?AUD|CAD\/?JPY|CHF\/?JPY|AUD\/?CAD|AUD\/?NZD|NZD\/?JPY|GBP\/?CAD|EUR\/?CAD|GBP\/?CHF|EUR\/?CHF|XAU\/?USD|XAG\/?USD|NAS100|US100|SPX500|US500|US30|GER40|BTC\/?USD|ETH\/?USD|USOIL|UKOIL|XAU|DXY|GOLD)\b/i;
       var TFS = /\b(1m|5m|15m|30m|1h|4h|1d|1w|M1|M5|M15|M30|H1|H4|D1|W1)\b/i;
       function detect() {
         var t = notes.value || '';
         var a = t.match(ASSETS), f = t.match(TFS);
         var parts = [];
-        if (a) { assetEl.value = a[1].toUpperCase(); parts.push(a[1].toUpperCase()); }
+        if (a) {
+          var norm = a[1].toUpperCase().replace('/', '');
+          if (norm === 'GOLD') norm = 'XAUUSD';
+          assetEl.value = norm;
+          parts.push(norm);
+        } else if (initialAsset) {
+          assetEl.value = initialAsset;
+          parts.push(initialAsset);
+        }
         if (f) { tfEl.value = f[1].toUpperCase(); parts.push(f[1].toUpperCase()); }
         out.textContent = parts.length ? parts.join(' · ') + ' — detected from your notes ✓' : '';
       }
       notes.addEventListener('input', detect);
       detect();
+
+      // Reveal exact risk box if trader selects NO on "Did you stick to the planned risk?"
+      var riskRadios = document.querySelectorAll('input[name="respectedRisk"]');
+      var actualRiskBox = document.getElementById('record-actual-risk-box');
+      var actualRiskInput = document.getElementById('record-actual-risk-input');
+      if (riskRadios.length && actualRiskBox && actualRiskInput) {
+        Array.prototype.forEach.call(riskRadios, function (r) {
+          r.addEventListener('change', function () {
+            var isNo = r.checked && r.value === 'NO';
+            actualRiskBox.style.display = isNo ? 'block' : 'none';
+            if (isNo) { try { actualRiskInput.focus(); } catch (e) {} }
+            else { actualRiskInput.value = ''; }
+          });
+        });
+      }
     })();
   </script>
 </body>

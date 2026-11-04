@@ -3059,9 +3059,50 @@ select.k-input, select.form-input {
 .k-type-tag--live { border-color: var(--gold-border); color: var(--gold); }
 .k-type-tag--backtest { border-color: var(--blue-border); color: var(--text-primary); background: rgba(26, 47, 74, 0.45); }
 .k-type-tag--study { border-color: var(--border-strong); color: var(--text-secondary); }
-.k-detail-grid { display: grid; grid-template-columns: 1.25fr 0.75fr; gap: 18px; align-items: start; }
+.k-detail-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+}
+.k-detail-subgrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  align-items: stretch;
+  width: 100%;
+}
+.k-detail-subgrid > .k-card {
+  margin-bottom: 0 !important;
+  height: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+.k-review-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+.k-review-block {
+  padding: 16px 18px;
+  border-radius: 12px;
+  background: rgba(10, 10, 10, 0.28);
+  border: 1px solid var(--border);
+  box-sizing: border-box;
+  width: 100%;
+}
+[data-theme="light"] .k-review-block {
+  background: rgba(255, 255, 255, 0.75);
+}
+.k-review-block--action {
+  border-left: 3px solid var(--gold);
+  background: rgba(245, 197, 24, 0.06);
+}
 @media (max-width: 800px) {
-  .k-detail-grid { grid-template-columns: 1fr; }
+  .k-detail-grid { gap: 16px; }
+  .k-detail-subgrid { grid-template-columns: 1fr; gap: 16px; }
   .k-flow { padding: 24px 16px 60px; }
 }
 
@@ -3543,7 +3584,9 @@ select.k-input, select.form-input {
   color: var(--text-primary);
   line-height: 1.85;
   word-break: break-word;
-  max-width: 70ch;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
   box-shadow: 0 20px 44px rgba(0, 0, 0, 0.38);
 }
 .k-ai-para {
@@ -3596,7 +3639,7 @@ select.k-input, select.form-input {
 }
 .k-legacyai {
   font-size: 0.93rem; color: var(--text-primary); line-height: 1.85;
-  margin-bottom: 12px; max-width: 70ch;
+  margin-bottom: 12px; width: 100%; max-width: 100%; box-sizing: border-box;
 }
 .k-quizchip {
   font-family: var(--font-mono); font-size: 0.55rem; letter-spacing: 0.12em;

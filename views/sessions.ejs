@@ -15,7 +15,49 @@
         <h1 class="k-page-h1" style="font-size:clamp(1.7rem,4vw,2.4rem);margin-bottom:8px;"><%= t('sessions.sub') %></h1>
         <p style="font-size:0.9rem;color:var(--text-secondary);max-width:560px;line-height:1.75;margin:0;"><%= t('sessions.sub2') %></p>
       </div>
-      <a href="/dashboard/sessions/new" class="btn-primary k-btn-lg">+ <%= t('sessions.new') %></a>
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+        <button type="button" class="btn-outline k-btn-lg" onclick="var b=document.getElementById('broker-import-panel');if(b)b.style.display=b.style.display==='none'?'block':'none';">
+          Sync Broker History<% if (typeof brokerTradesCount === 'number' && brokerTradesCount > 0) { %> (<%= brokerTradesCount %>)<% } %>
+        </button>
+        <a href="/dashboard/sessions/new" class="btn-primary k-btn-lg">+ <%= t('sessions.new') %></a>
+      </div>
+    </div>
+
+    <% if (typeof importedCount === 'number') { %>
+      <div class="k-card" style="margin:16px 0;padding:14px 18px;border-color:rgba(245,197,24,0.45);background:rgba(245,197,24,0.06);font-size:0.86rem;color:var(--text-primary);">
+        <% if (importedCount > 0) { %>
+          Synced <%= importedCount %> broker trade<%= importedCount === 1 ? '' : 's' %> (sensitive account numbers, logins, and dollar balances stripped automatically). Matching live sessions have been verified.
+        <% } else { %>
+          No new trade rows detected in the uploaded file. Export your Trade History Report (.html or .csv) from MT4, MT5, cTrader, or TradingView and try again.
+        <% } %>
+      </div>
+    <% } %>
+
+    <div id="broker-import-panel" class="k-card" style="display:none;margin:18px 0;padding:22px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:10px;">
+        <div class="k-panel-title"><span class="k-kanji k-kanji--sm">改</span>PRIVACY-FIRST BROKER HISTORY SYNC</div>
+        <span style="font-family:var(--font-mono);font-size:0.56rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);">MT4 · MT5 · cTrader · TradingView</span>
+      </div>
+      <p style="font-size:0.84rem;color:var(--text-secondary);line-height:1.7;margin:0 0 14px;">
+        Upload your exported broker Trade History (<strong>.html</strong> or <strong>.csv</strong>) or paste trade rows below. KAIZEN automatically strips out account numbers, logins, deposits, dollar balances, and lot sizes, keeping only pair, direction, timestamps, and prices to verify your live sessions.
+      </p>
+      <form action="/dashboard/sessions/import-broker" method="POST" enctype="multipart/form-data">
+        <input type="hidden" name="returnTo" value="/dashboard/sessions">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+          <div>
+            <label class="k-fieldlabel">UPLOAD BROKER REPORT (.HTML / .CSV)</label>
+            <input type="file" name="brokerFile" accept=".html,.htm,.csv,.txt" class="k-input">
+          </div>
+          <div>
+            <label class="k-fieldlabel">OR PASTE TRADE HISTORY ROWS</label>
+            <input type="text" name="brokerText" class="k-input" placeholder="e.g. 2026-10-29 09:15, buy, AUDJPY, 101.20, 100.90, 101.85, 101.80">
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <button type="submit" class="btn-primary">Verify &amp; Sync Trades</button>
+          <a href="/za/reputation/<%= user.id || user._id %>#traders-card" style="font-family:var(--font-mono);font-size:0.64rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);text-decoration:underline;">View Branded Trader's Card &amp; Dossier</a>
+        </div>
+      </form>
     </div>
 
     <% if (openPlan) { %>

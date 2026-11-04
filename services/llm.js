@@ -39,7 +39,7 @@ const PROVIDERS = [
     baseUrlEnv: 'ANTHROPIC_BASE_URL',
     defaultBase: 'https://api.anthropic.com',
     modelEnv: 'ANTHROPIC_MODEL',
-    defaultModel: 'claude-3-5-sonnet-20241022'
+    defaultModel: 'claude-haiku-4-5'
   },
   {
     name: 'gemini',

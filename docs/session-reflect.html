@@ -259,7 +259,7 @@
     <p style="font-size:0.88rem;color:var(--text-secondary);line-height:1.75;margin:0 0 24px;">Three short answers. Yours, not KAIZEN&#39;s. The AI responds after you finish.</p>
 
     <div class="k-card" style="margin-bottom:18px;">
-      <div class="k-metric-label" style="margin-bottom:8px;">Sessions — XAUUSD</div>
+      <div class="k-metric-label" style="margin-bottom:8px;">Sessions — XAUUSD · 4H sweep → 30min MSS</div>
       <div style="font-size:0.84rem;color:var(--text-secondary);line-height:1.75;max-height:110px;overflow:hidden;position:relative;">
         Waited for the London sweep, MSS confirmed on the 30min, entered on the retest. Held through the squeeze to 2R. Felt the urge to add at +1.5R but sized in properly at the start, so no add.
         <div style="position:absolute;bottom:0;left:0;right:0;height:44px;background:linear-gradient(transparent,var(--bg-card));"></div>
@@ -267,11 +267,6 @@
     </div>
 
     <form action="/dashboard/sessions/rec1/reflect" method="POST">
-
-      <div class="k-card k-formcard k-prompt">
-        <label class="k-fieldlabel">Did you follow your process?</label>
-        <textarea name="followedProcess" class="k-input" rows="3" placeholder="Honest answer. This is where improvement starts..."></textarea>
-      </div>
 
       <div class="k-card k-formcard k-prompt">
         <label class="k-fieldlabel">What did you learn?</label>
@@ -290,17 +285,20 @@
     </form>
 
     <!-- KAIZEN's response — revealed in place (streamed, Psychology-style) -->
-    <div class="k-card k-card--featured" id="k-response" hidden style="margin-top:18px;">
-      <div class="k-panel-title" style="margin-bottom:14px;"><span class="k-kanji k-kanji--sm">改</span>KAIZEN RESPONDS</div>
+    <section class="k-card k-card--featured k-ai-card" id="k-response" hidden style="margin-top:20px;width:100%;box-sizing:border-box;">
+      <div class="k-ai-cardhead">
+        <div class="k-panel-title"><span class="k-kanji k-kanji--sm">改</span>KAIZEN RESPONDS</div>
+        <span style="font-family:var(--font-mono);font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);">XAUUSD · 4H sweep → 30min MSS</span>
+      </div>
       <div class="k-typing" id="k-responding" hidden>
         <span class="k-kanji k-kanji--sm">改</span>
         <div class="k-msg-text k-typingdots"><span></span><span></span><span></span></div>
       </div>
-      <div id="k-analysis" style="font-size:0.9rem;color:var(--text-primary);line-height:1.85;white-space:pre-wrap;"></div>
-      <div id="k-after" hidden style="margin-top:18px;">
+      <div id="k-analysis" class="k-review-stack" style="font-size:0.9rem;color:var(--text-primary);line-height:1.85;white-space:pre-wrap;width:100%;"></div>
+      <div id="k-after" hidden style="margin-top:20px;">
         <a class="btn-primary k-btn-lg" href="session-detail.html">Open the analyzed session</a>
       </div>
-    </div>
+    </section>
 
   </main>
 

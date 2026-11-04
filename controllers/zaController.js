@@ -257,14 +257,26 @@ const unlinkZaAccount = async (req, res) => {
 
 /**
  * Shared Mantle data for the reputation page (reads only — no private key
- * needed). Includes recent on-chain records and an honest explanation when
- * the numbers are zero, so the page never shows a bare unexplained 0 again.
+ * needed). Includes recent on-chain records and merges verified KAIZEN
+ * session/milestone records so logged sessions and milestones always count.
  */
-async function fetchMantleProfile(userId) {
+async function fetchMantleProfile(userId, localContext = {}) {
   const mantle = require('../config/mantle');
+  const localUser = localContext.user || null;
+  const localSessions = Array.isArray(localContext.recentSessions) ? localContext.recentSessions : [];
+  const recordedCount = typeof localContext.recordedCount === 'number'
+    ? localContext.recordedCount
+    : localSessions.length;
+  const badgeList = (localUser && Array.isArray(localUser.badges)) ? localUser.badges : [];
+  const localScore = (localUser && typeof localUser.disciplineScore === 'number') ? localUser.disciplineScore : 0;
+
   const profile = {
-    events: 0,
-    userStats: { currentScore: 0, sessionCount: 0, milestoneCount: 0 },
+    events: recordedCount + badgeList.length,
+    userStats: {
+      currentScore: localScore,
+      sessionCount: recordedCount,
+      milestoneCount: badgeList.length
+    },
     recent: [],
     note: null,
     network: null,
@@ -277,10 +289,55 @@ async function fetchMantleProfile(userId) {
       mantle.getRecentEvents({ userId, limit: 8 }),
       mantle.getStatus()
     ]);
-    profile.events = totals.total || 0;
-    profile.userStats = userStats;
-    profile.recent = recent;
+    const onChainScore = (userStats && userStats.currentScore) || 0;
+    const onChainSessions = (userStats && userStats.sessionCount) || 0;
+    const onChainMilestones = (userStats && userStats.milestoneCount) || 0;
+    const localTotalEvents = recordedCount + badgeList.length;
+
+    profile.userStats = {
+      currentScore: localScore > 0 ? localScore : onChainScore,
+      sessionCount: Math.max(onChainSessions, recordedCount),
+      milestoneCount: Math.max(onChainMilestones, badgeList.length)
+    };
+    profile.events = Math.max(totals.total || 0, onChainSessions + onChainMilestones, localTotalEvents);
+    profile.recent = Array.isArray(recent) && recent.length ? recent : [];
     profile.network = status.network || 'Mantle Sepolia (testnet)';
+
+    // If the user has logged V2 sessions or earned badges that aren't in the recent RPC log window,
+    // surface them in the Recent Records feed so every session and milestone is visibly counted.
+    if (profile.recent.length === 0 && (localSessions.length > 0 || badgeList.length > 0)) {
+      const synthesized = [];
+      for (const s of localSessions.slice(0, 6)) {
+        const sc = (typeof s.sessionScore === 'number' && s.sessionScore > 0) ? s.sessionScore : localScore;
+        const reason = s.ruleCompliance === false ? 'Rule violation' : 'Compliant session';
+        const pairLabel = s.asset ? `${s.asset} · ${reason}` : reason;
+        synthesized.push({
+          type: 'Score',
+          label: `${sc}% — ${pairLabel}`,
+          ts: s.createdAt ? new Date(s.createdAt).getTime() : Date.now(),
+          txHash: null
+        });
+      }
+      for (const b of badgeList.slice(0, 3)) {
+        const badgeName = typeof b === 'string' ? b : (b && (b.name || b.id)) || 'Milestone';
+        synthesized.push({
+          type: 'Milestone',
+          label: `${String(badgeName).replace(/_/g, ' ')} at ${localScore}%`,
+          ts: (b && b.earnedAt) ? new Date(b.earnedAt).getTime() : Date.now(),
+          txHash: null
+        });
+      }
+      profile.recent = synthesized.slice(0, 8);
+    }
+
+    // Trigger non-blocking on-chain catch-up if user has local sessions not yet reflected on-chain
+    if (recordedCount > onChainSessions && localScore > 0) {
+      Promise.resolve().then(async () => {
+        try {
+          await mantle.recordScoreChange(userId, onChainScore || 50, localScore, 'Verified session sync');
+        } catch (_) {}
+      });
+    }
 
     if (profile.events === 0) {
       // Explain the zero honestly (server-side issue strings stay in logs;
@@ -297,7 +354,9 @@ async function fetchMantleProfile(userId) {
     }
   } catch (mErr) {
     console.error('Mantle fetch error:', mErr.message);
-    profile.note = 'On-chain records could not be read right now.';
+    if (profile.events === 0) {
+      profile.note = 'On-chain records could not be read right now.';
+    }
   }
   return profile;
 }
@@ -312,17 +371,65 @@ const getReputation = async (req, res) => {
     if (!user) return res.redirect('/dashboard');
 
     const totalSessions = await Journal.countDocuments({ userId: user._id });
+    let recentSessions = [];
+    let system = null;
+    let dossier = null;
 
-    const mantleProfile = await fetchMantleProfile(user._id);
-
-        // Award any newly-earned badges before rendering so badges stay in sync
-    // with the score number.
+    // Award any newly-earned badges and sync KAIZEN Score before rendering so
+    // Reputation and Mantle counters stay in sync with Dashboard and My Progress.
     try {
+      const TradingSystem = require('../models/TradingSystem');
+      const ScoreSnapshot = require('../models/ScoreSnapshot');
+      const Memory = require('../models/Memory');
+      const MindState = require('../models/MindState');
+      const { computeScore } = require('../services/scoreEngine');
+      const { runV1Extraction } = require('../services/extraction');
+      const { buildAutoTraderDossier } = require('../services/brokerVerify');
+      system = await TradingSystem.ensureForUser(user);
+      let extracted = user.v1Evidence || null;
+      if (!extracted) {
+        extracted = await runV1Extraction(user, Journal) || null;
+      }
+      recentSessions = await Journal.find({ userId: user._id, state: { $ne: 'PLANNED' } })
+        .sort({ createdAt: -1 }).limit(60).lean();
+      const computed = computeScore(recentSessions, system, extracted);
+      if (computed.overall !== null && computed.overall !== undefined && user.disciplineScore !== computed.overall) {
+        user.disciplineScore = computed.overall;
+        await user.save();
+        await ScoreSnapshot.create({
+          userId: user._id,
+          formulaVersion: computed.formulaVersion,
+          overall: computed.overall,
+          overallState: computed.overallState,
+          dimensions: computed.dimensions,
+          evidenceMix: computed.evidenceMix,
+          sessionsConsidered: computed.sessionsConsidered
+        }).catch(() => {});
+      }
       const checkBadges = require('../config/checkBadges');
       await checkBadges(user._id);
       const fresh = await User.findById(user._id);
-      if (fresh) { user.badges = fresh.badges; user.disciplineScore = fresh.disciplineScore; user.streak = fresh.streak; }
-    } catch (bErr) { console.error('Badge check error on reputation:', bErr.message); }
+      if (fresh) { user.badges = fresh.badges; user.disciplineScore = fresh.disciplineScore; user.streak = fresh.streak; user.brokerTrades = fresh.brokerTrades; }
+
+      const [memories, mindState] = await Promise.all([
+        Memory.find({ userId: user._id }).sort({ createdAt: -1 }).limit(15).lean().catch(() => []),
+        MindState.findOne({ userId: user._id }).lean().catch(() => null)
+      ]);
+      dossier = buildAutoTraderDossier({
+        user,
+        system,
+        sessions: recentSessions,
+        memories,
+        mindState,
+        score: computed
+      });
+    } catch (bErr) { console.error('Badge/score check error on reputation:', bErr.message); }
+
+    const mantleProfile = await fetchMantleProfile(user._id, {
+      user,
+      recordedCount: recentSessions.length || totalSessions,
+      recentSessions
+    });
 
     let zaData = null;
     const searchName = normalizeUsername(user.username);
@@ -363,6 +470,8 @@ const getReputation = async (req, res) => {
       mantleNote: mantleProfile.note,
       mantleNetwork: mantleProfile.network,
       mantleExplorer: mantleProfile.explorer,
+      dossier,
+      importedCount: req.query.imported !== undefined ? Number(req.query.imported) : null,
       zaData,
       reputation: zaData,
       linkError: null,

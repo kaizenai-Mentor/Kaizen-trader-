@@ -19,42 +19,72 @@
     <h1 style="font-size:clamp(1.5rem,3.5vw,2.1rem);font-weight:700;color:var(--text-primary);line-height:1.15;margin:0 0 8px;"><%= t('plan.declare') %></h1>
     <p style="font-size:0.88rem;color:var(--text-secondary);line-height:1.75;margin:0 0 24px;"><%= t('plan.underMin') %></p>
 
-    <!-- Session type -->
+    <!-- Session type: LIVE vs unified STUDY / BACKTEST -->
+    <%
+      var isStudyMode = (type === 'STUDY' || type === 'BACKTEST');
+    %>
     <div class="k-card" style="margin-bottom:14px;">
       <div class="k-metric-label" style="margin-bottom:12px;"><%= t('plan.type') %></div>
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">
-        <% [['LIVE','Real execution, capital at risk'],['BACKTEST','Practice on historical markets'],['STUDY','Market analysis, no trade']].forEach(function(t){ %>
-          <a href="/dashboard/sessions/new?type=<%= t[0] %>" class="k-typecard <%= type === t[0] ? 'is-active' : '' %>">
-            <div class="k-typecard-name"><%= t[0] %></div>
-            <div class="k-typecard-desc"><%= t[1] %></div>
-          </a>
-        <% }); %>
+      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;">
+        <a href="/dashboard/sessions/new?type=LIVE" class="k-typecard <%= !isStudyMode ? 'is-active' : '' %>">
+          <div class="k-typecard-name">LIVE</div>
+          <div class="k-typecard-desc">Real execution, capital at risk</div>
+        </a>
+        <a href="/dashboard/sessions/new?type=STUDY" class="k-typecard <%= isStudyMode ? 'is-active' : '' %>">
+          <div class="k-typecard-name">STUDY / BACKTEST</div>
+          <div class="k-typecard-desc">Chart study &amp; historical testing, no capital at risk</div>
+        </a>
       </div>
     </div>
 
     <form action="/dashboard/sessions/plan" method="POST">
-      <input type="hidden" name="sessionType" value="<%= type %>">
+      <input type="hidden" name="sessionType" value="<%= isStudyMode ? 'STUDY' : 'LIVE' %>">
 
-      <% if (type !== 'STUDY') { %>
         <div class="k-card k-formcard">
           <div class="k-field">
-            <label class="k-fieldlabel"><%= t('plan.setup') %> <span style="color:var(--text-faint);text-transform:none;letter-spacing:0;"><%= t('plan.fromSystem') %></span></label>
+            <label class="k-fieldlabel"><%= isStudyMode ? 'STRATEGY / SETUP UNDER STUDY' : t('plan.setup') %> <span style="color:var(--text-faint);text-transform:none;letter-spacing:0;"><%= t('plan.fromSystem') %></span></label>
             <% if (system.setups && system.setups.length) { %>
-              <select name="setup" class="k-input">
+              <select name="setup" id="setup-select" class="k-input">
                 <% system.setups.forEach(function(s){ %>
                   <option value="<%= s.name %>"><%= s.name %></option>
                 <% }); %>
-                <option value=""><%= t('plan.adhoc') %></option>
+                <option value="CUSTOM">Choose another setup for this session</option>
               </select>
+              <div id="setup-custom-box" style="display:none;margin-top:8px;padding:12px;border:1px solid rgba(245,197,24,0.25);border-radius:10px;background:rgba(245,197,24,0.04);">
+                <label class="k-fieldlabel" style="margin-bottom:6px;">EXACT SETUP FOR THIS SESSION</label>
+                <input type="text" name="customSetup" id="setup-custom-input" class="k-input" placeholder="State the exact setup or strategy used for this session">
+              </div>
+              <script>
+                (function () {
+                  var sel = document.getElementById('setup-select');
+                  var box = document.getElementById('setup-custom-box');
+                  var input = document.getElementById('setup-custom-input');
+                  if (!sel || !box || !input) return;
+                  function syncSetup() {
+                    var custom = sel.value === 'CUSTOM';
+                    box.style.display = custom ? 'block' : 'none';
+                    input.required = custom;
+                    if (custom) { try { input.focus(); } catch (e) {} }
+                    else { input.value = ''; }
+                  }
+                  sel.addEventListener('change', syncSetup);
+                  syncSetup();
+                })();
+              </script>
             <% } else { %>
-              <input type="text" name="setup" class="k-input" placeholder="<%= t('plan.setupPh') %>">
+              <input type="text" name="setup" class="k-input" placeholder="<%= isStudyMode ? t('plan.studyPh') : t('plan.setupPh') %>">
               <div class="k-fieldhint"><a href="/settings/trading-system" class="k-gold"><%= t('plan.addSetups') %></a><%= t('plan.toMakeFaster') %></div>
             <% } %>
           </div>
 
           <div class="k-field">
-            <label class="k-fieldlabel"><%= t('plan.entry') %></label>
-            <input type="text" name="entryCondition" class="k-input" placeholder="<%= t('plan.entryPh') %>">
+            <label class="k-fieldlabel">PAIR / INSTRUMENT</label>
+            <input type="text" name="asset" class="k-input" placeholder="e.g. AUDJPY, Japan 225, XAUUSD, EURUSD, NAS100">
+          </div>
+
+          <div class="k-field">
+            <label class="k-fieldlabel"><%= isStudyMode ? 'CHECKLIST / STUDY FOCUS' : t('plan.entry') %></label>
+            <input type="text" name="entryCondition" class="k-input" placeholder="<%= isStudyMode ? 'What structure or checklist conditions are you studying or testing?' : t('plan.entryPh') %>">
           </div>
 
           <div class="k-field">
@@ -62,38 +92,47 @@
             <input type="text" name="invalidation" class="k-input" placeholder="<%= t('plan.invPh') %>">
           </div>
 
+          <% if (!isStudyMode) { %>
           <div class="k-field">
             <label class="k-fieldlabel"><%= t('plan.risk') %></label>
-            <% if (system.riskRules && system.riskRules.riskPerTrade) { %>
-              <select name="predefinedRisk" id="risk-select" class="k-input">
-                <option value="<%= system.riskRules.riskPerTrade %>%"><%= t('plan.riskFromSystem', { value: system.riskRules.riskPerTrade }) %></option>
-                <option value="CUSTOM"><%= t('plan.riskCustom') %></option>
-                <option value=""><%= t('plan.riskDifferent') %></option>
-              </select>
-              <div id="risk-custom-box" style="display:none;margin-top:8px;padding:12px;border:1px solid rgba(245,197,24,0.25);background:rgba(245,197,24,0.04);">
-                <label class="k-fieldlabel" style="margin-bottom:6px;"><%= t('plan.customRiskLabel') %></label>
-                <input type="text" name="customRisk" id="risk-custom-input" class="k-input" placeholder="e.g. 0.5%">
-                <p style="font-size:0.72rem;color:var(--ash);margin:8px 0 0;"><%= t('plan.customRiskHint') %></p>
-              </div>
-              <script>
-                (function () {
-                  var sel = document.getElementById('risk-select');
-                  var box = document.getElementById('risk-custom-box');
-                  var input = document.getElementById('risk-custom-input');
-                  function sync() {
-                    var custom = sel.value === 'CUSTOM';
-                    box.style.display = custom ? 'block' : 'none';
-                    input.required = custom;
-                    if (!custom) input.value = '';
-                  }
-                  sel.addEventListener('change', sync);
-                  sync();
-                })();
-              </script>
-            <% } else { %>
-              <input type="text" name="predefinedRisk" class="k-input" placeholder="e.g. 1%">
-            <% } %>
+            <%
+              var sysRiskRaw = (system.riskRules && system.riskRules.riskPerTrade) ? String(system.riskRules.riskPerTrade).trim() : '';
+              var sysRiskClean = sysRiskRaw ? (sysRiskRaw.includes('%') ? sysRiskRaw : sysRiskRaw + '%') : '';
+              var presetRisks = ['0.25%', '0.5%', '1%', '2%'].filter(function(r) { return r !== sysRiskClean; });
+            %>
+            <select name="predefinedRisk" id="risk-select" class="k-input">
+              <% if (sysRiskClean) { %>
+                <option value="<%= sysRiskClean %>"><%= sysRiskClean %> (from your system)</option>
+              <% } %>
+              <% presetRisks.forEach(function(r) { %>
+                <option value="<%= r %>" <%= (!sysRiskClean && r === '1%') ? 'selected' : '' %>><%= r %></option>
+              <% }); %>
+              <option value="CUSTOM">Choose another risk for this session (state exact risk below)</option>
+            </select>
+            <div id="risk-custom-box" style="display:none;margin-top:8px;padding:12px;border:1px solid rgba(245,197,24,0.25);border-radius:10px;background:rgba(245,197,24,0.04);">
+              <label class="k-fieldlabel" style="margin-bottom:6px;"><%= t('plan.customRiskLabel') %></label>
+              <input type="text" name="customRisk" id="risk-custom-input" class="k-input" placeholder="State the exact risk used during the trade (e.g. 0.5%, 0.75%, $250)">
+              <p style="font-size:0.72rem;color:var(--ash);margin:8px 0 0;"><%= t('plan.customRiskHint') %></p>
+            </div>
+            <script>
+              (function () {
+                var sel = document.getElementById('risk-select');
+                var box = document.getElementById('risk-custom-box');
+                var input = document.getElementById('risk-custom-input');
+                if (!sel || !box || !input) return;
+                function sync() {
+                  var custom = sel.value === 'CUSTOM' || sel.value === 'DIFFERENT';
+                  box.style.display = custom ? 'block' : 'none';
+                  input.required = custom;
+                  if (custom) { try { input.focus(); } catch (e) {} }
+                  else { input.value = ''; }
+                }
+                sel.addEventListener('change', sync);
+                sync();
+              })();
+            </script>
           </div>
+          <% } %>
 
           <div class="k-field">
             <label class="k-fieldlabel"><%= t('plan.emotion') %></label>
@@ -109,22 +148,6 @@
             <input type="range" name="confidence" min="1" max="10" value="7" class="k-slider" oninput="document.getElementById('conf-val').textContent=this.value">
           </div>
         </div>
-      <% } else { %>
-        <div class="k-card k-formcard">
-          <div class="k-field">
-            <label class="k-fieldlabel"><%= t('plan.studying') %></label>
-            <input type="text" name="setup" class="k-input" placeholder="<%= t('plan.studyPh') %>">
-          </div>
-          <div class="k-field">
-            <label class="k-fieldlabel"><%= t('plan.emotion') %></label>
-            <div class="k-chiprow">
-              <% ['CALM','FOCUSED','ANXIOUS','FOMO','REVENGE'].forEach(function(e){ %>
-                <label class="k-emochip"><input type="radio" name="emotionalState" value="<%= e %>" <%= e==='CALM'?'checked':'' %>><span><%= e %></span></label>
-              <% }); %>
-            </div>
-          </div>
-        </div>
-      <% } %>
 
       <div class="k-actions">
         <button type="submit" class="btn-primary k-btn-lg"><%= t('plan.submit') %></button>

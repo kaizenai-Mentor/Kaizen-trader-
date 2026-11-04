@@ -14,6 +14,11 @@ const upload = multer({
   }
 });
 
+const uploadReport = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 5 * 1024 * 1024 }
+});
+
 // A() — async route wrapper (crash fix, owner directive): a rejected
 // controller promise reaches the Express error middleware instead of
 // becoming an unhandled rejection (which kills the whole Node process).
@@ -26,6 +31,7 @@ router.post('/cutover-ack', protect, A(dashboardController.ackCutover));
 
 // ── V2 SESSIONS (core loop): plan → record → reflect → detail ──
 router.get('/sessions', protect, A(sessionsController.getSessions));
+router.post('/sessions/import-broker', protect, uploadReport.single('brokerFile'), A(sessionsController.postImportBroker));
 router.get('/sessions/new', protect, A(sessionsController.getPlan));
 router.post('/sessions/plan', protect, A(sessionsController.postPlan));
 router.get('/sessions/:id/record', protect, A(sessionsController.getRecord));

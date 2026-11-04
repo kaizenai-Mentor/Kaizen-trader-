@@ -42,8 +42,11 @@ async function getSessions(req, res) {
   const sessions = await Journal.find({ userId: req.session.user.id })
     .sort({ createdAt: -1 }).limit(60).lean();
   const openPlan = sessions.find(s => s.state === 'PLANNED');
+  const brokerTradesCount = (userDoc && Array.isArray(userDoc.brokerTrades)) ? userDoc.brokerTrades.length : 0;
+  const importedCount = req.query.imported !== undefined ? Number(req.query.imported) : null;
   res.render('sessions', {
     user: req.session.user, sessions, openPlan, system,
+    brokerTradesCount, importedCount,
     title: 'Sessions'
   });
 }
@@ -63,17 +66,32 @@ async function postPlan(req, res) {
   const system = await TradingSystem.ensureForUser(userDoc);
   const type = ['LIVE', 'BACKTEST', 'STUDY'].includes(req.body.sessionType) ? req.body.sessionType : 'LIVE';
   const skipped = req.body.skip === '1';
-  // Custom-risk reveal box: 'CUSTOM' swaps to the revealed free-text value.
-  const predefinedRisk = req.body.predefinedRisk === 'CUSTOM'
-    ? (req.body.customRisk || '')
-    : (req.body.predefinedRisk || '');
+
+  // Custom-setup reveal box: 'CUSTOM' swaps to the revealed customSetup input.
+  const setupValue = req.body.setup === 'CUSTOM'
+    ? String(req.body.customSetup || '').trim()
+    : String(req.body.setup || '').trim();
+
+  // Custom-risk reveal box: 'CUSTOM' or 'DIFFERENT' swaps to the revealed customRisk input.
+  const predefinedRisk = (req.body.predefinedRisk === 'CUSTOM' || req.body.predefinedRisk === 'DIFFERENT')
+    ? String(req.body.customRisk || '').trim()
+    : String(req.body.predefinedRisk || '').trim();
+
+  // Never store the strategy/setup name into `asset` (pair/instrument).
+  const explicitPair = String(req.body.asset || '').trim();
+  const detectedPair = aiCoach.extractInstrumentFromText(
+    [explicitPair, req.body.entryCondition, req.body.invalidation].filter(Boolean).join(' ')
+  );
+  const resolvedAsset = skipped
+    ? 'General'
+    : (detectedPair || (explicitPair && explicitPair.toLowerCase() !== setupValue.toLowerCase() ? explicitPair.toUpperCase() : 'General'));
 
   const session = new Journal({
     userId: req.session.user.id,
     sessionType: type,
     state: 'PLANNED',
     plan: {
-      setup: skipped ? '' : (req.body.setup || ''),
+      setup: skipped ? '' : setupValue,
       entryCondition: skipped ? '' : (req.body.entryCondition || ''),
       invalidation: skipped ? '' : (req.body.invalidation || ''),
       predefinedRisk: skipped ? '' : predefinedRisk,
@@ -83,7 +101,7 @@ async function postPlan(req, res) {
       systemVersion: system.version,
       createdAt: new Date()
     },
-    asset: skipped ? 'General' : (req.body.setup || 'General'),
+    asset: resolvedAsset,
     notes: '',
     emotion: skipped ? 'Neutral' : (req.body.emotionalState || 'Neutral')
   });
@@ -117,8 +135,20 @@ async function postRecord(req, res) {
     return res.redirect(`/dashboard/sessions/${session._id}/record`);
   }
 
-  session.notes = notes;
-  session.asset = req.body.asset || session.asset || 'General';
+  const actualRiskNote = req.body.actualRisk && String(req.body.actualRisk).trim()
+    ? ` (Actual risk used: ${String(req.body.actualRisk).trim()})`
+    : '';
+  session.notes = notes + (actualRiskNote && !notes.includes(String(req.body.actualRisk).trim()) ? actualRiskNote : '');
+  const ctxAtRecord = aiCoach.resolveSessionContext({
+    sessionType: session.sessionType,
+    asset: req.body.asset || session.asset,
+    plan: session.plan,
+    notes: session.notes
+  });
+  if (ctxAtRecord.isStudyOrBacktest && session.sessionType === 'LIVE') {
+    session.sessionType = 'STUDY';
+  }
+  session.asset = ctxAtRecord.instrument || (req.body.asset && String(req.body.asset).trim()) || (session.sessionType === 'STUDY' ? 'Market Study' : 'General');
   session.timeframe = req.body.timeframe || 'N/A';
   session.direction = `${session.sessionType} Session`;
   if (req.body.outcome && ['Win', 'Loss', 'Breakeven', 'No Trade'].includes(req.body.outcome)) {
@@ -148,8 +178,23 @@ async function postRecord(req, res) {
     q.respectedRisk = 'NOT_MENTIONED';
     session.outcome = 'No Trade';
   }
-  session.quickChecks = q;
   const interpAtRecord = aiCoach.interpretJournal(session);
+  // If the trader left quick checks untouched on the form, infer sensible defaults
+  // from their written journal notes & interpretation so every recorded session counts.
+  if (session.sessionType !== 'STUDY') {
+    if (q.followedPlan === 'NOT_MENTIONED') {
+      if (session.plan && session.plan.skipped) q.followedPlan = 'NO_PLAN';
+      else q.followedPlan = interpAtRecord.isEmotionalDeviation ? 'NO' : 'YES';
+    }
+    if (q.withinEntryCriteria === 'NOT_MENTIONED' && !(session.plan && session.plan.skipped)) {
+      q.withinEntryCriteria = interpAtRecord.isEmotionalDeviation ? 'NO' : 'YES';
+    }
+    if (q.respectedRisk === 'NOT_MENTIONED') {
+      const brokeRiskNotes = /\b((doubled|increased|added\s+to)\s+(my\s+)?(position|risk)|oversized|too\s+big|blew|exceeded\s+risk|moved?\s+(my\s+)?(stop|sl)|widened?\s+(my\s+)?stop)\b/i.test(notes);
+      q.respectedRisk = brokeRiskNotes ? 'NO' : 'YES';
+    }
+  }
+  session.quickChecks = q;
   const anyRuleBroken = q.followedPlan === 'NO' || q.withinEntryCriteria === 'NO' || q.respectedRisk === 'NO';
   session.ruleCompliance = interpAtRecord.isPlanRevision
     ? (q.withinEntryCriteria !== 'NO' && q.respectedRisk !== 'NO')
@@ -167,19 +212,86 @@ async function postRecord(req, res) {
 
   await session.save();
 
-  // Streak + badges continue on the V1 rules (log-a-day consistency)
+  // Compute live KAIZEN Score, persist ScoreSnapshot, and update streak + disciplineScore + badges
   try {
     const userDoc = await User.findById(req.session.user.id);
-    const all = await Journal.find({ userId: req.session.user.id }).sort({ createdAt: -1 });
-    const compliant = session.quickChecks.followedPlan !== 'NO';
-    await checkBadges(userDoc, all.length, compliant);
+    const system = await TradingSystem.ensureForUser(userDoc);
+    const all = await Journal.find({ userId: req.session.user.id, state: { $ne: 'PLANNED' } })
+      .sort({ createdAt: -1 });
+    let extracted = userDoc.v1Evidence || null;
+    if (!extracted) {
+      extracted = await runV1Extraction(userDoc, Journal) || null;
+    }
+    const score = computeScore(all.slice(0, 25), system, extracted);
+    await ScoreSnapshot.create({
+      userId: req.session.user.id,
+      formulaVersion: score.formulaVersion,
+      overall: score.overall,
+      overallState: score.overallState,
+      dimensions: score.dimensions,
+      evidenceMix: score.evidenceMix,
+      sessionsConsidered: score.sessionsConsidered
+    });
+
+    if (score.overall !== null && score.overall !== undefined) {
+      const prevScore = userDoc.disciplineScore || 50;
+      userDoc.disciplineScore = score.overall;
+      session.sessionScore = score.overall;
+      await session.save();
+
+      // Non-blocking Mantle on-chain recording for V2 recorded sessions
+      Promise.resolve().then(async () => {
+        try {
+          const mantle = require('../config/mantle');
+          await mantle.recordScoreChange(
+            userDoc._id,
+            prevScore,
+            score.overall,
+            session.ruleCompliance !== false ? 'Compliant session' : 'Rule violation'
+          );
+          if ([1, 5, 10, 25, 50, 100].includes(all.length)) {
+            await mantle.recordMilestone(userDoc._id, `${all.length}_sessions`, score.overall);
+          }
+          if (score.overall >= 80 && prevScore < 80) {
+            await mantle.recordMilestone(userDoc._id, 'elite_tier_reached', score.overall);
+          }
+        } catch (mErr) {
+          console.error('Mantle V2 record error:', mErr.message);
+        }
+      });
+    }
+
+    // Update daily streak on compliant session
+    const compliant = session.ruleCompliance !== false;
+    const today = new Date(); today.setHours(0, 0, 0, 0);
+    const yesterday = new Date(today); yesterday.setDate(yesterday.getDate() - 1);
+    const prevSession = all.find(s => String(s._id) !== String(session._id));
+    if (compliant) {
+      if (prevSession && prevSession.createdAt) {
+        const lastDate = new Date(prevSession.createdAt); lastDate.setHours(0, 0, 0, 0);
+        if (lastDate.getTime() === yesterday.getTime()) {
+          userDoc.streak = (userDoc.streak || 0) + 1;
+        } else if (lastDate.getTime() !== today.getTime()) {
+          userDoc.streak = Math.max(userDoc.streak || 0, 1);
+        } else if (!userDoc.streak) {
+          userDoc.streak = 1;
+        }
+      } else {
+        userDoc.streak = Math.max(userDoc.streak || 0, 1);
+      }
+    }
+
     await userDoc.save();
+    await checkBadges(userDoc._id);
+    const refreshedUser = await User.findById(req.session.user.id);
     req.session.user = {
       ...req.session.user,
-      streak: userDoc.streak, badges: userDoc.badges
+      disciplineScore: (refreshedUser && refreshedUser.disciplineScore) || userDoc.disciplineScore || 0,
+      streak: (refreshedUser && refreshedUser.streak) || userDoc.streak || 0,
+      badges: (refreshedUser && refreshedUser.badges) || userDoc.badges || []
     };
   } catch (e) {
-    console.error('postRecord badge/streak error:', e.message);
+    console.error('postRecord score/badge/streak error:', e.message);
   }
 
   res.redirect(`/dashboard/sessions/${session._id}/reflect`);
@@ -232,17 +344,13 @@ async function postReflect(req, res) {
   // ── ANALYZE: two machines, one response ──
   const userDoc = await User.findById(req.session.user.id);
   const system = await TradingSystem.ensureForUser(userDoc);
-  const recentSessions = await Journal.find({ userId: req.session.user.id })
-    .sort({ createdAt: -1 }).limit(21).lean();
+  const recentSessions = await Journal.find({ userId: req.session.user.id, state: { $ne: 'PLANNED' } })
+    .sort({ createdAt: -1 }).limit(25).lean();
 
   // Machine 1 — deterministic engine (with one-time V1 extraction)
   let extracted = userDoc.v1Evidence || null;
-  if (!userDoc.v1ExtractedAt) {
+  if (!extracted) {
     extracted = await runV1Extraction(userDoc, Journal) || null;
-    if (extracted) {
-      userDoc.v1Evidence = extracted;
-      await userDoc.save();
-    }
   }
   const score = computeScore(recentSessions, system, extracted);
   await ScoreSnapshot.create({
@@ -254,6 +362,44 @@ async function postReflect(req, res) {
     evidenceMix: score.evidenceMix,
     sessionsConsidered: score.sessionsConsidered
   });
+  if (score.overall !== null && score.overall !== undefined) {
+    const prevScore = userDoc.disciplineScore || 50;
+    userDoc.disciplineScore = score.overall;
+    session.sessionScore = score.overall;
+    await userDoc.save();
+    req.session.user.disciplineScore = score.overall;
+
+    // Award badges and record on-chain Mantle events for V2 reflected sessions
+    try {
+      await checkBadges(userDoc._id);
+      const refreshedUser = await User.findById(req.session.user.id);
+      if (refreshedUser) {
+        req.session.user.badges = refreshedUser.badges || [];
+      }
+    } catch (bErr) {
+      console.error('postReflect badge error:', bErr.message);
+    }
+
+    Promise.resolve().then(async () => {
+      try {
+        const mantle = require('../config/mantle');
+        await mantle.recordScoreChange(
+          userDoc._id,
+          prevScore,
+          score.overall,
+          session.ruleCompliance !== false ? 'Compliant reflected session' : 'Rule violation'
+        );
+        if ([1, 5, 10, 25, 50, 100].includes(recentSessions.length)) {
+          await mantle.recordMilestone(userDoc._id, `${recentSessions.length}_sessions`, score.overall);
+        }
+        if (score.overall >= 80 && prevScore < 80) {
+          await mantle.recordMilestone(userDoc._id, 'elite_tier_reached', score.overall);
+        }
+      } catch (mErr) {
+        console.error('Mantle V2 reflect error:', mErr.message);
+      }
+    });
+  }
 
   // Machine 2 — the coach (改): explains, never scores
   const MindState = require('../models/MindState');
@@ -345,15 +491,116 @@ async function postReflect(req, res) {
 async function getDetail(req, res) {
   const session = await loadOwned(req, res);
   if (!session) return;
-  const [latest, recentSessions] = await Promise.all([
+
+  // Auto-heal any earlier session where `session.asset` was mistakenly saved as
+  // the strategy/setup name (e.g. "Daily Candlestick Liquidity") instead of the pair (e.g. "Japan 225" or "AUDJPY"),
+  // or where a study/backtest session was logged under LIVE.
+  const ctx = aiCoach.resolveSessionContext(session);
+  const setupName = String((session.plan && session.plan.setup) || '').trim();
+  const assetClean = String(session.asset || '').trim();
+  const assetWasStrategy = Boolean(setupName && assetClean && assetClean.toLowerCase() === setupName.toLowerCase());
+  let dirty = false;
+  if (session.plan && session.plan.setup && session.plan.setup !== setupName) {
+    session.plan.setup = setupName;
+    dirty = true;
+  }
+  if (ctx.isStudyOrBacktest && session.sessionType === 'LIVE') {
+    session.sessionType = 'STUDY';
+    if (!session.outcome || session.outcome === 'Pending') session.outcome = 'No Trade';
+    dirty = true;
+  }
+  if (ctx.instrument && assetClean !== ctx.instrument) {
+    session.asset = ctx.instrument;
+    dirty = true;
+  } else if (assetWasStrategy && !ctx.instrument) {
+    session.asset = ctx.isStudyOrBacktest ? 'Market Study' : 'General';
+    dirty = true;
+  }
+  if (dirty) {
+    await session.save().catch(() => {});
+  }
+
+  const [latest, recentSessions, userDoc] = await Promise.all([
     ScoreSnapshot.findOne({ userId: req.session.user.id }).sort({ computedAt: -1 }).lean(),
-    Journal.find({ userId: req.session.user.id, _id: { $ne: session._id } }).sort({ createdAt: -1 }).limit(10).lean()
+    Journal.find({ userId: req.session.user.id, _id: { $ne: session._id } }).sort({ createdAt: -1 }).limit(10).lean(),
+    User.findById(req.session.user.id).lean()
   ]);
+  const brokerVerify = require('../services/brokerVerify');
+  const brokerTrades = (userDoc && Array.isArray(userDoc.brokerTrades)) ? userDoc.brokerTrades : [];
+  const brokerCheck = brokerVerify.matchSessionWithBrokerHistory(session, brokerTrades);
+  if (brokerCheck.verified && (!session.brokerVerification || session.brokerVerification.status !== 'VERIFIED')) {
+    session.brokerVerification = {
+      status: 'VERIFIED',
+      tradeHash: brokerCheck.matchedTrade.tradeHash,
+      matchedInstrument: brokerCheck.matchedTrade.instrument,
+      matchedDirection: brokerCheck.matchedTrade.direction,
+      entryPrice: brokerCheck.matchedTrade.entryPrice,
+      exitPrice: brokerCheck.matchedTrade.exitPrice,
+      openTime: brokerCheck.matchedTrade.openTime,
+      closeTime: brokerCheck.matchedTrade.closeTime,
+      verifiedAt: new Date()
+    };
+    await session.save().catch(() => {});
+  }
   const review = aiCoach.parseSessionReview(session.aiAnalysis, session, { recentSessions });
   res.render('session-detail', {
-    user: req.session.user, session, score: latest, review,
+    user: req.session.user, session, score: latest, review, brokerCheck,
     dimensionLabels: DIMENSION_LABELS, title: 'Session'
   });
+}
+
+// ── BROKER STATEMENT IMPORT (MT4 / MT5 / cTrader / TradingView HTML or CSV) ──
+async function postImportBroker(req, res) {
+  const brokerVerify = require('../services/brokerVerify');
+  const rawFile = (req.file && req.file.buffer) ? req.file.buffer.toString('utf8') : '';
+  const rawBody = String(req.body.brokerText || '').trim();
+  const content = rawFile || rawBody;
+  const returnTo = (req.body.returnTo && String(req.body.returnTo).startsWith('/'))
+    ? String(req.body.returnTo)
+    : '/dashboard/sessions';
+
+  if (!content) {
+    return res.redirect(returnTo + (returnTo.includes('?') ? '&' : '?') + 'imported=0');
+  }
+
+  const parsed = brokerVerify.parseBrokerStatement(content, (req.file && req.file.originalname) || '');
+  const userDoc = await User.findById(req.session.user.id);
+  if (!userDoc) return res.redirect('/dashboard/sessions');
+
+  const existing = Array.isArray(userDoc.brokerTrades) ? userDoc.brokerTrades : [];
+  const existingHashes = new Set(existing.map(t => t && t.tradeHash).filter(Boolean));
+  let added = 0;
+  for (const t of parsed) {
+    if (!existingHashes.has(t.tradeHash)) {
+      existing.push(t);
+      existingHashes.add(t.tradeHash);
+      added++;
+    }
+  }
+  userDoc.brokerTrades = existing.slice(-500);
+  await userDoc.save();
+
+  // Retroactively match and verify any existing LIVE sessions for this trader
+  const liveSessions = await Journal.find({ userId: userDoc._id, sessionType: 'LIVE' });
+  for (const s of liveSessions) {
+    const m = brokerVerify.matchSessionWithBrokerHistory(s, userDoc.brokerTrades);
+    if (m.verified && (!s.brokerVerification || s.brokerVerification.status !== 'VERIFIED')) {
+      s.brokerVerification = {
+        status: 'VERIFIED',
+        tradeHash: m.matchedTrade.tradeHash,
+        matchedInstrument: m.matchedTrade.instrument,
+        matchedDirection: m.matchedTrade.direction,
+        entryPrice: m.matchedTrade.entryPrice,
+        exitPrice: m.matchedTrade.exitPrice,
+        openTime: m.matchedTrade.openTime,
+        closeTime: m.matchedTrade.closeTime,
+        verifiedAt: new Date()
+      };
+      await s.save().catch(() => {});
+    }
+  }
+
+  return res.redirect(returnTo + (returnTo.includes('?') ? '&' : '?') + `imported=${added || parsed.length}`);
 }
 
 // ── CHART SCREENSHOT ("THE CHART — AS RECORDED") ─────────────────
@@ -372,5 +619,5 @@ async function getChartImage(req, res) {
 module.exports = {
   upload,
   getSessions, getPlan, postPlan, getRecord, postRecord,
-  getReflect, postReflect, getDetail, getChartImage
+  getReflect, postReflect, getDetail, getChartImage, postImportBroker
 };

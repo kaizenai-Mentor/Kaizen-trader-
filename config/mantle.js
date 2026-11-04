@@ -263,9 +263,13 @@ async function getRecentEvents({ userId, limit = 10 } = {}) {
     try {
       logs = await fetchLogs('earliest');
     } catch (rangeErr) {
-      // Some public RPCs cap the block range — retry with the last ~50k blocks.
+      // Mantle Sepolia RPC caps eth_getLogs block range to 10,000 blocks — retry with 9,500 then 2,000.
       const latest = Number(await provider.send('eth_blockNumber', []));
-      logs = await fetchLogs(Math.max(0, latest - 50000));
+      try {
+        logs = await fetchLogs(Math.max(0, latest - 9500));
+      } catch (_2) {
+        logs = await fetchLogs(Math.max(0, latest - 2000));
+      }
     }
 
     out.push(...logs.map(decodeEventLog).filter(Boolean));
