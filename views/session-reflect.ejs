@@ -20,7 +20,7 @@
     <p style="font-size:0.88rem;color:var(--text-secondary);line-height:1.75;margin:0 0 24px;"><%= t('reflect.four') %></p>
 
     <div class="k-card" style="margin-bottom:18px;">
-      <div class="k-metric-label" style="margin-bottom:8px;"><%= t('nav.sessions') %> — <%= session.asset %></div>
+      <div class="k-metric-label" style="margin-bottom:8px;"><%= t('nav.sessions') %> — <%= session.asset %><% if (session.plan && session.plan.setup && session.plan.setup !== session.asset) { %> · <%= session.plan.setup %><% } %></div>
       <div style="font-size:0.84rem;color:var(--text-secondary);line-height:1.75;max-height:110px;overflow:hidden;position:relative;">
         <%= session.notes %>
         <div style="position:absolute;bottom:0;left:0;right:0;height:44px;background:linear-gradient(transparent,var(--bg-card));"></div>
@@ -28,11 +28,6 @@
     </div>
 
     <form action="/dashboard/sessions/<%= session._id %>/reflect" method="POST">
-
-      <div class="k-card k-formcard k-prompt">
-        <label class="k-fieldlabel"><%= t('reflect.followed') %></label>
-        <textarea name="followedProcess" class="k-input" rows="3" placeholder="<%= t('reflect.ph2') %>"></textarea>
-      </div>
 
       <div class="k-card k-formcard k-prompt">
         <label class="k-fieldlabel"><%= t('reflect.learned') %></label>
@@ -51,17 +46,20 @@
     </form>
 
     <!-- KAIZEN's response — revealed in place (streamed, Psychology-style) -->
-    <div class="k-card k-card--featured" id="k-response" hidden style="margin-top:18px;">
-      <div class="k-panel-title" style="margin-bottom:14px;"><span class="k-kanji k-kanji--sm">改</span><%= t('kaizen.responds') %></div>
+    <section class="k-card k-card--featured k-ai-card" id="k-response" hidden style="margin-top:20px;width:100%;box-sizing:border-box;">
+      <div class="k-ai-cardhead">
+        <div class="k-panel-title"><span class="k-kanji k-kanji--sm">改</span><%= t('kaizen.responds') %></div>
+        <span style="font-family:var(--font-mono);font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);"><%= session.asset %><% if (session.plan && session.plan.setup && session.plan.setup !== session.asset) { %> · <%= session.plan.setup %><% } %></span>
+      </div>
       <div class="k-typing" id="k-responding" hidden>
         <span class="k-kanji k-kanji--sm">改</span>
         <div class="k-msg-text k-typingdots"><span></span><span></span><span></span></div>
       </div>
-      <div id="k-analysis" style="font-size:0.9rem;color:var(--text-primary);line-height:1.85;white-space:pre-wrap;"></div>
-      <div id="k-after" hidden style="margin-top:18px;">
+      <div id="k-analysis" class="k-review-stack" style="font-size:0.9rem;color:var(--text-primary);line-height:1.85;white-space:pre-wrap;width:100%;"></div>
+      <div id="k-after" hidden style="margin-top:20px;">
         <a class="btn-primary k-btn-lg" href="/dashboard/sessions/<%= session._id %>"><%= t('reflect.openAnalyzed') %></a>
       </div>
-    </div>
+    </section>
 
   </main>
 

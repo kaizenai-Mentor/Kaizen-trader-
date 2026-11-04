@@ -500,41 +500,66 @@ const NEWS_TTL_MS = 30 * 60 * 1000;
 
 app.get('/news', async (req, res) => {
   if (!req.session.user) return res.redirect('/auth/login');
-  const renderNews = (articles) => res.render('news', {
+  const { normalizeLiveForexFactoryEvents } = require('./services/marketNews');
+  const renderNews = (articles, events) => res.render('news', {
     user: req.session.user,
     articles: articles && articles.length ? articles : buildMarketNewsFeed([]),
-    events: getActiveEvents()
+    events: events && events.length ? events : getActiveEvents()
   });
   try {
     if (Date.now() - newsCache.at >= NEWS_TTL_MS || newsCache.articles.length === 0) {
       let rawArticles = [];
+      const axios = require('axios');
       if (process.env.MARKETAUX_KEY) {
-        const axios = require('axios');
-        const response = await axios.get('https://api.marketaux.com/v1/news/all', {
-          params: {
-            api_token: process.env.MARKETAUX_KEY,
-            language: 'en',
-            limit: 30,
-            filter_entities: true,
-            search: 'Federal Reserve OR FOMC OR CPI OR PCE OR NFP OR ECB OR BOE OR BOJ OR Gold OR XAUUSD OR EURUSD OR USDJPY OR Treasury yields'
-          },
-          timeout: 6000
+        try {
+          const response = await axios.get('https://api.marketaux.com/v1/news/all', {
+            params: {
+              api_token: process.env.MARKETAUX_KEY,
+              language: 'en',
+              limit: 30,
+              filter_entities: true,
+              search: 'Federal Reserve OR FOMC OR CPI OR PCE OR NFP OR ECB OR BOE OR BOJ OR Gold OR XAUUSD OR EURUSD OR USDJPY OR Treasury yields'
+            },
+            timeout: 6000
+          });
+          rawArticles = (response.data?.data || []).map((a) => ({
+            ...a,
+            publishedAt: a.publishedAt || a.published_at
+          }));
+        } catch (mErr) {
+          console.error('Marketaux news fetch skipped:', mErr.message);
+        }
+      }
+      // Pull live Forex Factory weekly calendar JSON when reachable on Render,
+      // falling back seamlessly to the verified Official 2026 Central Bank & Macro Calendar.
+      let calendarEvents = getActiveEvents();
+      try {
+        const ffRes = await axios.get('https://nfs.faireconomy.media/ff_calendar_thisweek.json', {
+          timeout: 3500
         });
-        rawArticles = (response.data?.data || []).map((a) => ({
-          ...a,
-          publishedAt: a.publishedAt || a.published_at
-        }));
+        const liveEvents = normalizeLiveForexFactoryEvents(ffRes.data);
+        if (liveEvents.length > 0) {
+          const seenDates = new Set(liveEvents.map(e => `${e.currency}-${e.title.slice(0, 18)}`));
+          const merged = [
+            ...liveEvents,
+            ...calendarEvents.filter(e => !seenDates.has(`${e.currency}-${e.title.slice(0, 18)}`))
+          ].sort((a, b) => new Date(a.date) - new Date(b.date));
+          calendarEvents = merged.slice(0, 14);
+        }
+      } catch (_) {
+        // Offline or sandboxed environment: use verified Official 2026 Macro Calendar
       }
       newsCache.articles = buildMarketNewsFeed(rawArticles);
+      newsCache.events = calendarEvents;
       newsCache.at = Date.now();
     }
-    renderNews(newsCache.articles);
+    renderNews(newsCache.articles, newsCache.events);
   } catch (err) {
     console.error('News error:', err.message);
     if (!newsCache.articles || newsCache.articles.length === 0) {
       newsCache.articles = buildMarketNewsFeed([]);
     }
-    renderNews(newsCache.articles);
+    renderNews(newsCache.articles, newsCache.events);
   }
 });
 
@@ -834,7 +859,8 @@ app.post('/beta/join', async (req, res) => {
 // Support form submission
 app.post('/support/send', async (req, res) => {
   try {
-    const { name, email, issue, message } = req.body;
+    const { name, email, issue, customIssue, message } = req.body;
+    const resolvedIssue = issue === 'OTHER' && customIssue ? customIssue.trim() : issue;
     const nodemailer = require('nodemailer');
 
     const transporter = nodemailer.createTransport({
@@ -849,12 +875,12 @@ app.post('/support/send', async (req, res) => {
     await transporter.sendMail({
       from: `"KAIZEN Support" <${process.env.BREVO_SENDER_EMAIL}>`,
       to: process.env.BREVO_SENDER_EMAIL,
-      subject: `[KAIZEN Support] ${issue} — from ${name}`,
+      subject: `[KAIZEN Support] ${resolvedIssue} — from ${name}`,
       html: `
         <h2>New Support Message</h2>
         <p><strong>Name:</strong> ${name}</p>
         <p><strong>Email:</strong> ${email}</p>
-        <p><strong>Issue:</strong> ${issue}</p>
+        <p><strong>Issue:</strong> ${resolvedIssue}</p>
         <p><strong>Message:</strong></p>
         <p>${message}</p>
       `

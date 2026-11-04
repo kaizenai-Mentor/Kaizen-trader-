@@ -7,83 +7,99 @@
 <body class="app-page">
   <%- include('partials/navbar') %>
 
-  <main class="k-flow">
+  <main class="k-flow k-flow--wide k-ai-stack">
 
-    <div class="k-stepstrip">
-      <span class="is-done"><%= t('plan.title') %> ✓</span><b>—</b>
-      <span class="is-done"><%= t('record.title') %> ✓</span><b>—</b>
-      <span class="is-done"><%= t('reflect.title') %> ✓</span><b>—</b>
-      <span class="is-active"><%= t('sessions.stageAnalyzed') %></span>
+    <div>
+      <div class="k-stepstrip">
+        <span class="is-done"><%= t('plan.title') %> ✓</span><b>—</b>
+        <span class="is-done"><%= t('record.title') %> ✓</span><b>—</b>
+        <span class="is-done"><%= t('reflect.title') %> ✓</span><b>—</b>
+        <span class="is-active"><%= t('sessions.stageAnalyzed') %></span>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px;">
+        <span class="k-chip"><%= labels.state(session.state) %></span>
+        <span class="k-type-tag k-type-tag--<%= String(session.sessionType||'LIVE').toLowerCase() %>"><%= labels.type(session.sessionType || 'LIVE') %></span>
+        <% if (session.outcome && session.outcome !== 'Pending') { %>
+          <span style="font-family:var(--font-mono);font-size:0.68rem;color:<%= session.outcome === 'Win' ? 'var(--green)' : session.outcome === 'Loss' ? 'var(--red)' : 'var(--ash)' %>;"><%= labels.outcome(session.outcome) %></span>
+        <% } %>
+        <span style="font-family:var(--font-mono);font-size:0.6rem;color:var(--text-faint);letter-spacing:0.08em;margin-left:auto;">
+          <%= new Date(session.createdAt).toLocaleDateString(({en:'en-US',fr:'fr-FR',zh:'zh-CN',ja:'ja-JP',af:'af-ZA'})[lang]||'en-US',{month:'short',day:'numeric',year:'numeric'}) %>
+        </span>
+      </div>
+
+      <h1 style="font-size:clamp(1.4rem,3vw,2rem);font-weight:700;color:var(--text-primary);margin:0;">
+        <%= session.asset %> <%= t('detail.closed') %><% if (session.plan && session.plan.setup && session.plan.setup !== session.asset) { %> · <span style="font-weight:500;color:var(--gold);"><%= session.plan.setup %></span><% } %></h1>
     </div>
-
-    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:18px;">
-      <span class="k-chip"><%= labels.state(session.state) %></span>
-      <span class="k-type-tag k-type-tag--<%= String(session.sessionType||'LIVE').toLowerCase() %>"><%= labels.type(session.sessionType || 'LIVE') %></span>
-      <% if (session.outcome && session.outcome !== 'Pending') { %>
-        <span style="font-family:var(--font-mono);font-size:0.68rem;color:<%= session.outcome === 'Win' ? 'var(--green)' : session.outcome === 'Loss' ? 'var(--red)' : 'var(--ash)' %>;"><%= labels.outcome(session.outcome) %></span>
-      <% } %>
-      <span style="font-family:var(--font-mono);font-size:0.6rem;color:var(--text-faint);letter-spacing:0.08em;margin-left:auto;">
-        <%= new Date(session.createdAt).toLocaleDateString(({en:'en-US',fr:'fr-FR',zh:'zh-CN',ja:'ja-JP',af:'af-ZA'})[lang]||'en-US',{month:'short',day:'numeric',year:'numeric'}) %>
-      </span>
-    </div>
-
-    <h1 style="font-size:clamp(1.4rem,3vw,2rem);font-weight:700;color:var(--text-primary);margin:0 0 20px;">
-      <%= session.asset %> <%= t('detail.closed') %></h1>
 
     <%
       var rev = (typeof review !== 'undefined' && review) ? review : null;
       var noticedList = (rev && Array.isArray(rev.noticed) && rev.noticed.length) ? rev.noticed : [];
     %>
 
-    <div style="display:grid;grid-template-columns:1.35fr 0.65fr;gap:16px;align-items:start;" class="k-detail-grid">
+    <div class="k-detail-grid">
 
-      <!-- LEFT: the coach's conversational review -->
-      <div class="k-card k-card--featured" style="padding:24px;">
-        <div class="k-panel-title" style="margin-bottom:20px;"><span class="k-kanji k-kanji--sm">改</span><%= t('kaizen.responds') %></div>
+      <!-- FULL-WIDTH ALIGNED CARD: KAIZEN's full conversational review -->
+      <section class="k-card k-card--featured k-ai-card">
+        <div class="k-ai-cardhead">
+          <div class="k-panel-title"><span class="k-kanji k-kanji--sm">改</span><%= t('kaizen.responds') %></div>
+          <span style="font-family:var(--font-mono);font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);"><%= session.asset %><% if (session.plan && session.plan.setup && session.plan.setup !== session.asset) { %> · <%= session.plan.setup %><% } %></span>
+        </div>
 
         <% if (rev) { %>
-          <!-- 1. Session Summary -->
-          <div style="padding-bottom:18px;border-bottom:1px solid var(--border);margin-bottom:18px;">
-            <div style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold);margin-bottom:8px;"><%= t('detail.sessionSummary') %></div>
-            <p style="font-size:0.94rem;color:var(--text-primary);line-height:1.8;margin:0;"><%= rev.summary %></p>
-          </div>
+          <div class="k-review-stack">
+            <!-- 1. Session Summary -->
+            <div class="k-review-block">
+              <div style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold);margin-bottom:8px;"><%= t('detail.sessionSummary') %></div>
+              <p style="font-size:0.94rem;color:var(--text-primary);line-height:1.8;margin:0;"><%= rev.summary %></p>
+            </div>
 
-          <!-- 2. What I noticed -->
-          <div style="padding-bottom:18px;border-bottom:1px solid var(--border);margin-bottom:18px;">
-            <div style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--ash);margin-bottom:10px;"><%= t('detail.whatINoticed') %></div>
-            <ul style="margin:0;padding-left:18px;display:flex;flex-direction:column;gap:8px;">
-              <% noticedList.forEach(function(obs) { %>
-                <li style="font-size:0.88rem;color:var(--text-primary);line-height:1.75;"><%= obs %></li>
-              <% }); %>
-            </ul>
-          </div>
+            <!-- 2. What I noticed -->
+            <div class="k-review-block">
+              <div style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--ash);margin-bottom:10px;"><%= t('detail.whatINoticed') %></div>
+              <ul style="margin:0;padding-left:18px;display:flex;flex-direction:column;gap:8px;">
+                <% noticedList.forEach(function(obs) { %>
+                  <li style="font-size:0.88rem;color:var(--text-primary);line-height:1.75;"><%= obs %></li>
+                <% }); %>
+              </ul>
+            </div>
 
-          <!-- 3. What concerns me -->
-          <div style="padding-bottom:18px;border-bottom:1px solid var(--border);margin-bottom:18px;">
-            <div style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--red, #e06c75);margin-bottom:8px;"><%= t('detail.whatConcernsMe') %></div>
-            <p style="font-size:0.88rem;color:var(--text-primary);line-height:1.78;margin:0;"><%= rev.concerns %></p>
-          </div>
+            <!-- 3. What concerns me -->
+            <div class="k-review-block">
+              <div style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--red, #e06c75);margin-bottom:8px;"><%= t('detail.whatConcernsMe') %></div>
+              <p style="font-size:0.88rem;color:var(--text-primary);line-height:1.78;margin:0;"><%= rev.concerns %></p>
+            </div>
 
-          <!-- 4. What you did well -->
-          <div style="padding-bottom:18px;border-bottom:1px solid var(--border);margin-bottom:18px;">
-            <div style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--green, #4ec9b0);margin-bottom:8px;"><%= t('detail.whatYouDidWell') %></div>
-            <p style="font-size:0.88rem;color:var(--text-primary);line-height:1.78;margin:0;"><%= rev.didWell %></p>
-          </div>
+            <!-- 4. What you did well -->
+            <div class="k-review-block">
+              <div style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--green, #4ec9b0);margin-bottom:8px;"><%= t('detail.whatYouDidWell') %></div>
+              <p style="font-size:0.88rem;color:var(--text-primary);line-height:1.78;margin:0;"><%= rev.didWell %></p>
+            </div>
 
-          <!-- 5. Your next improvement (ONE clear action) -->
-          <div style="border-left:2px solid var(--gold);padding-left:14px;">
-            <div style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold);margin-bottom:6px;"><%= t('detail.yourNextImprovement') %></div>
-            <p style="font-size:0.92rem;font-weight:500;color:var(--text-primary);line-height:1.78;margin:0;"><%= rev.nextImprovement %></p>
+            <!-- 5. Your next improvement (ONE clear action) -->
+            <div class="k-review-block k-review-block--action">
+              <div style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold);margin-bottom:6px;"><%= t('detail.yourNextImprovement') %></div>
+              <p style="font-size:0.92rem;font-weight:500;color:var(--text-primary);line-height:1.78;margin:0;"><%= rev.nextImprovement %></p>
+            </div>
+
+            <% if (typeof brokerCheck !== 'undefined' && brokerCheck && brokerCheck.status !== 'STUDY_EXEMPT') { %>
+              <div class="k-review-block" style="border-left:3px solid <%= brokerCheck.verified ? 'var(--green)' : 'var(--gold)' %>;">
+                <div style="font-family:var(--font-mono);font-size:0.58rem;letter-spacing:0.14em;text-transform:uppercase;color:<%= brokerCheck.verified ? 'var(--green)' : 'var(--gold)' %>;margin-bottom:6px;">
+                  <%= brokerCheck.verified ? 'BROKER-VERIFIED EXECUTION ✓' : 'ACCOUNT HISTORY VERIFICATION' %>
+                </div>
+                <p style="font-size:0.84rem;color:var(--text-secondary);line-height:1.72;margin:0;"><%= brokerCheck.verificationNote %></p>
+              </div>
+            <% } %>
           </div>
         <% } else { %>
-          <div style="font-size:0.9rem;color:var(--text-primary);line-height:1.85;white-space:pre-wrap;"><%= session.aiAnalysis %></div>
+          <div style="font-size:0.9rem;color:var(--text-primary);line-height:1.85;white-space:pre-wrap;width:100%;"><%= session.aiAnalysis %></div>
         <% } %>
-      </div>
+      </section>
 
-      <!-- RIGHT: the engine's numbers + session record -->
-      <div>
+      <!-- BALANCED 2-COLUMN ROW: Engine Numbers + Session Record -->
+      <div class="k-detail-subgrid">
         <% if (score) { %>
-          <div class="k-card k-card--elevated" style="margin-bottom:14px;">
+          <div class="k-card k-card--elevated k-ai-card">
             <div class="k-metric-label" style="margin-bottom:14px;"><%= t('detail.engine') %></div>
             <% if (score.overall !== null && score.overall !== undefined) { %>
               <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:16px;">
@@ -107,14 +123,14 @@
             <% } else { %>
               <p style="font-size:0.82rem;color:var(--text-secondary);line-height:1.75;margin:0;"><%= t('detail.baseline') %></p>
             <% } %>
-            <div style="border-top:1px solid var(--border);margin-top:14px;padding-top:12px;">
+            <div style="border-top:1px solid var(--border);margin-top:auto;padding-top:14px;">
               <a href="/dashboard" style="font-family:var(--font-mono);font-size:0.62rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);text-decoration:underline;"><%= t('detail.howScored') %></a>
             </div>
           </div>
         <% } %>
 
         <!-- What you documented -->
-        <div class="k-card">
+        <div class="k-card k-ai-card">
           <div class="k-metric-label" style="margin-bottom:8px;"><%= t('detail.yourRecord') %></div>
           <div style="font-size:0.84rem;color:var(--text-secondary);line-height:1.78;white-space:pre-wrap;"><%= session.notes %></div>
           <% if (session.reflection && (session.reflection.learned || session.reflection.wouldChange)) { %>

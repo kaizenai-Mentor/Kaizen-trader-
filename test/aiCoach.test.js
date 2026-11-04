@@ -140,3 +140,116 @@ test('interpretJournal distinguishes a disciplined plan revision from an emotion
   assert.strictEqual(emoInterp.classification, 'EMOTIONAL_DEVIATION');
 });
 
+test('resolveSessionContext and buildSessionReview distinguish strategy (Daily Candlestick Liquidity) from pair (AUDJPY) without mid-sentence cutoff', () => {
+  const { resolveSessionContext, buildSessionReview } = require('../services/aiCoach');
+  const session = {
+    asset: 'Daily Candlestick Liquidity', // legacy bug where setup was stored in asset
+    sessionType: 'LIVE',
+    plan: { setup: 'Daily Candlestick Liquidity', skipped: false },
+    quickChecks: { followedPlan: 'NO', withinEntryCriteria: 'NO', respectedRisk: 'YES' },
+    notes: 'My setup today was a sell setup on AUDJPY. After analyzing the pair, I entered before the daily candle liquidity sweep fully confirmed and closed at breakeven.'
+  };
+  const ctx = resolveSessionContext(session);
+  assert.strictEqual(ctx.instrument, 'AUDJPY', 'must detect AUDJPY as the currency pair');
+  assert.strictEqual(ctx.strategy, 'Daily Candlestick Liquidity', 'must recognize Daily Candlestick Liquidity as the strategy');
+  assert.strictEqual(ctx.tradeDirection, 'sell');
+
+  const review = buildSessionReview(session);
+  assert.ok(!review.summary.includes('(Daily Candlestick Liquidity) on Daily Candlestick Liquidity'), 'must never repeat strategy as both plan and pair');
+  assert.ok(review.summary.includes('using your Daily Candlestick Liquidity strategy') && review.summary.includes('on AUDJPY'), 'must name strategy and pair distinctly');
+  assert.ok(!review.summary.endsWith('After analyzing the pair, I"'), 'must never cut off mid-sentence at 14 words');
+});
+
+test('Study and Backtest sessions on Japan 225 are recognized and coached as non-live chart study (never live execution or FOMO mental entry)', () => {
+  const { resolveSessionContext, interpretJournal, buildSessionReview, parseSessionReview } = require('../services/aiCoach');
+  const studySession = {
+    asset: 'Daily Candlestick Liquidity ',
+    sessionType: 'LIVE', // even if logged under LIVE, notes state studying
+    plan: { setup: 'Daily Candlestick Liquidity ', skipped: false },
+    reflection: { learned: 'I learnt to be patient for my full checklist to be complete before entering my set-up.' },
+    notes: "I'm currently studying how to trade continuation DCL trends on Japan 225. The previous 4-hour candle swept liquidity and the 30-minute market structure shift confirmed the setup going according to my bias."
+  };
+  const ctx = resolveSessionContext(studySession);
+  assert.strictEqual(ctx.instrument, 'Japan 225', 'must detect Japan 225 as the instrument');
+  assert.strictEqual(ctx.strategy, 'Daily Candlestick Liquidity', 'must trim and recognize Daily Candlestick Liquidity as the strategy');
+  assert.strictEqual(ctx.isStudyOrBacktest, true, 'must recognize session as study/backtest');
+
+  const interp = interpretJournal(studySession);
+  assert.strictEqual(interp.classification, 'STUDY_BACKTEST_SESSION');
+
+  const review = buildSessionReview(studySession);
+  assert.match(review.summary, /structured chart study and backtest using your Daily Candlestick Liquidity strategy on Japan 225/);
+  assert.doesNotMatch(review.summary, /executed (inside|within) the boundaries/);
+  assert.ok(review.noticed[0].startsWith('On Japan 225, you studied and tracked how your setup unfolded:'));
+
+  // Also verify parseSessionReview auto-heals legacy stored text that had the old bug
+  const legacyBrokenText = [
+    'SESSION SUMMARY',
+    'You declared your plan (Daily Candlestick Liquidity ) on Daily Candlestick Liquidity before the session and executed inside the boundaries you set — "I\'m currently studying how to trade continuation DCL trends on Japan 225. The previous".',
+    'WHAT I NOTICED',
+    '- On Daily Candlestick Liquidity , you documented: "I\'m currently studying how to trade continuation DCL trends on Japan 225. The previous…".',
+    'WHAT CONCERNS ME',
+    'The freeform journal entry describes the trade "going according to my bias," which could be interpreted as you having mentally taken the trade.'
+  ].join('\n\n');
+  const healed = parseSessionReview(legacyBrokenText, studySession);
+  assert.match(healed.summary, /structured chart study and backtest using your Daily Candlestick Liquidity strategy on Japan 225/);
+  assert.ok(healed.noticed[0].startsWith('On Japan 225, you studied and tracked how your setup unfolded:'));
+  assert.doesNotMatch(healed.concerns, /mentally taken the trade/);
+});
+
+test('brokerVerify strips sensitive account data, matches delayed live sessions, and auto-generates Trader Dossier from Memories', () => {
+  const { parseBrokerStatement, matchSessionWithBrokerHistory, buildAutoTraderDossier } = require('../services/brokerVerify');
+
+  const mt5Sample = [
+    'Account: 99887766, Name: Secret Trader, Balance: $50,000.00',
+    '2026-10-28 08:00, balance, Initial Deposit, $50000.00',
+    '10492817, 2026.10.29 09:15:00, sell, 1.50, AUDJPY, 101.420, 101.720, 100.820, 2026.10.29 11:40:00, 100.820, $600.00'
+  ].join('\n');
+
+  const trades = parseBrokerStatement(mt5Sample, 'ReportHistory.csv');
+  assert.strictEqual(trades.length, 1, 'must parse trade row and ignore balance/account rows');
+  assert.strictEqual(trades[0].instrument, 'AUDJPY');
+  assert.strictEqual(trades[0].direction, 'Sell');
+  assert.strictEqual(trades[0].outcome, 'Win');
+  assert.strictEqual(trades[0].rrAchieved, '1:2.0');
+
+  // Trader logs session 2 days after taking the trade
+  const delayedLiveSession = {
+    asset: 'AUDJPY',
+    sessionType: 'LIVE',
+    createdAt: new Date('2026-10-31T18:00:00Z'),
+    plan: { setup: 'Daily Candlestick Liquidity', skipped: false },
+    notes: 'Took a sell setup on AUDJPY after the daily liquidity sweep confirmed.',
+    reflection: { learned: 'Patience paid off waiting for the 30m shift.' }
+  };
+  const matched = matchSessionWithBrokerHistory(delayedLiveSession, trades);
+  assert.strictEqual(matched.verified, true);
+  assert.strictEqual(matched.status, 'VERIFIED');
+
+  // Unmatched live session gets the mentor verification note
+  const unmatchedSession = {
+    asset: 'GBPUSD',
+    sessionType: 'LIVE',
+    createdAt: new Date('2026-10-31T18:00:00Z'),
+    notes: 'Took a buy setup on GBPUSD.'
+  };
+  const unmatched = matchSessionWithBrokerHistory(unmatchedSession, trades);
+  assert.strictEqual(unmatched.verified, false);
+  assert.strictEqual(unmatched.status, 'UNVERIFIED');
+  assert.match(unmatched.verificationNote, /I skimmed your synced broker history for a matching GBPUSD buy execution and could not find this trade on record yet/);
+
+  // Auto-generated Dossier from Memories & Sessions requires zero manual writing
+  const dossier = buildAutoTraderDossier({
+    user: { username: 'Dennis', disciplineScore: 84, brokerTrades: trades },
+    system: { setups: [{ name: 'Daily Candlestick Liquidity' }], riskRules: { riskPerTrade: '1%' } },
+    sessions: [delayedLiveSession]
+  });
+  assert.match(dossier.verificationId, /^KZN-\d{4}-[A-F0-9]{8}$/);
+  assert.match(dossier.howITrade, /Daily Candlestick Liquidity/);
+  assert.match(dossier.howITrade, /AUDJPY/);
+  assert.strictEqual(dossier.memorableDecisions.length, 1);
+});
+
+
+
+

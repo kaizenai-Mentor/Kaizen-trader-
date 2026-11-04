@@ -50,26 +50,87 @@ function weightedRatio(observations) {
   return yes / total;
 }
 
+function isPersistedSession(s) {
+  return Boolean(s && (s._id || typeof s.ruleCompliance === 'boolean'));
+}
+
+function getEffectiveChecks(s) {
+  const q = (s && s.quickChecks) || {};
+  let followedPlan = q.followedPlan || NOT_MENTIONED;
+  let withinEntryCriteria = q.withinEntryCriteria || NOT_MENTIONED;
+  let respectedRisk = q.respectedRisk || NOT_MENTIONED;
+
+  // For real persisted DB sessions (which carry _id / boolean ruleCompliance)
+  // that have been recorded (not still in PLANNED state), infer any untouched
+  // quick checks from the trader's written notes and ruleCompliance so logging
+  // a session without clicking the optional radio buttons still scores properly.
+  if (isPersistedSession(s) && s.state !== 'PLANNED') {
+    const notes = String(s.notes || '');
+    const hasNotesOrCompliance = Boolean(notes.trim()) || typeof s.ruleCompliance === 'boolean';
+    if (hasNotesOrCompliance) {
+      const compliant = s.ruleCompliance !== false;
+      const brokePlanText = /\b(broke|ignored|violated)\s+(my\s+)?(plan|rules|entry|system)|entered\s+without\s+(my\s+)?(setup|confirmation|trigger)\b/i.test(notes);
+      const brokeExecText = /\b(moved?\s+(my\s+)?(stop|sl|invalidation)|widened?\s+(my\s+)?stop|chased|chasing|entered\s+early|jumped\s+in)\b/i.test(notes);
+      const brokeRiskText = /\b((doubled|increased|added\s+to)\s+(my\s+)?(position|risk)|oversized|too\s+big\s+a\s+size|blew|exceeded\s+risk)\b/i.test(notes);
+
+      if (followedPlan === NOT_MENTIONED) {
+        if (s.plan && s.plan.skipped) followedPlan = 'NO_PLAN';
+        else followedPlan = (!compliant || brokePlanText) ? 'NO' : 'YES';
+      }
+      if (withinEntryCriteria === NOT_MENTIONED) {
+        if (s.plan && s.plan.skipped) withinEntryCriteria = NOT_MENTIONED;
+        else withinEntryCriteria = (!compliant || brokeExecText) ? 'NO' : 'YES';
+      }
+      if (respectedRisk === NOT_MENTIONED) {
+        respectedRisk = (brokeRiskText || (!compliant && /risk|size|stop|sl|drawdown/i.test(notes + ' ' + ((s.violations || []).join(' ')))))
+          ? 'NO'
+          : 'YES';
+      }
+    }
+  }
+
+  return { followedPlan, withinEntryCriteria, respectedRisk };
+}
+
 function isV2Session(s) {
   return !!s.plan || !!s.quickChecks || !!s.reflection ||
+    isPersistedSession(s) ||
     REFLECTED_PLUS.includes(s.state) || s.state === 'PLANNED';
 }
 
 function hasReflection(s) {
   const r = s.reflection;
-  if (!r) return false;
-  const chars = [r.whatHappened, r.followedProcess, r.learned, r.wouldChange]
-    .filter(Boolean).join('').trim().length;
-  return chars >= 20;
+  if (r) {
+    const chars = [r.whatHappened, r.followedProcess, r.learned, r.wouldChange]
+      .filter(Boolean).join('').trim().length;
+    if (chars >= 20) return true;
+  }
+  // Persisted recorded sessions with substantive written journal notes also count
+  if (isPersistedSession(s) && s.state !== 'PLANNED') {
+    const noteChars = String(s.notes || '').trim().length;
+    if (noteChars >= 20) return true;
+  }
+  return false;
 }
 
 function reflectionSubstance(s) {
   const r = s.reflection;
-  if (!r) return 0;
-  const chars = [r.whatHappened, r.followedProcess, r.learned, r.wouldChange]
-    .filter(Boolean).join('').trim().length;
+  const reflChars = r
+    ? [r.whatHappened, r.followedProcess, r.learned, r.wouldChange]
+        .filter(Boolean).join('').trim().length
+    : 0;
+  const noteChars = isPersistedSession(s) ? String(s.notes || '').trim().length : 0;
+  const chars = Math.max(reflChars, Math.round(noteChars * 0.8));
+  if (chars <= 0) return 0;
   // Diminishing curve: 40 chars → ~0.45, 150 → ~0.8, 400+ → ~1
   return chars / (chars + 90);
+}
+
+function blendWithExtracted(v2Score, v2Count, threshold, ex) {
+  if (!ex || !ex.count || ex.rate === null || ex.rate === undefined) return v2Score;
+  const base = partialScore(ex.rate);
+  const v2Share = clamp((v2Count / Math.max(threshold, 1)) * 0.75 + 0.2, 0.25, 0.92);
+  return pct(clamp(v2Share * v2Score + (1 - v2Share) * base, 0, 100));
 }
 
 function dayKey(d) { return Math.floor(new Date(d).getTime() / 86400000); }
@@ -142,25 +203,37 @@ function computeScore(sessions = [], system = null, extracted = null, now = new 
 // ("Skip — trade without a plan") counts with partial credit: reduced
 // evidence, never a punishment.
 function computeProcess(recent, ex) {
-  const planned = recent.filter(s => s.plan && !s.plan.skipped);
+  const planned = recent.filter(s => (s.plan && !s.plan.skipped) || (isPersistedSession(s) && !(s.plan && s.plan.skipped)));
   const skipped = recent.filter(s => s.plan && s.plan.skipped);
   const n = recent.length;
 
   const declaredYesNo = planned
-    .filter(s => s.quickChecks && ['YES', 'NO'].includes(s.quickChecks.followedPlan))
-    .map(s => ({ yes: s.quickChecks.followedPlan === 'YES', weight: 1 }));
+    .map(s => ({ s, q: getEffectiveChecks(s) }))
+    .filter(({ q }) => ['YES', 'NO'].includes(q.followedPlan))
+    .map(({ q }) => ({ yes: q.followedPlan === 'YES', weight: 1 }));
   const adherence = weightedRatio(declaredYesNo);
 
-  if (planned.length >= THRESHOLDS.process && adherence !== null) {
+  if (planned.length >= 1 && adherence !== null) {
     const planRate = (planned.length + 0.35 * skipped.length) / Math.max(n, 1);
-    const score = pct(100 * (0.55 * clamp(planRate, 0, 1) + 0.45 * adherence));
+    const v2Score = pct(100 * (0.55 * clamp(planRate, 0, 1) + 0.45 * adherence));
     const yes = declaredYesNo.filter(o => o.yes).length;
+    if (planned.length >= THRESHOLDS.process && declaredYesNo.length >= THRESHOLDS.process) {
+      return {
+        score: v2Score,
+        state: 'READY',
+        reasons: [
+          `Planned ${planned.length} of your last ${n} sessions.`,
+          `Followed your plan in ${yes} of ${declaredYesNo.length} planned sessions.`
+        ]
+      };
+    }
+    const blended = blendWithExtracted(v2Score, declaredYesNo.length, THRESHOLDS.process, ex);
     return {
-      score,
-      state: 'READY',
+      score: blended,
+      state: 'PARTIAL',
       reasons: [
-        `Planned ${planned.length} of your last ${n} sessions.`,
-        `Followed your plan in ${yes} of ${declaredYesNo.length} planned sessions.`
+        `Planned ${planned.length} of your last ${n} sessions (${yes} of ${declaredYesNo.length} followed).`,
+        ex && ex.count ? `Blended with ${ex.count} earlier sessions while building toward ${THRESHOLDS.process} V2 sessions.` : `Active score from ${declaredYesNo.length} of ${THRESHOLDS.process} sessions needed for full baseline.`
       ]
     };
   }
@@ -191,8 +264,9 @@ function computeProcess(recent, ex) {
 // entries are never free).
 function computeRisk(recent, system, ex) {
   const declaredYesNo = recent
-    .filter(s => s.quickChecks && ['YES', 'NO'].includes(s.quickChecks.respectedRisk))
-    .map(s => ({ yes: s.quickChecks.respectedRisk === 'YES', weight: 1 }));
+    .map(s => ({ s, q: getEffectiveChecks(s) }))
+    .filter(({ q }) => ['YES', 'NO'].includes(q.respectedRisk))
+    .map(({ q }) => ({ yes: q.respectedRisk === 'YES', weight: 1 }));
   const respected = weightedRatio(declaredYesNo);
 
   const maxPerDay = system && parseNum(system.riskRules && system.riskRules.maxDailyTrades);
@@ -210,16 +284,20 @@ function computeRisk(recent, system, ex) {
     }
   }
 
-  if (declaredYesNo.length >= THRESHOLDS.risk && respected !== null) {
+  if (declaredYesNo.length >= 1 && respected !== null) {
     const yes = declaredYesNo.filter(o => o.yes).length;
-    const score = pct(clamp(100 * respected - 4 * cadenceBreaks, 0, 100));
+    const v2Score = pct(clamp(100 * respected - 4 * cadenceBreaks, 0, 100));
     const reasons = [
       `Respected your risk in ${yes} of ${declaredYesNo.length} checked sessions.`
     ];
     if (cadenceBreaks > 0) {
       reasons.push(`${cadenceBreaks} session${cadenceBreaks > 1 ? 's' : ''} beyond your system's daily trade limit — the excess is the data.`);
     }
-    return { score, state: 'READY', reasons };
+    if (declaredYesNo.length >= THRESHOLDS.risk) {
+      return { score: v2Score, state: 'READY', reasons };
+    }
+    const blended = blendWithExtracted(v2Score, declaredYesNo.length, THRESHOLDS.risk, ex);
+    return { score: blended, state: 'PARTIAL', reasons };
   }
 
   if (ex && ex.count >= THRESHOLDS.risk) {
@@ -242,20 +320,31 @@ function computeRisk(recent, system, ex) {
 // sessions (the plan is the reference). No plan → no execution
 // evidence (goes to Process, not here).
 function computeExecution(recent, ex) {
-  const planned = recent.filter(s => s.plan && !s.plan.skipped);
+  const planned = recent.filter(s => (s.plan && !s.plan.skipped) || (isPersistedSession(s) && !(s.plan && s.plan.skipped)));
   const declaredYesNo = planned
-    .filter(s => s.quickChecks && ['YES', 'NO'].includes(s.quickChecks.withinEntryCriteria))
-    .map(s => ({ yes: s.quickChecks.withinEntryCriteria === 'YES', weight: 1 }));
+    .map(s => ({ s, q: getEffectiveChecks(s) }))
+    .filter(({ q }) => ['YES', 'NO'].includes(q.withinEntryCriteria))
+    .map(({ q }) => ({ yes: q.withinEntryCriteria === 'YES', weight: 1 }));
   const within = weightedRatio(declaredYesNo);
 
-  if (declaredYesNo.length >= THRESHOLDS.execution && within !== null) {
+  if (declaredYesNo.length >= 1 && within !== null) {
     const yes = declaredYesNo.filter(o => o.yes).length;
+    const v2Score = pct(100 * within);
+    const reasons = [
+      `Entered within your criteria in ${yes} of ${declaredYesNo.length} planned sessions.`
+    ];
+    if (declaredYesNo.length >= THRESHOLDS.execution) {
+      return {
+        score: v2Score,
+        state: 'READY',
+        reasons
+      };
+    }
+    const blended = blendWithExtracted(v2Score, declaredYesNo.length, THRESHOLDS.execution, ex);
     return {
-      score: pct(100 * within),
-      state: 'READY',
-      reasons: [
-        `Entered within your criteria in ${yes} of ${declaredYesNo.length} planned sessions.`
-      ]
+      score: blended,
+      state: 'PARTIAL',
+      reasons
     };
   }
 
@@ -285,12 +374,13 @@ function computeExecution(recent, ex) {
 // high compliance is never a flag).
 const NEGATIVE_EMOTIONS = ['FOMO', 'REVENGE', 'ANXIOUS'];
 function computeBehavior(recent, ex) {
-  if (recent.length >= THRESHOLDS.behavior) {
+  if (recent.length >= 1) {
     let negatives = 0;
     let afterLoss = 0, afterLossViolations = 0;
 
     for (let i = 0; i < recent.length; i++) {
       const s = recent[i];
+      const q = getEffectiveChecks(s);
       const emotion = (s.plan && s.plan.emotionalState) || s.emotion || '';
       const negEmotion = NEGATIVE_EMOTIONS.includes(String(emotion).toUpperCase());
       if (negEmotion) negatives++;
@@ -300,8 +390,7 @@ function computeBehavior(recent, ex) {
       const prev = recent[i - 1];
       if (prev && prev.outcome === 'Loss') {
         afterLoss++;
-        const brokePlan = s.quickChecks &&
-          (s.quickChecks.followedPlan === 'NO' || s.quickChecks.withinEntryCriteria === 'NO');
+        const brokePlan = q.followedPlan === 'NO' || q.withinEntryCriteria === 'NO';
         if (brokePlan) afterLossViolations++;
       }
     }
@@ -310,7 +399,7 @@ function computeBehavior(recent, ex) {
     const afterLossRate = afterLoss > 0 ? afterLossViolations / afterLoss : null;
     let score = 100 * (1 - 0.7 * negRate);
     if (afterLossRate !== null) score -= 15 * afterLossRate;
-    score = pct(clamp(score, 0, 100));
+    const v2Score = pct(clamp(score, 0, 100));
 
     const reasons = [];
     if (afterLoss > 0 && afterLossViolations > 0) {
@@ -322,7 +411,11 @@ function computeBehavior(recent, ex) {
     if (reasons.length === 0) {
       reasons.push('No emotional red flags in your recent sessions. Keep protecting that calm.');
     }
-    return { score, state: 'READY', reasons };
+    if (recent.length >= THRESHOLDS.behavior) {
+      return { score: v2Score, state: 'READY', reasons };
+    }
+    const blended = blendWithExtracted(v2Score, recent.length, THRESHOLDS.behavior, ex);
+    return { score: blended, state: 'PARTIAL', reasons };
   }
 
   if (ex && ex.count >= THRESHOLDS.behavior) {
@@ -351,9 +444,9 @@ function computeBehavior(recent, ex) {
 function computeLearning(recent, ex) {
   const reflected = recent.filter(s => hasReflection(s) &&
     !(s.evidenceFlags && s.evidenceFlags.duplicateOf));
-  const withPlan = recent.filter(s => s.plan && !s.plan.skipped);
+  const withPlan = recent.filter(s => (s.plan && !s.plan.skipped) || (isPersistedSession(s) && !(s.plan && s.plan.skipped)));
 
-  if (reflected.length >= THRESHOLDS.learning) {
+  if (reflected.length >= 1) {
     const reflectionRate = reflected.length / Math.max(recent.length, 1);
 
     // Practicing: substance of what's written
@@ -363,32 +456,38 @@ function computeLearning(recent, ex) {
     let corrections = 0, violations = 0;
     for (let i = 0; i < recent.length; i++) {
       const s = recent[i];
-      const violated = s.quickChecks &&
-        (s.quickChecks.followedPlan === 'NO' || s.quickChecks.withinEntryCriteria === 'NO');
+      const q = getEffectiveChecks(s);
+      const violated = q.followedPlan === 'NO' || q.withinEntryCriteria === 'NO';
       if (!violated) continue;
       violations++;
       const window = recent.slice(i + 1, i + 4);
-      if (window.some(w => w.quickChecks && w.quickChecks.followedPlan === 'YES')) corrections++;
+      if (window.some(w => getEffectiveChecks(w).followedPlan === 'YES')) corrections++;
     }
     const correctionRate = violations > 0 ? corrections / violations : null;
 
     // Maintaining: ≥90% plan adherence across the whole recent window
     const plannedChecks = withPlan
-      .filter(s => s.quickChecks && ['YES', 'NO'].includes(s.quickChecks.followedPlan));
+      .map(s => ({ s, q: getEffectiveChecks(s) }))
+      .filter(({ q }) => ['YES', 'NO'].includes(q.followedPlan));
     const adherence = plannedChecks.length > 0
-      ? plannedChecks.filter(s => s.quickChecks.followedPlan === 'YES').length / plannedChecks.length
+      ? plannedChecks.filter(({ q }) => q.followedPlan === 'YES').length / plannedChecks.length
       : null;
     const maintaining = adherence !== null && adherence >= 0.9;
 
     let score = 100 * (0.4 * reflectionRate + 0.3 * substance);
-    score += (correctionRate !== null ? 0.3 * correctionRate : 0.3 * (maintaining ? 1 : 0.4));
-    score = pct(clamp(score, 0, 100));
+    score += 100 * (correctionRate !== null ? 0.3 * correctionRate : 0.3 * (maintaining ? 1 : 0.4));
+    const v2Score = pct(clamp(score, 0, 100));
 
     const reasons = [];
     if (maintaining) reasons.push(`Maintaining — ${Math.round(adherence * 100)}% plan adherence across your recent sessions. That is the skill itself.`);
     if (corrections > 0) reasons.push(`Corrected a breakdown within three sessions, ${corrections} time${corrections > 1 ? 's' : ''}.`);
     if (reasons.length === 0) reasons.push(`Reflected on ${reflected.length} of your last ${recent.length} sessions.`);
-    return { score, state: 'READY', reasons };
+
+    if (reflected.length >= THRESHOLDS.learning) {
+      return { score: v2Score, state: 'READY', reasons };
+    }
+    const blended = blendWithExtracted(v2Score, reflected.length, THRESHOLDS.learning, ex);
+    return { score: blended, state: 'PARTIAL', reasons };
   }
 
   if (ex && ex.count >= THRESHOLDS.learning) {

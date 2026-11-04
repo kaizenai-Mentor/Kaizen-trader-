@@ -126,6 +126,23 @@ const UserSchema = new mongoose.Schema({
     description: { type: String },
     earnedAt: { type: Date, default: Date.now }
   }],
+  // Privacy-first broker trade history (MT4/MT5/cTrader/TradingView import):
+  // Never stores account numbers, logins, bank info, dollar balances, or lot sizes.
+  brokerTrades: [{
+    tradeHash: { type: String },
+    instrument: { type: String },
+    direction: { type: String },
+    openTime: { type: Date, default: null },
+    closeTime: { type: Date, default: null },
+    entryPrice: { type: String, default: '' },
+    stopLoss: { type: String, default: '' },
+    takeProfit: { type: String, default: '' },
+    exitPrice: { type: String, default: '' },
+    outcome: { type: String, default: 'No Trade' },
+    rrAchieved: { type: String, default: '' },
+    matchedSessionId: { type: mongoose.Schema.Types.ObjectId, default: null },
+    importedAt: { type: Date, default: Date.now }
+  }],
   tradingStyleHistory: [{
     riskPerTrade: String,
     dailyDrawdown: String,

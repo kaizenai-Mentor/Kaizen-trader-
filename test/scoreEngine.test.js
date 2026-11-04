@@ -165,3 +165,29 @@ test('STUDY sessions never trip the cadence guard', () => {
   computeScore(sessions, { riskRules: { maxDailyTrades: '2' } }, null);
   assert.ok(!sessions.some(s => s.evidenceFlags.beyondCadence), 'study sessions must not count as trades');
 });
+
+test('logging 1 to 4 new sessions after V2 upgrade immediately budges score instead of staying frozen', () => {
+  const extracted = {
+    process: { rate: 0.7, count: 8 },
+    risk: { rate: 0.7, count: 8 },
+    execution: { rate: 0.7, count: 8 },
+    behavior: { rate: 0.7, count: 12 },
+    learning: { rate: 0.7, count: 10 }
+  };
+  const baseline = computeScore([], null, extracted);
+  const afterOneClean = computeScore([mk()], null, extracted);
+  const afterThreeClean = computeScore([mk(), mk(), mk()], null, extracted);
+
+  assert.ok(afterOneClean.overall > baseline.overall, `1 clean session should raise overall above ${baseline.overall}, got ${afterOneClean.overall}`);
+  assert.ok(afterThreeClean.overall > afterOneClean.overall, `3 clean sessions should raise overall above ${afterOneClean.overall}, got ${afterThreeClean.overall}`);
+
+  // Persisted DB sessions where optional radio buttons were left NOT_MENTIONED still count via ruleCompliance/notes
+  const persistedSession = mk({
+    _id: '507f1f77bcf86cd799439011',
+    ruleCompliance: true,
+    quickChecks: { followedPlan: 'NOT_MENTIONED', withinEntryCriteria: 'NOT_MENTIONED', respectedRisk: 'NOT_MENTIONED' }
+  });
+  const afterPersisted = computeScore([persistedSession], null, null);
+  assert.ok(afterPersisted.overall !== null && afterPersisted.overall > 0, 'persisted DB session with ruleCompliance must produce a live score');
+});
+

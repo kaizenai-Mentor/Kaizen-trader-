@@ -142,7 +142,10 @@ const postOnboardingRules = async (req, res) => {
 
     const b = req.body;
     const lines = t => String(t || '').split('\n').map(s => s.trim()).filter(Boolean);
-    if (b.markets) system.marketConditions = b.markets.trim();
+    const chosenMarket = (b.markets === 'CUSTOM' || b.markets === 'Multiple markets') && b.customMarkets
+      ? String(b.customMarkets).trim()
+      : String(b.markets || '').trim();
+    if (chosenMarket) system.marketConditions = chosenMarket;
     if (b.tradingHours) system.tradingHours = b.tradingHours.trim();
     system.setups = lines(b.setups).map(name => ({ name }));
     if (b.entryRules) system.entryRules = b.entryRules.trim();

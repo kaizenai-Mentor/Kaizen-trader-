@@ -60,7 +60,7 @@
               <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:6px;">
                 <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
                   <span style="font-family:'DM Mono',monospace;font-size:0.65rem;font-weight:700;color:#0A0A0A;background:#E8EFF5;padding:3px 9px;border-radius:6px;white-space:nowrap;">
-                    <%= new Date(ev.date).toLocaleDateString('en-US',{month:'short',day:'numeric'}) %><% if (ev.timeLabel) { %> · <%= ev.timeLabel %><% } %>
+                    <%= ev.dateLabel || new Date(ev.date).toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric',year:'numeric',timeZone:'America/New_York'}) %><% if (ev.timeLabel) { %> · <%= ev.timeLabel %><% } %>
                   </span>
                   <span style="font-family:'DM Mono',monospace;font-size:0.65rem;font-weight:700;letter-spacing:0.08em;background:#1A2F4A;color:#F4F8FB;padding:3px 9px;border-radius:6px;">
                     <%= ev.currency || 'USD' %>

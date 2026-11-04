@@ -27,17 +27,24 @@ const getDashboard = async (req, res) => {
     const recentSessions = await Journal.find({ userId: user._id })
       .sort({ createdAt: -1 }).limit(60).lean();
 
-    // One-time cutover: extract V1 history, compute the first V2 score.
+    // One-time cutover / repair: extract V1 history if not yet saved on user.
     let extracted = user.v1Evidence || null;
-    if (!user.v1ExtractedAt) {
+    if (!extracted) {
       extracted = await runV1Extraction(user, Journal) || null;
     }
 
+    const scoredSessions = recentSessions.filter(s => s.state !== 'PLANNED');
+    const computed = computeScore(scoredSessions, system, extracted);
     let score = await ScoreSnapshot.findOne({ userId: user._id })
       .sort({ computedAt: -1 }).lean();
-    if (!score) {
-      const computed = computeScore(recentSessions, system, extracted);
-      score = await ScoreSnapshot.create({
+
+    const needsSnapshotUpdate = !score ||
+      score.overall !== computed.overall ||
+      score.sessionsConsidered !== computed.sessionsConsidered ||
+      score.overallState !== computed.overallState;
+
+    if (needsSnapshotUpdate) {
+      const createdSnap = await ScoreSnapshot.create({
         userId: user._id,
         formulaVersion: computed.formulaVersion,
         overall: computed.overall,
@@ -46,7 +53,17 @@ const getDashboard = async (req, res) => {
         evidenceMix: computed.evidenceMix,
         sessionsConsidered: computed.sessionsConsidered
       });
-      score = score.toObject();
+      score = createdSnap.toObject();
+    } else {
+      score = computed;
+    }
+
+    if (computed.overall !== null && computed.overall !== undefined && user.disciplineScore !== computed.overall) {
+      user.disciplineScore = computed.overall;
+      await user.save();
+      if (req.session && req.session.user) {
+        req.session.user.disciplineScore = computed.overall;
+      }
     }
 
     // One-time explainer modals:
@@ -248,11 +265,35 @@ const addJournal = async (req, res) => {
     }).sort({ createdAt: -1 });
 
     const compliantCount = allJournals.filter(j => j.ruleCompliance).length;
-    const overallScore = Math.round(
+    let overallScore = Math.round(
       (compliantCount / allJournals.length) * 100
     );
 
     const previousScore = req.session.user.disciplineScore || 0;
+
+    try {
+      const system = await TradingSystem.ensureForUser(user);
+      let extracted = (user && user.v1Evidence) || null;
+      if (!extracted && user) {
+        extracted = await runV1Extraction(user, Journal) || null;
+      }
+      const scored = allJournals.filter(s => s.state !== 'PLANNED').slice(0, 25);
+      const computed = computeScore(scored, system, extracted);
+      await ScoreSnapshot.create({
+        userId: req.session.user.id,
+        formulaVersion: computed.formulaVersion,
+        overall: computed.overall,
+        overallState: computed.overallState,
+        dimensions: computed.dimensions,
+        evidenceMix: computed.evidenceMix,
+        sessionsConsidered: computed.sessionsConsidered
+      });
+      if (computed.overall !== null && computed.overall !== undefined) {
+        overallScore = computed.overall;
+      }
+    } catch (snapErr) {
+      console.error('addJournal ScoreSnapshot error:', snapErr.message);
+    }
 
     await User.findByIdAndUpdate(req.session.user.id, {
       disciplineScore: overallScore

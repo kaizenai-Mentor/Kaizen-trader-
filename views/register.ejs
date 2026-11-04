@@ -112,7 +112,28 @@
               <option value="Indices"><%= t('register.mIndices') %></option>
               <option value="Commodities"><%= t('register.mCommod') %></option>
               <option value="Multiple markets"><%= t('register.mMulti') %></option>
+              <option value="CUSTOM">Choose another market (state below)</option>
             </select>
+            <div id="markets-custom-box" style="display:none;margin-top:8px;padding:12px;border:1px solid rgba(245,197,24,0.25);border-radius:10px;background:rgba(245,197,24,0.04);">
+              <label class="k-fieldlabel" style="margin-bottom:6px;">EXACT MARKETS YOU TRADE</label>
+              <input type="text" name="customMarkets" id="markets-custom-input" class="k-input" placeholder="e.g. Forex & Gold (XAUUSD), NAS100, Futures">
+            </div>
+            <script>
+              (function () {
+                var sel = document.getElementById('markets');
+                var box = document.getElementById('markets-custom-box');
+                var input = document.getElementById('markets-custom-input');
+                if (!sel || !box || !input) return;
+                function syncMarkets() {
+                  var custom = sel.value === 'CUSTOM' || sel.value === 'Multiple markets';
+                  box.style.display = custom ? 'block' : 'none';
+                  if (custom) { try { input.focus(); } catch (e) {} }
+                  else { input.value = ''; }
+                }
+                sel.addEventListener('change', syncMarkets);
+                syncMarkets();
+              })();
+            </script>
           </div>
           <div class="k-field">
             <label class="k-fieldlabel" for="tradingHours"><%= t('register.when') %></label>

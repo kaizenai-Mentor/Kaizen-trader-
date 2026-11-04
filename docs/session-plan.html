@@ -258,46 +258,64 @@
     <h1 style="font-size:clamp(1.5rem,3.5vw,2.1rem);font-weight:700;color:var(--text-primary);line-height:1.15;margin:0 0 8px;">Declare it before you do it.</h1>
     <p style="font-size:0.88rem;color:var(--text-secondary);line-height:1.75;margin:0 0 24px;">This is what KAIZEN measures you against. Under a minute.</p>
 
-    <!-- Session type -->
+    <!-- Session type: LIVE vs unified STUDY / BACKTEST -->
+    
     <div class="k-card" style="margin-bottom:14px;">
       <div class="k-metric-label" style="margin-bottom:12px;">SESSION TYPE</div>
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">
-        
-          <a href="session-plan.html" class="k-typecard is-active">
-            <div class="k-typecard-name">LIVE</div>
-            <div class="k-typecard-desc">Real execution, capital at risk</div>
-          </a>
-        
-          <a href="session-plan.html" class="k-typecard ">
-            <div class="k-typecard-name">BACKTEST</div>
-            <div class="k-typecard-desc">Practice on historical markets</div>
-          </a>
-        
-          <a href="session-plan.html" class="k-typecard ">
-            <div class="k-typecard-name">STUDY</div>
-            <div class="k-typecard-desc">Market analysis, no trade</div>
-          </a>
-        
+      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;">
+        <a href="session-plan.html" class="k-typecard is-active">
+          <div class="k-typecard-name">LIVE</div>
+          <div class="k-typecard-desc">Real execution, capital at risk</div>
+        </a>
+        <a href="session-plan.html" class="k-typecard ">
+          <div class="k-typecard-name">STUDY / BACKTEST</div>
+          <div class="k-typecard-desc">Chart study &amp; historical testing, no capital at risk</div>
+        </a>
       </div>
     </div>
 
     <form action="/dashboard/sessions/plan" method="POST">
       <input type="hidden" name="sessionType" value="LIVE">
 
-      
         <div class="k-card k-formcard">
           <div class="k-field">
             <label class="k-fieldlabel">SETUP <span style="color:var(--text-faint);text-transform:none;letter-spacing:0;">from your Trading System</span></label>
             
-              <select name="setup" class="k-input">
+              <select name="setup" id="setup-select" class="k-input">
                 
                   <option value="4H sweep → 30min MSS">4H sweep → 30min MSS</option>
                 
                   <option value="Range fakeout">Range fakeout</option>
                 
-                <option value="">Other / ad hoc</option>
+                <option value="CUSTOM">Choose another setup for this session</option>
               </select>
+              <div id="setup-custom-box" style="display:none;margin-top:8px;padding:12px;border:1px solid rgba(245,197,24,0.25);border-radius:10px;background:rgba(245,197,24,0.04);">
+                <label class="k-fieldlabel" style="margin-bottom:6px;">EXACT SETUP FOR THIS SESSION</label>
+                <input type="text" name="customSetup" id="setup-custom-input" class="k-input" placeholder="State the exact setup or strategy used for this session">
+              </div>
+              <script>
+                (function () {
+                  var sel = document.getElementById('setup-select');
+                  var box = document.getElementById('setup-custom-box');
+                  var input = document.getElementById('setup-custom-input');
+                  if (!sel || !box || !input) return;
+                  function syncSetup() {
+                    var custom = sel.value === 'CUSTOM';
+                    box.style.display = custom ? 'block' : 'none';
+                    input.required = custom;
+                    if (custom) { try { input.focus(); } catch (e) {} }
+                    else { input.value = ''; }
+                  }
+                  sel.addEventListener('change', syncSetup);
+                  syncSetup();
+                })();
+              </script>
             
+          </div>
+
+          <div class="k-field">
+            <label class="k-fieldlabel">PAIR / INSTRUMENT</label>
+            <input type="text" name="asset" class="k-input" placeholder="e.g. AUDJPY, Japan 225, XAUUSD, EURUSD, NAS100">
           </div>
 
           <div class="k-field">
@@ -310,36 +328,47 @@
             <input type="text" name="invalidation" class="k-input" placeholder="Below the 4H swing low">
           </div>
 
+          
           <div class="k-field">
             <label class="k-fieldlabel">RISK</label>
             
-              <select name="predefinedRisk" id="risk-select" class="k-input">
-                <option value="1%">1% from your system</option>
-                <option value="CUSTOM">Custom risk for this session</option>
-                <option value="">Different this time (say it in the record)</option>
-              </select>
-              <div id="risk-custom-box" style="display:none;margin-top:8px;padding:12px;border:1px solid rgba(245,197,24,0.25);background:rgba(245,197,24,0.04);">
-                <label class="k-fieldlabel" style="margin-bottom:6px;">YOUR RISK FOR THIS SESSION</label>
-                <input type="text" name="customRisk" id="risk-custom-input" class="k-input" placeholder="e.g. 0.5%">
-                <p style="font-size:0.72rem;color:var(--ash);margin:8px 0 0;">This becomes the risk your record is measured against for this session only.</p>
-              </div>
-              <script>
-                (function () {
-                  var sel = document.getElementById('risk-select');
-                  var box = document.getElementById('risk-custom-box');
-                  var input = document.getElementById('risk-custom-input');
-                  function sync() {
-                    var custom = sel.value === 'CUSTOM';
-                    box.style.display = custom ? 'block' : 'none';
-                    input.required = custom;
-                    if (!custom) input.value = '';
-                  }
-                  sel.addEventListener('change', sync);
-                  sync();
-                })();
-              </script>
-            
+            <select name="predefinedRisk" id="risk-select" class="k-input">
+              
+                <option value="1%">1% (from your system)</option>
+              
+              
+                <option value="0.25%" >0.25%</option>
+              
+                <option value="0.5%" >0.5%</option>
+              
+                <option value="2%" >2%</option>
+              
+              <option value="CUSTOM">Choose another risk for this session (state exact risk below)</option>
+            </select>
+            <div id="risk-custom-box" style="display:none;margin-top:8px;padding:12px;border:1px solid rgba(245,197,24,0.25);border-radius:10px;background:rgba(245,197,24,0.04);">
+              <label class="k-fieldlabel" style="margin-bottom:6px;">YOUR RISK FOR THIS SESSION</label>
+              <input type="text" name="customRisk" id="risk-custom-input" class="k-input" placeholder="State the exact risk used during the trade (e.g. 0.5%, 0.75%, $250)">
+              <p style="font-size:0.72rem;color:var(--ash);margin:8px 0 0;">This becomes the risk your record is measured against for this session only.</p>
+            </div>
+            <script>
+              (function () {
+                var sel = document.getElementById('risk-select');
+                var box = document.getElementById('risk-custom-box');
+                var input = document.getElementById('risk-custom-input');
+                if (!sel || !box || !input) return;
+                function sync() {
+                  var custom = sel.value === 'CUSTOM' || sel.value === 'DIFFERENT';
+                  box.style.display = custom ? 'block' : 'none';
+                  input.required = custom;
+                  if (custom) { try { input.focus(); } catch (e) {} }
+                  else { input.value = ''; }
+                }
+                sel.addEventListener('change', sync);
+                sync();
+              })();
+            </script>
           </div>
+          
 
           <div class="k-field">
             <label class="k-fieldlabel">EMOTIONAL STATE</label>
@@ -363,7 +392,6 @@
             <input type="range" name="confidence" min="1" max="10" value="7" class="k-slider" oninput="document.getElementById('conf-val').textContent=this.value">
           </div>
         </div>
-      
 
       <div class="k-actions">
         <button type="submit" class="btn-primary k-btn-lg">Lock in the plan</button>
