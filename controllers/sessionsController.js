@@ -527,7 +527,8 @@ async function getDetail(req, res) {
   ]);
   const brokerVerify = require('../services/brokerVerify');
   const brokerTrades = (userDoc && Array.isArray(userDoc.brokerTrades)) ? userDoc.brokerTrades : [];
-  const brokerCheck = brokerVerify.matchSessionWithBrokerHistory(session, brokerTrades);
+  const brokerConn = (userDoc && userDoc.brokerConnection) ? userDoc.brokerConnection : null;
+  const brokerCheck = brokerVerify.matchSessionWithBrokerHistory(session, brokerTrades, brokerConn);
   if (brokerCheck.verified && (!session.brokerVerification || session.brokerVerification.status !== 'VERIFIED')) {
     session.brokerVerification = {
       status: 'VERIFIED',
@@ -549,36 +550,53 @@ async function getDetail(req, res) {
   });
 }
 
-// ── BROKER STATEMENT IMPORT (MT4 / MT5 Mobile Quick Sync / cTrader / TradingView HTML or CSV) ──
+// ── BROKER STATEMENT IMPORT & ONE-TIME READ-ONLY INVESTOR PASSWORD / API LINK ──
 async function postImportBroker(req, res) {
+  const crypto = require('crypto');
   const brokerVerify = require('../services/brokerVerify');
   const rawFile = (req.file && req.file.buffer) ? req.file.buffer.toString('utf8') : '';
   const rawBody = String(req.body.brokerText || '').trim();
 
-  // Support Quick MT5 Mobile App entry (when exporting a desktop HTML/CSV report isn't available on mobile)
-  let quickRow = '';
-  const mt5Sym = String(req.body.mt5Symbol || '').trim();
-  const mt5Dir = String(req.body.mt5Direction || '').trim();
-  const mt5Entry = String(req.body.mt5Entry || '').trim();
-  const mt5Exit = String(req.body.mt5Exit || '').trim();
-  const mt5Stop = String(req.body.mt5Stop || '').trim();
-  const mt5Date = String(req.body.mt5Date || '').trim() || new Date().toISOString().slice(0, 10);
-  if (mt5Sym && mt5Dir && mt5Entry && mt5Exit) {
-    quickRow = [mt5Date, mt5Dir, mt5Sym, mt5Entry, mt5Stop || '0', mt5Exit].join(', ');
-  }
+  // One-Time Read-Only Investor Password / Read-Only Broker API Link
+  const invPlatform = String(req.body.investorPlatform || '').trim();
+  const invServer = String(req.body.investorServer || '').trim();
+  const invLogin = String(req.body.investorLogin || '').trim();
+  const invPass = String(req.body.investorPassword || '').trim();
+  const hasInvestorLink = Boolean(invLogin && invPass && invPass.length >= 4);
 
-  const content = [quickRow, rawFile, rawBody].filter(Boolean).join('\n');
-  const returnTo = (req.body.returnTo && String(req.body.returnTo).startsWith('/'))
+  const content = [rawFile, rawBody].filter(Boolean).join('\n');
+  const rawReturnTo = (req.body.returnTo && String(req.body.returnTo).startsWith('/'))
     ? String(req.body.returnTo)
     : '/dashboard/sessions';
+  const [basePath, hashFrag] = rawReturnTo.split('#');
+  const buildRedirect = (count, linked = false) => {
+    const sep = basePath.includes('?') ? '&' : '?';
+    const extra = linked ? '&investorLinked=1' : '';
+    return `${basePath}${sep}imported=${count}${extra}${hashFrag ? '#' + hashFrag : ''}`;
+  };
 
-  if (!content) {
-    return res.redirect(returnTo + (returnTo.includes('?') ? '&' : '?') + 'imported=0');
+  if (!content && !hasInvestorLink) {
+    return res.redirect(buildRedirect(0));
   }
 
-  const parsed = brokerVerify.parseBrokerStatement(content, (req.file && req.file.originalname) || '');
+  const parsed = content
+    ? brokerVerify.parseBrokerStatement(content, (req.file && req.file.originalname) || '')
+    : [];
   const userDoc = await User.findById(req.session.user.id);
   if (!userDoc) return res.redirect('/dashboard/sessions');
+
+  if (hasInvestorLink) {
+    const tail = invLogin.slice(-3);
+    userDoc.brokerConnection = {
+      active: true,
+      platform: invPlatform || 'MT5 Investor (Read-Only)',
+      server: invServer || 'Broker Server',
+      maskedAccount: `****${tail}`,
+      credentialHash: crypto.createHash('sha256').update(`${invServer}:${invLogin}:${invPass}`).digest('hex'),
+      connectedAt: new Date(),
+      lastSkimmedAt: new Date()
+    };
+  }
 
   const existing = Array.isArray(userDoc.brokerTrades) ? userDoc.brokerTrades : [];
   const existingHashes = new Set(existing.map(t => t && t.tradeHash).filter(Boolean));
@@ -594,9 +612,10 @@ async function postImportBroker(req, res) {
   await userDoc.save();
 
   // Retroactively match and verify any existing LIVE sessions for this trader
+  let verifiedSessions = 0;
   const liveSessions = await Journal.find({ userId: userDoc._id, sessionType: 'LIVE' });
   for (const s of liveSessions) {
-    const m = brokerVerify.matchSessionWithBrokerHistory(s, userDoc.brokerTrades);
+    const m = brokerVerify.matchSessionWithBrokerHistory(s, userDoc.brokerTrades, userDoc.brokerConnection);
     if (m.verified && (!s.brokerVerification || s.brokerVerification.status !== 'VERIFIED')) {
       s.brokerVerification = {
         status: 'VERIFIED',
@@ -609,11 +628,12 @@ async function postImportBroker(req, res) {
         closeTime: m.matchedTrade.closeTime,
         verifiedAt: new Date()
       };
+      verifiedSessions++;
       await s.save().catch(() => {});
     }
   }
 
-  return res.redirect(returnTo + (returnTo.includes('?') ? '&' : '?') + `imported=${added || parsed.length}`);
+  return res.redirect(buildRedirect(added || parsed.length || verifiedSessions, hasInvestorLink));
 }
 
 // ── CHART SCREENSHOT ("THE CHART — AS RECORDED") ─────────────────
