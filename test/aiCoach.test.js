@@ -274,13 +274,12 @@ test('brokerVerify strips sensitive account data, matches delayed live sessions,
   assert.strictEqual(goodCount, 2, 'must include good/compliant sessions');
   assert.strictEqual(lessonCount, 1, 'must balance with lesson/challenging session');
 
-  // Direct PDF Certificate & Dossier generator embeds KAIZEN watermark & Founder signature
+  // Direct PDF Certificate & Dossier generator embeds upright Kanji seal watermark & Founder signature
   const { generateDossierPdfBuffer } = require('../services/pdfDossier');
   const pdfBuf = generateDossierPdfBuffer(dossier, { redactPairs: false });
   const pdfStr = pdfBuf.toString('utf8');
   assert.ok(pdfStr.startsWith('%PDF-1.4'), 'must output valid PDF 1.4 header');
-  assert.match(pdfStr, /\(KAIZEN\)/, 'must embed centered KAIZEN watermark');
-  assert.match(pdfStr, /\(KAIZEN VERIFIED\)/, 'must embed upper diagonal watermark stamp');
+  assert.match(pdfStr, /\(KAIZEN AUTHENTICATED TRADER\)/, 'must embed upright Kanji seal watermark caption');
   assert.match(pdfStr, /Dennis  -  Kaizen Mentor/, 'must embed Founder signature');
 
   // MT5 Mobile "Journal" tab execution lines (with timestamp + ticket/price) verify sessions

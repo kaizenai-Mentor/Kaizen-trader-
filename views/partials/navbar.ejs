@@ -43,6 +43,9 @@
     <div class="popup-section">
       <div class="popup-section-label"><%= t('nav.settings') %></div>
       <a href="/settings/trading-system" class="popup-item"><span class="popup-item-icon"><i data-feather="sliders" width="14" height="14"></i></span> <%= t('nav.system') %></a>
+      <button type="button" id="kInstallAppBtn" class="popup-item" onclick="triggerKaizenInstall()" style="display:none;width:100%;background:none;border:none;text-align:left;cursor:pointer;color:var(--gold);font-weight:700;">
+        <span class="popup-item-icon"><i data-feather="smartphone" width="14" height="14"></i></span> Install KAIZEN App
+      </button>
     </div>
 
     <!-- INFO -->
@@ -148,6 +151,66 @@
 </nav>
 
 <%- include('ticker') %>
+
+<% if (user) { %>
+  <!-- MOBILE APP BOTTOM TAB BAR (Visible on Mobile / Standalone PWA / Capacitor APK) -->
+  <nav class="k-mobile-tabbar" id="kMobileTabbar" aria-label="Mobile Primary Navigation">
+    <a href="/dashboard" class="k-mob-tab" data-tab-match="/dashboard$">
+      <i data-feather="activity" width="17" height="17"></i>
+      <span>Cockpit</span>
+    </a>
+    <a href="/dashboard/sessions" class="k-mob-tab" data-tab-match="/dashboard/sessions">
+      <i data-feather="list" width="17" height="17"></i>
+      <span>Sessions</span>
+    </a>
+    <a href="/dashboard/sessions/new" class="k-mob-tab k-mob-tab--cta" title="Log Session">
+      <span class="k-mob-cta-pill">+</span>
+      <span>Log</span>
+    </a>
+    <a href="/kaizen-ai" class="k-mob-tab" data-tab-match="/kaizen-ai">
+      <i data-feather="message-circle" width="17" height="17"></i>
+      <span>KAIZEN AI</span>
+    </a>
+    <a href="/leaderboard" class="k-mob-tab" data-tab-match="/leaderboard">
+      <i data-feather="trending-up" width="17" height="17"></i>
+      <span>Progress</span>
+    </a>
+    <a href="/za/reputation/<%= user.id || user._id %>" class="k-mob-tab" data-tab-match="/za/reputation">
+      <i data-feather="award" width="17" height="17"></i>
+      <span>Dossier</span>
+    </a>
+  </nav>
+  <script>
+    (function () {
+      try {
+        var p = window.location.pathname || '';
+        var tabs = document.querySelectorAll('#kMobileTabbar .k-mob-tab[data-tab-match]');
+        for (var i = 0; i < tabs.length; i++) {
+          var rx = new RegExp(tabs[i].getAttribute('data-tab-match'));
+          if (rx.test(p)) tabs[i].classList.add('is-active');
+        }
+      } catch (e) {}
+    })();
+  </script>
+<% } %>
+<script>
+  var _kaizenDeferredPrompt = null;
+  window.addEventListener('beforeinstallprompt', function (e) {
+    e.preventDefault();
+    _kaizenDeferredPrompt = e;
+    var btn = document.getElementById('kInstallAppBtn');
+    if (btn) btn.style.display = 'flex';
+  });
+  function triggerKaizenInstall() {
+    if (!_kaizenDeferredPrompt) return;
+    _kaizenDeferredPrompt.prompt();
+    _kaizenDeferredPrompt.userChoice.then(function () {
+      _kaizenDeferredPrompt = null;
+      var btn = document.getElementById('kInstallAppBtn');
+      if (btn) btn.style.display = 'none';
+    });
+  }
+</script>
 
 <!-- SECURITY MODAL -->
 <div class="modal-overlay" id="securityModal">
