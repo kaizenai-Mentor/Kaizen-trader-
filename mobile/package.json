@@ -1,0 +1,24 @@
+{
+  "name": "kaizen-trader-mobile",
+  "version": "1.0.0",
+  "private": true,
+  "description": "KAIZEN Trader Native Mobile App Wrapper (Capacitor Android & iOS)",
+  "scripts": {
+    "cap:init": "npx cap add android || true",
+    "cap:sync": "npx cap sync",
+    "cap:open:android": "npx cap open android",
+    "cap:open:ios": "npx cap open ios"
+  },
+  "dependencies": {
+    "@capacitor/android": "^6.1.2",
+    "@capacitor/app": "^6.0.1",
+    "@capacitor/core": "^6.1.2",
+    "@capacitor/haptics": "^6.0.1",
+    "@capacitor/ios": "^6.1.2",
+    "@capacitor/Splash-screen": "^6.0.2",
+    "@capacitor/status-bar": "^6.0.1"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^6.1.2"
+  }
+}

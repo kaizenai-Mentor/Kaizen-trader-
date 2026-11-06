@@ -2,11 +2,22 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#F5C518">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0A0A0A">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="KAIZEN">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="images/kaizen-icon.png" type="image/png">
 <link rel="apple-touch-icon" href="images/kaizen-icon.png">
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('/sw.js').catch(function () {});
+    });
+  }
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
@@ -101,6 +112,9 @@
     <div class="popup-section">
       <div class="popup-section-label">Settings</div>
       <a href="trading-system.html" class="popup-item"><span class="popup-item-icon"><i data-feather="sliders" width="14" height="14"></i></span> My Trading System</a>
+      <button type="button" id="kInstallAppBtn" class="popup-item" onclick="triggerKaizenInstall()" style="display:none;width:100%;background:none;border:none;text-align:left;cursor:pointer;color:var(--gold);font-weight:700;">
+        <span class="popup-item-icon"><i data-feather="smartphone" width="14" height="14"></i></span> Install KAIZEN App
+      </button>
     </div>
 
     <!-- INFO -->
@@ -204,6 +218,66 @@
 
 
 
+
+  <!-- MOBILE APP BOTTOM TAB BAR (Visible on Mobile / Standalone PWA / Capacitor APK) -->
+  <nav class="k-mobile-tabbar" id="kMobileTabbar" aria-label="Mobile Primary Navigation">
+    <a href="dashboard.html" class="k-mob-tab" data-tab-match="/dashboard$">
+      <i data-feather="activity" width="17" height="17"></i>
+      <span>Cockpit</span>
+    </a>
+    <a href="sessions.html" class="k-mob-tab" data-tab-match="/dashboard/sessions">
+      <i data-feather="list" width="17" height="17"></i>
+      <span>Sessions</span>
+    </a>
+    <a href="session-plan.html" class="k-mob-tab k-mob-tab--cta" title="Log Session">
+      <span class="k-mob-cta-pill">+</span>
+      <span>Log</span>
+    </a>
+    <a href="kaizen-ai.html" class="k-mob-tab" data-tab-match="/kaizen-ai">
+      <i data-feather="message-circle" width="17" height="17"></i>
+      <span>KAIZEN AI</span>
+    </a>
+    <a href="leaderboard.html" class="k-mob-tab" data-tab-match="/leaderboard">
+      <i data-feather="trending-up" width="17" height="17"></i>
+      <span>Progress</span>
+    </a>
+    <a href="reputation.html" class="k-mob-tab" data-tab-match="/za/reputation">
+      <i data-feather="award" width="17" height="17"></i>
+      <span>Dossier</span>
+    </a>
+  </nav>
+  <script>
+    (function () {
+      try {
+        var p = window.location.pathname || '';
+        var tabs = document.querySelectorAll('#kMobileTabbar .k-mob-tab[data-tab-match]');
+        for (var i = 0; i < tabs.length; i++) {
+          var rx = new RegExp(tabs[i].getAttribute('data-tab-match'));
+          if (rx.test(p)) tabs[i].classList.add('is-active');
+        }
+      } catch (e) {}
+    })();
+  </script>
+
+<script>
+  var _kaizenDeferredPrompt = null;
+  window.addEventListener('beforeinstallprompt', function (e) {
+    e.preventDefault();
+    _kaizenDeferredPrompt = e;
+    var btn = document.getElementById('kInstallAppBtn');
+    if (btn) btn.style.display = 'flex';
+  });
+  function triggerKaizenInstall() {
+    if (!_kaizenDeferredPrompt) return;
+    _kaizenDeferredPrompt.prompt();
+    _kaizenDeferredPrompt.userChoice.then(function () {
+      _kaizenDeferredPrompt = null;
+      var btn = document.getElementById('kInstallAppBtn');
+      if (btn) btn.style.display = 'none';
+    });
+  }
+</script>
+
 <!-- SECURITY MODAL -->
 <div class="modal-overlay" id="securityModal">
   <div class="modal">
@@ -299,7 +373,7 @@
               <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:6px;">
                 <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
                   <span style="font-family:'DM Mono',monospace;font-size:0.65rem;font-weight:700;color:var(--text-primary);background:var(--bg-surface);border:1px solid var(--border);padding:3px 9px;border-radius:6px;white-space:nowrap;">
-                    Sun, Nov 8, 2026
+                    Mon, Nov 9, 2026
                   </span>
                   <span style="font-family:'DM Mono',monospace;font-size:0.65rem;font-weight:700;letter-spacing:0.08em;background:#1A2F4A;color:#F4F8FB;padding:3px 9px;border-radius:6px;">
                     USD
@@ -326,7 +400,7 @@
               <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:6px;">
                 <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
                   <span style="font-family:'DM Mono',monospace;font-size:0.65rem;font-weight:700;color:var(--text-primary);background:var(--bg-surface);border:1px solid var(--border);padding:3px 9px;border-radius:6px;white-space:nowrap;">
-                    Wed, Nov 11, 2026
+                    Thu, Nov 12, 2026
                   </span>
                   <span style="font-family:'DM Mono',monospace;font-size:0.65rem;font-weight:700;letter-spacing:0.08em;background:#1A2F4A;color:#F4F8FB;padding:3px 9px;border-radius:6px;">
                     USD
@@ -392,7 +466,7 @@
                     <span style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-secondary);padding:2px 7px;">market-wire</span>
                   
                   <span style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--text-faint);margin-left:auto;">
-                    Nov 6, 02:11 AM
+                    Nov 6, 05:00 AM
                   </span>
                 </div>
 
@@ -444,7 +518,7 @@
                     <span style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-secondary);padding:2px 7px;">desk-report</span>
                   
                   <span style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--text-faint);margin-left:auto;">
-                    Nov 5, 11:11 PM
+                    Nov 6, 02:00 AM
                   </span>
                 </div>
 
@@ -496,7 +570,7 @@
                     <span style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-secondary);padding:2px 7px;">macro-daily</span>
                   
                   <span style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--text-faint);margin-left:auto;">
-                    Nov 5, 07:11 PM
+                    Nov 5, 10:00 PM
                   </span>
                 </div>
 

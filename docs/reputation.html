@@ -2,11 +2,22 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#F5C518">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0A0A0A">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="KAIZEN">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="images/kaizen-icon.png" type="image/png">
 <link rel="apple-touch-icon" href="images/kaizen-icon.png">
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('/sw.js').catch(function () {});
+    });
+  }
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
@@ -101,6 +112,9 @@
     <div class="popup-section">
       <div class="popup-section-label">Settings</div>
       <a href="trading-system.html" class="popup-item"><span class="popup-item-icon"><i data-feather="sliders" width="14" height="14"></i></span> My Trading System</a>
+      <button type="button" id="kInstallAppBtn" class="popup-item" onclick="triggerKaizenInstall()" style="display:none;width:100%;background:none;border:none;text-align:left;cursor:pointer;color:var(--gold);font-weight:700;">
+        <span class="popup-item-icon"><i data-feather="smartphone" width="14" height="14"></i></span> Install KAIZEN App
+      </button>
     </div>
 
     <!-- INFO -->
@@ -203,6 +217,66 @@
 </script>
 
 
+
+
+  <!-- MOBILE APP BOTTOM TAB BAR (Visible on Mobile / Standalone PWA / Capacitor APK) -->
+  <nav class="k-mobile-tabbar" id="kMobileTabbar" aria-label="Mobile Primary Navigation">
+    <a href="dashboard.html" class="k-mob-tab" data-tab-match="/dashboard$">
+      <i data-feather="activity" width="17" height="17"></i>
+      <span>Cockpit</span>
+    </a>
+    <a href="sessions.html" class="k-mob-tab" data-tab-match="/dashboard/sessions">
+      <i data-feather="list" width="17" height="17"></i>
+      <span>Sessions</span>
+    </a>
+    <a href="session-plan.html" class="k-mob-tab k-mob-tab--cta" title="Log Session">
+      <span class="k-mob-cta-pill">+</span>
+      <span>Log</span>
+    </a>
+    <a href="kaizen-ai.html" class="k-mob-tab" data-tab-match="/kaizen-ai">
+      <i data-feather="message-circle" width="17" height="17"></i>
+      <span>KAIZEN AI</span>
+    </a>
+    <a href="leaderboard.html" class="k-mob-tab" data-tab-match="/leaderboard">
+      <i data-feather="trending-up" width="17" height="17"></i>
+      <span>Progress</span>
+    </a>
+    <a href="reputation.html" class="k-mob-tab" data-tab-match="/za/reputation">
+      <i data-feather="award" width="17" height="17"></i>
+      <span>Dossier</span>
+    </a>
+  </nav>
+  <script>
+    (function () {
+      try {
+        var p = window.location.pathname || '';
+        var tabs = document.querySelectorAll('#kMobileTabbar .k-mob-tab[data-tab-match]');
+        for (var i = 0; i < tabs.length; i++) {
+          var rx = new RegExp(tabs[i].getAttribute('data-tab-match'));
+          if (rx.test(p)) tabs[i].classList.add('is-active');
+        }
+      } catch (e) {}
+    })();
+  </script>
+
+<script>
+  var _kaizenDeferredPrompt = null;
+  window.addEventListener('beforeinstallprompt', function (e) {
+    e.preventDefault();
+    _kaizenDeferredPrompt = e;
+    var btn = document.getElementById('kInstallAppBtn');
+    if (btn) btn.style.display = 'flex';
+  });
+  function triggerKaizenInstall() {
+    if (!_kaizenDeferredPrompt) return;
+    _kaizenDeferredPrompt.prompt();
+    _kaizenDeferredPrompt.userChoice.then(function () {
+      _kaizenDeferredPrompt = null;
+      var btn = document.getElementById('kInstallAppBtn');
+      if (btn) btn.style.display = 'none';
+    });
+  }
+</script>
 
 <!-- SECURITY MODAL -->
 <div class="modal-overlay" id="securityModal">
@@ -413,12 +487,10 @@
     <!-- ═══ BRANDED KAIZEN TRADER'S CARD & OFFICIAL CERTIFICATE DOSSIER ═══ -->
     <section id="traders-card" style="position:relative;overflow:hidden;background:linear-gradient(180deg, #101824 0%, #0A0A0A 100%);border:2px solid #F5C518;box-shadow:inset 0 0 0 4px #0A0A0A, inset 0 0 0 5px rgba(245,197,24,0.45), 0 28px 56px rgba(0,0,0,0.48);border-radius:20px;padding:32px;margin-top:24px;color:#F4F8FB;">
 
-      <!-- Centered KAIZEN Logo Watermark (Certificate Vibe — layered with pointer-events:none so it is visible across the entire certificate) -->
-      <div aria-hidden="true" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;user-select:none;z-index:3;opacity:0.12;transform:rotate(-16deg);">
-        <div style="border:3px solid #F5C518;border-radius:24px;padding:18px 42px;text-align:center;">
-          <div style="font-family:var(--font-cjk);font-size:10.5rem;line-height:1;color:#F5C518;font-weight:700;">改</div>
-          <div style="font-family:var(--font-heading);font-size:3.6rem;letter-spacing:0.24em;color:#1A2F4A;text-shadow:0 0 2px #F5C518;font-weight:800;margin-top:-6px;">KAIZEN</div>
-          <div style="font-family:'DM Mono',monospace;font-size:0.75rem;letter-spacing:0.26em;color:#F5C518;font-weight:700;margin-top:4px;">VERIFIED TRADER CERTIFICATE</div>
+      <!-- Centered Upright KAIZEN Kanji Seal Watermark (Brand Consistent, Zero Slant, No Extra Text on Site) -->
+      <div aria-hidden="true" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;user-select:none;z-index:3;opacity:0.09;">
+        <div style="width:188px;height:188px;border:3px solid #F5C518;border-radius:24px;display:flex;align-items:center;justify-content:center;">
+          <div style="font-family:var(--font-cjk);font-size:8.6rem;line-height:1;color:#F5C518;font-weight:700;">改</div>
         </div>
       </div>
 

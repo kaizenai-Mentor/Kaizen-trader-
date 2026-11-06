@@ -2,11 +2,22 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#F5C518">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0A0A0A">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="KAIZEN">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="images/kaizen-icon.png" type="image/png">
 <link rel="apple-touch-icon" href="images/kaizen-icon.png">
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('/sw.js').catch(function () {});
+    });
+  }
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
@@ -101,6 +112,9 @@
     <div class="popup-section">
       <div class="popup-section-label">Settings</div>
       <a href="trading-system.html" class="popup-item"><span class="popup-item-icon"><i data-feather="sliders" width="14" height="14"></i></span> My Trading System</a>
+      <button type="button" id="kInstallAppBtn" class="popup-item" onclick="triggerKaizenInstall()" style="display:none;width:100%;background:none;border:none;text-align:left;cursor:pointer;color:var(--gold);font-weight:700;">
+        <span class="popup-item-icon"><i data-feather="smartphone" width="14" height="14"></i></span> Install KAIZEN App
+      </button>
     </div>
 
     <!-- INFO -->
@@ -203,6 +217,66 @@
 </script>
 
 
+
+
+  <!-- MOBILE APP BOTTOM TAB BAR (Visible on Mobile / Standalone PWA / Capacitor APK) -->
+  <nav class="k-mobile-tabbar" id="kMobileTabbar" aria-label="Mobile Primary Navigation">
+    <a href="dashboard.html" class="k-mob-tab" data-tab-match="/dashboard$">
+      <i data-feather="activity" width="17" height="17"></i>
+      <span>Cockpit</span>
+    </a>
+    <a href="sessions.html" class="k-mob-tab" data-tab-match="/dashboard/sessions">
+      <i data-feather="list" width="17" height="17"></i>
+      <span>Sessions</span>
+    </a>
+    <a href="session-plan.html" class="k-mob-tab k-mob-tab--cta" title="Log Session">
+      <span class="k-mob-cta-pill">+</span>
+      <span>Log</span>
+    </a>
+    <a href="kaizen-ai.html" class="k-mob-tab" data-tab-match="/kaizen-ai">
+      <i data-feather="message-circle" width="17" height="17"></i>
+      <span>KAIZEN AI</span>
+    </a>
+    <a href="leaderboard.html" class="k-mob-tab" data-tab-match="/leaderboard">
+      <i data-feather="trending-up" width="17" height="17"></i>
+      <span>Progress</span>
+    </a>
+    <a href="reputation.html" class="k-mob-tab" data-tab-match="/za/reputation">
+      <i data-feather="award" width="17" height="17"></i>
+      <span>Dossier</span>
+    </a>
+  </nav>
+  <script>
+    (function () {
+      try {
+        var p = window.location.pathname || '';
+        var tabs = document.querySelectorAll('#kMobileTabbar .k-mob-tab[data-tab-match]');
+        for (var i = 0; i < tabs.length; i++) {
+          var rx = new RegExp(tabs[i].getAttribute('data-tab-match'));
+          if (rx.test(p)) tabs[i].classList.add('is-active');
+        }
+      } catch (e) {}
+    })();
+  </script>
+
+<script>
+  var _kaizenDeferredPrompt = null;
+  window.addEventListener('beforeinstallprompt', function (e) {
+    e.preventDefault();
+    _kaizenDeferredPrompt = e;
+    var btn = document.getElementById('kInstallAppBtn');
+    if (btn) btn.style.display = 'flex';
+  });
+  function triggerKaizenInstall() {
+    if (!_kaizenDeferredPrompt) return;
+    _kaizenDeferredPrompt.prompt();
+    _kaizenDeferredPrompt.userChoice.then(function () {
+      _kaizenDeferredPrompt = null;
+      var btn = document.getElementById('kInstallAppBtn');
+      if (btn) btn.style.display = 'none';
+    });
+  }
+</script>
 
 <!-- SECURITY MODAL -->
 <div class="modal-overlay" id="securityModal">

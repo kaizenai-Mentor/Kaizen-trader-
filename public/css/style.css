@@ -4483,4 +4483,97 @@ select.k-input, select.form-input {
   border-radius: 12px;
 }
 
+/* ── KAIZEN Mobile App Bottom Tab Navigation Bar (Layer 1 & Layer 2 Mobile Shell) ── */
+.k-mobile-tabbar {
+  display: none;
+}
+
+@media (max-width: 860px) {
+  body.app-page {
+    padding-bottom: calc(68px + env(safe-area-inset-bottom, 0px));
+  }
+  .k-mobile-tabbar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 260;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    align-items: center;
+    background: rgba(10, 10, 10, 0.96);
+    border-top: 1px solid rgba(245, 197, 24, 0.28);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    padding: 6px 6px calc(6px + env(safe-area-inset-bottom, 0px));
+    box-shadow: 0 -10px 28px rgba(0, 0, 0, 0.55);
+  }
+  .k-mob-tab {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    padding: 5px 2px;
+    text-decoration: none;
+    color: #93A5B8;
+    font-family: var(--font-mono);
+    font-size: 0.54rem;
+    letter-spacing: 0.04em;
+    font-weight: 600;
+    border-radius: 10px;
+    transition: color 0.18s ease, background 0.18s ease;
+  }
+  .k-mob-tab.is-active {
+    color: #F5C518;
+    background: rgba(245, 197, 24, 0.1);
+  }
+  .k-mob-tab--cta {
+    color: #F4F8FB;
+  }
+  .k-mob-cta-pill {
+    width: 30px;
+    height: 24px;
+    border-radius: 8px;
+    background: #F5C518;
+    color: #0A0A0A;
+    font-family: var(--font-heading);
+    font-size: 1.05rem;
+    font-weight: 800;
+    line-height: 24px;
+    text-align: center;
+    display: inline-block;
+    box-shadow: 0 4px 12px rgba(245, 197, 24, 0.35);
+  }
+  .k-mob-tab:active,
+  .btn-primary:active,
+  .btn-outline:active {
+    transform: scale(0.97);
+  }
+  /* Prevent mobile browser auto-zoom when tapping form inputs */
+  .k-input,
+  .form-input,
+  select.k-input,
+  textarea.k-input {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .k-page-main {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+  #traders-card {
+    padding: 20px 16px !important;
+  }
+}
+
+@media print {
+  .k-mobile-tabbar {
+    display: none !important;
+  }
+}
+
+
 

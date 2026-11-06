@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>KAIZEN Trader</title>
+  <style>
+    :root {
+      --bg: #0A0A0A;
+      --card: #121B28;
+      --burnt: #1A2F4A;
+      --gold: #F5C518;
+      --white: #F4F8FB;
+      --muted: #93A5B8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--white);
+      font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      text-align: center;
+    }
+    .crest {
+      width: 76px;
+      height: 76px;
+      border-radius: 20px;
+      background: rgba(245, 197, 24, 0.12);
+      border: 2px solid var(--gold);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.3rem;
+      color: var(--gold);
+      font-weight: 700;
+      margin: 0 auto 18px;
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.55);
+    }
+    h1 {
+      font-size: 1.55rem;
+      letter-spacing: 0.14em;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+    .sub {
+      font-family: monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 24px;
+    }
+    .panel {
+      width: 100%;
+      max-width: 390px;
+      background: var(--card);
+      border: 1px solid rgba(244, 248, 251, 0.14);
+      border-radius: 18px;
+      padding: 22px;
+      text-align: left;
+    }
+    .label {
+      font-family: monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 8px;
+      display: block;
+    }
+    .btn {
+      width: 100%;
+      padding: 13px 16px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 0.88rem;
+      cursor: pointer;
+      border: none;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .btn-gold {
+      background: var(--gold);
+      color: #0A0A0A;
+    }
+    .btn-burnt {
+      background: var(--burnt);
+      color: var(--white);
+      border: 1px solid rgba(245, 197, 24, 0.4);
+    }
+    .input {
+      width: 100%;
+      padding: 11px 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(244, 248, 251, 0.2);
+      background: #0A0A0A;
+      color: var(--white);
+      font-family: monospace;
+      font-size: 0.8rem;
+      margin-bottom: 10px;
+    }
+    .note {
+      font-size: 0.76rem;
+      color: var(--muted);
+      line-height: 1.55;
+      margin-top: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="crest">改</div>
+  <h1>KAIZEN</h1>
+  <div class="sub">TRADING DISCIPLINE &amp; REPUTATION</div>
+
+  <div class="panel">
+    <span class="label">SELECT ENGINE CONNECTION</span>
+
+    <button class="btn btn-gold" onclick="launchTarget('http://localhost:3000/dashboard')">
+      <span>Termux Local Engine (localhost:3000)</span>
+      <span>→</span>
+    </button>
+
+    <button class="btn btn-burnt" onclick="launchTarget('https://kaizentrader.xyz/dashboard')">
+      <span>KAIZEN Live Cloud Server</span>
+      <span>→</span>
+    </button>
+
+    <div style="margin-top:14px;padding-top:14px;border-top:1px solid rgba(244,248,251,0.1);">
+      <span class="label">OR CUSTOM TERMUX / LAN SERVER URL</span>
+      <input id="customUrl" type="url" class="input" placeholder="http://192.168.1.100:3000/dashboard">
+      <button class="btn btn-burnt" style="margin-bottom:0;" onclick="launchCustom()">
+        <span>Connect to Custom Server</span>
+        <span>→</span>
+      </button>
+    </div>
+
+    <p class="note">
+      Running Termux on this phone? Run <code>bash scripts/termux-start.sh</code> in Termux, then tap <strong>Termux Local Engine (localhost:3000)</strong> above.
+    </p>
+  </div>
+
+  <script>
+    function launchTarget(url) {
+      try { localStorage.setItem('kaizen_mobile_host', url); } catch (e) {}
+      window.location.href = url;
+    }
+    function launchCustom() {
+      var val = document.getElementById('customUrl').value.trim();
+      if (!val) return;
+      if (!/^https?:\/\//i.test(val)) val = 'http://' + val;
+      launchTarget(val);
+    }
+    (function () {
+      try {
+        var saved = localStorage.getItem('kaizen_mobile_InputUrl');
+        if (saved) document.getElementById('customUrl').value = saved;
+      } catch (e) {}
+    })();
+  </script>
+</body>
+</html>

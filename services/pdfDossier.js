@@ -77,51 +77,28 @@ function generateDossierPdfBuffer(dossier = {}, options = {}) {
   ops.push('22 52 m 52 52 l 52 22 l S');
   ops.push('573 52 m 543 52 l 543 22 l S');
 
-  // 3. UNMISTAKABLE KAIZEN LOGO & CREST WATERMARK LAYER
-  // Uses a warm antique gold watermark tone (0.28 0.23 0.08) and rotated coordinate
-  // frames so it is clearly visible across the top, center, and bottom of the certificate,
-  // and decision cards below use transparent glass borders so they NEVER cover the watermark.
+  // 3. UPRIGHT CENTERED KAIZEN KANJI SEAL WATERMARK (Brand Consistent with Site)
+  // Upright (zero slant), clean square seal frame with the "改" Kanji emblem in the center,
+  // and a single understated upright line directly beneath it: "KAIZEN AUTHENTICATED TRADER".
   ops.push('q');
-  // 3a. Centered Large Octagonal / Diamond Watermark Crest Frame & Vector "改" Seal
-  ops.push('1.5 w 0.28 0.23 0.09 RG');
-  ops.push('195 315 205 205 re S');
-  ops.push('0.8 w 0.24 0.20 0.08 RG');
-  ops.push('203 323 189 189 re S');
-  // Diamond rotated watermark frame around center (297.5, 417.5)
-  ops.push('1.2 w 0.26 0.21 0.08 RG');
-  ops.push('297.5 555 m 435 417.5 l 297.5 280 l 160 417.5 l 297.5 555 l S');
+  // Outer & inner upright square seal frame centered at (297.5, 425)
+  ops.push('1.6 w 0.24 0.20 0.08 RG');
+  ops.push('217.5 345 160 160 re S');
+  ops.push('0.7 w 0.20 0.17 0.07 RG');
+  ops.push('224.5 352 146 146 re S');
 
-  // Vector stylized "改" (Kaizen) Kanji strokes inside the center watermark crest
-  ops.push('3.2 w 0.26 0.21 0.08 RG');
+  // Vector stylized upright "改" (Kaizen) Kanji strokes inside the center seal
+  ops.push('3.0 w 0.24 0.20 0.08 RG');
   // Left radical (己)
-  ops.push('235 462 m 278 462 l 278 432 l 238 432 l 238 392 l 282 392 l S');
+  ops.push('244 458 m 282 458 l 282 430 l 246 430 l 246 392 l 286 392 l S');
   // Right radical (攵)
-  ops.push('305 472 m 295 432 l 352 432 l S');
-  ops.push('338 432 m 302 382 l S');
-  ops.push('302 422 m 352 382 l S');
+  ops.push('306 468 m 296 430 l 348 430 l S');
+  ops.push('335 430 m 302 384 l S');
+  ops.push('302 422 m 348 384 l S');
 
-  // 3b. Diagonal (16 deg) Giant "KAIZEN" Logo Watermark across the center
-  // cos(16)=0.961, sin(16)=0.276
-  ops.push('q');
-  ops.push('0.961 0.276 -0.276 0.961 92 340 cm');
-  ops.push('0.30 0.25 0.09 rg');
-  ops.push('BT /F2 96 Tf 0 0 Td (KAIZEN) Tj ET');
-  ops.push('0.25 0.21 0.09 rg');
-  ops.push('BT /F2 15 Tf 14 -24 Td (OFFICIAL VERIFIED TRADER CERTIFICATE) Tj ET');
-  ops.push('Q');
-
-  // 3c. Upper & Lower Subtle Watermark Stamp Lines so watermark is visible in every zone
-  ops.push('q');
-  ops.push('0.961 0.276 -0.276 0.961 115 545 cm');
-  ops.push('0.20 0.17 0.08 rg');
-  ops.push('BT /F2 44 Tf 0 0 Td (KAIZEN VERIFIED) Tj ET');
-  ops.push('Q');
-
-  ops.push('q');
-  ops.push('0.961 0.276 -0.276 0.961 125 155 cm');
-  ops.push('0.20 0.17 0.08 rg');
-  ops.push('BT /F2 44 Tf 0 0 Td (KAIZEN DOSSIER) Tj ET');
-  ops.push('Q');
+  // Single upright subtitle directly below the Kanji seal frame
+  ops.push('0.24 0.20 0.08 rg');
+  ops.push('BT /F2 11.5 Tf 202 324 Td (KAIZEN AUTHENTICATED TRADER) Tj ET');
   ops.push('Q');
 
   // 4. Top Certificate Header Banner
