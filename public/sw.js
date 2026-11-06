@@ -2,12 +2,14 @@
  * KAIZEN Mobile App Service Worker (PWA + Capacitor Shell Cache)
  * Network-first for dynamic pages/API, cache-fallback for core static assets.
  */
-const CACHE_NAME = 'kaizen-mobile-v1';
+const CACHE_NAME = 'kaizen-mobile-v2';
 const STATIC_ASSETS = [
   '/css/style.css',
   '/js/feather.min.js',
   '/js/app.js',
   '/images/kaizen-icon.png',
+  '/images/kaizen-icon-192.png',
+  '/images/kaizen-icon-512.png',
   '/manifest.json'
 ];
 

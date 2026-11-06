@@ -6,9 +6,17 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="KAIZEN">
 <link rel="manifest" href="/manifest.json">
-<link rel="icon" href="/images/kaizen-icon.png" type="image/png">
-<link rel="apple-touch-icon" href="/images/kaizen-icon.png">
+<link rel="icon" href="/images/kaizen-icon-192.png" sizes="192x192" type="image/png">
+<link rel="icon" href="/images/kaizen-icon-512.png" sizes="512x512" type="image/png">
+<link rel="apple-touch-icon" href="/images/kaizen-icon-192.png">
 <script>
+  window._kaizenDeferredPrompt = null;
+  window.addEventListener('beforeinstallprompt', function (e) {
+    e.preventDefault();
+    window._kaizenDeferredPrompt = e;
+    var directBtn = document.getElementById('kDirectNativeInstallBtn');
+    if (directBtn) directBtn.style.display = 'block';
+  });
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', function () {
       navigator.serviceWorker.register('/sw.js').catch(function () {});

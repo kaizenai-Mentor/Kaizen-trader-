@@ -1415,7 +1415,8 @@ select.form-input { cursor: pointer; }
   transition: opacity 0.3s;
 }
 
-.modal-overlay.open {
+.modal-overlay.open,
+.modal-overlay.active {
   opacity: 1;
   pointer-events: all;
 }
