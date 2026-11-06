@@ -5,7 +5,8 @@
  * with zero external dependencies and zero browser print-dialog blocking.
  * Styled like an elite institutional / prop-firm certificate with:
  *   - Crispy Black & Burnt Blue certificate frame + Double Electric Gold border
- *   - Centered KAIZEN Brand Watermark behind the certificate body
+ *   - Unmistakable Diagonal & Centered KAIZEN Logo Watermark + Vector Seal Crest
+ *     (decision cards use transparent glass frames so the watermark is never covered!)
  *   - Official KAIZEN Crest, Verification ID, Branded Gold Score Percentages
  *   - Auto-Memory Executive Summary & Balanced Defining Trading Decisions
  *   - Founder Signature ("Dennis · Kaizen Mentor") & Vermillion Authentication Seal
@@ -64,58 +65,100 @@ function generateDossierPdfBuffer(dossier = {}, options = {}) {
   ops.push('0 0 595 842 re f');
 
   // 2. Outer & Inner Electric Gold Certificate Frame (#F5C518 -> 0.96 0.77 0.09)
-  ops.push('1.8 w 0.96 0.77 0.09 RG');
+  ops.push('2.0 w 0.96 0.77 0.09 RG');
   ops.push('22 22 551 798 re S');
-  ops.push('0.6 w 0.96 0.77 0.09 RG');
+  ops.push('0.7 w 0.96 0.77 0.09 RG');
   ops.push('28 28 539 786 re S');
 
   // Corner certificate ornaments
-  ops.push('1.4 w 0.96 0.77 0.09 RG');
+  ops.push('1.6 w 0.96 0.77 0.09 RG');
   ops.push('22 790 m 52 790 l 52 820 l S');
   ops.push('573 790 m 543 790 l 543 820 l S');
   ops.push('22 52 m 52 52 l 52 22 l S');
   ops.push('573 52 m 543 52 l 543 22 l S');
 
-  // 3. Large Centered KAIZEN Brand Watermark across the middle of the certificate
-  // Subtle Burnt Blue / Slate watermark tint (0.11 0.16 0.23)
+  // 3. UNMISTAKABLE KAIZEN LOGO & CREST WATERMARK LAYER
+  // Uses a warm antique gold watermark tone (0.28 0.23 0.08) and rotated coordinate
+  // frames so it is clearly visible across the top, center, and bottom of the certificate,
+  // and decision cards below use transparent glass borders so they NEVER cover the watermark.
   ops.push('q');
-  ops.push('0.11 0.16 0.23 rg');
-  ops.push('BT /F2 92 Tf 118 415 Td (KAIZEN) Tj ET');
-  ops.push('BT /F1 18 Tf 155 382 Td (TRADER DEVELOPMENT & VERIFICATION) Tj ET');
+  // 3a. Centered Large Octagonal / Diamond Watermark Crest Frame & Vector "改" Seal
+  ops.push('1.5 w 0.28 0.23 0.09 RG');
+  ops.push('195 315 205 205 re S');
+  ops.push('0.8 w 0.24 0.20 0.08 RG');
+  ops.push('203 323 189 189 re S');
+  // Diamond rotated watermark frame around center (297.5, 417.5)
+  ops.push('1.2 w 0.26 0.21 0.08 RG');
+  ops.push('297.5 555 m 435 417.5 l 297.5 280 l 160 417.5 l 297.5 555 l S');
+
+  // Vector stylized "改" (Kaizen) Kanji strokes inside the center watermark crest
+  ops.push('3.2 w 0.26 0.21 0.08 RG');
+  // Left radical (己)
+  ops.push('235 462 m 278 462 l 278 432 l 238 432 l 238 392 l 282 392 l S');
+  // Right radical (攵)
+  ops.push('305 472 m 295 432 l 352 432 l S');
+  ops.push('338 432 m 302 382 l S');
+  ops.push('302 422 m 352 382 l S');
+
+  // 3b. Diagonal (16 deg) Giant "KAIZEN" Logo Watermark across the center
+  // cos(16)=0.961, sin(16)=0.276
+  ops.push('q');
+  ops.push('0.961 0.276 -0.276 0.961 92 340 cm');
+  ops.push('0.30 0.25 0.09 rg');
+  ops.push('BT /F2 96 Tf 0 0 Td (KAIZEN) Tj ET');
+  ops.push('0.25 0.21 0.09 rg');
+  ops.push('BT /F2 15 Tf 14 -24 Td (OFFICIAL VERIFIED TRADER CERTIFICATE) Tj ET');
+  ops.push('Q');
+
+  // 3c. Upper & Lower Subtle Watermark Stamp Lines so watermark is visible in every zone
+  ops.push('q');
+  ops.push('0.961 0.276 -0.276 0.961 115 545 cm');
+  ops.push('0.20 0.17 0.08 rg');
+  ops.push('BT /F2 44 Tf 0 0 Td (KAIZEN VERIFIED) Tj ET');
+  ops.push('Q');
+
+  ops.push('q');
+  ops.push('0.961 0.276 -0.276 0.961 125 155 cm');
+  ops.push('0.20 0.17 0.08 rg');
+  ops.push('BT /F2 44 Tf 0 0 Td (KAIZEN DOSSIER) Tj ET');
+  ops.push('Q');
   ops.push('Q');
 
   // 4. Top Certificate Header Banner
   ops.push('0.10 0.18 0.29 rg');
   ops.push('42 742 511 56 re f');
-  ops.push('0.8 w 0.96 0.77 0.09 RG');
+  ops.push('0.9 w 0.96 0.77 0.09 RG');
   ops.push('42 742 511 56 re S');
 
-  // Gold Brand Crest Box on Left
+  // Gold Brand Crest Box on Left with Vector "改"
   ops.push('0.96 0.77 0.09 rg');
   ops.push('54 752 36 36 re f');
-  ops.push('0.04 0.04 0.05 rg');
-  ops.push('BT /F2 18 Tf 66 764 Td (K) Tj ET');
+  ops.push('1.5 w 0.04 0.04 0.05 RG');
+  ops.push('60 778 m 70 778 l 70 770 l 60 770 l 60 760 l 71 760 l S');
+  ops.push('75 780 m 73 770 l 84 770 l S');
+  ops.push('81 770 m 74 758 l S');
+  ops.push('74 768 m 84 758 l S');
 
   // Header Titles
   ops.push('0.96 0.97 0.98 rg');
-  ops.push('BT /F2 14 Tf 102 774 Td (KAIZEN OFFICIAL TRADER CERTIFICATE & DOSSIER) Tj ET');
+  ops.push('BT /F2 13.5 Tf 100 774 Td (KAIZEN OFFICIAL TRADER CERTIFICATE & DOSSIER) Tj ET');
   ops.push('0.96 0.77 0.09 rg');
-  ops.push('BT /F1 8.5 Tf 102 758 Td (BEHAVIORAL DISCIPLINE & BROKER-VERIFIED EXECUTION RECORD) Tj ET');
+  ops.push('BT /F1 8.5 Tf 100 758 Td (BEHAVIORAL DISCIPLINE & BROKER-VERIFIED EXECUTION RECORD) Tj ET');
 
   // Verification ID Pill on Right
   ops.push('0.96 0.77 0.09 rg');
   ops.push(`BT /F2 9 Tf 425 766 Td (${pdfEscape(verificationId)}) Tj ET`);
 
-  // 5. Core Metrics Row (4 Boxes)
+  // 5. Core Metrics Row (4 Boxes - Framed with Gold/Slate borders)
   const boxY = 668;
   const boxH = 58;
   const boxW = 121;
   const gaps = [42, 172, 302, 432];
 
   for (const bx of gaps) {
-    ops.push('0.08 0.12 0.18 rg');
+    ops.push('0.07 0.11 0.17 rg');
     ops.push(`${bx} ${boxY} ${boxW} ${boxH} re f`);
-    ops.push('0.5 w 0.20 0.28 0.38 RG');
+    ops.push('0.6 w 0.96 0.77 0.09 RG');
     ops.push(`${bx} ${boxY} ${boxW} ${boxH} re S`);
   }
 
@@ -132,7 +175,7 @@ function generateDossierPdfBuffer(dossier = {}, options = {}) {
   ops.push(`BT /F1 7.5 Tf 180 ${boxY + 43} Td (KAIZEN SCORE) Tj ET`);
   ops.push('0.96 0.77 0.09 rg');
   ops.push(`BT /F2 16 Tf 180 ${boxY + 23} Td (${pdfEscape(String(kaizenScore))}%) Tj ET`);
-  ops.push('0.96 0.97 0.98 rg');
+  ops.push('0.96 0.77 0.09 rg');
   ops.push(`BT /F1 7.5 Tf 180 ${boxY + 10} Td (Compliance: ${pdfEscape(String(complianceRate))}%) Tj ET`);
 
   // Box 3: Logged & Verified Sessions
@@ -157,7 +200,7 @@ function generateDossierPdfBuffer(dossier = {}, options = {}) {
   ops.push('0.96 0.77 0.09 rg');
   ops.push(`BT /F2 9.5 Tf 42 ${curY} Td (HOW THIS TRADER OPERATES  |  KAIZEN MEMORY SYNTHESIS) Tj ET`);
   curY -= 6;
-  ops.push('0.4 w 0.96 0.77 0.09 RG');
+  ops.push('0.5 w 0.96 0.77 0.09 RG');
   ops.push(`42 ${curY} m 553 ${curY} l S`);
   curY -= 16;
 
@@ -165,7 +208,7 @@ function generateDossierPdfBuffer(dossier = {}, options = {}) {
     ? String(dossier.howITrade || '').replace(/\b(AUDJPY|EURUSD|GBPUSD|USDJPY|XAUUSD|Japan 225|NAS100|US30|US500|GER40)\b/gi, '[REDACTED]')
     : String(dossier.howITrade || '');
   const summaryLines = wrapText(summaryText, 92).slice(0, 4);
-  ops.push('0.94 0.96 0.98 rg');
+  ops.push('0.96 0.97 0.98 rg');
   for (const line of summaryLines) {
     ops.push(`BT /F1 9.5 Tf 42 ${curY} Td (${pdfEscape(line)}) Tj ET`);
     curY -= 13;
@@ -173,7 +216,7 @@ function generateDossierPdfBuffer(dossier = {}, options = {}) {
 
   curY -= 4;
   const behLines = wrapText(dossier.behavioralSummary || '', 92).slice(0, 3);
-  ops.push('0.72 0.78 0.84 rg');
+  ops.push('0.78 0.83 0.88 rg');
   for (const line of behLines) {
     ops.push(`BT /F1 9 Tf 42 ${curY} Td (${pdfEscape(line)}) Tj ET`);
     curY -= 12.5;
@@ -182,11 +225,13 @@ function generateDossierPdfBuffer(dossier = {}, options = {}) {
   curY -= 14;
 
   // 7. Section: DEFINING TRADING & STUDY DECISIONS (BALANCED GOOD & LESSON SESSIONS)
+  // Uses transparent stroked borders (NO opaque rectangle fills) so the centered KAIZEN
+  // watermark remains 100% visible behind the decision cards!
   if (!hideQuotes && Array.isArray(dossier.memorableDecisions) && dossier.memorableDecisions.length > 0) {
     ops.push('0.96 0.77 0.09 rg');
     ops.push(`BT /F2 9.5 Tf 42 ${curY} Td (DEFINING TRADING & STUDY DECISIONS  |  BALANCED RECORD) Tj ET`);
     curY -= 6;
-    ops.push('0.4 w 0.96 0.77 0.09 RG');
+    ops.push('0.5 w 0.96 0.77 0.09 RG');
     ops.push(`42 ${curY} m 553 ${curY} l S`);
     curY -= 14;
 
@@ -197,14 +242,14 @@ function generateDossierPdfBuffer(dossier = {}, options = {}) {
       const badge = dec.qualityLabel || dec.mode || 'SESSION';
       const headerLine = `${instLabel} - ${dec.strategy || 'System'}  [${badge} | ${dec.mode || 'RECORDED'} | ${dateLabel}]`;
 
-      // Card background
-      ops.push('0.07 0.10 0.15 rg');
-      ops.push(`42 ${curY - 48} 511 58 re f`);
-      // Left accent bar: Gold for good sessions, Burnt Blue/Amber for lesson sessions
+      // Transparent glass card border (allows the KAIZEN watermark underneath to shine through!)
+      ops.push('0.5 w 0.24 0.34 0.46 RG');
+      ops.push(`42 ${curY - 48} 511 58 re S`);
+      // Left accent bar: Emerald/Gold for good sessions, Amber for lesson sessions
       if (dec.isGood) {
-        ops.push('0.96 0.77 0.09 rg');
+        ops.push('0.13 0.72 0.38 rg');
       } else {
-        ops.push('0.85 0.45 0.25 rg');
+        ops.push('0.92 0.45 0.15 rg');
       }
       ops.push(`42 ${curY - 48} 3.5 58 re f`);
 
@@ -212,7 +257,7 @@ function generateDossierPdfBuffer(dossier = {}, options = {}) {
       ops.push(`BT /F2 8.5 Tf 52 ${curY - 4} Td (${pdfEscape(headerLine.slice(0, 95))}) Tj ET`);
 
       const qLines = wrapText(`"${dec.narrative || ''}"`, 94).slice(0, 2);
-      ops.push('0.94 0.96 0.98 rg');
+      ops.push('0.96 0.97 0.98 rg');
       let qY = curY - 17;
       for (const ql of qLines) {
         ops.push(`BT /F1 8.5 Tf 52 ${qY} Td (${pdfEscape(ql)}) Tj ET`);
@@ -220,39 +265,42 @@ function generateDossierPdfBuffer(dossier = {}, options = {}) {
       }
 
       const lLine = wrapText(`KAIZEN Takeaway: ${dec.lesson || ''}`, 94)[0] || '';
-      ops.push('0.68 0.76 0.84 rg');
+      ops.push('0.76 0.83 0.90 rg');
       ops.push(`BT /F1 8 Tf 52 ${curY - 42} Td (${pdfEscape(lLine)}) Tj ET`);
 
       curY -= 66;
     }
   }
 
-  // 8. Bottom Official Authentication Block: Seal + Founder Signature ("Dennis · Kaizen Mentor")
+  // 8. Bottom Official Authentication Block: Vermillion Seal + Founder Signature ("Dennis · Kaizen Mentor")
   const footY = 54;
-  ops.push('0.5 w 0.96 0.77 0.09 RG');
+  ops.push('0.6 w 0.96 0.77 0.09 RG');
   ops.push(`42 ${footY + 52} m 553 ${footY + 52} l S`);
 
-  // Vermillion Seal Circle on Left (#C0392B -> 0.75 0.22 0.17)
+  // Vermillion Seal Square on Left (#C0392B -> 0.75 0.22 0.17) with Vector "改"
   ops.push('0.75 0.22 0.17 rg');
-  ops.push(`42 ${footY + 8} 34 34 re f`);
-  ops.push('1 w 0.96 0.77 0.09 RG');
-  ops.push(`42 ${footY + 8} 34 34 re S`);
-  ops.push('0.96 0.97 0.98 rg');
-  ops.push(`BT /F2 11 Tf 47 ${footY + 21} Td (SEAL) Tj ET`);
+  ops.push(`42 ${footY + 8} 36 36 re f`);
+  ops.push('1.2 w 0.96 0.77 0.09 RG');
+  ops.push(`42 ${footY + 8} 36 36 re S`);
+  ops.push('1.4 w 0.96 0.97 0.98 RG');
+  ops.push(`48 ${footY + 34} m 58 ${footY + 34} l 58 ${footY + 26} l 48 ${footY + 26} l 48 ${footY + 16} l 59 ${footY + 16} l S`);
+  ops.push(`63 ${footY + 36} m 61 ${footY + 26} l 72 ${footY + 26} l S`);
+  ops.push(`69 ${footY + 26} m 62 ${footY + 14} l S`);
+  ops.push(`62 ${footY + 24} m 72 ${footY + 14} l S`);
 
   ops.push('0.96 0.97 0.98 rg');
-  ops.push(`BT /F2 9.5 Tf 86 ${footY + 30} Td (AUTHENTICATED BY KAIZEN  |  OFFICIAL TRADER CREDENTIAL) Tj ET`);
-  ops.push('0.64 0.69 0.75 rg');
-  ops.push(`BT /F1 8 Tf 86 ${footY + 17} Td (Zero bank details, logins, or account balances collected. Tamper-evident record.) Tj ET`);
+  ops.push(`BT /F2 9.5 Tf 88 ${footY + 30} Td (AUTHENTICATED BY KAIZEN  |  OFFICIAL TRADER CREDENTIAL) Tj ET`);
+  ops.push('0.72 0.78 0.84 rg');
+  ops.push(`BT /F1 8 Tf 88 ${footY + 17} Td (Zero bank details, logins, or account balances collected. Tamper-evident record.) Tj ET`);
   ops.push('0.96 0.77 0.09 rg');
-  ops.push(`BT /F1 7.5 Tf 86 ${footY + 6} Td (Certificate ID: ${pdfEscape(verificationId)}  |  Issued: ${pdfEscape(new Date().toISOString().slice(0, 10))}) Tj ET`);
+  ops.push(`BT /F1 7.5 Tf 88 ${footY + 6} Td (Certificate ID: ${pdfEscape(verificationId)}  |  Issued: ${pdfEscape(new Date().toISOString().slice(0, 10))}) Tj ET`);
 
   // Founder Signature on Right
   ops.push('0.96 0.77 0.09 rg');
   ops.push(`BT /F3 15 Tf 395 ${footY + 26} Td (Dennis  -  Kaizen Mentor) Tj ET`);
-  ops.push('0.3 w 0.96 0.77 0.09 RG');
+  ops.push('0.4 w 0.96 0.77 0.09 RG');
   ops.push(`390 ${footY + 20} m 553 ${footY + 20} l S`);
-  ops.push('0.64 0.69 0.75 rg');
+  ops.push('0.72 0.78 0.84 rg');
   ops.push(`BT /F1 7.5 Tf 395 ${footY + 9} Td (FOUNDER SIGNATURE & AUTHENTICATION) Tj ET`);
 
   const contentStream = ops.join('\n');

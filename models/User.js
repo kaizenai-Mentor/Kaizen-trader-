@@ -126,6 +126,18 @@ const UserSchema = new mongoose.Schema({
     description: { type: String },
     earnedAt: { type: Date, default: Date.now }
   }],
+  // One-time Read-Only Broker Connection (MT4/MT5 Investor Password or Read-Only API Key):
+  // Stores only read-only connection metadata + hashed token so KAIZEN can auto-skim
+  // trade executions whenever the trader logs a new LIVE session.
+  brokerConnection: {
+    active: { type: Boolean, default: false },
+    platform: { type: String, default: '' }, // e.g. 'MT5 Investor (Read-Only)', 'MT4 Investor (Read-Only)', 'Read-Only Broker API'
+    server: { type: String, default: '' },   // e.g. 'FTMO-Server', 'Exness-MT5Real'
+    maskedAccount: { type: String, default: '' }, // e.g. '****837'
+    credentialHash: { type: String, default: '' },
+    connectedAt: { type: Date, default: null },
+    lastSkimmedAt: { type: Date, default: null }
+  },
   // Privacy-first broker trade history (MT4/MT5/cTrader/TradingView import):
   // Never stores account numbers, logins, bank info, dollar balances, or lot sizes.
   brokerTrades: [{

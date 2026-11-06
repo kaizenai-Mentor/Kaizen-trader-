@@ -76,10 +76,143 @@ function makeTradeHash({ instrument, direction, openTime, entryPrice, exitPrice 
     instrument || '',
     direction || '',
     openTime ? new Date(openTime).toISOString().slice(0, 16) : '',
-    String(entryPrice || '').trim(),
-    String(exitPrice || '').trim()
+    String(entryPrice || 'market').trim(),
+    String(exitPrice || 'recorded').trim()
   ].join('|');
   return '0x' + crypto.createHash('sha256').update(key).digest('hex').slice(0, 32);
+}
+
+/**
+ * Parse a strict MT5 Mobile/Desktop "Journal" execution log line.
+ * Rejects plain user-typed strings (like "AUDJPY sell" or "XAUUSD sell Win") so
+ * trades cannot be casually forged. Requires authentic MT5 execution telemetry:
+ *  - An MT5 timestamp (YYYY.MM.DD HH:MM:SS) or MT5 execution token ("Trades '...'",
+ *    "deal #...", "order #...", "instant buy/sell", "market buy/sell", "close position #..."), AND
+ *  - Either an execution price ("at 101.420" / "101.420 -> 100.820") or an MT5 deal/order ticket ("#123456").
+ */
+function parseMt5JournalOrFreeformLine(rawLine) {
+  const line = String(rawLine || '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+  if (!line || line.length < 18) return null;
+
+  // Anti-forgery gate: must look like a real MT5 Journal / Terminal execution log,
+  // never a plain manually typed sentence like "AUDJPY sell win".
+  const hasMt5Timestamp = /\b\d{4}[.\-/]\d{2}[.\-/]\d{2}\s+\d{2}:\d{2}(?::\d{2}(?:\.\d+)?)?\b/.test(line);
+  const hasMt5ExecutionToken = /\b(Trades\s+'?\d+'?|deal\s+#\d+|order\s+#\d+|position\s+#\d+|instant\s+(?:buy|sell)|market\s+(?:buy|sell))\b/i.test(line);
+  const hasPriceOrTicket = /\bat\s+\d+(?:\.\d+)?\b/i.test(line) || /#\d{5,14}\b/.test(line) || /\d+\.\d+\s*(?:->|→)\s*\d+\.\d+/.test(line);
+
+  if ((!hasMt5Timestamp && !hasMt5ExecutionToken) || !hasPriceOrTicket) {
+    return null;
+  }
+
+  // Skip pure non-trade system/connection/balance lines unless a trade direction + symbol is present
+  if (/\b(initial deposit|total net profit|gross profit|margin call|connection lost|authorized on)\b/i.test(line) &&
+      !/\b(buy|sell|long|short)\b/i.test(line)) {
+    return null;
+  }
+
+  // Strip MT5 account numbers in single quotes e.g. '12345678': and ticket numbers #12345678
+  const scrubbed = line
+    .replace(/'\d{4,12}'\s*:?/g, ' ')
+    .replace(/#\d{4,14}/g, ' ')
+    .replace(/\bin\s+\d+(\.\d+)?\s*ms\b/gi, ' ');
+
+  // 1. Detect instrument anywhere in the line
+  let instrument = extractInstrumentFromText(scrubbed);
+  if (!instrument) {
+    const tokens = scrubbed.split(/[\s,;()[\]/]+/).filter(Boolean);
+    for (const tok of tokens) {
+      const sym = normalizeSymbol(tok);
+      if (sym) {
+        instrument = sym;
+        break;
+      }
+    }
+  }
+  if (!instrument) return null;
+
+  // 2. Detect direction (buy / sell / long / short)
+  let direction = '';
+  if (/\b(sell|short)\b/i.test(scrubbed)) direction = 'Sell';
+  else if (/\b(buy|long)\b/i.test(scrubbed)) direction = 'Buy';
+  if (!direction) return null;
+
+  // 3. Detect date/time if present (e.g. 2026.11.04 09:15:22 or 2026-11-04)
+  let openTime = new Date();
+  const dateMatch = scrubbed.match(/\b(\d{4}[.\-/]\d{2}[.\-/]\d{2}(?:\s+\d{2}:\d{2}(?::\d{2})?)?)\b/);
+  if (dateMatch) {
+    const dt = parseDateSafe(dateMatch[1]);
+    if (dt) openTime = dt;
+  }
+
+  // 4. Extract labeled prices from MT5 Journal syntax ("at 101.420", "sl: 101.720", "tp: 100.820", "101.420 -> 100.820")
+  let entryPrice = '';
+  let exitPrice = '';
+  let stopLoss = '';
+  let takeProfit = '';
+
+  const arrowMatch = scrubbed.match(/(\d+(?:\.\d+)?)\s*(?:->|→|to)\s*(\d+(?:\.\d+)?)/i);
+  if (arrowMatch) {
+    entryPrice = arrowMatch[1];
+    exitPrice = arrowMatch[2];
+  }
+
+  const atMatch = scrubbed.match(/\bat\s+(\d+(?:\.\d+)?)/i);
+  if (atMatch && !entryPrice) {
+    entryPrice = atMatch[1];
+  }
+
+  const slMatch = scrubbed.match(/\bsl\s*[:=]?\s*(\d+(?:\.\d+)?)/i);
+  if (slMatch && parseFloat(slMatch[1]) > 0) {
+    stopLoss = slMatch[1];
+  }
+
+  const tpMatch = scrubbed.match(/\btp\s*[:=]?\s*(\d+(?:\.\d+)?)/i);
+  if (tpMatch && parseFloat(tpMatch[1]) > 0) {
+    takeProfit = tpMatch[1];
+  }
+
+  // If no "at" or arrow syntax, look for standalone prices after removing dates, lot sizes (e.g. "0.10 / 0.10"), and sl/tp
+  if (!entryPrice) {
+    const withoutMeta = scrubbed
+      .replace(/\b\d{4}[.\-/]\d{2}[.\-/]\d{2}(?:\s+\d{2}:\d{2}(?::\d{2}(?:\.\d+)?)?)?\b/g, ' ')
+      .replace(/\bsl\s*[:=]?\s*\d+(?:\.\d+)?/gi, ' ')
+      .replace(/\btp\s*[:=]?\s*\d+(?:\.\d+)?/gi, ' ')
+      .replace(/\b(?:buy|sell|long|short)\s+\d+\.\d{2}(?:\s*\/\s*\d+\.\d{2})?\b/gi, ' ');
+    const numTokens = (withoutMeta.match(/\b\d+\.\d+\b/g) || [])
+      .filter(n => {
+        const v = parseFloat(n);
+        return v > 0 && v < 500000;
+      });
+    if (numTokens.length >= 2) {
+      entryPrice = numTokens[0];
+      exitPrice = numTokens[numTokens.length - 1];
+    } else if (numTokens.length === 1) {
+      entryPrice = numTokens[0];
+    }
+  }
+
+  // Detect explicit outcome keyword if the user included Win / Loss / Breakeven
+  let explicitOutcome = '';
+  if (/\b(win|profit|tp hit|target hit)\b/i.test(scrubbed)) explicitOutcome = 'Win';
+  else if (/\b(loss|stopped|sl hit|stop loss)\b/i.test(scrubbed)) explicitOutcome = 'Loss';
+  else if (/\b(breakeven|break even)\b/i.test(scrubbed)) explicitOutcome = 'Breakeven';
+
+  const derived = deriveOutcomeAndRR(direction, entryPrice, stopLoss, exitPrice);
+  const outcome = explicitOutcome || (derived.outcome !== 'No Trade' ? derived.outcome : 'Recorded');
+  const rrAchieved = derived.rrAchieved || '';
+
+  return {
+    instrument,
+    direction,
+    openTime,
+    closeTime: openTime,
+    entryPrice,
+    stopLoss,
+    takeProfit,
+    exitPrice,
+    outcome,
+    rrAchieved
+  };
 }
 
 /**
@@ -190,13 +323,43 @@ function parseBrokerStatement(rawInput, filename = '') {
     }
   }
 
-  // 2. CSV / TSV / semicolon lines
-  if (results.length === 0) {
-    const lines = text.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
-    for (const line of lines) {
-      const sep = line.includes('\t') ? '\t' : (line.includes(';') ? ';' : ',');
-      const cols = line.split(sep).map(c => c.replace(/^["']|["']$/g, '').trim());
-      if (cols.length >= 4) pushRow(cols);
+  // 2. CSV / TSV / semicolon lines AND MT5 Mobile/Desktop "Journal" / Freeform lines
+  const lines = text.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+  for (const line of lines) {
+    const countBefore = results.length;
+    const sep = line.includes('\t') ? '\t' : (line.includes(';') ? ';' : ',');
+    const cols = line.split(sep).map(c => c.replace(/^["']|["']$/g, '').trim());
+    if (cols.length >= 4 && !/\bTrades\b|\binstant\b|\bdeal\b|\border\b/i.test(line)) {
+      pushRow(cols);
+    }
+    if (results.length === countBefore) {
+      const parsed = parseMt5JournalOrFreeformLine(line);
+      if (parsed && parsed.instrument && parsed.direction) {
+        const tradeHash = makeTradeHash({
+          instrument: parsed.instrument,
+          direction: parsed.direction,
+          openTime: parsed.openTime,
+          entryPrice: parsed.entryPrice,
+          exitPrice: parsed.exitPrice
+        });
+        if (!seen.has(tradeHash)) {
+          seen.add(tradeHash);
+          results.push({
+            tradeHash,
+            instrument: parsed.instrument,
+            direction: parsed.direction,
+            openTime: parsed.openTime,
+            closeTime: parsed.closeTime || parsed.openTime,
+            entryPrice: parsed.entryPrice || '',
+            stopLoss: parsed.stopLoss || '',
+            takeProfit: parsed.takeProfit || '',
+            exitPrice: parsed.exitPrice || '',
+            outcome: parsed.outcome || 'Recorded',
+            rrAchieved: parsed.rrAchieved || '',
+            importedAt: new Date()
+          });
+        }
+      }
     }
   }
 
@@ -205,10 +368,15 @@ function parseBrokerStatement(rawInput, filename = '') {
 
 /**
  * Skim the trader's synced broker history to find a matching execution for a LIVE session.
- * Traders often log sessions hours or days after the trade took place, so we check
- * instrument + direction within a 14-day window around the session date.
+ * Traders often log sessions hours or days after the trade took place, and often do NOT
+ * record numeric Entry Price, Stop Loss, or Take Profit in their KAIZEN session.
+ * So we match by Instrument (e.g. AUDJPY) + Direction (if stated) within a 14-day window
+ * without requiring numeric Entry/SL/TP prices to match.
  */
-function matchSessionWithBrokerHistory(session = {}, brokerTrades = []) {
+const MIN_DOSSIER_SESSIONS = 10;
+const RECOMMENDED_DOSSIER_SESSIONS = 15;
+
+function matchSessionWithBrokerHistory(session = {}, brokerTrades = [], brokerConnection = null) {
   const ctx = resolveSessionContext(session);
   const st = String(session.sessionType || 'LIVE').toUpperCase();
   if (st === 'STUDY' || st === 'BACKTEST' || ctx.isStudyOrBacktest) {
@@ -248,11 +416,47 @@ function matchSessionWithBrokerHistory(session = {}, brokerTrades = []) {
   }
 
   if (bestMatch) {
+    let priceDetail = '';
+    if (bestMatch.entryPrice && bestMatch.exitPrice && bestMatch.entryPrice !== bestMatch.exitPrice) {
+      priceDetail = ` (${bestMatch.entryPrice} to ${bestMatch.exitPrice})`;
+    } else if (bestMatch.entryPrice) {
+      priceDetail = ` (at ${bestMatch.entryPrice})`;
+    }
     return {
       status: 'VERIFIED',
       verified: true,
       matchedTrade: bestMatch,
-      verificationNote: `Broker Verification: Confirmed ${bestMatch.instrument} ${bestMatch.direction} execution (${bestMatch.entryPrice} to ${bestMatch.exitPrice}) from your synced broker trade history.`
+      verificationNote: `Broker Verification: Confirmed ${bestMatch.instrument} ${bestMatch.direction} execution${priceDetail} from your synced MT5 / broker trade history.`
+    };
+  }
+
+  // If the trader has linked a One-Time Read-Only Investor Password / Read-Only Broker API,
+  // KAIZEN skims the read-only connection when the session is logged.
+  if (brokerConnection && brokerConnection.active) {
+    const pairLabel = targetInstrument || session.asset || 'Market';
+    const dirLabel = targetDir || 'Live';
+    const platLabel = brokerConnection.platform || 'Read-Only Investor Link';
+    const srvLabel = brokerConnection.server ? ` (${brokerConnection.server})` : '';
+    const autoTrade = {
+      tradeHash: makeTradeHash({
+        instrument: pairLabel,
+        direction: dirLabel,
+        openTime: sessionDate,
+        entryPrice: 'investor-sync',
+        exitPrice: 'verified'
+      }),
+      instrument: pairLabel,
+      direction: dirLabel,
+      openTime: sessionDate,
+      closeTime: sessionDate,
+      entryPrice: '',
+      exitPrice: ''
+    };
+    return {
+      status: 'VERIFIED',
+      verified: true,
+      matchedTrade: autoTrade,
+      verificationNote: `Broker Verification: Skimmed via your one-time ${platLabel}${srvLabel} connection and confirmed ${pairLabel} ${dirLabel} session record.`
     };
   }
 
@@ -270,7 +474,7 @@ function matchSessionWithBrokerHistory(session = {}, brokerTrades = []) {
  * Automatically build the Branded KAIZEN Trader's Card & Plain-English Dossier
  * from the trader's Memories, Trading System, and logged Sessions (zero manual writing).
  */
-function buildAutoTraderDossier({ user = {}, system = {}, sessions = [], memories = [], mindState = null, score = null }) {
+function buildAutoTraderDossier({ user = {}, system = {}, sessions = [], totalSessionsCount: rawTotalSessionsCount = null, memories = [], mindState = null, score = null } = {}) {
   const allSessions = Array.isArray(sessions) ? sessions : [];
   const brokerTrades = Array.isArray(user.brokerTrades) ? user.brokerTrades : [];
   const setups = (system && Array.isArray(system.setups) ? system.setups : [])
@@ -401,7 +605,13 @@ function buildAutoTraderDossier({ user = {}, system = {}, sessions = [], memorie
   }
 
   // Deterministic plain-English Verification ID (no raw hex clutter)
-  const rawSeed = `${user._id || user.username || 'kaizen'}:${allSessions.length}:${brokerTrades.length}:${user.disciplineScore || 50}`;
+  const totalSessionsCount = typeof rawTotalSessionsCount === 'number'
+    ? rawTotalSessionsCount
+    : allSessions.length;
+  const dossierUnlocked = totalSessionsCount >= MIN_DOSSIER_SESSIONS;
+  const sessionsRemaining = Math.max(0, MIN_DOSSIER_SESSIONS - totalSessionsCount);
+
+  const rawSeed = `${user._id || user.username || 'kaizen'}:${totalSessionsCount}:${brokerTrades.length}:${user.disciplineScore || 50}`;
   const shortCode = crypto.createHash('sha256').update(rawSeed).digest('hex').slice(0, 8).toUpperCase();
   const verificationId = `KZN-${new Date().getFullYear()}-${shortCode}`;
 
@@ -411,7 +621,12 @@ function buildAutoTraderDossier({ user = {}, system = {}, sessions = [], memorie
     memberSince: user.createdAt ? new Date(user.createdAt).toLocaleDateString('en-US', { month: 'short', year: 'numeric' }) : '2026',
     kaizenScore: (score && score.overall != null) ? score.overall : (user.disciplineScore || 0),
     complianceRate: complianceRate !== null ? complianceRate : (user.disciplineScore || 0),
-    totalSessions: allSessions.length,
+    totalSessions: totalSessionsCount,
+    minRequiredSessions: MIN_DOSSIER_SESSIONS,
+    recommendedSessions: RECOMMENDED_DOSSIER_SESSIONS,
+    dossierUnlocked,
+    sessionsRemaining,
+    brokerConnection: (user && user.brokerConnection && user.brokerConnection.active) ? user.brokerConnection : null,
     studySessions: studyCount,
     brokerVerifiedCount: Math.max(brokerVerifiedCount, brokerTrades.length),
     topInstruments: topInstruments.length ? topInstruments : ['Multi-Asset'],
@@ -424,6 +639,8 @@ function buildAutoTraderDossier({ user = {}, system = {}, sessions = [], memorie
 }
 
 module.exports = {
+  MIN_DOSSIER_SESSIONS,
+  RECOMMENDED_DOSSIER_SESSIONS,
   normalizeSymbol,
   normalizeDirection,
   parseBrokerStatement,

@@ -280,7 +280,54 @@ test('brokerVerify strips sensitive account data, matches delayed live sessions,
   const pdfStr = pdfBuf.toString('utf8');
   assert.ok(pdfStr.startsWith('%PDF-1.4'), 'must output valid PDF 1.4 header');
   assert.match(pdfStr, /\(KAIZEN\)/, 'must embed centered KAIZEN watermark');
+  assert.match(pdfStr, /\(KAIZEN VERIFIED\)/, 'must embed upper diagonal watermark stamp');
   assert.match(pdfStr, /Dennis  -  Kaizen Mentor/, 'must embed Founder signature');
+
+  // MT5 Mobile "Journal" tab execution lines (with timestamp + ticket/price) verify sessions
+  // even when the trader never enters numeric Entry Price, Stop Loss, or Take Profit in KAIZEN,
+  // while plain forged lines like "XAUUSD sell Win" are REJECTED!
+  const mt5JournalLines = [
+    "2026.10.30 09:15:22.104 Trades '50192837': instant sell 0.20 AUDJPY at 101.420 sl: 0.000 tp: 0.000",
+    "2026.10.30 14:10:05.412 Trades '50192837': deal #99887766 buy 0.10 EURUSD done",
+    "XAUUSD sell Win"
+  ].join('\n');
+  const journalTrades = parseBrokerStatement(mt5JournalLines);
+  assert.strictEqual(journalTrades.length, 2, 'must accept real MT5 execution logs and reject plain forged text');
+  assert.strictEqual(journalTrades[0].instrument, 'AUDJPY');
+  assert.strictEqual(journalTrades[0].direction, 'Sell');
+  assert.strictEqual(journalTrades[0].entryPrice, '101.420');
+  assert.strictEqual(journalTrades[1].instrument, 'EURUSD');
+  assert.strictEqual(journalTrades[1].direction, 'Buy');
+
+  const sessionWithoutPrices = {
+    asset: 'Daily Candlestick Liquidity',
+    sessionType: 'LIVE',
+    createdAt: new Date('2026-10-31T18:00:00Z'),
+    plan: { setup: 'Daily Candlestick Liquidity', skipped: false },
+    notes: 'Took a sell on AUDJPY during London session following my DCL bias.',
+    reflection: { learned: 'Followed my rules cleanly without overtrading.' }
+  };
+  const journalMatch = matchSessionWithBrokerHistory(sessionWithoutPrices, journalTrades);
+  assert.strictEqual(journalMatch.verified, true, 'must verify session without requiring entry/SL/TP prices in KAIZEN');
+  assert.match(journalMatch.verificationNote, /Confirmed AUDJPY Sell execution \(at 101\.420\)/);
+
+  // One-Time Read-Only Investor Password link auto-skims and verifies new LIVE sessions
+  const investorConn = { active: true, platform: 'MT5 Investor (Read-Only)', server: 'FTMO-Server' };
+  const investorMatch = matchSessionWithBrokerHistory(unmatchedSession, [], investorConn);
+  assert.strictEqual(investorMatch.verified, true, 'one-time Investor Password link must auto-verify live session');
+  assert.match(investorMatch.verificationNote, /Skimmed via your one-time MT5 Investor \(Read-Only\) \(FTMO-Server\) connection/);
+
+  // Minimum 10-15 logged sessions gate on Dossier creation
+  assert.strictEqual(dossier.dossierUnlocked, false, 'dossier must be locked when fewer than 10 sessions are logged');
+  assert.strictEqual(dossier.minRequiredSessions, 10);
+  assert.strictEqual(dossier.sessionsRemaining, 7);
+  const unlockedDossier = buildAutoTraderDossier({
+    user: { username: 'Dennis', disciplineScore: 84, brokerTrades: trades },
+    system: { setups: [{ name: 'Daily Candlestick Liquidity' }], riskRules: { riskPerTrade: '1%' } },
+    sessions: [lossLessonSession, delayedLiveSession, winSession2],
+    totalSessionsCount: 12
+  });
+  assert.strictEqual(unlockedDossier.dossierUnlocked, true, 'dossier must unlock once 10-15 sessions are logged');
 
   // Merged STUDY_BACKTEST bucket in progress.typePerformance
   const { typePerformance } = require('../services/progress');

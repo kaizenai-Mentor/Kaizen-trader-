@@ -35,49 +35,46 @@
 
     <div id="broker-import-panel" class="k-card" style="display:none;margin:18px 0;padding:22px;">
       <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:10px;">
-        <div class="k-panel-title"><span class="k-kanji k-kanji--sm">改</span>PRIVACY-FIRST BROKER HISTORY SYNC</div>
-        <span style="font-family:var(--font-mono);font-size:0.56rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);">MT5 Mobile · MT4/MT5 Desktop · cTrader · TradingView</span>
+        <div class="k-panel-title"><span class="k-kanji k-kanji--sm">改</span>UNFORGEABLE READ-ONLY BROKER VERIFICATION</div>
+        <span style="font-family:var(--font-mono);font-size:0.56rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);">One-Time Investor Password · Read-Only API · Official Statements</span>
       </div>
       <p style="font-size:0.84rem;color:var(--text-secondary);line-height:1.7;margin:0 0 14px;">
-        Using the <strong>MT5 Mobile App</strong> (where there is no HTML export button)? Enter the closed trade from your mobile History tab below, or upload an exported Desktop Trade History (<strong>.html</strong> / <strong>.csv</strong>). KAIZEN never collects account numbers, logins, deposits, or dollar balances.
+        Link your <strong>Read-Only Investor Password</strong> (MT4/MT5) or <strong>Read-Only API Key</strong> once so KAIZEN automatically skims and verifies every new <code>LIVE</code> session you log (even if you don't enter Entry, SL, or TP in KAIZEN). If your prop firm doesn't provide an Investor Password, upload your official <strong>.html / .csv</strong> statement or paste an official <strong>MT5 Journal execution log</strong> (plain typed lines are rejected to prevent trade forgery).
       </p>
       <form action="/dashboard/sessions/import-broker" method="POST" enctype="multipart/form-data">
         <input type="hidden" name="returnTo" value="/dashboard/sessions">
+
         <div style="font-family:var(--font-mono);font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:8px;font-weight:700;">
-          OPTION 1: QUICK MT5 MOBILE APP TRADE SYNC
+          OPTION 1: ONE-TIME READ-ONLY INVESTOR PASSWORD / READ-ONLY API LINK (AUTO-SKIMS EVERY SESSION)
         </div>
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(125px,1fr));gap:10px;margin-bottom:14px;">
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:10px;margin-bottom:14px;">
           <div>
-            <label class="k-fieldlabel">PAIR / SYMBOL</label>
-            <input type="text" name="mt5Symbol" class="k-input" placeholder="e.g. AUDJPY, XAUUSD">
-          </div>
-          <div>
-            <label class="k-fieldlabel">BUY / SELL</label>
-            <select name="mt5Direction" class="k-input">
-              <option value="Buy">Buy</option>
-              <option value="Sell">Sell</option>
+            <label class="k-fieldlabel">PLATFORM</label>
+            <select name="investorPlatform" class="k-input">
+              <option value="MT5 Investor (Read-Only)">MT5 Investor (Read-Only)</option>
+              <option value="MT4 Investor (Read-Only)">MT4 Investor (Read-Only)</option>
+              <option value="cTrader Read-Only Token">cTrader Read-Only Token</option>
+              <option value="TradeLocker / DXtrade Read-Only">TradeLocker / DXtrade Read-Only</option>
+              <option value="Read-Only Broker API Key">Read-Only Broker API Key</option>
             </select>
           </div>
           <div>
-            <label class="k-fieldlabel">ENTRY PRICE</label>
-            <input type="text" name="mt5Entry" class="k-input" placeholder="e.g. 101.420">
+            <label class="k-fieldlabel">BROKER / PROP SERVER</label>
+            <input type="text" name="investorServer" class="k-input" placeholder="e.g. FTMO-Server, Exness-MT5Real">
           </div>
           <div>
-            <label class="k-fieldlabel">EXIT PRICE</label>
-            <input type="text" name="mt5Exit" class="k-input" placeholder="e.g. 100.820">
+            <label class="k-fieldlabel">ACCOUNT LOGIN / API ID</label>
+            <input type="text" name="investorLogin" class="k-input" placeholder="e.g. 50192837">
           </div>
           <div>
-            <label class="k-fieldlabel">STOP LOSS (OPT)</label>
-            <input type="text" name="mt5Stop" class="k-input" placeholder="e.g. 101.720">
-          </div>
-          <div>
-            <label class="k-fieldlabel">TRADE DATE</label>
-            <input type="date" name="mt5Date" class="k-input" value="<%= new Date().toISOString().slice(0,10) %>">
+            <label class="k-fieldlabel">INVESTOR (READ-ONLY) PASS / KEY</label>
+            <input type="password" name="investorPassword" class="k-input" placeholder="Read-Only Investor Password">
           </div>
         </div>
+
         <div style="border-top:1px solid var(--border);padding-top:12px;margin-bottom:14px;">
           <div style="font-family:var(--font-mono);font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-secondary);margin-bottom:8px;">
-            OPTION 2: DESKTOP REPORT UPLOAD (.HTML / .CSV) OR BULK PASTE
+            OPTION 2: PROP FIRMS WITHOUT INVESTOR PASSWORD · UPLOAD REPORT (.HTML / .CSV) OR OFFICIAL MT5 EXECUTION LOG
           </div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
             <div>
@@ -85,13 +82,14 @@
               <input type="file" name="brokerFile" accept=".html,.htm,.csv,.txt" class="k-input">
             </div>
             <div>
-              <label class="k-fieldlabel">OR PASTE TRADE HISTORY ROWS</label>
-              <input type="text" name="brokerText" class="k-input" placeholder="e.g. 2026-10-29 09:15, buy, AUDJPY, 101.20, 100.90, 101.85, 101.80">
+              <label class="k-fieldlabel">OR PASTE OFFICIAL MT5 JOURNAL EXECUTION LOG</label>
+              <input type="text" name="brokerText" class="k-input" placeholder="e.g. 2026.11.04 09:15:22 Trades '50192837': instant sell 0.10 AUDJPY at 101.420">
             </div>
           </div>
         </div>
+
         <div style="display:flex;align-items:center;gap:12px;">
-          <button type="submit" class="btn-primary">Verify &amp; Sync Trades</button>
+          <button type="submit" class="btn-primary">Connect Read-Only Link &amp; Verify Trades</button>
           <a href="/za/reputation/<%= user.id || user._id %>#traders-card" style="font-family:var(--font-mono);font-size:0.64rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);text-decoration:underline;">View Branded Trader's Card &amp; Dossier</a>
         </div>
       </form>

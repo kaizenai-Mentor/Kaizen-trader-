@@ -409,7 +409,13 @@ const getReputation = async (req, res) => {
       const checkBadges = require('../config/checkBadges');
       await checkBadges(user._id);
       const fresh = await User.findById(user._id);
-      if (fresh) { user.badges = fresh.badges; user.disciplineScore = fresh.disciplineScore; user.streak = fresh.streak; user.brokerTrades = fresh.brokerTrades; }
+      if (fresh) {
+        user.badges = fresh.badges;
+        user.disciplineScore = fresh.disciplineScore;
+        user.streak = fresh.streak;
+        user.brokerTrades = fresh.brokerTrades;
+        user.brokerConnection = fresh.brokerConnection;
+      }
 
       const [memories, mindState] = await Promise.all([
         Memory.find({ userId: user._id }).sort({ createdAt: -1 }).limit(15).lean().catch(() => []),
@@ -419,6 +425,7 @@ const getReputation = async (req, res) => {
         user,
         system,
         sessions: recentSessions,
+        totalSessionsCount: totalSessions,
         memories,
         mindState,
         score: computed
@@ -504,8 +511,9 @@ const downloadDossierPdf = async (req, res) => {
     if (!extracted) {
       extracted = await runV1Extraction(user, Journal) || null;
     }
-    const [recentSessions, memories, mindState] = await Promise.all([
+    const [recentSessions, totalSessionsCount, memories, mindState] = await Promise.all([
       Journal.find({ userId: user._id, state: { $ne: 'PLANNED' } }).sort({ createdAt: -1 }).limit(60).lean(),
+      Journal.countDocuments({ userId: user._id, state: { $ne: 'PLANNED' } }),
       Memory.find({ userId: user._id }).sort({ createdAt: -1 }).limit(15).lean().catch(() => []),
       MindState.findOne({ userId: user._id }).lean().catch(() => null)
     ]);
@@ -514,10 +522,16 @@ const downloadDossierPdf = async (req, res) => {
       user,
       system,
       sessions: recentSessions,
+      totalSessionsCount,
       memories,
       mindState,
       score: computed
     });
+
+    // Enforce minimum 10-15 logged sessions gate before allowing PDF Certificate & Dossier generation
+    if (!dossier.dossierUnlocked) {
+      return res.redirect('/za/reputation/' + req.params.userId + '?dossierLocked=1#traders-card');
+    }
 
     const pdfBuf = generateDossierPdfBuffer(dossier, {
       redactPairs: req.query.redactPairs === '1',

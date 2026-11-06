@@ -413,10 +413,13 @@
     <!-- ═══ BRANDED KAIZEN TRADER'S CARD & OFFICIAL CERTIFICATE DOSSIER ═══ -->
     <section id="traders-card" style="position:relative;overflow:hidden;background:linear-gradient(180deg, #101824 0%, #0A0A0A 100%);border:2px solid #F5C518;box-shadow:inset 0 0 0 4px #0A0A0A, inset 0 0 0 5px rgba(245,197,24,0.45), 0 28px 56px rgba(0,0,0,0.48);border-radius:20px;padding:32px;margin-top:24px;color:#F4F8FB;">
 
-      <!-- Centered KAIZEN Logo Watermark (Certificate Vibe) -->
-      <div aria-hidden="true" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;user-select:none;z-index:0;opacity:0.06;transform:rotate(-14deg);">
-        <div style="font-family:var(--font-cjk);font-size:13rem;line-height:1;color:#F5C518;font-weight:700;">改</div>
-        <div style="font-family:var(--font-heading);font-size:4.2rem;letter-spacing:0.24em;color:#F4F8FB;font-weight:800;margin-top:-10px;">KAIZEN</div>
+      <!-- Centered KAIZEN Logo Watermark (Certificate Vibe — layered with pointer-events:none so it is visible across the entire certificate) -->
+      <div aria-hidden="true" style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;user-select:none;z-index:3;opacity:0.12;transform:rotate(-16deg);">
+        <div style="border:3px solid #F5C518;border-radius:24px;padding:18px 42px;text-align:center;">
+          <div style="font-family:var(--font-cjk);font-size:10.5rem;line-height:1;color:#F5C518;font-weight:700;">改</div>
+          <div style="font-family:var(--font-heading);font-size:3.6rem;letter-spacing:0.24em;color:#1A2F4A;text-shadow:0 0 2px #F5C518;font-weight:800;margin-top:-6px;">KAIZEN</div>
+          <div style="font-family:'DM Mono',monospace;font-size:0.75rem;letter-spacing:0.26em;color:#F5C518;font-weight:700;margin-top:4px;">VERIFIED TRADER CERTIFICATE</div>
+        </div>
       </div>
 
       <div style="position:relative;z-index:1;">
@@ -433,6 +436,10 @@
           <div style="font-family:'DM Mono',monospace;font-size:0.62rem;letter-spacing:0.14em;color:#0A0A0A;background:#F5C518;border:1px solid #F5C518;padding:6px 12px;border-radius:999px;font-weight:700;">KZN-2026-VERIFIED</div>
         </div>
       </div>
+
+      
+
+      
 
       
 
@@ -497,73 +504,75 @@
         </div>
       </div>
 
-      <!-- Actions: Direct Download as PDF (with KAIZEN Watermark) & Sync Broker History -->
+      <!-- Actions: Direct Download as PDF (with KAIZEN Watermark, gated at 10-15 sessions) & Sync Broker History -->
       <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-top:20px;padding-top:16px;border-top:1px dashed rgba(244,248,251,0.16);">
         <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-          <a id="dossier-pdf-link" href="reputation.html" download="KAIZEN-Trader-Certificate-Kaizen.pdf" class="btn-primary" style="font-size:0.82rem;padding:12px 22px;text-decoration:none;display:inline-flex;align-items:center;gap:8px;">
-            <i data-feather="download" width="14" height="14"></i> Download Certificate &amp; Dossier as PDF
-          </a>
+          
+            <a id="dossier-pdf-link" href="reputation.html" download="KAIZEN-Trader-Certificate-Kaizen.pdf" class="btn-primary" style="font-size:0.82rem;padding:12px 22px;text-decoration:none;display:inline-flex;align-items:center;gap:8px;">
+              <i data-feather="download" width="14" height="14"></i> Download Certificate &amp; Dossier as PDF
+            </a>
+          
         </div>
         <button type="button" onclick="var f=document.getElementById('rep-broker-sync');if(f)f.style.display=f.style.display==='none'?'block':'none';" class="btn-outline" style="font-size:0.78rem;padding:10px 18px;color:#F4F8FB;border-color:rgba(245,197,24,0.45);">
-          Sync MT5 Mobile / Broker History
+          Link Read-Only Investor Password / Sync Broker
         </button>
       </div>
 
-      <div id="rep-broker-sync" style="display:none;margin-top:16px;padding:20px;border-radius:14px;background:rgba(10,10,10,0.82);border:1px solid rgba(245,197,24,0.45);">
-        <div style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.14em;text-transform:uppercase;color:#F5C518;margin-bottom:8px;font-weight:700;">
-          OPTION 1: QUICK MT5 MOBILE APP SYNC (ENTER CLOSED TRADE FROM YOUR PHONE HISTORY TAB)
-        </div>
-        <p style="font-size:0.78rem;color:#A3B1BF;margin:0 0 12px;line-height:1.6;">
-          On the MT5 Mobile App (where there is no HTML report export button), enter the closed trade details from your MT5 History tab below to verify your session right away:
-        </p>
+      <div id="rep-broker-sync" style="display:none;margin-top:16px;padding:20px;border-radius:14px;background:rgba(10,10,10,0.88);border:1px solid rgba(245,197,24,0.45);">
         <form action="/dashboard/sessions/import-broker" method="POST" enctype="multipart/form-data">
           <input type="hidden" name="returnTo" value="/za/reputation/#traders-card">
-          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(125px,1fr));gap:10px;margin-bottom:14px;">
+
+          <div style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.14em;text-transform:uppercase;color:#F5C518;margin-bottom:6px;font-weight:700;">
+            OPTION 1: ONE-TIME READ-ONLY INVESTOR PASSWORD / READ-ONLY BROKER API LINK
+          </div>
+          <p style="font-size:0.78rem;color:#A3B1BF;margin:0 0 12px;line-height:1.6;">
+            Link your <strong>Read-Only Investor Password</strong> (MT4/MT5) or <strong>Read-Only API Key</strong> (cTrader / TradeLocker / DXtrade / OANDA / Bybit) once. KAIZEN never stores your master password or dollar balance — whenever you log a new <code>LIVE</code> session, KAIZEN automatically skims your read-only link and verifies the trade:
+          </p>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:10px;margin-bottom:16px;">
             <div>
-              <label class="k-fieldlabel" style="color:#F5C518;">PAIR / SYMBOL</label>
-              <input type="text" name="mt5Symbol" class="k-input" placeholder="e.g. AUDJPY, XAUUSD">
-            </div>
-            <div>
-              <label class="k-fieldlabel" style="color:#F5C518;">BUY / SELL</label>
-              <select name="mt5Direction" class="k-input">
-                <option value="Buy">Buy</option>
-                <option value="Sell">Sell</option>
+              <label class="k-fieldlabel" style="color:#F5C518;">PLATFORM</label>
+              <select name="investorPlatform" class="k-input">
+                <option value="MT5 Investor (Read-Only)">MT5 Investor (Read-Only)</option>
+                <option value="MT4 Investor (Read-Only)">MT4 Investor (Read-Only)</option>
+                <option value="cTrader Read-Only Token">cTrader Read-Only Token</option>
+                <option value="TradeLocker / DXtrade Read-Only">TradeLocker / DXtrade Read-Only</option>
+                <option value="Read-Only Broker API Key">Read-Only Broker API Key</option>
               </select>
             </div>
             <div>
-              <label class="k-fieldlabel" style="color:#F5C518;">ENTRY PRICE</label>
-              <input type="text" name="mt5Entry" class="k-input" placeholder="e.g. 101.420">
+              <label class="k-fieldlabel" style="color:#F5C518;">BROKER / PROP SERVER</label>
+              <input type="text" name="investorServer" class="k-input" placeholder="e.g. FTMO-Server, Exness-MT5Real">
             </div>
             <div>
-              <label class="k-fieldlabel" style="color:#F5C518;">EXIT PRICE</label>
-              <input type="text" name="mt5Exit" class="k-input" placeholder="e.g. 100.820">
+              <label class="k-fieldlabel" style="color:#F5C518;">ACCOUNT LOGIN / API ID</label>
+              <input type="text" name="investorLogin" class="k-input" placeholder="e.g. 50192837">
             </div>
             <div>
-              <label class="k-fieldlabel" style="color:#F5C518;">STOP LOSS (OPT)</label>
-              <input type="text" name="mt5Stop" class="k-input" placeholder="e.g. 101.720">
-            </div>
-            <div>
-              <label class="k-fieldlabel" style="color:#F5C518;">TRADE DATE</label>
-              <input type="date" name="mt5Date" class="k-input" value="2026-11-04">
+              <label class="k-fieldlabel" style="color:#F5C518;">INVESTOR (READ-ONLY) PASS / KEY</label>
+              <input type="password" name="investorPassword" class="k-input" placeholder="Read-Only Investor Password">
             </div>
           </div>
 
-          <div style="border-top:1px solid rgba(244,248,251,0.12);padding-top:14px;margin-top:6px;">
-            <div style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.14em;text-transform:uppercase;color:#A3B1BF;margin-bottom:10px;">
-              OPTION 2: DESKTOP MT4 / MT5 / TRADINGVIEW FILE UPLOAD (.HTML / .CSV) OR BULK PASTE
+          <div style="border-top:1px solid rgba(244,248,251,0.12);padding-top:14px;margin-bottom:14px;">
+            <div style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.14em;text-transform:uppercase;color:#A3B1BF;margin-bottom:6px;font-weight:700;">
+              OPTION 2: PROP FIRMS WITHOUT INVESTOR PASSWORD · UPLOAD STATEMENT (.HTML / .CSV) OR OFFICIAL MT5 EXECUTION LOG
             </div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
+            <p style="font-size:0.75rem;color:#A3B1BF;margin:0 0 10px;line-height:1.55;">
+              If your prop firm does not issue an Investor Password, upload an exported Trade History report (<strong>.html</strong> / <strong>.csv</strong>) or paste an official <strong>MT5 Journal execution log line</strong> (must include the broker timestamp and deal/order ticket <code>#...</code> or execution price <code>at ...</code>; plain typed text is rejected to prevent forgery):
+            </p>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
               <div>
-                <label class="k-fieldlabel" style="color:#C4D0DC;">UPLOAD REPORT (.HTML / .CSV)</label>
+                <label class="k-fieldlabel" style="color:#C4D0DC;">UPLOAD BROKER REPORT (.HTML / .CSV)</label>
                 <input type="file" name="brokerFile" accept=".html,.htm,.csv,.txt" class="k-input">
               </div>
               <div>
-                <label class="k-fieldlabel" style="color:#C4D0DC;">OR PASTE MULTIPLE TRADE ROWS</label>
-                <input type="text" name="brokerText" class="k-input" placeholder="e.g. 2026-10-29 09:15, sell, AUDJPY, 101.42, 101.72, 100.82">
+                <label class="k-fieldlabel" style="color:#C4D0DC;">OR PASTE OFFICIAL MT5 JOURNAL EXECUTION LOG</label>
+                <input type="text" name="brokerText" class="k-input" placeholder="e.g. 2026.11.04 09:15:22 Trades '50192837': instant sell 0.10 AUDJPY at 101.420">
               </div>
             </div>
           </div>
-          <button type="submit" class="btn-primary" style="font-size:0.82rem;padding:11px 20px;">Verify &amp; Sync to Trader's Card</button>
+
+          <button type="submit" class="btn-primary" style="font-size:0.82rem;padding:11px 22px;">Connect Read-Only Link &amp; Verify Trades</button>
         </form>
       </div>
       </div>
