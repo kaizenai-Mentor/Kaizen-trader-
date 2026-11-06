@@ -85,6 +85,9 @@
     <div class="popup-auth-btns">
       <a href="login.html" class="btn-primary btn-full">Log In</a>
       <a href="register.html" class="btn-outline btn-full">Sign Up</a>
+      <button type="button" class="btn-outline btn-full" onclick="triggerKaizenInstall()" style="margin-top:8px;border-color:var(--gold);color:var(--gold);font-weight:700;">
+        Install KAIZEN App
+      </button>
     </div>
 
     <!-- LANGUAGE (owner directive 13 Oct 2026) -->
@@ -117,6 +120,9 @@
   <div class="nav-right">
     <div class="nav-lang" style="margin-right:6px;display:flex;align-items:center;">
     </div>
+    <button type="button" id="kTopInstallBtn" onclick="triggerKaizenInstall()" title="Install KAIZEN Mobile App" style="font-family:var(--font-mono);font-size:0.6rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;background:rgba(245,197,24,0.14);color:var(--gold);border:1px solid rgba(245,197,24,0.45);border-radius:999px;padding:6px 11px;cursor:pointer;margin-right:6px;display:inline-flex;align-items:center;gap:5px;">
+      <span>📲</span><span>Install App</span>
+    </button>
     <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
       <span id="themeIcon">◐</span>
     </button>
@@ -157,22 +163,57 @@
 
 
 
+<!-- INSTALL KAIZEN MOBILE APP MODAL -->
+<div class="modal-overlay" id="installAppModal" onclick="if(event.target===this)this.classList.remove('active');">
+  <div class="modal" style="max-width:420px;">
+    <div class="modal-header">
+      <h3 style="display:flex;align-items:center;gap:8px;"><span class="k-kanji k-kanji--sm">改</span> Install KAIZEN Mobile App</h3>
+      <button class="modal-close" onclick="document.getElementById('installAppModal').classList.remove('active')">×</button>
+    </div>
+    <div class="modal-body" style="font-size:0.86rem;line-height:1.68;color:var(--text-secondary);">
+      <div style="padding:12px 14px;border-radius:12px;border:1px solid rgba(245,197,24,0.4);background:rgba(245,197,24,0.08);margin-bottom:14px;color:var(--text-primary);">
+        <strong style="color:var(--gold);">Android (Chrome / Brave / Samsung):</strong><br>
+        Tap the browser <strong>⋮ menu</strong> (top-right corner) and select <strong>"Install app"</strong> or <strong>"Add to Home screen"</strong> to place the full-screen <strong>改 KAIZEN</strong> app on your phone.
+      </div>
+      <div style="padding:12px 14px;border-radius:12px;border:1px solid var(--border);background:var(--bg-elevated);margin-bottom:14px;color:var(--text-primary);">
+        <strong style="color:var(--gold);">iPhone / iPad (Safari):</strong><br>
+        Tap the <strong>Share</strong> icon at the bottom of Safari and tap <strong>"Add to Home Screen"</strong>.
+      </div>
+      <div style="padding:12px 14px;border-radius:12px;border:1px solid var(--border);background:var(--bg-elevated);color:var(--text-primary);">
+        <strong style="color:var(--gold);">Running Termux Locally?</strong><br>
+        Open <a href="http://localhost:3000/dashboard" style="color:var(--gold);font-weight:700;text-decoration:underline;">http://localhost:3000/dashboard</a> (Login: <code>dennis@kaizen.test</code> / Pass: <code>kaizen123</code>).
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
   var _kaizenDeferredPrompt = null;
   window.addEventListener('beforeinstallprompt', function (e) {
     e.preventDefault();
     _kaizenDeferredPrompt = e;
-    var btn = document.getElementById('kInstallAppBtn');
-    if (btn) btn.style.display = 'flex';
   });
+  // Hide top Install button if already running inside installed standalone PWA / APK mode
+  (function () {
+    try {
+      var isStandalone = (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || window.navigator.standalone === true;
+      if (isStandalone) {
+        var topBtn = document.getElementById('kTopInstallBtn');
+        if (topBtn) topBtn.style.display = 'none';
+      }
+    } catch (e) {}
+  })();
   function triggerKaizenInstall() {
-    if (!_kaizenDeferredPrompt) return;
-    _kaizenDeferredPrompt.prompt();
-    _kaizenDeferredPrompt.userChoice.then(function () {
-      _kaizenDeferredPrompt = null;
-      var btn = document.getElementById('kInstallAppBtn');
-      if (btn) btn.style.display = 'none';
-    });
+    if (typeof closePopup === 'function') closePopup();
+    if (_kaizenDeferredPrompt) {
+      _kaizenDeferredPrompt.prompt();
+      _kaizenDeferredPrompt.userChoice.then(function () {
+        _kaizenDeferredPrompt = null;
+      });
+      return;
+    }
+    var m = document.getElementById('installAppModal');
+    if (m) m.classList.add('active');
   }
 </script>
 
