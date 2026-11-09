@@ -408,11 +408,17 @@
         <input type="hidden" name="returnTo" value="/dashboard/sessions">
 
         <div style="font-family:var(--font-mono);font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:8px;font-weight:700;">
-          OPTION 1: ONE-TIME READ-ONLY BROKER API KEY (AUTO-SKIMS EVERY SESSION)
+          OPTION 1: ONE-TIME READ-ONLY BROKER API KEY OR INVESTOR PASSWORD (AUTO-SKIMS EVERY SESSION)
         </div>
-        <div style="margin-bottom:14px;">
-          <label class="k-fieldlabel">READ-ONLY BROKER API KEY</label>
-          <input type="password" name="investorPassword" class="k-input" placeholder="Paste your Read-Only Broker API Key here">
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:14px;">
+          <div>
+            <label class="k-fieldlabel">READ-ONLY BROKER API KEY</label>
+            <input type="password" name="brokerApiKey" class="k-input" placeholder="Paste Read-Only Broker API Key">
+          </div>
+          <div>
+            <label class="k-fieldlabel">OR INVESTOR (READ-ONLY) PASSWORD</label>
+            <input type="password" name="investorPassword" class="k-input" placeholder="Paste Prop Firm Investor Password">
+          </div>
         </div>
 
         <div style="border-top:1px solid var(--border);padding-top:12px;margin-bottom:14px;">

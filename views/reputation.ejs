@@ -429,14 +429,20 @@
           <input type="hidden" name="returnTo" value="/za/reputation/<%= profileUser._id %>#traders-card">
 
           <div style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.14em;text-transform:uppercase;color:#F5C518;margin-bottom:6px;font-weight:700;">
-            OPTION 1: ONE-TIME READ-ONLY BROKER API KEY
+            OPTION 1: ONE-TIME READ-ONLY BROKER API KEY OR INVESTOR PASSWORD
           </div>
           <p style="font-size:0.78rem;color:#A3B1BF;margin:0 0 12px;line-height:1.6;">
-            Paste your <strong>Read-Only Broker API Key</strong> once. KAIZEN never stores your master password or bank details — whenever you log a new <code>LIVE</code> session, KAIZEN automatically skims your read-only API link and verifies the trade:
+            Paste your <strong>Read-Only Broker API Key</strong> or <strong>Prop Firm Investor (Read-Only) Password</strong> once. KAIZEN never stores your master password or bank details — whenever you log a new <code>LIVE</code> session, KAIZEN automatically skims your read-only link and verifies the trade:
           </p>
-          <div style="margin-bottom:16px;">
-            <label class="k-fieldlabel" style="color:#F5C518;">READ-ONLY BROKER API KEY</label>
-            <input type="password" name="investorPassword" class="k-input" placeholder="Paste your Read-Only Broker API Key here">
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:16px;">
+            <div>
+              <label class="k-fieldlabel" style="color:#F5C518;">READ-ONLY BROKER API KEY</label>
+              <input type="password" name="brokerApiKey" class="k-input" placeholder="Paste Read-Only Broker API Key">
+            </div>
+            <div>
+              <label class="k-fieldlabel" style="color:#F5C518;">OR INVESTOR (READ-ONLY) PASSWORD</label>
+              <input type="password" name="investorPassword" class="k-input" placeholder="Paste Prop Firm Investor Password">
+            </div>
           </div>
 
           <div style="border-top:1px solid rgba(244,248,251,0.12);padding-top:14px;margin-bottom:14px;">

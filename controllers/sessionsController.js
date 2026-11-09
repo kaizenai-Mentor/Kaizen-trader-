@@ -557,11 +557,14 @@ async function postImportBroker(req, res) {
   const rawFile = (req.file && req.file.buffer) ? req.file.buffer.toString('utf8') : '';
   const rawBody = String(req.body.brokerText || '').trim();
 
-  // One-Time Read-Only Broker API Key Link (single API key box)
-  const invPlatform = String(req.body.investorPlatform || 'Read-Only Broker API Key').trim();
-  const invServer = String(req.body.investorServer || 'Read-Only API Sync').trim();
+  // One-Time Read-Only Broker API Key OR Prop Firm Investor Password Link (2 side-by-side boxes)
+  const rawApiKey = String(req.body.brokerApiKey || '').trim();
+  const rawInvPass = String(req.body.investorPassword || '').trim();
+  const invPass = rawApiKey || rawInvPass;
+  const defaultPlatform = rawApiKey ? 'Read-Only Broker API Key' : 'Investor Password (Read-Only)';
+  const invPlatform = String(req.body.investorPlatform || defaultPlatform).trim();
+  const invServer = String(req.body.investorServer || 'Read-Only Sync').trim();
   const invLogin = String(req.body.investorLogin || '').trim();
-  const invPass = String(req.body.investorPassword || req.body.brokerApiKey || '').trim();
   const hasInvestorLink = Boolean(invPass && invPass.length >= 4);
 
   const content = [rawFile, rawBody].filter(Boolean).join('\n');
