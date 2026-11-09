@@ -611,6 +611,119 @@ function buildAutoTraderDossier({ user = {}, system = {}, sessions = [], totalSe
   const dossierUnlocked = totalSessionsCount >= MIN_DOSSIER_SESSIONS;
   const sessionsRemaining = Math.max(0, MIN_DOSSIER_SESSIONS - totalSessionsCount);
 
+  // 4. Auto-computed Performance & P&L Record (Section II of the Trader Dossier)
+  // Extracts R-multiples, Win Rate, Avg R:R, Profit Factor, and Net Return (% / R)
+  // from logged LIVE sessions, rrAchieved, TradingSystem riskPerTrade, and synced brokerTrades.
+  const rawRiskNum = parseFloat(String((system && system.riskRules && system.riskRules.riskPerTrade) || '1').replace(/[^0-9.]/g, ''));
+  const riskPctPerTrade = (isFinite(rawRiskNum) && rawRiskNum > 0 && rawRiskNum <= 10) ? rawRiskNum : 1.0;
+
+  const parseRFromStr = (str, notesStr = '') => {
+    const s = String(str || '').trim();
+    const ratioMatch = s.match(/1\s*[:/]\s*(\d+(?:\.\d+)?)/i);
+    if (ratioMatch) return parseFloat(ratioMatch[1]);
+    const rMatch = s.match(/([+-]?\d+(?:\.\d+)?)\s*R?\b/i);
+    if (rMatch) {
+      const val = Math.abs(parseFloat(rMatch[1]));
+      if (val > 0 && val <= 30) return val;
+    }
+    const n = String(notesStr || '');
+    const noteRatio = n.match(/\b1\s*[:/]\s*(\d+(?:\.\d+)?)\b/i) || n.match(/\b(\d+(?:\.\d+)?)\s*R\b/i);
+    if (noteRatio) {
+      const v = Math.abs(parseFloat(noteRatio[1]));
+      if (v > 0 && v <= 30) return v;
+    }
+    return null;
+  };
+
+  let wins = 0;
+  let losses = 0;
+  let breakevens = 0;
+  let grossWinR = 0;
+  let grossLossR = 0;
+  let bestTradeR = 0;
+  const winRList = [];
+
+  for (const s of allSessions) {
+    const ctx = resolveSessionContext(s);
+    if (ctx.isStudyOrBacktest) continue;
+    const out = String(s.outcome || '').trim();
+    const rVal = parseRFromStr(s.rrAchieved, s.notes);
+    if (out === 'Win') {
+      wins++;
+      const r = (rVal && rVal > 0) ? rVal : 2.0;
+      grossWinR += r;
+      winRList.push(r);
+      if (r > bestTradeR) bestTradeR = r;
+    } else if (out === 'Loss') {
+      losses++;
+      const lossR = s.ruleCompliance === false ? 1.25 : 1.0;
+      grossLossR += lossR;
+    } else if (out === 'Breakeven') {
+      breakevens++;
+    }
+  }
+
+  // Include any additional synced brokerTrades if no live sessions have outcomes yet
+  if (wins + losses + breakevens === 0 && brokerTrades.length > 0) {
+    for (const bt of brokerTrades) {
+      const out = String((bt && bt.outcome) || '').trim();
+      const rVal = parseRFromStr(bt && bt.rrAchieved, '');
+      if (out === 'Win') {
+        wins++;
+        const r = (rVal && rVal > 0) ? rVal : 2.0;
+        grossWinR += r;
+        winRList.push(r);
+        if (r > bestTradeR) bestTradeR = r;
+      } else if (out === 'Loss') {
+        losses++;
+        grossLossR += 1.0;
+      } else if (out === 'Breakeven') {
+        breakevens++;
+      }
+    }
+  }
+
+  const decidedTrades = wins + losses + breakevens;
+  const winLossTotal = wins + losses;
+  const winRate = winLossTotal > 0 ? Math.round((wins / winLossTotal) * 100) : 0;
+  const netRNum = Number((grossWinR - grossLossR).toFixed(2));
+  const netPctNum = Number((netRNum * riskPctPerTrade).toFixed(2));
+  const avgWinR = winRList.length > 0
+    ? Number((winRList.reduce((a, b) => a + b, 0) / winRList.length).toFixed(1))
+    : 0;
+  const profitFactorNum = grossLossR > 0
+    ? Number((grossWinR / grossLossR).toFixed(2))
+    : (grossWinR > 0 ? Number(grossWinR.toFixed(2)) : 0);
+
+  const fmtSigned = (n, suffix) => `${n >= 0 ? '+' : ''}${n.toFixed(1)}${suffix}`;
+  const netRLabel = decidedTrades > 0 ? fmtSigned(netRNum, 'R') : '0.0R';
+  const netReturnPctLabel = decidedTrades > 0 ? fmtSigned(netPctNum, '%') : '0.0%';
+  const avgRRLabel = avgWinR > 0 ? `1 : ${avgWinR.toFixed(1)}` : '1 : 2.0';
+  const bestTradeLabel = bestTradeR > 0 ? `+${bestTradeR.toFixed(1)}R` : '0.0R';
+  const profitFactorLabel = profitFactorNum > 0 ? profitFactorNum.toFixed(2) : '0.00';
+
+  const pnlNarrative = decidedTrades > 0
+    ? `Across ${decidedTrades} decided live execution${decidedTrades === 1 ? '' : 's'} (${wins} Win${wins === 1 ? '' : 's'}, ${losses} Loss${losses === 1 ? '' : 'es'}, ${breakevens} Breakeven), ${user.username || 'this trader'} holds a ${winRate}% win rate with an average winning execution of ${avgRRLabel} R:R and a ${profitFactorLabel} profit factor. Governed by a declared ${riskRule} risk ceiling, cumulative verified performance stands at ${netRLabel} (${netReturnPctLabel} net account return).`
+    : `Performance and P&L metrics populate automatically from decided live executions and synced read-only broker history against the declared ${riskRule} risk ceiling.`;
+
+  const pnlSummary = {
+    decidedTrades,
+    wins,
+    losses,
+    breakevens,
+    winRate,
+    netR: netRNum,
+    netRLabel,
+    netReturnPct: netPctNum,
+    netReturnPctLabel,
+    avgRRLabel,
+    bestTradeLabel,
+    profitFactor: profitFactorNum,
+    profitFactorLabel,
+    riskCeiling: riskRule,
+    narrative: pnlNarrative
+  };
+
   const rawSeed = `${user._id || user.username || 'kaizen'}:${totalSessionsCount}:${brokerTrades.length}:${user.disciplineScore || 50}`;
   const shortCode = crypto.createHash('sha256').update(rawSeed).digest('hex').slice(0, 8).toUpperCase();
   const verificationId = `KZN-${new Date().getFullYear()}-${shortCode}`;
@@ -634,7 +747,8 @@ function buildAutoTraderDossier({ user = {}, system = {}, sessions = [], totalSe
     riskPerTrade: riskRule,
     howITrade,
     behavioralSummary,
-    memorableDecisions
+    memorableDecisions,
+    pnlSummary
   };
 }
 
