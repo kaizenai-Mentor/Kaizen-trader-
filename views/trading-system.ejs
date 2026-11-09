@@ -17,8 +17,8 @@
           <p class="k-sub"><%= t('ts.sub') %></p>
         </div>
         <div class="k-versionchip">
-          <span class="k-versionnum">v<%= system.version %></span>
-          <span class="k-versionmeta"><%= system.history.length %> <%= t('ts.version') %><%= system.history.length === 1 ? '' : 's' %> <%= t('ts.onRecord') %></span>
+          <span class="k-versionnum">v<%= system.version || 1 %></span>
+          <span class="k-versionmeta"><%= (system.history || []).length %> <%= t('ts.version') %><%= (system.history || []).length === 1 ? '' : 's' %> <%= t('ts.onRecord') %></span>
         </div>
       </div>
 

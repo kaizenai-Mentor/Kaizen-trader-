@@ -6,7 +6,7 @@
 function cleanText(s) {
   let out = String(s == null ? '' : s)
     .replace(/\r\n/g, '\n')
-    .replace(/[*✳✱✢✦＊]/g, '')
+    .replace(/[*✳✱✢✦＊`]/g, '')
     .replace(/[ \t]*[—–][ \t]*/g, ', ')
     .replace(/[ \t]+-[ \t]+/g, ', ')
     .replace(/^[ \t]*#{1,6}[ \t]+/gm, '')

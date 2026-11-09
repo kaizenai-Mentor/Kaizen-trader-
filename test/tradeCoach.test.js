@@ -33,10 +33,20 @@ test('digestSystem carries the actual rules to the prompt', () => {
 
 test('digestSessions reports plan/rule facts, never scores', () => {
   const d = digestSessions([
-    { asset: 'XAUUSD', sessionType: 'LIVE', outcome: 'Loss', plan: { setup: 'London open breakout' }, quickChecks: { followedPlan: 'NO', respectedRisk: 'YES' } },
+    {
+      asset: 'XAUUSD',
+      sessionType: 'LIVE',
+      outcome: 'Loss',
+      plan: { setup: 'London open breakout' },
+      quickChecks: { followedPlan: 'NO', respectedRisk: 'YES' },
+      notes: 'Price missed my entry and I had to enter at CMP because I was scared that price will leave me.',
+      reflection: { learned: 'To walk away from the chart when my checklist is incomplete.' }
+    },
     { asset: 'EURUSD', sessionType: 'BACKTEST', outcome: 'Win', quickChecks: {} }
   ]);
   assert.match(d, /XAUUSD \(LIVE, Loss, setup: London open breakout, broke plan\)/);
+  assert.match(d, /Price missed my entry and I had to enter at CMP because I was scared that price will leave me/);
+  assert.match(d, /To walk away from the chart when my checklist is incomplete/);
   assert.match(d, /EURUSD \(BACKTEST, Win\)/);
   assert.ok(!/score/i.test(d));
 });

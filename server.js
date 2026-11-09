@@ -130,6 +130,10 @@ app.use((req, res, next) => {
   next();
 });
 
+// i18n (owner directive 13 Oct 2026): every view gets t() + lang.
+// Registered before all view-rendering routes (including /settings/trading-system).
+app.use(require('./middleware/i18n'));
+
 // Site-wide announcement ticker (V2): one cached lookup, never blocks
 // a page — silently absent when there is no announcement or no DB.
 app.use(async (req, res, next) => {
@@ -200,9 +204,6 @@ app.post('/settings/trading-style', (req, res) => res.redirect(307, '/settings/t
 const authRoutes = require('./routes/auth');
 const dashboardRoutes = require('./routes/dashboard');
 const zaRoutes = require('./routes/za');
-
-// i18n (owner directive 13 Oct 2026): every view gets t() + lang.
-app.use(require('./middleware/i18n'));
 
 app.use('/auth', authRoutes);
 app.use('/dashboard', dashboardRoutes);
