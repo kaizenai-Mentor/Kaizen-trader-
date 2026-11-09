@@ -45,31 +45,11 @@
         <input type="hidden" name="returnTo" value="/dashboard/sessions">
 
         <div style="font-family:var(--font-mono);font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:8px;font-weight:700;">
-          OPTION 1: ONE-TIME READ-ONLY INVESTOR PASSWORD / READ-ONLY API LINK (AUTO-SKIMS EVERY SESSION)
+          OPTION 1: ONE-TIME READ-ONLY BROKER API KEY (AUTO-SKIMS EVERY SESSION)
         </div>
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:10px;margin-bottom:14px;">
-          <div>
-            <label class="k-fieldlabel">PLATFORM</label>
-            <select name="investorPlatform" class="k-input">
-              <option value="MT5 Investor (Read-Only)">MT5 Investor (Read-Only)</option>
-              <option value="MT4 Investor (Read-Only)">MT4 Investor (Read-Only)</option>
-              <option value="cTrader Read-Only Token">cTrader Read-Only Token</option>
-              <option value="TradeLocker / DXtrade Read-Only">TradeLocker / DXtrade Read-Only</option>
-              <option value="Read-Only Broker API Key">Read-Only Broker API Key</option>
-            </select>
-          </div>
-          <div>
-            <label class="k-fieldlabel">BROKER / PROP SERVER</label>
-            <input type="text" name="investorServer" class="k-input" placeholder="e.g. FTMO-Server, Exness-MT5Real">
-          </div>
-          <div>
-            <label class="k-fieldlabel">ACCOUNT LOGIN / API ID</label>
-            <input type="text" name="investorLogin" class="k-input" placeholder="e.g. 50192837">
-          </div>
-          <div>
-            <label class="k-fieldlabel">INVESTOR (READ-ONLY) PASS / KEY</label>
-            <input type="password" name="investorPassword" class="k-input" placeholder="Read-Only Investor Password">
-          </div>
+        <div style="margin-bottom:14px;">
+          <label class="k-fieldlabel">READ-ONLY BROKER API KEY</label>
+          <input type="password" name="investorPassword" class="k-input" placeholder="Paste your Read-Only Broker API Key here">
         </div>
 
         <div style="border-top:1px solid var(--border);padding-top:12px;margin-bottom:14px;">

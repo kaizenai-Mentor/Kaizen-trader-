@@ -557,12 +557,12 @@ async function postImportBroker(req, res) {
   const rawFile = (req.file && req.file.buffer) ? req.file.buffer.toString('utf8') : '';
   const rawBody = String(req.body.brokerText || '').trim();
 
-  // One-Time Read-Only Investor Password / Read-Only Broker API Link
-  const invPlatform = String(req.body.investorPlatform || '').trim();
-  const invServer = String(req.body.investorServer || '').trim();
+  // One-Time Read-Only Broker API Key Link (single API key box)
+  const invPlatform = String(req.body.investorPlatform || 'Read-Only Broker API Key').trim();
+  const invServer = String(req.body.investorServer || 'Read-Only API Sync').trim();
   const invLogin = String(req.body.investorLogin || '').trim();
-  const invPass = String(req.body.investorPassword || '').trim();
-  const hasInvestorLink = Boolean(invLogin && invPass && invPass.length >= 4);
+  const invPass = String(req.body.investorPassword || req.body.brokerApiKey || '').trim();
+  const hasInvestorLink = Boolean(invPass && invPass.length >= 4);
 
   const content = [rawFile, rawBody].filter(Boolean).join('\n');
   const rawReturnTo = (req.body.returnTo && String(req.body.returnTo).startsWith('/'))
@@ -586,11 +586,11 @@ async function postImportBroker(req, res) {
   if (!userDoc) return res.redirect('/dashboard/sessions');
 
   if (hasInvestorLink) {
-    const tail = invLogin.slice(-3);
+    const tail = (invLogin || invPass).slice(-3);
     userDoc.brokerConnection = {
       active: true,
-      platform: invPlatform || 'MT5 Investor (Read-Only)',
-      server: invServer || 'Broker Server',
+      platform: invPlatform || 'Read-Only Broker API Key',
+      server: invServer || 'Read-Only API Sync',
       maskedAccount: `****${tail}`,
       credentialHash: crypto.createHash('sha256').update(`${invServer}:${invLogin}:${invPass}`).digest('hex'),
       connectedAt: new Date(),
