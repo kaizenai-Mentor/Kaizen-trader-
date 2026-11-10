@@ -113,6 +113,12 @@ const JournalSchema = new mongoose.Schema({
       default: 'NOT_MENTIONED'
     }
   },
+  // Raw answers, kept distinct from checks inferred by the scoring pipeline.
+  reportedChecks: {
+    followedPlan: { type: String, default: 'NOT_MENTIONED' },
+    withinEntryCriteria: { type: String, default: 'NOT_MENTIONED' },
+    respectedRisk: { type: String, default: 'NOT_MENTIONED' }
+  },
   reflection: {
     whatHappened: { type: String, default: '' },
     followedProcess: { type: String, default: '' },

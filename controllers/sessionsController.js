@@ -11,6 +11,7 @@ const { computeScore } = require('../services/scoreEngine');
 const { runV1Extraction } = require('../services/extraction');
 const aiCoach = require('../services/aiCoach');
 const checkBadges = require('../config/checkBadges');
+const { syncSessionFeedback } = require('../services/sessionGoalFeedback');
 
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -270,6 +271,8 @@ async function postRecord(req, res) {
       q.respectedRisk = brokeRiskNotes ? 'NO' : 'YES';
     }
   }
+  // Preserve only the trader's submitted answers separately from inferred checks.
+  session.reportedChecks = Object.fromEntries(CHECK_FIELDS.map(f => [f, values[f].includes(req.body[f]) ? req.body[f] : 'NOT_MENTIONED']));
   session.quickChecks = q;
   const anyRuleBroken = q.followedPlan === 'NO' || q.withinEntryCriteria === 'NO' || q.respectedRisk === 'NO';
   session.ruleCompliance = interpAtRecord.isPlanRevision
@@ -287,6 +290,7 @@ async function postRecord(req, res) {
   }
 
   await session.save();
+  await syncSessionFeedback(req.session.user.id, session).catch(err => console.error('session goal sync:', err.message));
 
   // Compute live KAIZEN Score, persist ScoreSnapshot, and update streak + disciplineScore + badges
   try {
@@ -386,6 +390,7 @@ async function postRecord(req, res) {
 
     await userDoc.save();
     await checkBadges(userDoc._id);
+
     const refreshedUser = await User.findById(req.session.user.id);
     req.session.user = {
       ...req.session.user,
@@ -443,6 +448,7 @@ async function postReflect(req, res) {
     : !anyBroken;
   session.state = 'REFLECTED';
   await session.save();
+  await syncSessionFeedback(req.session.user.id, session).catch(err => console.error('session goal sync:', err.message));
 
   // ── ANALYZE: two machines, one response ──
   const userDoc = await User.findById(req.session.user.id);
