@@ -14,16 +14,26 @@
 <link rel="apple-touch-icon" href="images/kaizen-icon-192.png">
 <script>
   window._kaizenDeferredPrompt = null;
+  window._kaizenInstallRequested = false;
   window.addEventListener('beforeinstallprompt', function (e) {
     e.preventDefault();
     window._kaizenDeferredPrompt = e;
     var directBtn = document.getElementById('kDirectNativeInstallBtn');
     if (directBtn) directBtn.style.display = 'block';
+    if (window._kaizenInstallRequested && typeof window.runNativePromptIfReady === 'function') {
+      window._kaizenInstallRequested = false;
+      window.runNativePromptIfReady();
+    }
+  });
+  window.addEventListener('appinstalled', function () {
+    window._kaizenDeferredPrompt = null;
+    var topBtn = document.getElementById('kTopInstallBtn');
+    if (topBtn) topBtn.style.display = 'none';
+    var m = document.getElementById('installAppModal');
+    if (m) { m.classList.remove('open'); m.classList.remove('active'); }
   });
   if ('serviceWorker' in navigator) {
-    window.addEventListener('load', function () {
-      navigator.serviceWorker.register('/sw.js').catch(function () {});
-    });
+    navigator.serviceWorker.register('/sw.js', { scope: '/' }).catch(function () {});
   }
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -326,6 +336,7 @@
   function triggerKaizenInstall() {
     if (typeof closePopup === 'function') closePopup();
     if (runNativePromptIfReady()) return;
+    window._kaizenInstallRequested = true;
     var m = document.getElementById('installAppModal');
     if (m) {
       var directBtn = document.getElementById('kDirectNativeInstallBtn');
@@ -410,7 +421,7 @@
             <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;">
               <div>
                 <div style="font-family:'DM Mono',monospace;font-size:0.54rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--green, #4ec9b0);margin-bottom:4px;">What you&#39;re doing well</div>
-                <p style="font-size:0.82rem;line-height:1.65;color:var(--text-primary);margin:0;white-space:pre-line;">You followed your trading rules in 8 of your last 10 sessions. Your feedback from Nov 8: “Followed the daily loss limit and stood aside after two trades.”.
+                <p style="font-size:0.82rem;line-height:1.65;color:var(--text-primary);margin:0;white-space:pre-line;">You followed your trading rules in 8 of your last 10 sessions. Your feedback from Nov 9: “Followed the daily loss limit and stood aside after two trades.”.
 Keep protecting that habit.</p>
               </div>
               <div>

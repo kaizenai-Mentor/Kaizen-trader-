@@ -14,16 +14,26 @@
 <link rel="apple-touch-icon" href="images/kaizen-icon-192.png">
 <script>
   window._kaizenDeferredPrompt = null;
+  window._kaizenInstallRequested = false;
   window.addEventListener('beforeinstallprompt', function (e) {
     e.preventDefault();
     window._kaizenDeferredPrompt = e;
     var directBtn = document.getElementById('kDirectNativeInstallBtn');
     if (directBtn) directBtn.style.display = 'block';
+    if (window._kaizenInstallRequested && typeof window.runNativePromptIfReady === 'function') {
+      window._kaizenInstallRequested = false;
+      window.runNativePromptIfReady();
+    }
+  });
+  window.addEventListener('appinstalled', function () {
+    window._kaizenDeferredPrompt = null;
+    var topBtn = document.getElementById('kTopInstallBtn');
+    if (topBtn) topBtn.style.display = 'none';
+    var m = document.getElementById('installAppModal');
+    if (m) { m.classList.remove('open'); m.classList.remove('active'); }
   });
   if ('serviceWorker' in navigator) {
-    window.addEventListener('load', function () {
-      navigator.serviceWorker.register('/sw.js').catch(function () {});
-    });
+    navigator.serviceWorker.register('/sw.js', { scope: '/' }).catch(function () {});
   }
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -326,6 +336,7 @@
   function triggerKaizenInstall() {
     if (typeof closePopup === 'function') closePopup();
     if (runNativePromptIfReady()) return;
+    window._kaizenInstallRequested = true;
     var m = document.getElementById('installAppModal');
     if (m) {
       var directBtn = document.getElementById('kDirectNativeInstallBtn');
@@ -385,7 +396,7 @@
     <div class="k-cockpit-head">
       <div>
         <div class="k-eyebrow">COCKPIT · 改</div>
-        <h1 class="k-page-title">Good evening, Kaizen.</h1>
+        <h1 class="k-page-title">Good morning, Kaizen.</h1>
         <p class="k-page-sub">One honest question: how are you improving?</p>
       </div>
       <div class="k-streakchip" title="Practice consistency, never presented as trading performance">

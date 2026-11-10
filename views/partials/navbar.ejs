@@ -255,6 +255,7 @@
   function triggerKaizenInstall() {
     if (typeof closePopup === 'function') closePopup();
     if (runNativePromptIfReady()) return;
+    window._kaizenInstallRequested = true;
     var m = document.getElementById('installAppModal');
     if (m) {
       var directBtn = document.getElementById('kDirectNativeInstallBtn');

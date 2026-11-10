@@ -14,16 +14,26 @@
 <link rel="apple-touch-icon" href="images/kaizen-icon-192.png">
 <script>
   window._kaizenDeferredPrompt = null;
+  window._kaizenInstallRequested = false;
   window.addEventListener('beforeinstallprompt', function (e) {
     e.preventDefault();
     window._kaizenDeferredPrompt = e;
     var directBtn = document.getElementById('kDirectNativeInstallBtn');
     if (directBtn) directBtn.style.display = 'block';
+    if (window._kaizenInstallRequested && typeof window.runNativePromptIfReady === 'function') {
+      window._kaizenInstallRequested = false;
+      window.runNativePromptIfReady();
+    }
+  });
+  window.addEventListener('appinstalled', function () {
+    window._kaizenDeferredPrompt = null;
+    var topBtn = document.getElementById('kTopInstallBtn');
+    if (topBtn) topBtn.style.display = 'none';
+    var m = document.getElementById('installAppModal');
+    if (m) { m.classList.remove('open'); m.classList.remove('active'); }
   });
   if ('serviceWorker' in navigator) {
-    window.addEventListener('load', function () {
-      navigator.serviceWorker.register('/sw.js').catch(function () {});
-    });
+    navigator.serviceWorker.register('/sw.js', { scope: '/' }).catch(function () {});
   }
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -326,6 +336,7 @@
   function triggerKaizenInstall() {
     if (typeof closePopup === 'function') closePopup();
     if (runNativePromptIfReady()) return;
+    window._kaizenInstallRequested = true;
     var m = document.getElementById('installAppModal');
     if (m) {
       var directBtn = document.getElementById('kDirectNativeInstallBtn');
@@ -524,7 +535,7 @@
                     <span style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-secondary);padding:2px 7px;">market-wire</span>
                   
                   <span style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--text-faint);margin-left:auto;">
-                    Nov 9, 06:56 PM
+                    Nov 10, 02:05 AM
                   </span>
                 </div>
 
@@ -576,7 +587,7 @@
                     <span style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-secondary);padding:2px 7px;">desk-report</span>
                   
                   <span style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--text-faint);margin-left:auto;">
-                    Nov 9, 03:56 PM
+                    Nov 9, 11:05 PM
                   </span>
                 </div>
 
@@ -628,7 +639,7 @@
                     <span style="font-family:'DM Mono',monospace;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-secondary);padding:2px 7px;">macro-daily</span>
                   
                   <span style="font-family:'DM Mono',monospace;font-size:0.55rem;color:var(--text-faint);margin-left:auto;">
-                    Nov 9, 11:56 AM
+                    Nov 9, 07:05 PM
                   </span>
                 </div>
 
