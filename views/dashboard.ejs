@@ -44,7 +44,7 @@
 
         <% if (score.overall !== null && score.overall !== undefined) { %>
           <div class="k-scoreline">
-            <span class="k-scorenum"><%= score.overall %></span>
+            <span class="k-scorenum"><%= score.overall %>%</span>
             <div class="k-scoremeta">
               <% if (score.overallState === 'READY') { %><span class="k-statechip is-ready"><%= t('dash.ready') %></span><% } %>
               <% if (score.overallState === 'PARTIAL') { %><span class="k-statechip is-partial"><%= t('dash.partial') %></span><% } %>
@@ -58,7 +58,7 @@
                 <div class="k-meter" data-meter="<%= d.score %>">
                   <span class="k-meter-label"><%= dimensionLabels[k] %></span>
                   <span class="k-meter-track"><span class="k-meter-fill"></span></span>
-                  <span class="k-meter-value"><%= d.score %></span>
+                  <span class="k-meter-value"><%= d.score %>%</span>
                 </div>
               <% } %>
             <% }); %>

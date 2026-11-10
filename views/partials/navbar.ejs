@@ -201,28 +201,44 @@
 <% } %>
 <!-- INSTALL KAIZEN MOBILE APP MODAL -->
 <div class="modal-overlay" id="installAppModal" onclick="if(event.target===this){this.classList.remove('open');this.classList.remove('active');}">
-  <div class="modal" style="max-width:420px;">
+  <div class="modal" style="max-width:440px;">
     <div class="modal-header">
-      <h3 style="display:flex;align-items:center;gap:8px;"><span class="k-kanji k-kanji--sm">改</span> Install KAIZEN Mobile App</h3>
+      <h3 style="display:flex;align-items:center;gap:8px;"><span class="k-kanji k-kanji--sm">改</span> KAIZEN Mobile App Mode</h3>
       <button class="modal-close" onclick="var m=document.getElementById('installAppModal');m.classList.remove('open');m.classList.remove('active');">×</button>
     </div>
-    <div class="modal-body" style="font-size:0.86rem;line-height:1.68;color:var(--text-secondary);">
-      <button type="button" id="kDirectNativeInstallBtn" class="btn-primary btn-full" onclick="runNativePromptIfReady()" style="display:none;margin-bottom:14px;font-weight:700;">
-        📲 Install KAIZEN App Now
+    <div class="modal-body" style="font-size:0.85rem;line-height:1.65;color:var(--text-secondary);">
+      <button type="button" id="kDirectNativeInstallBtn" class="btn-primary btn-full" onclick="runNativePromptIfReady()" style="display:none;margin-bottom:12px;font-weight:700;">
+        📲 Install Native KAIZEN App Now
       </button>
-      <div style="padding:12px 14px;border-radius:12px;border:1px solid rgba(245,197,24,0.4);background:rgba(245,197,24,0.08);margin-bottom:14px;color:var(--text-primary);">
-        <strong style="color:var(--gold);">Android (Chrome / Brave / Samsung):</strong><br>
-        1. Tap the browser <strong>⋮ menu</strong> (top-right corner of Chrome).<br>
-        2. Tap <strong>"Add to Home screen"</strong> or <strong>"Install app"</strong>.<br>
-        3. Choose <strong>Install</strong> to place the full-screen <strong>改 KAIZEN</strong> app on your phone.
+
+      <!-- Option 1: Instant One-Tap Full-Screen App Mode (Works in every browser without 3-dot menu) -->
+      <div style="padding:14px;border-radius:12px;border:1px solid rgba(245,197,24,0.45);background:rgba(245,197,24,0.08);margin-bottom:12px;color:var(--text-primary);">
+        <div style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:4px;">INSTANT 1-TAP APP SHELL (NO BROWSER MENU NEEDED)</div>
+        <p style="margin:0 0 10px;font-size:0.82rem;color:var(--text-secondary);">
+          Switch straight into full-screen <strong>改 KAIZEN App Mode</strong> with the mobile bottom tab bar locked in across all pages:
+        </p>
+        <button type="button" class="btn-primary btn-full" onclick="activateKaizenFullScreenApp()" style="font-weight:700;padding:10px 14px;">
+          📲 Launch Full-Screen KAIZEN App Now
+        </button>
       </div>
-      <div style="padding:12px 14px;border-radius:12px;border:1px solid var(--border);background:var(--bg-elevated);margin-bottom:14px;color:var(--text-primary);">
-        <strong style="color:var(--gold);">iPhone / iPad (Safari):</strong><br>
-        Tap the <strong>Share</strong> icon at the bottom of Safari and tap <strong>"Add to Home Screen"</strong>.
+
+      <!-- Option 2: Break out of Custom Tab / Force Chrome localhost via Android Intent -->
+      <div style="padding:14px;border-radius:12px;border:1px solid var(--border);background:var(--bg-elevated);margin-bottom:12px;color:var(--text-primary);">
+        <div style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:4px;">NO "ADD TO HOME SCREEN" IN YOUR 3-DOT MENU?</div>
+        <p style="margin:0 0 10px;font-size:0.8rem;color:var(--text-secondary);">
+          If you opened KAIZEN from the Google Search bar, Termux URL opener, or on <code>0.0.0.0</code> / <code>127.0.0.1</code>, Android hides the install option. Tap below to force-open <code>http://localhost:3000</code> inside the full Android Chrome app:
+        </p>
+        <button type="button" class="btn-outline btn-full" onclick="openKaizenInChromeApp()" style="border-color:var(--gold);color:var(--gold);font-weight:700;padding:9px 14px;">
+          🚀 Open in Full Chrome App (localhost)
+        </button>
       </div>
+
+      <!-- Option 3: Termux Home-Screen / App Launcher Command -->
       <div style="padding:12px 14px;border-radius:12px;border:1px solid var(--border);background:var(--bg-elevated);color:var(--text-primary);">
-        <strong style="color:var(--gold);">Testing on Termux (`localhost:3000`)?</strong><br>
-        Android Chrome's <strong>⋮ &rarr; Add to Home screen</strong> creates a launcher icon that opens your local Termux server (`http://localhost:3000/dashboard`) in full-screen app mode.
+        <div style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:4px;">TERMUX DIRECT APP LAUNCHER</div>
+        <p style="margin:0 0 6px;font-size:0.78rem;color:var(--text-secondary);">
+          In Termux, run <code>npm run app</code> to start KAIZEN and launch the Android app window automatically.
+        </p>
       </div>
     </div>
   </div>
@@ -232,8 +248,11 @@
   // Hide top Install button if already running inside installed standalone PWA / APK mode
   (function () {
     try {
-      var isStandalone = (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || window.navigator.standalone === true;
+      var isStandalone = (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) ||
+        window.navigator.standalone === true ||
+        localStorage.getItem('kaizen-standalone-app') === '1';
       if (isStandalone) {
+        document.documentElement.classList.add('k-standalone-app');
         var topBtn = document.getElementById('kTopInstallBtn');
         if (topBtn) topBtn.style.display = 'none';
       }
@@ -251,6 +270,38 @@
       return true;
     }
     return false;
+  }
+  function activateKaizenFullScreenApp() {
+    try {
+      localStorage.setItem('kaizen-standalone-app', '1');
+      document.documentElement.classList.add('k-standalone-app');
+      var el = document.documentElement;
+      if (el.requestFullscreen) {
+        el.requestFullscreen().catch(function () {});
+      } else if (el.webkitRequestFullscreen) {
+        el.webkitRequestFullscreen();
+      }
+      var topBtn = document.getElementById('kTopInstallBtn');
+      if (topBtn) topBtn.innerHTML = '<span>✓</span><span>App Mode</span>';
+      var m = document.getElementById('installAppModal');
+      if (m) { m.classList.remove('open'); m.classList.remove('active'); }
+    } catch (e) {}
+  }
+  function openKaizenInChromeApp() {
+    try {
+      var port = window.location.port ? (':' + window.location.port) : '';
+      var host = (window.location.hostname === '0.0.0.0' || window.location.hostname === '127.0.0.1')
+        ? ('localhost' + port)
+        : window.location.host;
+      var scheme = window.location.protocol === 'https:' ? 'https' : 'http';
+      var targetPath = window.location.pathname || '/dashboard';
+      var isAndroid = /Android/i.test(navigator.userAgent || '');
+      if (isAndroid) {
+        window.location.href = 'intent://' + host + targetPath + '#Intent;scheme=' + scheme + ';package=com.android.chrome;S.browser_fallback_url=' + encodeURIComponent(scheme + '://' + host + targetPath) + ';end';
+      } else {
+        window.location.href = scheme + '://' + host + targetPath;
+      }
+    } catch (e) {}
   }
   function triggerKaizenInstall() {
     if (typeof closePopup === 'function') closePopup();

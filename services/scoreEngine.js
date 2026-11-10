@@ -60,6 +60,12 @@ function getEffectiveChecks(s) {
   let withinEntryCriteria = q.withinEntryCriteria || NOT_MENTIONED;
   let respectedRisk = q.respectedRisk || NOT_MENTIONED;
 
+  // STUDY sessions are chart/structure study without live trade execution;
+  // do not synthesize trade-execution checks if left unmentioned.
+  if (s && s.sessionType === 'STUDY') {
+    return { followedPlan, withinEntryCriteria, respectedRisk };
+  }
+
   // For real persisted DB sessions (which carry _id / boolean ruleCompliance)
   // that have been recorded (not still in PLANNED state), infer any untouched
   // quick checks from the trader's written notes and ruleCompliance so logging
@@ -90,6 +96,65 @@ function getEffectiveChecks(s) {
   }
 
   return { followedPlan, withinEntryCriteria, respectedRisk };
+}
+
+function getEffectiveOutcome(s) {
+  if (!s) return 'No Trade';
+  if (s.outcome && s.outcome !== 'No Trade' && s.outcome !== 'Pending') return s.outcome;
+  if (s.sessionType === 'STUDY') return 'No Trade';
+  const notes = String(s.notes || '');
+  if (/\b(stopped\s+out|hit\s+(my\s+)?(stop|sl)|sl\s+hit|took\s+a\s+loss|closed\s+(in\s+|at\s+a\s+)?loss|full\s+loss)\b/i.test(notes)) {
+    return 'Loss';
+  }
+  if (/\b(hit\s+(my\s+)?(tp|take\s+profit|target)|tp\s+hit|target\s+hit|closed\s+in\s+profit|won\s+the\s+trade|clean\s+win)\b/i.test(notes)) {
+    return 'Win';
+  }
+  return s.outcome || 'No Trade';
+}
+
+const PAIR_RE = /\b(EUR\/?USD|GBP\/?USD|USD\/?JPY|AUD\/?JPY|GBP\/?JPY|EUR\/?JPY|AUD\/?USD|USD\/?CAD|USD\/?CHF|NZD\/?USD|EUR\/?GBP|EUR\/?AUD|GBP\/?AUD|CAD\/?JPY|CHF\/?JPY|NZD\/?JPY|XAU\/?USD|XAG\/?USD|NAS100|US100|SPX500|US500|US30|GER40|UK100|JP225|JPN225|JAPAN\s*225|BTC\/?USD|ETH\/?USD|SOL\/?USD|USOIL|UKOIL|GOLD)\b/i;
+
+function sessionPairLabel(s) {
+  if (!s) return '';
+  let pair = '';
+  const rawAsset = String(s.asset || '').trim();
+  if (rawAsset && !/^(general|market study|n\/a|session)$/i.test(rawAsset)) {
+    pair = rawAsset;
+  } else {
+    const m = String(s.notes || '').match(PAIR_RE);
+    if (m) {
+      pair = m[1].toUpperCase().replace('/', '');
+      if (pair === 'GOLD') pair = 'XAUUSD';
+    }
+  }
+  const setup = s.plan && s.plan.setup && String(s.plan.setup).trim();
+  if (pair && setup && pair.toLowerCase() !== setup.toLowerCase()) {
+    return `${pair} (${setup})`;
+  }
+  if (pair) return pair;
+  if (setup) return setup;
+  return '';
+}
+
+function listTopSessionLabels(sessions = [], max = 3) {
+  const seen = [];
+  for (let i = sessions.length - 1; i >= 0; i--) {
+    const lbl = sessionPairLabel(sessions[i]);
+    if (lbl && !seen.includes(lbl)) {
+      seen.push(lbl);
+      if (seen.length >= max) break;
+    }
+  }
+  return seen.join(', ');
+}
+
+function shortPersonalSnippet(text, maxLen = 88) {
+  const raw = String(text || '').replace(/\s+/g, ' ').trim();
+  if (!raw) return '';
+  const firstClause = raw.split(/(?<=[.!?])\s+/)[0] || raw;
+  const cleaned = firstClause.replace(/^["'\s]+|["'\s.]+$/g, '');
+  if (cleaned.length <= maxLen) return cleaned;
+  return cleaned.slice(0, maxLen).replace(/\s+\S*$/, '') + '...';
 }
 
 function isV2Session(s) {
@@ -203,38 +268,58 @@ function computeScore(sessions = [], system = null, extracted = null, now = new 
 // ("Skip — trade without a plan") counts with partial credit: reduced
 // evidence, never a punishment.
 function computeProcess(recent, ex) {
-  const planned = recent.filter(s => (s.plan && !s.plan.skipped) || (isPersistedSession(s) && !(s.plan && s.plan.skipped)));
-  const skipped = recent.filter(s => s.plan && s.plan.skipped);
-  const n = recent.length;
+  const tradeSessions = recent.filter(s => s.sessionType !== 'STUDY' || (s.plan && !s.plan.skipped));
+  const pool = tradeSessions.length ? tradeSessions : recent;
+  const planned = pool.filter(s => (s.plan && !s.plan.skipped) || (isPersistedSession(s) && s.sessionType !== 'STUDY' && !(s.plan && s.plan.skipped)));
+  const skipped = pool.filter(s => s.plan && s.plan.skipped);
+  const n = pool.length;
 
-  const declaredYesNo = planned
+  const declaredPairs = planned
     .map(s => ({ s, q: getEffectiveChecks(s) }))
-    .filter(({ q }) => ['YES', 'NO'].includes(q.followedPlan))
-    .map(({ q }) => ({ yes: q.followedPlan === 'YES', weight: 1 }));
+    .filter(({ q }) => ['YES', 'NO'].includes(q.followedPlan));
+  const declaredYesNo = declaredPairs.map(({ q }) => ({ yes: q.followedPlan === 'YES', weight: 1 }));
   const adherence = weightedRatio(declaredYesNo);
 
   if (planned.length >= 1 && adherence !== null) {
     const planRate = (planned.length + 0.35 * skipped.length) / Math.max(n, 1);
     const v2Score = pct(100 * (0.55 * clamp(planRate, 0, 1) + 0.45 * adherence));
     const yes = declaredYesNo.filter(o => o.yes).length;
+    const brokenEntry = [...declaredPairs].reverse().find(({ q }) => q.followedPlan === 'NO');
+    const keptEntry = [...declaredPairs].reverse().find(({ q }) => q.followedPlan === 'YES');
+    const topLabels = listTopSessionLabels(planned);
+
+    let personalLead = '';
+    if (brokenEntry && (sessionPairLabel(brokenEntry.s) || brokenEntry.s.notes)) {
+      const lbl = sessionPairLabel(brokenEntry.s) || 'recent trade';
+      const snip = shortPersonalSnippet((brokenEntry.s.reflection && brokenEntry.s.reflection.wouldChange) || brokenEntry.s.notes, 75);
+      personalLead = `On your ${lbl} session, you stepped outside your written plan${snip ? ` ("${snip}")` : ''}, while holding your declared system across ${yes} of ${declaredYesNo.length} planned sessions.`;
+    } else if (topLabels) {
+      const snip = keptEntry && keptEntry.s && keptEntry.s.plan && keptEntry.s.plan.entryCondition
+        ? shortPersonalSnippet(keptEntry.s.plan.entryCondition, 65)
+        : '';
+      personalLead = `Across your ${topLabels} sessions, you locked in your setup beforehand${snip ? ` (${snip})` : ''} and executed inside your written process (${yes}/${declaredYesNo.length} followed).`;
+    }
+
     if (planned.length >= THRESHOLDS.process && declaredYesNo.length >= THRESHOLDS.process) {
+      const reasons = [];
+      if (personalLead) reasons.push(personalLead);
+      reasons.push(`Planned ${planned.length} of your last ${n} sessions.`);
+      reasons.push(`Followed your plan in ${yes} of ${declaredYesNo.length} planned sessions.`);
       return {
         score: v2Score,
         state: 'READY',
-        reasons: [
-          `Planned ${planned.length} of your last ${n} sessions.`,
-          `Followed your plan in ${yes} of ${declaredYesNo.length} planned sessions.`
-        ]
+        reasons
       };
     }
     const blended = blendWithExtracted(v2Score, declaredYesNo.length, THRESHOLDS.process, ex);
+    const reasons = [];
+    if (personalLead) reasons.push(personalLead);
+    reasons.push(`Planned ${planned.length} of your last ${n} sessions (${yes} of ${declaredYesNo.length} followed).`);
+    reasons.push(ex && ex.count ? `Blended with ${ex.count} earlier sessions while building toward ${THRESHOLDS.process} V2 sessions.` : `Active score from ${declaredYesNo.length} of ${THRESHOLDS.process} sessions needed for full baseline.`);
     return {
       score: blended,
       state: 'PARTIAL',
-      reasons: [
-        `Planned ${planned.length} of your last ${n} sessions (${yes} of ${declaredYesNo.length} followed).`,
-        ex && ex.count ? `Blended with ${ex.count} earlier sessions while building toward ${THRESHOLDS.process} V2 sessions.` : `Active score from ${declaredYesNo.length} of ${THRESHOLDS.process} sessions needed for full baseline.`
-      ]
+      reasons
     };
   }
 
@@ -263,10 +348,10 @@ function computeProcess(recent, ex) {
 // Behavior; here they lightly damp Risk too (the farmer's extra
 // entries are never free).
 function computeRisk(recent, system, ex) {
-  const declaredYesNo = recent
+  const declaredPairs = recent
     .map(s => ({ s, q: getEffectiveChecks(s) }))
-    .filter(({ q }) => ['YES', 'NO'].includes(q.respectedRisk))
-    .map(({ q }) => ({ yes: q.respectedRisk === 'YES', weight: 1 }));
+    .filter(({ q }) => ['YES', 'NO'].includes(q.respectedRisk));
+  const declaredYesNo = declaredPairs.map(({ q }) => ({ yes: q.respectedRisk === 'YES', weight: 1 }));
   const respected = weightedRatio(declaredYesNo);
 
   const maxPerDay = system && parseNum(system.riskRules && system.riskRules.maxDailyTrades);
@@ -287,9 +372,21 @@ function computeRisk(recent, system, ex) {
   if (declaredYesNo.length >= 1 && respected !== null) {
     const yes = declaredYesNo.filter(o => o.yes).length;
     const v2Score = pct(clamp(100 * respected - 4 * cadenceBreaks, 0, 100));
-    const reasons = [
-      `Respected your risk in ${yes} of ${declaredYesNo.length} checked sessions.`
-    ];
+    const brokenRiskEntry = [...declaredPairs].reverse().find(({ q }) => q.respectedRisk === 'NO');
+    const topLabels = listTopSessionLabels(declaredPairs.map(d => d.s));
+    const sysRisk = system && system.riskRules && system.riskRules.riskPerTrade
+      ? `${String(system.riskRules.riskPerTrade).replace(/%$/, '')}%`
+      : '';
+
+    const reasons = [];
+    if (brokenRiskEntry && (sessionPairLabel(brokenRiskEntry.s) || brokenRiskEntry.s.notes)) {
+      const lbl = sessionPairLabel(brokenRiskEntry.s) || 'recent trade';
+      const snip = shortPersonalSnippet(brokenRiskEntry.s.notes, 75);
+      reasons.push(`On your ${lbl} session, risk sizing or stop discipline slipped${snip ? ` ("${snip}")` : ''}, leaving ${yes} of ${declaredYesNo.length} sessions inside your risk ceiling.`);
+    } else if (topLabels) {
+      reasons.push(`Protected your ${sysRisk ? sysRisk + ' ' : ''}predefined risk ceiling across your ${topLabels} sessions (${yes} of ${declaredYesNo.length} checked sessions respected).`);
+    }
+    reasons.push(`Respected your risk in ${yes} of ${declaredYesNo.length} checked sessions.`);
     if (cadenceBreaks > 0) {
       reasons.push(`${cadenceBreaks} session${cadenceBreaks > 1 ? 's' : ''} beyond your system's daily trade limit — the excess is the data.`);
     }
@@ -320,19 +417,28 @@ function computeRisk(recent, system, ex) {
 // sessions (the plan is the reference). No plan → no execution
 // evidence (goes to Process, not here).
 function computeExecution(recent, ex) {
-  const planned = recent.filter(s => (s.plan && !s.plan.skipped) || (isPersistedSession(s) && !(s.plan && s.plan.skipped)));
-  const declaredYesNo = planned
+  const planned = recent.filter(s => (s.plan && !s.plan.skipped) || (isPersistedSession(s) && s.sessionType !== 'STUDY' && !(s.plan && s.plan.skipped)));
+  const declaredPairs = planned
     .map(s => ({ s, q: getEffectiveChecks(s) }))
-    .filter(({ q }) => ['YES', 'NO'].includes(q.withinEntryCriteria))
-    .map(({ q }) => ({ yes: q.withinEntryCriteria === 'YES', weight: 1 }));
+    .filter(({ q }) => ['YES', 'NO'].includes(q.withinEntryCriteria));
+  const declaredYesNo = declaredPairs.map(({ q }) => ({ yes: q.withinEntryCriteria === 'YES', weight: 1 }));
   const within = weightedRatio(declaredYesNo);
 
   if (declaredYesNo.length >= 1 && within !== null) {
     const yes = declaredYesNo.filter(o => o.yes).length;
     const v2Score = pct(100 * within);
-    const reasons = [
-      `Entered within your criteria in ${yes} of ${declaredYesNo.length} planned sessions.`
-    ];
+    const brokenExecEntry = [...declaredPairs].reverse().find(({ q }) => q.withinEntryCriteria === 'NO');
+    const topLabels = listTopSessionLabels(declaredPairs.map(d => d.s));
+
+    const reasons = [];
+    if (brokenExecEntry && (sessionPairLabel(brokenExecEntry.s) || brokenExecEntry.s.notes)) {
+      const lbl = sessionPairLabel(brokenExecEntry.s) || 'recent trade';
+      const snip = shortPersonalSnippet(brokenExecEntry.s.notes, 75);
+      reasons.push(`On your ${lbl} session, entry execution drifted from your checklist${snip ? ` ("${snip}")` : ''}, with ${yes} of ${declaredYesNo.length} planned sessions matching your entry trigger.`);
+    } else if (topLabels) {
+      reasons.push(`Waited for your confirmation trigger on ${topLabels} (${yes} of ${declaredYesNo.length} planned sessions entered inside criteria).`);
+    }
+    reasons.push(`Entered within your criteria in ${yes} of ${declaredYesNo.length} planned sessions.`);
     if (declaredYesNo.length >= THRESHOLDS.execution) {
       return {
         score: v2Score,
@@ -377,21 +483,29 @@ function computeBehavior(recent, ex) {
   if (recent.length >= 1) {
     let negatives = 0;
     let afterLoss = 0, afterLossViolations = 0;
+    let lastAfterLossBreak = null;
+    let lastNegEmotionSess = null;
 
     for (let i = 0; i < recent.length; i++) {
       const s = recent[i];
       const q = getEffectiveChecks(s);
       const emotion = (s.plan && s.plan.emotionalState) || s.emotion || '';
       const negEmotion = NEGATIVE_EMOTIONS.includes(String(emotion).toUpperCase());
-      if (negEmotion) negatives++;
+      if (negEmotion) {
+        negatives++;
+        lastNegEmotionSess = s;
+      }
 
       if (s.evidenceFlags && s.evidenceFlags.beyondCadence) negatives++;
 
       const prev = recent[i - 1];
-      if (prev && prev.outcome === 'Loss') {
+      if (prev && getEffectiveOutcome(prev) === 'Loss') {
         afterLoss++;
         const brokePlan = q.followedPlan === 'NO' || q.withinEntryCriteria === 'NO';
-        if (brokePlan) afterLossViolations++;
+        if (brokePlan) {
+          afterLossViolations++;
+          lastAfterLossBreak = { prev, curr: s };
+        }
       }
     }
 
@@ -402,6 +516,18 @@ function computeBehavior(recent, ex) {
     const v2Score = pct(clamp(score, 0, 100));
 
     const reasons = [];
+    const topLabels = listTopSessionLabels(recent);
+    if (lastAfterLossBreak && (sessionPairLabel(lastAfterLossBreak.curr) || lastAfterLossBreak.curr.notes)) {
+      const prevLbl = sessionPairLabel(lastAfterLossBreak.prev) || 'a loss';
+      const currLbl = sessionPairLabel(lastAfterLossBreak.curr) || 'the next session';
+      const snip = shortPersonalSnippet(lastAfterLossBreak.curr.notes, 70);
+      reasons.push(`Following your ${prevLbl} loss, plan discipline gave way on ${currLbl}${snip ? ` ("${snip}")` : ''}.`);
+    } else if (lastNegEmotionSess && sessionPairLabel(lastNegEmotionSess)) {
+      const em = String((lastNegEmotionSess.plan && lastNegEmotionSess.plan.emotionalState) || lastNegEmotionSess.emotion || '').toLowerCase();
+      reasons.push(`Logged ${em} pressure before your ${sessionPairLabel(lastNegEmotionSess)} session — ${negatives} of your last ${recent.length} sessions carried emotional pressure signals.`);
+    } else if (afterLoss === 0 && negatives === 0 && topLabels) {
+      reasons.push(`Maintained calm execution across your ${topLabels} sessions with zero post-loss or emotional rule breaks.`);
+    }
     if (afterLoss > 0 && afterLossViolations > 0) {
       reasons.push(`After a loss, you broke plan in ${afterLossViolations} of ${afterLoss} sessions — the window KAIZEN watches closest.`);
     }
@@ -444,7 +570,7 @@ function computeBehavior(recent, ex) {
 function computeLearning(recent, ex) {
   const reflected = recent.filter(s => hasReflection(s) &&
     !(s.evidenceFlags && s.evidenceFlags.duplicateOf));
-  const withPlan = recent.filter(s => (s.plan && !s.plan.skipped) || (isPersistedSession(s) && !(s.plan && s.plan.skipped)));
+  const withPlan = recent.filter(s => (s.plan && !s.plan.skipped) || (isPersistedSession(s) && s.sessionType !== 'STUDY' && !(s.plan && s.plan.skipped)));
 
   if (reflected.length >= 1) {
     const reflectionRate = reflected.length / Math.max(recent.length, 1);
@@ -454,6 +580,7 @@ function computeLearning(recent, ex) {
 
     // Correcting: violations followed within 3 sessions by compliance
     let corrections = 0, violations = 0;
+    let lastCorrectionPair = null;
     for (let i = 0; i < recent.length; i++) {
       const s = recent[i];
       const q = getEffectiveChecks(s);
@@ -461,7 +588,11 @@ function computeLearning(recent, ex) {
       if (!violated) continue;
       violations++;
       const window = recent.slice(i + 1, i + 4);
-      if (window.some(w => getEffectiveChecks(w).followedPlan === 'YES')) corrections++;
+      const fixedSess = window.find(w => getEffectiveChecks(w).followedPlan === 'YES');
+      if (fixedSess) {
+        corrections++;
+        lastCorrectionPair = { broken: s, fixed: fixedSess };
+      }
     }
     const correctionRate = violations > 0 ? corrections / violations : null;
 
@@ -479,6 +610,20 @@ function computeLearning(recent, ex) {
     const v2Score = pct(clamp(score, 0, 100));
 
     const reasons = [];
+    const latestRefl = reflected[reflected.length - 1];
+    const reflLbl = sessionPairLabel(latestRefl);
+    const reflQuote = shortPersonalSnippet(
+      (latestRefl && latestRefl.reflection && (latestRefl.reflection.learned || latestRefl.reflection.wouldChange)) ||
+      (latestRefl && latestRefl.notes),
+      80
+    );
+    if (lastCorrectionPair && (sessionPairLabel(lastCorrectionPair.broken) || sessionPairLabel(lastCorrectionPair.fixed))) {
+      const bLbl = sessionPairLabel(lastCorrectionPair.broken) || 'a rule break';
+      const fLbl = sessionPairLabel(lastCorrectionPair.fixed) || 'your next session';
+      reasons.push(`Corrected your ${bLbl} breakdown by returning to full rule compliance on ${fLbl}.`);
+    } else if (reflLbl && reflQuote) {
+      reasons.push(`From your ${reflLbl} session takeaway: "${reflQuote}"${maintaining ? ` — maintaining ${Math.round(adherence * 100)}% plan adherence.` : '.'}`);
+    }
     if (maintaining) reasons.push(`Maintaining — ${Math.round(adherence * 100)}% plan adherence across your recent sessions. That is the skill itself.`);
     if (corrections > 0) reasons.push(`Corrected a breakdown within three sessions, ${corrections} time${corrections > 1 ? 's' : ''}.`);
     if (reasons.length === 0) reasons.push(`Reflected on ${reflected.length} of your last ${recent.length} sessions.`);

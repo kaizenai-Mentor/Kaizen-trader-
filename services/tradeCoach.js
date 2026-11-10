@@ -98,12 +98,23 @@ function digestThemes(mindState) {
 function digestGoals(goals) {
   const active = (goals || []).filter(g => g && g.status === 'ACTIVE');
   if (!active.length) return 'No active goals set yet.';
-  return active.map(g =>
-    `- ${g.title}${g.target != null ? ` (target: ${g.target}${g.unit || ''})` : ''}${g.rationale ? ` — why: ${g.rationale}` : ''}`
-  ).join('\n');
+  return active.map(g => {
+    const entries = Array.isArray(g.progressLog) ? g.progressLog : [];
+    const lastEntry = entries.length ? entries[entries.length - 1] : null;
+    const fb = lastEntry && lastEntry.note ? ` | latest feedback: "${String(lastEntry.note).slice(0, 140)}"` : '';
+    return `- ${g.title}${g.target != null ? ` (target: ${g.target}${g.unit || ''})` : ''}${g.rationale ? ` — why: ${g.rationale}` : ''}${fb}`;
+  }).join('\n');
 }
 
-function buildSystemPrompt({ user, system, sessions, mindState, goals }) {
+function digestMemories(memories) {
+  if (!memories || !memories.length) return 'No saved memories yet.';
+  return memories.slice(0, 6).map(m => {
+    const when = m.createdAt ? new Date(m.createdAt).toISOString().slice(0, 10) : 'recent';
+    return `- [${when} · ${m.asset || 'Session'}] ${String(m.sessionData || '').replace(/\s+/g, ' ').slice(0, 220)}`;
+  }).join('\n');
+}
+
+function buildSystemPrompt({ user, system, sessions, mindState, goals, memories }) {
   return `You are KAIZEN (改) — the deep-thinking accountability coach inside a trader-improvement product, in conversation with ${user.username}.
 
 CORE PRODUCT PRINCIPLE:
@@ -135,6 +146,9 @@ ${digestThemes(mindState)}
 ACTIVE GOALS:
 ${digestGoals(goals)}
 
+SAVED MEMORIES:
+${digestMemories(memories)}
+
 HOW YOU COACH:
 1. Anchor everything to THEIR system. "Your entry rule says X — does this setup satisfy it?" If their system doesn't cover the question, say so and help them write the missing rule. Never wrap system parameters or check flags in code backticks; weave their rules naturally into plain English sentences.
 2. Review, don't instruct: read what they show you (including chart images) and respond with what their own rules would say. Understand why they made each decision before judging it — when their thesis evolved after objective market structure analysis and bias validation, recognize it as a disciplined adjustment rather than an emotional deviation. Teach the reasoning process. ALWAYS read the full journal notes ("journal notes:" and "learned:" under RECENT SESSIONS) before claiming a reason is missing. When the trader has already written why they entered or why they broke plan in their journal (for example, entering at CMP because price missed their limit and they feared being left behind), interpret that documented reason directly — never tell them their journal didn't explain it, and never interrogate them with "Your next step is to describe the immediate emotional or analytical factors..." when the journal already states what happened.
@@ -150,8 +164,8 @@ HOW YOU COACH:
 QUIZ MODE: when asked to quiz, ask ONE question about THEIR actual rules (from the system above) — specific, checkable, phrased so they must reason (not yes/no). Wait for their answer before the next one. When they answer, say what their system actually says, verbatim, and whether they got it.`;
 }
 
-function buildQuizPrompt({ user, system, sessions, mindState, goals }) {
-  const base = buildSystemPrompt({ user, system, sessions, mindState, goals });
+function buildQuizPrompt({ user, system, sessions, mindState, goals, memories }) {
+  const base = buildSystemPrompt({ user, system, sessions, mindState, goals, memories });
   return base + '\n\nTHEY JUST ASKED TO BE QUIZZED. Ask your single best quiz question now — one rule from their system, phrased so they must reason it through. If their system has no rules yet, ask them to write the first one instead.';
 }
 
@@ -199,13 +213,13 @@ function buildFallback({ userMessage, system, sessions, imageAttached, lang = 'e
 }
 
 /** Shared prompt construction for converse / streamConverse. */
-function prepareConverse({ user, system, sessions, threadMessages, userMessage, imageDataUrl, mode, mindState, goals }) {
+function prepareConverse({ user, system, sessions, threadMessages, userMessage, imageDataUrl, mode, mindState, goals, memories }) {
   const history = (threadMessages || []).slice(-12).map(m =>
     `${m.role === 'user' ? 'THEM' : 'YOU'}: ${m.text}`).join('\n');
 
   const systemPrompt = mode === 'quiz'
-    ? buildQuizPrompt({ user, system, sessions, mindState, goals })
-    : buildSystemPrompt({ user, system, sessions, mindState, goals });
+    ? buildQuizPrompt({ user, system, sessions, mindState, goals, memories })
+    : buildSystemPrompt({ user, system, sessions, mindState, goals, memories });
 
   let content;
   if (imageDataUrl) {

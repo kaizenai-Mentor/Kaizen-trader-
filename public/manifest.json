@@ -3,12 +3,14 @@
   "name": "KAIZEN — Trading Discipline & Behavioral Reputation",
   "short_name": "KAIZEN",
   "description": "AI trading discipline, coaching, and broker-verified behavioral reputation.",
-  "start_url": "/",
+  "start_url": "/dashboard",
   "scope": "/",
   "display": "standalone",
+  "display_override": ["standalone", "fullscreen", "minimal-ui"],
   "orientation": "portrait",
   "background_color": "#0A0A0A",
   "theme_color": "#0A0A0A",
+  "prefer_related_applications": false,
   "icons": [
     {
       "src": "/images/kaizen-icon-192.png",
@@ -39,6 +41,22 @@
       "sizes": "1024x1024",
       "type": "image/png",
       "purpose": "any"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/images/kaizen-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "KAIZEN Mobile Cockpit & Discipline Score"
+    },
+    {
+      "src": "/images/kaizen-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "KAIZEN Trading Discipline & Reputation Platform"
     }
   ],
   "shortcuts": [

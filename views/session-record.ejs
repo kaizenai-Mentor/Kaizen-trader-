@@ -94,8 +94,13 @@
       <% } %>
 
       <div class="k-card k-formcard" style="margin-bottom:18px;">
-        <div class="k-metric-label" style="margin-bottom:10px;"><%= t('record.chart') %></div>
-        <input type="file" name="chartImage" accept="image/*" class="k-input" style="padding:10px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:8px;">
+          <div class="k-metric-label" style="margin-bottom:0;"><%= t('record.chart') %></div>
+          <span style="font-family:var(--font-mono);font-size:0.56rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);">MULTIPLE IMAGES SUPPORTED (UP TO 8)</span>
+        </div>
+        <input type="file" name="chartImage" id="chartImageInput" accept="image/*" multiple class="k-input" style="padding:10px;">
+        <div id="chartImageCountHint" class="k-fieldhint" style="margin-top:6px;">Select 1 or more chart screenshots (HTF structure, LTF entry, execution).</div>
+        <div id="chartImagePreviewGrid" style="display:none;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px;margin-top:12px;"></div>
       </div>
 
       <div class="k-actions">
@@ -148,6 +153,40 @@
             actualRiskBox.style.display = isNo ? 'block' : 'none';
             if (isNo) { try { actualRiskInput.focus(); } catch (e) {} }
             else { actualRiskInput.value = ''; }
+          });
+        });
+      }
+
+      // Multi-image selection counter + thumbnail previews
+      var chartInput = document.getElementById('chartImageInput');
+      var chartHint = document.getElementById('chartImageCountHint');
+      var chartGrid = document.getElementById('chartImagePreviewGrid');
+      if (chartInput && chartHint && chartGrid) {
+        chartInput.addEventListener('change', function () {
+          var files = chartInput.files ? Array.prototype.slice.call(chartInput.files, 0, 8) : [];
+          chartGrid.innerHTML = '';
+          if (!files.length) {
+            chartHint.textContent = 'Select 1 or more chart screenshots (HTF structure, LTF entry, execution).';
+            chartGrid.style.display = 'none';
+            return;
+          }
+          chartHint.textContent = files.length + ' chart image' + (files.length === 1 ? '' : 's') + ' selected ✓';
+          chartGrid.style.display = 'grid';
+          files.forEach(function (file, idx) {
+            var wrap = document.createElement('div');
+            wrap.style.cssText = 'border:1px solid var(--border);border-radius:8px;overflow:hidden;background:rgba(0,0,0,0.2);position:relative;';
+            var img = document.createElement('img');
+            img.style.cssText = 'width:100%;height:90px;object-fit:cover;display:block;';
+            img.alt = 'Chart ' + (idx + 1);
+            try {
+              img.src = URL.createObjectURL(file);
+            } catch (e) {}
+            var cap = document.createElement('div');
+            cap.style.cssText = 'font-family:var(--font-mono);font-size:0.55rem;padding:4px 6px;color:var(--text-secondary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;';
+            cap.textContent = 'Chart #' + (idx + 1) + ' · ' + (file.name || '');
+            wrap.appendChild(img);
+            wrap.appendChild(cap);
+            chartGrid.appendChild(wrap);
           });
         });
       }

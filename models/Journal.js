@@ -66,6 +66,10 @@ const JournalSchema = new mongoose.Schema({
     data: { type: Buffer, default: null },
     contentType: { type: String, default: null }
   },
+  chartImages: [{
+    data: { type: Buffer, default: null },
+    contentType: { type: String, default: null }
+  }],
 
   // ── V2 SESSION EXTENSION (config/App.js B5) ─────────────────────
   // All fields optional: legacy journal entries remain valid Sessions

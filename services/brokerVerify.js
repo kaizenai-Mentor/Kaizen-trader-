@@ -376,7 +376,7 @@ function parseBrokerStatement(rawInput, filename = '') {
 const MIN_DOSSIER_SESSIONS = 10;
 const RECOMMENDED_DOSSIER_SESSIONS = 15;
 
-function matchSessionWithBrokerHistory(session = {}, brokerTrades = [], brokerConnection = null) {
+function matchSessionWithBrokerHistory(session = {}, brokerTrades = [], brokerConnection = null, usedTradeHashes = null) {
   const ctx = resolveSessionContext(session);
   const st = String(session.sessionType || 'LIVE').toUpperCase();
   if (st === 'STUDY' || st === 'BACKTEST' || ctx.isStudyOrBacktest) {
@@ -388,6 +388,10 @@ function matchSessionWithBrokerHistory(session = {}, brokerTrades = [], brokerCo
     };
   }
 
+  const claimed = usedTradeHashes instanceof Set
+    ? usedTradeHashes
+    : new Set(Array.isArray(usedTradeHashes) ? usedTradeHashes.filter(Boolean) : []);
+
   const targetInstrument = normalizeSymbol(ctx.instrument || session.asset);
   const targetDir = ctx.tradeDirection ? (ctx.tradeDirection === 'sell' ? 'Sell' : 'Buy') : '';
   const sessionDate = session.createdAt ? new Date(session.createdAt) : new Date();
@@ -398,6 +402,10 @@ function matchSessionWithBrokerHistory(session = {}, brokerTrades = [], brokerCo
 
   for (const t of list) {
     if (!t || !t.instrument) continue;
+    // Strict 1-to-1 rule: once an MT5/broker trade has verified one session,
+    // it can never be reused to verify any other session.
+    if (t.tradeHash && claimed.has(t.tradeHash)) continue;
+
     const tInst = normalizeSymbol(t.instrument);
     if (targetInstrument && tInst !== targetInstrument) continue;
     if (targetDir && t.direction && t.direction.toLowerCase() !== targetDir.toLowerCase()) continue;
@@ -416,6 +424,9 @@ function matchSessionWithBrokerHistory(session = {}, brokerTrades = [], brokerCo
   }
 
   if (bestMatch) {
+    if (usedTradeHashes instanceof Set && bestMatch.tradeHash) {
+      usedTradeHashes.add(bestMatch.tradeHash);
+    }
     let priceDetail = '';
     if (bestMatch.entryPrice && bestMatch.exitPrice && bestMatch.entryPrice !== bestMatch.exitPrice) {
       priceDetail = ` (${bestMatch.entryPrice} to ${bestMatch.exitPrice})`;
@@ -426,7 +437,7 @@ function matchSessionWithBrokerHistory(session = {}, brokerTrades = [], brokerCo
       status: 'VERIFIED',
       verified: true,
       matchedTrade: bestMatch,
-      verificationNote: `Broker Verification: Confirmed ${bestMatch.instrument} ${bestMatch.direction} execution${priceDetail} from your synced MT5 / broker trade history.`
+      verificationNote: `Broker Verification: Confirmed ${bestMatch.instrument} ${bestMatch.direction} execution${priceDetail} from your synced MT5 / broker trade history (locked 1-to-1 to this session).`
     };
   }
 
@@ -489,6 +500,31 @@ function buildAutoTraderDossier({ user = {}, system = {}, sessions = [], totalSe
   let studyCount = 0;
   let brokerVerifiedCount = 0;
 
+  const usedDossierHashes = new Set();
+  const verifiedSessionIds = new Set();
+  const chronoForVerify = [...allSessions].sort((a, b) => new Date(a.createdAt || 0) - new Date(b.createdAt || 0));
+  for (const s of chronoForVerify) {
+    const ctx = resolveSessionContext(s);
+    if (ctx.isStudyOrBacktest) continue;
+    const existingHash = s.brokerVerification && s.brokerVerification.status === 'VERIFIED'
+      ? String(s.brokerVerification.tradeHash || '').trim()
+      : '';
+    if (existingHash && !usedDossierHashes.has(existingHash)) {
+      usedDossierHashes.add(existingHash);
+      verifiedSessionIds.add(String(s._id || s.createdAt));
+      brokerVerifiedCount++;
+    } else if (!existingHash && s.brokerVerification && s.brokerVerification.status === 'VERIFIED') {
+      verifiedSessionIds.add(String(s._id || s.createdAt));
+      brokerVerifiedCount++;
+    } else if (brokerTrades.length) {
+      const m = matchSessionWithBrokerHistory(s, brokerTrades, null, usedDossierHashes);
+      if (m.verified) {
+        verifiedSessionIds.add(String(s._id || s.createdAt));
+        brokerVerifiedCount++;
+      }
+    }
+  }
+
   for (const s of allSessions) {
     const ctx = resolveSessionContext(s);
     if (ctx.instrument) instCounts[ctx.instrument] = (instCounts[ctx.instrument] || 0) + 1;
@@ -497,12 +533,6 @@ function buildAutoTraderDossier({ user = {}, system = {}, sessions = [], totalSe
     if (s.ruleCompliance === true || s.ruleCompliance === false) {
       checkedCount++;
       if (s.ruleCompliance === true) compliantCount++;
-    }
-    if (s.brokerVerification && s.brokerVerification.status === 'VERIFIED') {
-      brokerVerifiedCount++;
-    } else if (!ctx.isStudyOrBacktest && brokerTrades.length) {
-      const m = matchSessionWithBrokerHistory(s, brokerTrades);
-      if (m.verified) brokerVerifiedCount++;
     }
   }
   for (const bt of brokerTrades) {
@@ -545,7 +575,7 @@ function buildAutoTraderDossier({ user = {}, system = {}, sessions = [], totalSe
     const narrative = extractCompleteNarrative(s.notes, 200);
     if (!narrative) return null;
     const lesson = (s.reflection && s.reflection.learned) ? cleanText(s.reflection.learned) : '';
-    const vMatch = matchSessionWithBrokerHistory(s, brokerTrades);
+    const isVerified = verifiedSessionIds.has(String(s._id || s.createdAt));
     const isGood = s.outcome === 'Win' || (s.ruleCompliance !== false && s.outcome !== 'Loss');
     let qualityLabel = 'CLEAN PROCESS';
     if (ctx.isStudyOrBacktest) qualityLabel = 'STRUCTURED STUDY';
@@ -555,7 +585,7 @@ function buildAutoTraderDossier({ user = {}, system = {}, sessions = [], totalSe
       date: s.createdAt ? new Date(s.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'Recent',
       instrument: ctx.instrument || s.asset || 'Market Session',
       strategy: ctx.strategy || (s.plan && s.plan.setup) || 'Declared System',
-      mode: ctx.isStudyOrBacktest ? 'STUDY / BACKTEST' : (vMatch.verified ? 'BROKER-VERIFIED LIVE' : 'LIVE SESSION'),
+      mode: ctx.isStudyOrBacktest ? 'STUDY / BACKTEST' : (isVerified ? 'BROKER-VERIFIED LIVE' : 'LIVE SESSION'),
       qualityLabel,
       isGood,
       narrative: cleanText(narrative),

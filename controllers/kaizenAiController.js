@@ -14,15 +14,17 @@ async function loadContext(userId) {
   const TradingSystem = require('../models/TradingSystem');
   const MindState = require('../models/MindState');
   const Goal = require('../models/Goal');
+  const Memory = require('../models/Memory');
   const user = await User.findById(userId);
   if (!user) return null;
-  const [sessions, system, mindState, goals] = await Promise.all([
-    Journal.find({ userId }).sort({ createdAt: -1 }).limit(12).lean(),
+  const [sessions, system, mindState, goals, memories] = await Promise.all([
+    Journal.find({ userId }).sort({ createdAt: -1 }).limit(25).lean(),
     TradingSystem.ensureForUser(user),
     MindState.ensureForUser(userId),
-    Goal.find({ userId, status: 'ACTIVE' }).lean().catch(() => [])
+    Goal.find({ userId, status: 'ACTIVE' }).lean().catch(() => []),
+    Memory.find({ userId }).sort({ createdAt: -1 }).limit(15).lean().catch(() => [])
   ]);
-  return { user, sessions, system, mindState, goals };
+  return { user, sessions, system, mindState, goals, memories };
 }
 
 // Context-aware openers from the trader's real situation.

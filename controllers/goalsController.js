@@ -12,6 +12,7 @@ const ScoreSnapshot = require('../models/ScoreSnapshot');
 const TradingSystem = require('../models/TradingSystem');
 const MindState = require('../models/MindState');
 const Goal = require('../models/Goal');
+const Memory = require('../models/Memory');
 const progress = require('../services/progress');
 const goalCoach = require('../services/goalCoach');
 
@@ -19,15 +20,17 @@ const METRICS = ['RULE_COMPLIANCE', 'SESSIONS_PER_WEEK', 'RISK_LIMIT', 'JOURNAL_
 const STATUSES = ['ACTIVE', 'PAUSED', 'ACHIEVED', 'ARCHIVED'];
 
 async function loadContext(userId) {
-  const [user, sessions, snapshots, mindState] = await Promise.all([
+  const [user, sessionsDesc, snapshots, mindState, memories] = await Promise.all([
     User.findById(userId),
-    Journal.find({ userId }).sort({ createdAt: 1 }).limit(60).lean(),
+    Journal.find({ userId, state: { $ne: 'PLANNED' } }).sort({ createdAt: -1 }).limit(60).lean(),
     ScoreSnapshot.find({ userId }).sort({ createdAt: 1 }).lean(),
-    MindState.ensureForUser(userId)
+    MindState.ensureForUser(userId),
+    Memory.find({ userId }).sort({ createdAt: -1 }).limit(20).lean().catch(() => [])
   ]);
+  const sessions = Array.isArray(sessionsDesc) ? sessionsDesc.slice().reverse() : [];
   const system = user ? await TradingSystem.ensureForUser(user) : null;
   const movement = progress.movement(snapshots, 30);
-  return { user, sessions, system, movement, mindState };
+  return { user, sessions, system, movement, mindState, memories };
 }
 
 function userId(req) {
