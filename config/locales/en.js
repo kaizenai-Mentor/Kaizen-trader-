@@ -105,7 +105,7 @@ module.exports = {
   "plan.customRiskHint": "This becomes the risk your record is measured against for this session only.",
   "plan.emotion": "EMOTIONAL STATE",
   "plan.confidence": "CONFIDENCE (1 to 10)",
-  "plan.skip": "Skip the plan (be honest, it counts against you)",
+  "plan.skip": "Skip plan",
   "plan.submit": "Lock in the plan",
   "plan.skipped": "Plan skipped",
   "record.title": "The Record",

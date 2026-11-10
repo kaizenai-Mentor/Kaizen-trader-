@@ -43,6 +43,9 @@
     <div class="popup-section">
       <div class="popup-section-label"><%= t('nav.settings') %></div>
       <a href="/settings/trading-system" class="popup-item"><span class="popup-item-icon"><i data-feather="sliders" width="14" height="14"></i></span> <%= t('nav.system') %></a>
+      <button type="button" id="kInstallAppBtn" class="popup-item" onclick="triggerKaizenInstall()" style="display:flex;width:100%;background:none;border:none;text-align:left;cursor:pointer;color:var(--gold);font-weight:700;">
+        <span class="popup-item-icon"><i data-feather="smartphone" width="14" height="14"></i></span> Install KAIZEN App
+      </button>
     </div>
 
     <!-- INFO -->
@@ -106,6 +109,9 @@
     <div class="popup-auth-btns">
       <a href="/auth/login" class="btn-primary btn-full"><%= t('nav.login') %></a>
       <a href="/auth/register" class="btn-outline btn-full"><%= t('nav.signup') %></a>
+      <button type="button" class="btn-outline btn-full" onclick="triggerKaizenInstall()" style="margin-top:8px;border-color:var(--gold);color:var(--gold);font-weight:700;">
+        Install KAIZEN App
+      </button>
     </div>
 
     <!-- LANGUAGE (owner directive 13 Oct 2026) -->
@@ -138,6 +144,9 @@
   <div class="nav-right">
     <div class="nav-lang" style="margin-right:6px;display:flex;align-items:center;">
     </div>
+    <button type="button" id="kTopInstallBtn" onclick="triggerKaizenInstall()" title="Install KAIZEN Mobile App" style="font-family:var(--font-mono);font-size:0.6rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;background:rgba(245,197,24,0.14);color:var(--gold);border:1px solid rgba(245,197,24,0.45);border-radius:999px;padding:6px 11px;cursor:pointer;margin-right:6px;display:inline-flex;align-items:center;gap:5px;">
+      <span>📲</span><span>Install App</span>
+    </button>
     <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
       <span id="themeIcon">◐</span>
     </button>
@@ -148,6 +157,114 @@
 </nav>
 
 <%- include('ticker') %>
+
+<% if (user) { %>
+  <!-- MOBILE APP BOTTOM TAB BAR (Visible on Mobile / Standalone PWA / Capacitor APK) -->
+  <nav class="k-mobile-tabbar" id="kMobileTabbar" aria-label="Mobile Primary Navigation">
+    <a href="/dashboard" class="k-mob-tab" data-tab-match="/dashboard$">
+      <i data-feather="activity" width="17" height="17"></i>
+      <span>Cockpit</span>
+    </a>
+    <a href="/dashboard/sessions" class="k-mob-tab" data-tab-match="/dashboard/sessions">
+      <i data-feather="list" width="17" height="17"></i>
+      <span>Sessions</span>
+    </a>
+    <a href="/dashboard/sessions/new" class="k-mob-tab k-mob-tab--cta" title="Log Session">
+      <span class="k-mob-cta-pill">+</span>
+      <span>Log</span>
+    </a>
+    <a href="/kaizen-ai" class="k-mob-tab" data-tab-match="/kaizen-ai">
+      <i data-feather="message-circle" width="17" height="17"></i>
+      <span>KAIZEN AI</span>
+    </a>
+    <a href="/leaderboard" class="k-mob-tab" data-tab-match="/leaderboard">
+      <i data-feather="trending-up" width="17" height="17"></i>
+      <span>Progress</span>
+    </a>
+    <a href="/za/reputation/<%= user.id || user._id %>" class="k-mob-tab" data-tab-match="/za/reputation">
+      <i data-feather="award" width="17" height="17"></i>
+      <span>Dossier</span>
+    </a>
+  </nav>
+  <script>
+    (function () {
+      try {
+        var p = window.location.pathname || '';
+        var tabs = document.querySelectorAll('#kMobileTabbar .k-mob-tab[data-tab-match]');
+        for (var i = 0; i < tabs.length; i++) {
+          var rx = new RegExp(tabs[i].getAttribute('data-tab-match'));
+          if (rx.test(p)) tabs[i].classList.add('is-active');
+        }
+      } catch (e) {}
+    })();
+  </script>
+<% } %>
+<!-- INSTALL KAIZEN MOBILE APP MODAL -->
+<div class="modal-overlay" id="installAppModal" onclick="if(event.target===this){this.classList.remove('open');this.classList.remove('active');}">
+  <div class="modal" style="max-width:420px;">
+    <div class="modal-header">
+      <h3 style="display:flex;align-items:center;gap:8px;"><span class="k-kanji k-kanji--sm">改</span> Install KAIZEN Mobile App</h3>
+      <button class="modal-close" onclick="var m=document.getElementById('installAppModal');m.classList.remove('open');m.classList.remove('active');">×</button>
+    </div>
+    <div class="modal-body" style="font-size:0.86rem;line-height:1.68;color:var(--text-secondary);">
+      <button type="button" id="kDirectNativeInstallBtn" class="btn-primary btn-full" onclick="runNativePromptIfReady()" style="display:none;margin-bottom:14px;font-weight:700;">
+        📲 Install KAIZEN App Now
+      </button>
+      <div style="padding:12px 14px;border-radius:12px;border:1px solid rgba(245,197,24,0.4);background:rgba(245,197,24,0.08);margin-bottom:14px;color:var(--text-primary);">
+        <strong style="color:var(--gold);">Android (Chrome / Brave / Samsung):</strong><br>
+        1. Tap the browser <strong>⋮ menu</strong> (top-right corner of Chrome).<br>
+        2. Tap <strong>"Add to Home screen"</strong> or <strong>"Install app"</strong>.<br>
+        3. Choose <strong>Install</strong> to place the full-screen <strong>改 KAIZEN</strong> app on your phone.
+      </div>
+      <div style="padding:12px 14px;border-radius:12px;border:1px solid var(--border);background:var(--bg-elevated);margin-bottom:14px;color:var(--text-primary);">
+        <strong style="color:var(--gold);">iPhone / iPad (Safari):</strong><br>
+        Tap the <strong>Share</strong> icon at the bottom of Safari and tap <strong>"Add to Home Screen"</strong>.
+      </div>
+      <div style="padding:12px 14px;border-radius:12px;border:1px solid var(--border);background:var(--bg-elevated);color:var(--text-primary);">
+        <strong style="color:var(--gold);">Testing on Termux (`localhost:3000`)?</strong><br>
+        Android Chrome's <strong>⋮ &rarr; Add to Home screen</strong> creates a launcher icon that opens your local Termux server (`http://localhost:3000/dashboard`) in full-screen app mode.
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Hide top Install button if already running inside installed standalone PWA / APK mode
+  (function () {
+    try {
+      var isStandalone = (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || window.navigator.standalone === true;
+      if (isStandalone) {
+        var topBtn = document.getElementById('kTopInstallBtn');
+        if (topBtn) topBtn.style.display = 'none';
+      }
+    } catch (e) {}
+  })();
+  function runNativePromptIfReady() {
+    if (window._kaizenDeferredPrompt) {
+      var p = window._kaizenDeferredPrompt;
+      window._kaizenDeferredPrompt = null;
+      p.prompt();
+      p.userChoice.then(function () {
+        var m = document.getElementById('installAppModal');
+        if (m) { m.classList.remove('open'); m.classList.remove('active'); }
+      });
+      return true;
+    }
+    return false;
+  }
+  function triggerKaizenInstall() {
+    if (typeof closePopup === 'function') closePopup();
+    if (runNativePromptIfReady()) return;
+    window._kaizenInstallRequested = true;
+    var m = document.getElementById('installAppModal');
+    if (m) {
+      var directBtn = document.getElementById('kDirectNativeInstallBtn');
+      if (directBtn) directBtn.style.display = window._kaizenDeferredPrompt ? 'block' : 'none';
+      m.classList.add('open');
+      m.classList.add('active');
+    }
+  }
+</script>
 
 <!-- SECURITY MODAL -->
 <div class="modal-overlay" id="securityModal">

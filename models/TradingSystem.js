@@ -63,7 +63,14 @@ function snapshotOf(doc) {
 TradingSystemSchema.statics.ensureForUser = async function (user) {
   if (!user) return null;
   let system = await this.findOne({ userId: user._id });
-  if (system) return system;
+  if (system) {
+    if (!system.version || isNaN(Number(system.version))) system.version = 1;
+    if (!Array.isArray(system.history)) system.history = [];
+    if (!system.riskRules || typeof system.riskRules !== 'object') {
+      system.riskRules = { riskPerTrade: '', maxPositionSize: '', dailyDrawdown: '', maxDailyTrades: '' };
+    }
+    return system;
+  }
 
   const legacy = user.tradingStyle || {};
   system = new this({
@@ -99,7 +106,8 @@ TradingSystemSchema.statics.ensureForUser = async function (user) {
 
 /** Save the current editor state as a new version (never overwrites). */
 TradingSystemSchema.methods.saveAsNewVersion = async function (changeNote) {
-  this.version += 1;
+  this.version = (Number(this.version) || 1) + 1;
+  if (!Array.isArray(this.history)) this.history = [];
   this.history.push({
     version: this.version,
     changeNote: changeNote || '',

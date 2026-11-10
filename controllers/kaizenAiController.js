@@ -17,7 +17,7 @@ async function loadContext(userId) {
   const user = await User.findById(userId);
   if (!user) return null;
   const [sessions, system, mindState, goals] = await Promise.all([
-    Journal.find({ userId }).sort({ createdAt: -1 }).limit(5).lean(),
+    Journal.find({ userId }).sort({ createdAt: -1 }).limit(12).lean(),
     TradingSystem.ensureForUser(user),
     MindState.ensureForUser(userId),
     Goal.find({ userId, status: 'ACTIVE' }).lean().catch(() => [])
@@ -194,9 +194,10 @@ async function postAsk(req, res) {
           userMessage: mode === 'quiz' ? 'Quiz me on my rules.' : message,
           imageDataUrl, mode
         })) {
-          full += chunk;
+          const safeChunk = String(chunk || '').replace(/[*✳✱✢✦＊`]/g, '');
+          full += safeChunk;
           emitted = true;
-          send({ type: 'delta', text: chunk });
+          send({ type: 'delta', text: safeChunk });
         }
         await persist(cleanText(full));
         await capturePatterns();

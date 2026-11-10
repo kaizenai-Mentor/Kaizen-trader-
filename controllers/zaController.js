@@ -536,6 +536,7 @@ const downloadDossierPdf = async (req, res) => {
     const pdfBuf = generateDossierPdfBuffer(dossier, {
       redactPairs: req.query.redactPairs === '1',
       redactDates: req.query.redactDates === '1',
+      redactPnl: req.query.redactPnl === '1',
       hideQuotes: req.query.hideQuotes === '1'
     });
 
