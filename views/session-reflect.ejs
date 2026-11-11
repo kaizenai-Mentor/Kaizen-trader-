@@ -28,15 +28,20 @@
     </div>
 
     <form action="/dashboard/sessions/<%= session._id %>/reflect" method="POST">
+      <p class="k-voice-privacy">Your browser may send audio to its speech service. Review the text before saving.</p>
 
       <div class="k-card k-formcard k-prompt">
         <label class="k-fieldlabel"><%= t('reflect.learned') %></label>
-        <textarea name="learned" class="k-input" rows="3" placeholder="<%= t('reflect.ph3') %>"></textarea>
+        <textarea id="reflect-learned" name="learned" class="k-input" rows="3" placeholder="<%= t('reflect.ph3') %>"></textarea>
+        <div class="k-voice-row"><%- include('partials/voice-button', { target: 'reflect-learned', status: 'learned-voice-status' }) %></div>
+        <p class="k-voice-status" id="learned-voice-status" role="status" aria-live="polite"></p>
       </div>
 
       <div class="k-card k-formcard k-prompt">
         <label class="k-fieldlabel"><%= t('reflect.wouldChange') %></label>
-        <textarea name="wouldChange" class="k-input" rows="3" placeholder="<%= t('reflect.ph4') %>"></textarea>
+        <textarea id="reflect-change" name="wouldChange" class="k-input" rows="3" placeholder="<%= t('reflect.ph4') %>"></textarea>
+        <div class="k-voice-row"><%- include('partials/voice-button', { target: 'reflect-change', status: 'change-voice-status' }) %></div>
+        <p class="k-voice-status" id="change-voice-status" role="status" aria-live="polite"></p>
       </div>
 
       <div class="k-actions">
@@ -64,6 +69,7 @@
   </main>
 
   <%- include('partials/footer') %>
+  <script src="/js/voice-input.js"></script>
   <script src="/js/app.js"></script>
   <script>
     if (window.feather) feather.replace();

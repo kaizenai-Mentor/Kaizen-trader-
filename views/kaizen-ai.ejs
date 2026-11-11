@@ -78,8 +78,11 @@
           📎<input type="file" id="chart-file" accept="image/png,image/jpeg,image/webp" hidden>
         </label>
         <textarea id="ai-input" rows="2" placeholder="<%= t('ai.placeholder') %>"></textarea>
+        <%- include('partials/voice-button', { target: 'ai-input', status: 'ai-voice-status' }) %>
         <button type="button" id="ai-send" class="k-btn k-btn-primary"><%= t('ai.send') %></button>
       </div>
+      <p class="k-voice-status" id="ai-voice-status" role="status" aria-live="polite"></p>
+      <p class="k-voice-privacy">Your browser may send audio to its speech service. Review the text before sending.</p>
       <div class="k-attachmeta" id="attach-meta" hidden></div>
     </section>
 
@@ -156,14 +159,18 @@
         📎<input type="file" id="chart-file" accept="image/png,image/jpeg,image/webp" hidden>
       </label>
       <textarea id="ai-input" rows="2" placeholder="<%= t('ai.placeholder') %>"></textarea>
+      <%- include('partials/voice-button', { target: 'ai-input', status: 'ai-voice-status' }) %>
       <button type="button" id="ai-send" class="k-btn k-btn-primary"><%= t('ai.send') %></button>
     </div>
+    <p class="k-voice-status" id="ai-voice-status" role="status" aria-live="polite"></p>
+    <p class="k-voice-privacy">Your browser may send audio to its speech service. Review the text before sending.</p>
     <div class="k-attachmeta" id="attach-meta" hidden></div>
   </main>
 
   <% } %>
 
   <%- include('partials/footer') %>
+  <script src="/js/voice-input.js"></script>
   <script>
     (function () {
       var input = document.getElementById('ai-input');
@@ -328,11 +335,11 @@
 
       function sendMsg() {
         var text = input.value.trim();
-        if (busy) return;
+        if (busy || (window.kaizenVoice && !window.kaizenVoice.canSubmit('ai-input'))) return;
         if (!text && !imageData) return;
         send({ message: text, image: imageData });
       }
-      function sendQuiz() { if (!busy) send({ message: 'Quiz me on my rules.', mode: 'quiz' }); }
+      function sendQuiz() { if (!busy && (!window.kaizenVoice || window.kaizenVoice.canSubmit('ai-input'))) send({ message: 'Quiz me on my rules.', mode: 'quiz' }); }
 
       sendBtn.addEventListener('click', sendMsg);
       input.addEventListener('keydown', function (e) {

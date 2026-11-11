@@ -37,6 +37,9 @@
         <div class="k-metric-label" style="margin-bottom:10px;"><%= t('record.notes') %></div>
         <textarea name="notes" id="notes" class="k-input" rows="7" required
           placeholder="Took the EURUSD short off the 4H sweep. Entry was clean but I moved my invalidation twice when price squeezed — that was fear, not strategy. Sized in properly at 1%..."></textarea>
+        <div class="k-voice-row"><%- include('partials/voice-button', { target: 'notes', status: 'notes-voice-status' }) %></div>
+        <p class="k-voice-status" id="notes-voice-status" role="status" aria-live="polite"></p>
+        <p class="k-voice-privacy">Your browser may send audio to its speech service. Review the text before saving.</p>
         <div id="autodetect" class="k-fieldhint" style="margin-top:8px;"></div>
         <input type="hidden" name="asset" id="asset" value="<%= (session.asset && session.asset !== 'General') ? session.asset : '' %>">
         <input type="hidden" name="timeframe" id="timeframe" value="N/A">
@@ -111,6 +114,7 @@
   </main>
 
   <%- include('partials/footer') %>
+  <script src="/js/voice-input.js"></script>
   <script src="/js/app.js"></script>
   <script>
     if (window.feather) if (window.feather) feather.replace();

@@ -4578,3 +4578,24 @@ select.k-input, select.form-input {
 
 
 
+
+/* Voice dictation controls */
+.k-composer textarea { min-width: 0; }
+.k-voice-row { margin-top: 10px; }
+.k-voice-button {
+  display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+  flex-shrink: 0; min-height: 48px; min-width: 48px; padding: 8px 12px;
+  border: 1px solid var(--border); border-radius: 12px;
+  background: var(--input-bg); color: var(--text-primary);
+  font: inherit; font-size: 0.78rem; cursor: pointer;
+}
+.k-voice-button:hover:not(:disabled), .k-voice-button:focus-visible { border-color: var(--gold); color: var(--gold); }
+.k-voice-button.is-listening { border-color: var(--gold); color: var(--gold); background: rgba(245, 197, 24, 0.08); }
+.k-voice-button:disabled { opacity: 0.55; cursor: not-allowed; }
+.k-voice-status, .k-voice-privacy { color: var(--text-secondary); font-size: 0.72rem; line-height: 1.5; margin: 5px 0 0; }
+.k-voice-status:empty { display: none; }
+@media (max-width: 480px) {
+  .k-composer { gap: 6px; }
+  .k-composer .k-voice-button { padding: 8px; }
+  .k-composer .k-voice-button span { display: none; }
+}
