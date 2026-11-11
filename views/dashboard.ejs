@@ -45,11 +45,6 @@
         <% if (score.overall !== null && score.overall !== undefined) { %>
           <div class="k-scoreline">
             <span class="k-scorenum"><%= score.overall %>%</span>
-            <div class="k-scoremeta">
-              <% if (score.overallState === 'READY') { %><span class="k-statechip is-ready"><%= t('dash.ready') %></span><% } %>
-              <% if (score.overallState === 'PARTIAL') { %><span class="k-statechip is-partial"><%= t('dash.partial') %></span><% } %>
-              <span class="k-scoresub"><%= t('dash.fromLast') %> <%= score.sessionsConsidered %> <%= t('dash.sessionsDot') %> <a class="k-link" href="/about#kaizen-score"><%= t('dash.howScored') %></a></span>
-            </div>
           </div>
 
           <div class="k-meters">
@@ -64,17 +59,6 @@
             <% }); %>
           </div>
 
-          <% var whyDims = ['process','risk','execution','behavior','learning'].filter(function(k){ return score.dimensions && score.dimensions[k] && score.dimensions[k].reasons && score.dimensions[k].reasons.length; }); %>
-          <% if (whyDims.length) { %>
-            <div class="k-whyblock">
-              <div class="k-metric-label"><%= t('dash.whyNumber') %></div>
-              <% whyDims.forEach(function(k){ %>
-                <p class="k-whyline">
-                  <span class="k-whydim"><%= dimensionLabels[k].toUpperCase() %>:</span> <%= score.dimensions[k].reasons[0] %>
-                </p>
-              <% }); %>
-            </div>
-          <% } %>
         <% } else { %>
           <div class="k-building">
             <span class="k-buildnum">改</span>

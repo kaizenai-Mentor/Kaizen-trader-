@@ -34,21 +34,35 @@
     target.dispatchEvent(new Event('input', { bubbles: true }));
   }
 
-  function begin(control) {
+  function finish(control, message) {
+    if (active !== control) return;
+    if (control.restartTimer) window.clearTimeout(control.restartTimer);
+    control.restartTimer = null;
+    control.recognition = null;
+    control.stopping = false;
+    active = null;
+    control.button.disabled = false;
+    setButton(control, false);
+    say(control, message || 'Dictation stopped. Review and edit the text before sending or saving.');
+  }
+
+  // Android Chrome can end a recognition session after a short pause even
+  // when continuous is set. Start a fresh session until the trader stops it.
+  function startRecognition(control) {
+    if (active !== control || control.stopping) return;
     var recognition;
     try { recognition = new SpeechRecognition(); }
-    catch (_) { say(control, 'Voice input could not start. You can still type.'); return; }
+    catch (_) { finish(control, 'Voice input could not start. You can still type.'); return; }
     var seen = {};
-    var errorMessage = '';
+    var fatalError = '';
+    var gotSpeech = false;
     control.recognition = recognition;
-    active = control;
-    setButton(control, true);
-    say(control, 'Starting microphone. Allow access if your browser asks.');
     recognition.continuous = true;
     recognition.interimResults = false;
     recognition.lang = document.documentElement.lang || 'en';
     recognition.onstart = function () {
-      if (active === control && control.recognition === recognition) say(control, 'Listening. Tap Stop when you are finished.');
+      if (active === control && control.recognition === recognition && !control.stopping)
+        say(control, 'Listening. Tap Stop when you are finished.');
     };
     recognition.onresult = function (event) {
       if (active !== control || control.recognition !== recognition) return;
@@ -56,39 +70,51 @@
         var result = event.results[i];
         if (result.isFinal && !seen[i] && result[0]) {
           seen[i] = true;
+          gotSpeech = true;
+          control.emptyRestarts = 0;
           insertText(control.target, result[0].transcript);
         }
       }
     };
     recognition.onerror = function (event) {
       if (active !== control || control.recognition !== recognition) return;
+      if (event.error === 'no-speech') return; // retry after the browser ends this session
+      if (event.error === 'aborted' && control.stopping) return;
       var messages = {
         'not-allowed': 'Microphone or speech access was denied. Check browser permissions and try again.',
         'service-not-allowed': 'Speech recognition is unavailable in this browser. You can still type.',
         'audio-capture': 'No microphone was available. Check your device settings and try again.',
         'network': 'Speech recognition needs a working network connection. You can still type.',
-        'no-speech': 'No speech was detected. Tap Speak to try again.',
         'aborted': 'Dictation stopped.'
       };
-      errorMessage = messages[event.error] || 'Voice input stopped. You can still type or try again.';
-      say(control, errorMessage);
+      fatalError = messages[event.error] || 'Voice input stopped. You can still type or try again.';
+      say(control, fatalError);
     };
     recognition.onend = function () {
       if (active !== control || control.recognition !== recognition) return;
-      active = null;
       control.recognition = null;
-      control.stopping = false;
-      control.button.disabled = false;
-      setButton(control, false);
-      say(control, errorMessage || 'Dictation stopped. Review and edit the text before sending or saving.');
+      if (control.stopping || fatalError) return finish(control, fatalError);
+      if (!gotSpeech) control.emptyRestarts++;
+      if (control.emptyRestarts >= 5) {
+        return finish(control, 'No speech detected. Tap Speak to start again.');
+      }
+      say(control, 'Listening paused. Restarting microphone; tap Stop to finish.');
+      control.restartTimer = window.setTimeout(function () {
+        control.restartTimer = null;
+        startRecognition(control);
+      }, 350);
     };
     try { recognition.start(); }
-    catch (_) {
-      active = null;
-      control.recognition = null;
-      setButton(control, false);
-      say(control, 'Voice input could not start. Check microphone access or type instead.');
-    }
+    catch (_) { finish(control, 'Voice input could not restart. Check microphone access or type instead.'); }
+  }
+
+  function begin(control) {
+    active = control;
+    control.stopping = false;
+    control.emptyRestarts = 0;
+    setButton(control, true);
+    say(control, 'Starting microphone. Allow access if your browser asks.');
+    startRecognition(control);
   }
 
   document.querySelectorAll('[data-voice-target]').forEach(function (button) {
@@ -109,8 +135,12 @@
           control.stopping = true;
           control.button.disabled = true;
           say(control, 'Finishing dictation. Please wait to review the text.');
+          if (control.restartTimer) {
+            window.clearTimeout(control.restartTimer);
+            return finish(control);
+          }
           try { control.recognition.stop(); }
-          catch (_) { control.recognition.onend(); }
+          catch (_) { finish(control); }
         } else if (active) {
           say(control, 'Stop the other dictation before starting this one.');
         } else {
@@ -129,8 +159,11 @@
     }
   });
   window.addEventListener('pagehide', function () {
-    if (active && active.recognition) {
-      try { active.recognition.abort(); } catch (_) {}
+    if (active) {
+      var control = active;
+      var recognition = control.recognition;
+      finish(control);
+      if (recognition) { try { recognition.abort(); } catch (_) {} }
     }
   });
 })();

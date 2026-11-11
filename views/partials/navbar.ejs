@@ -43,9 +43,6 @@
     <div class="popup-section">
       <div class="popup-section-label"><%= t('nav.settings') %></div>
       <a href="/settings/trading-system" class="popup-item"><span class="popup-item-icon"><i data-feather="sliders" width="14" height="14"></i></span> <%= t('nav.system') %></a>
-      <button type="button" id="kInstallAppBtn" class="popup-item" onclick="triggerKaizenInstall()" style="display:flex;width:100%;background:none;border:none;text-align:left;cursor:pointer;color:var(--gold);font-weight:700;">
-        <span class="popup-item-icon"><i data-feather="smartphone" width="14" height="14"></i></span> Install KAIZEN App
-      </button>
     </div>
 
     <!-- INFO -->
@@ -109,9 +106,6 @@
     <div class="popup-auth-btns">
       <a href="/auth/login" class="btn-primary btn-full"><%= t('nav.login') %></a>
       <a href="/auth/register" class="btn-outline btn-full"><%= t('nav.signup') %></a>
-      <button type="button" class="btn-outline btn-full" onclick="triggerKaizenInstall()" style="margin-top:8px;border-color:var(--gold);color:var(--gold);font-weight:700;">
-        Install KAIZEN App
-      </button>
     </div>
 
     <!-- LANGUAGE (owner directive 13 Oct 2026) -->
@@ -144,9 +138,6 @@
   <div class="nav-right">
     <div class="nav-lang" style="margin-right:6px;display:flex;align-items:center;">
     </div>
-    <button type="button" id="kTopInstallBtn" onclick="triggerKaizenInstall()" title="Install KAIZEN Mobile App" style="font-family:var(--font-mono);font-size:0.6rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;background:rgba(245,197,24,0.14);color:var(--gold);border:1px solid rgba(245,197,24,0.45);border-radius:999px;padding:6px 11px;cursor:pointer;margin-right:6px;display:inline-flex;align-items:center;gap:5px;">
-      <span>📲</span><span>Install App</span>
-    </button>
     <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
       <span id="themeIcon">◐</span>
     </button>
@@ -199,122 +190,16 @@
     })();
   </script>
 <% } %>
-<!-- INSTALL KAIZEN MOBILE APP MODAL -->
-<div class="modal-overlay" id="installAppModal" onclick="if(event.target===this){this.classList.remove('open');this.classList.remove('active');}">
-  <div class="modal" style="max-width:440px;">
-    <div class="modal-header">
-      <h3 style="display:flex;align-items:center;gap:8px;"><span class="k-kanji k-kanji--sm">改</span> KAIZEN Mobile App Mode</h3>
-      <button class="modal-close" onclick="var m=document.getElementById('installAppModal');m.classList.remove('open');m.classList.remove('active');">×</button>
-    </div>
-    <div class="modal-body" style="font-size:0.85rem;line-height:1.65;color:var(--text-secondary);">
-      <button type="button" id="kDirectNativeInstallBtn" class="btn-primary btn-full" onclick="runNativePromptIfReady()" style="display:none;margin-bottom:12px;font-weight:700;">
-        📲 Install Native KAIZEN App Now
-      </button>
-
-      <!-- Option 1: Instant One-Tap Full-Screen App Mode (Works in every browser without 3-dot menu) -->
-      <div style="padding:14px;border-radius:12px;border:1px solid rgba(245,197,24,0.45);background:rgba(245,197,24,0.08);margin-bottom:12px;color:var(--text-primary);">
-        <div style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:4px;">INSTANT 1-TAP APP SHELL (NO BROWSER MENU NEEDED)</div>
-        <p style="margin:0 0 10px;font-size:0.82rem;color:var(--text-secondary);">
-          Switch straight into full-screen <strong>改 KAIZEN App Mode</strong> with the mobile bottom tab bar locked in across all pages:
-        </p>
-        <button type="button" class="btn-primary btn-full" onclick="activateKaizenFullScreenApp()" style="font-weight:700;padding:10px 14px;">
-          📲 Launch Full-Screen KAIZEN App Now
-        </button>
-      </div>
-
-      <!-- Option 2: Break out of Custom Tab / Force Chrome localhost via Android Intent -->
-      <div style="padding:14px;border-radius:12px;border:1px solid var(--border);background:var(--bg-elevated);margin-bottom:12px;color:var(--text-primary);">
-        <div style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:4px;">NO "ADD TO HOME SCREEN" IN YOUR 3-DOT MENU?</div>
-        <p style="margin:0 0 10px;font-size:0.8rem;color:var(--text-secondary);">
-          If you opened KAIZEN from the Google Search bar, Termux URL opener, or on <code>0.0.0.0</code> / <code>127.0.0.1</code>, Android hides the install option. Tap below to force-open <code>http://localhost:3000</code> inside the full Android Chrome app:
-        </p>
-        <button type="button" class="btn-outline btn-full" onclick="openKaizenInChromeApp()" style="border-color:var(--gold);color:var(--gold);font-weight:700;padding:9px 14px;">
-          🚀 Open in Full Chrome App (localhost)
-        </button>
-      </div>
-
-      <!-- Option 3: Termux Home-Screen / App Launcher Command -->
-      <div style="padding:12px 14px;border-radius:12px;border:1px solid var(--border);background:var(--bg-elevated);color:var(--text-primary);">
-        <div style="font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:4px;">TERMUX DIRECT APP LAUNCHER</div>
-        <p style="margin:0 0 6px;font-size:0.78rem;color:var(--text-secondary);">
-          In Termux, run <code>npm run app</code> to start KAIZEN and launch the Android app window automatically.
-        </p>
-      </div>
-    </div>
-  </div>
-</div>
-
 <script>
-  // Hide top Install button if already running inside installed standalone PWA / APK mode
+  // Retain the layout of already installed standalone PWAs.
   (function () {
     try {
       var isStandalone = (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) ||
         window.navigator.standalone === true ||
         localStorage.getItem('kaizen-standalone-app') === '1';
-      if (isStandalone) {
-        document.documentElement.classList.add('k-standalone-app');
-        var topBtn = document.getElementById('kTopInstallBtn');
-        if (topBtn) topBtn.style.display = 'none';
-      }
+      if (isStandalone) document.documentElement.classList.add('k-standalone-app');
     } catch (e) {}
   })();
-  function runNativePromptIfReady() {
-    if (window._kaizenDeferredPrompt) {
-      var p = window._kaizenDeferredPrompt;
-      window._kaizenDeferredPrompt = null;
-      p.prompt();
-      p.userChoice.then(function () {
-        var m = document.getElementById('installAppModal');
-        if (m) { m.classList.remove('open'); m.classList.remove('active'); }
-      });
-      return true;
-    }
-    return false;
-  }
-  function activateKaizenFullScreenApp() {
-    try {
-      localStorage.setItem('kaizen-standalone-app', '1');
-      document.documentElement.classList.add('k-standalone-app');
-      var el = document.documentElement;
-      if (el.requestFullscreen) {
-        el.requestFullscreen().catch(function () {});
-      } else if (el.webkitRequestFullscreen) {
-        el.webkitRequestFullscreen();
-      }
-      var topBtn = document.getElementById('kTopInstallBtn');
-      if (topBtn) topBtn.innerHTML = '<span>✓</span><span>App Mode</span>';
-      var m = document.getElementById('installAppModal');
-      if (m) { m.classList.remove('open'); m.classList.remove('active'); }
-    } catch (e) {}
-  }
-  function openKaizenInChromeApp() {
-    try {
-      var port = window.location.port ? (':' + window.location.port) : '';
-      var host = (window.location.hostname === '0.0.0.0' || window.location.hostname === '127.0.0.1')
-        ? ('localhost' + port)
-        : window.location.host;
-      var scheme = window.location.protocol === 'https:' ? 'https' : 'http';
-      var targetPath = window.location.pathname || '/dashboard';
-      var isAndroid = /Android/i.test(navigator.userAgent || '');
-      if (isAndroid) {
-        window.location.href = 'intent://' + host + targetPath + '#Intent;scheme=' + scheme + ';package=com.android.chrome;S.browser_fallback_url=' + encodeURIComponent(scheme + '://' + host + targetPath) + ';end';
-      } else {
-        window.location.href = scheme + '://' + host + targetPath;
-      }
-    } catch (e) {}
-  }
-  function triggerKaizenInstall() {
-    if (typeof closePopup === 'function') closePopup();
-    if (runNativePromptIfReady()) return;
-    window._kaizenInstallRequested = true;
-    var m = document.getElementById('installAppModal');
-    if (m) {
-      var directBtn = document.getElementById('kDirectNativeInstallBtn');
-      if (directBtn) directBtn.style.display = window._kaizenDeferredPrompt ? 'block' : 'none';
-      m.classList.add('open');
-      m.classList.add('active');
-    }
-  }
 </script>
 
 <!-- SECURITY MODAL -->

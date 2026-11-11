@@ -38,10 +38,18 @@ function setup({ supported = true, secure = true } = {}) {
   const b = control('learned');
   const elements = { notes: a.target, 'notes-status': a.status, learned: b.target, 'learned-status': b.status };
   const document = { documentElement: { lang: 'en' }, getElementById(id) { return elements[id]; }, querySelectorAll() { return [a.button, b.button]; } };
-  const window = { isSecureContext: secure, addEventListener(type, cb) { this[type] = cb; } };
+  const timers = new Map();
+  let timerId = 0;
+  const window = {
+    isSecureContext: secure, addEventListener(type, cb) { this[type] = cb; },
+    setTimeout(cb) { const id = ++timerId; timers.set(id, cb); return id; },
+    clearTimeout(id) { timers.delete(id); }
+  };
+  function flushTimer() { const [id, cb] = timers.entries().next().value || []; if (cb) { timers.delete(id); cb(); } }
+
   if (supported) window.webkitSpeechRecognition = MockRecognition;
   vm.runInNewContext(source, { window, document, Event: FakeEvent });
-  return { a, b, form, window, get recognition() { return recognition; } };
+  return { a, b, form, window, timers, flushTimer, get recognition() { return recognition; } };
 }
 
 test('unsupported or insecure environments explain the fallback without disabling typing', () => {
@@ -107,4 +115,74 @@ test('voice controls render on both KAIZEN AI modes and the two session steps', 
   }
   const ai = fs.readFileSync('views/kaizen-ai.ejs', 'utf8');
   assert.equal((ai.match(/target: 'ai-input'/g) || []).length, 2);
+});
+
+
+test('recognition restarts after Chrome ends a session and preserves the transcript until Stop', () => {
+  const env = setup();
+  env.a.button.click();
+  const first = env.recognition;
+  const one = [{ transcript: 'hello' }]; one.isFinal = true;
+  first.onresult({ resultIndex: 0, results: [one] });
+  first.onend();
+  assert.match(env.a.status.textContent, /Restarting microphone/);
+  assert.equal(env.window.kaizenVoice.canSubmit('notes'), false);
+  env.flushTimer();
+  const second = env.recognition;
+  assert.notEqual(second, first);
+  const two = [{ transcript: 'again' }]; two.isFinal = true;
+  second.onresult({ resultIndex: 0, results: [two] });
+  assert.equal(env.a.target.value, 'Existing text hello again');
+  first.onresult({ resultIndex: 0, results: [one] });
+  env.a.button.click();
+  second.onend();
+  assert.equal(env.a.target.value, 'Existing text hello again');
+  assert.equal(env.timers.size, 0);
+  assert.equal(env.window.kaizenVoice.canSubmit('notes'), true);
+});
+
+test('stop or page exit during the restart delay cancels the microphone restart', () => {
+  const env = setup();
+  env.a.button.click();
+  env.recognition.onend();
+  assert.equal(env.timers.size, 1);
+  env.a.button.click();
+  assert.equal(env.timers.size, 0);
+  assert.equal(env.window.kaizenVoice.canSubmit('notes'), true);
+  env.a.button.click();
+  env.recognition.onend();
+  env.window.pagehide();
+  assert.equal(env.timers.size, 0);
+  assert.equal(env.window.kaizenVoice.canSubmit('notes'), true);
+});
+
+test('no speech retries are bounded and permission errors do not retry', () => {
+  const env = setup();
+  env.a.button.click();
+  for (let i = 0; i < 5; i++) {
+    env.recognition.onerror({ error: 'no-speech' });
+    env.recognition.onend();
+    env.flushTimer();
+  }
+  assert.equal(env.timers.size, 0);
+  assert.match(env.a.status.textContent, /No speech detected/);
+  env.a.button.click();
+  env.recognition.onerror({ error: 'not-allowed' });
+  env.recognition.onend();
+  assert.equal(env.timers.size, 0);
+  assert.match(env.a.status.textContent, /denied/);
+});
+
+test('cockpit shows scores without explanations; progress retains reasons and install controls are absent', () => {
+  const cockpit = fs.readFileSync('views/dashboard.ejs', 'utf8');
+  const progress = fs.readFileSync('views/leaderboard.ejs', 'utf8');
+  const navbar = fs.readFileSync('views/partials/navbar.ejs', 'utf8');
+  assert.doesNotMatch(cockpit, /whyDims|k-whyblock|reasons\[0\]/);
+  assert.match(cockpit, /score\.overall %>%/);
+  assert.match(cockpit, /d\.score %>%/);
+  assert.match(progress, /d\.reason/);
+  assert.doesNotMatch(navbar, /Install KAIZEN App|Install App|triggerKaizenInstall|installAppModal/);
+  for (const view of ['views/dashboard.ejs', 'views/partials/navbar.ejs']) {
+    ejs.compile(fs.readFileSync(view, 'utf8'), { filename: view });
+  }
 });
