@@ -82,10 +82,10 @@
               <p style="font-size:0.92rem;font-weight:500;color:var(--text-primary);line-height:1.78;margin:0;"><%= rev.nextImprovement %></p>
             </div>
 
-            <% if (typeof brokerCheck !== 'undefined' && brokerCheck && brokerCheck.status !== 'STUDY_EXEMPT') { %>
-              <div class="k-review-block" style="border-left:3px solid <%= brokerCheck.verified ? 'var(--green)' : 'var(--gold)' %>;">
-                <div style="font-family:var(--font-mono);font-size:0.58rem;letter-spacing:0.14em;text-transform:uppercase;color:<%= brokerCheck.verified ? 'var(--green)' : 'var(--gold)' %>;margin-bottom:6px;">
-                  <%= brokerCheck.verified ? 'BROKER-VERIFIED EXECUTION ✓' : 'ACCOUNT HISTORY VERIFICATION' %>
+            <% if (typeof brokerCheck !== 'undefined' && brokerCheck && brokerCheck.verified) { %>
+              <div class="k-review-block" style="border-left:3px solid var(--green);">
+                <div style="font-family:var(--font-mono);font-size:0.58rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--green);margin-bottom:6px;">
+                  BROKER-VERIFIED EXECUTION ✓
                 </div>
                 <p style="font-size:0.84rem;color:var(--text-secondary);line-height:1.72;margin:0;"><%= brokerCheck.verificationNote %></p>
               </div>
