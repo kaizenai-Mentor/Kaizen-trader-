@@ -28,7 +28,13 @@ const goalSchema = new Schema({
   progressLog: [{
     at: { type: Date, default: Date.now },
     value: { type: Number, default: null },
-    note: { type: String, default: '' }
+    note: { type: String, default: '' },
+    source: { type: String, enum: ['MANUAL', 'SESSION'], default: 'MANUAL' },
+    sessionId: { type: Schema.Types.ObjectId, ref: 'Journal', default: null },
+    asset: { type: String, default: '' },
+    setup: { type: String, default: '' },
+    compliant: { type: Boolean, default: null },
+    phase: { type: String, enum: ['RECORDED', 'REFLECTED'], default: 'RECORDED' }
   }],
   guidance: { type: String, default: '' },
   guidanceAt: { type: Date, default: null }

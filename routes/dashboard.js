@@ -35,9 +35,10 @@ router.post('/sessions/import-broker', protect, uploadReport.single('brokerFile'
 router.get('/sessions/new', protect, A(sessionsController.getPlan));
 router.post('/sessions/plan', protect, A(sessionsController.postPlan));
 router.get('/sessions/:id/record', protect, A(sessionsController.getRecord));
-router.post('/sessions/:id/record', protect, upload.single('chartImage'), A(sessionsController.postRecord));
+router.post('/sessions/:id/record', protect, upload.fields([{ name: 'chartImage', maxCount: 8 }, { name: 'chartImages', maxCount: 8 }]), A(sessionsController.postRecord));
 router.get('/sessions/:id/reflect', protect, A(sessionsController.getReflect));
 router.post('/sessions/:id/reflect', protect, A(sessionsController.postReflect));
+router.get('/sessions/:id/chart-image/:index', protect, A(sessionsController.getChartImage));
 router.get('/sessions/:id/chart-image', protect, A(sessionsController.getChartImage));
 router.get('/sessions/:id', protect, A(sessionsController.getDetail));
 

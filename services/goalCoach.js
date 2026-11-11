@@ -170,14 +170,66 @@ function currentValue(goal, sessions, now = new Date()) {
   }
 }
 
+const PAIR_RE = /\b(EUR\/?USD|GBP\/?USD|USD\/?JPY|AUD\/?JPY|GBP\/?JPY|EUR\/?JPY|AUD\/?USD|USD\/?CAD|USD\/?CHF|NZD\/?USD|EUR\/?GBP|EUR\/?AUD|GBP\/?AUD|CAD\/?JPY|CHF\/?JPY|NZD\/?JPY|XAU\/?USD|XAG\/?USD|NAS100|US100|SPX500|US500|US30|GER40|UK100|JP225|JPN225|JAPAN\s*225|BTC\/?USD|ETH\/?USD|SOL\/?USD|USOIL|UKOIL|GOLD)\b/i;
+
+function getSessionLabel(s) {
+  if (!s) return '';
+  let pair = '';
+  const rawAsset = String(s.asset || '').trim();
+  if (rawAsset && !/^(general|market study|n\/a|session)$/i.test(rawAsset)) {
+    pair = rawAsset;
+  } else {
+    const m = String(s.notes || '').match(PAIR_RE);
+    if (m) {
+      pair = m[1].toUpperCase().replace('/', '');
+      if (pair === 'GOLD') pair = 'XAUUSD';
+    }
+  }
+  const setup = s.plan && s.plan.setup && String(s.plan.setup).trim();
+  if (pair && setup && pair.toLowerCase() !== setup.toLowerCase()) {
+    return `${pair} (${setup})`;
+  }
+  return pair || setup || '';
+}
+
+function getSessionSnippet(s, maxLen = 110) {
+  if (!s) return '';
+  const refl = s.reflection || {};
+  const raw = cleanText(refl.learned || refl.wouldChange || s.notes || '');
+  if (!raw) return '';
+  const firstSent = raw.split(/(?<=[.!?])\s+/)[0] || raw;
+  const trimmed = firstSent.replace(/^["'\s]+|["'\s.]+$/g, '');
+  if (trimmed.length <= maxLen) return trimmed;
+  return trimmed.slice(0, maxLen).replace(/\s+\S*$/, '') + '...';
+}
+
+function recallSessionsForGoal(sessions = [], memories = []) {
+  const recent = lastSessions(sessions, 10).filter(Boolean);
+  const withDetail = recent.filter(s => Boolean(getSessionLabel(s) || (s.reflection && (s.reflection.learned || s.reflection.wouldChange)) || (s.notes && String(s.notes).trim().length >= 30)));
+  const liveDetailed = withDetail.filter(s => s.sessionType !== 'STUDY');
+  const pool = liveDetailed.length ? liveDetailed : withDetail;
+  const compliantDetailed = [...pool].reverse().find(s => s.ruleCompliance !== false);
+  const brokenDetailed = [...pool].reverse().find(s => s.ruleCompliance === false);
+  const latestDetailed = pool.length ? pool[pool.length - 1] : null;
+  const latestMem = Array.isArray(memories) && memories.length ? memories[0] : null;
+  return {
+    hasRichSessions: withDetail.length > 0,
+    compliantDetailed,
+    brokenDetailed,
+    latestDetailed,
+    latestMem
+  };
+}
+
 /**
  * Build the pre-session coach meeting fields (owner directive 21 Oct 2026):
  *   - What you're doing well (doingWell)
  *   - Your biggest obstacle (obstacle / blockers)
  *   - Today's focus (todaysFocus / nextAction)
+ *   - Session Verdict recalled from logged sessions & memories (sessionVerdict)
  *   - Accountability breakdown (target, reason, currentPattern, progress)
  */
-function buildPreSessionBrief({ goal, sessions, mindState, current, comp }) {
+function buildPreSessionBrief({ goal, sessions, memories, mindState, current, comp }) {
   const title = cleanText(goal && goal.title) || 'this goal';
   const entries = (goal && goal.progressLog) || [];
   const latestFeedback = entries.length ? entries[entries.length - 1] : null;
@@ -185,29 +237,47 @@ function buildPreSessionBrief({ goal, sessions, mindState, current, comp }) {
     ? mindState.themes.find(t => t && (t.status === 'active' || t.status === 'improving'))
     : null;
   const recentNotes = lastSessions(sessions, 10).map(s => (s && s.notes) || '').join(' ');
+  const recall = recallSessionsForGoal(sessions, memories);
 
-  // 1. What you're doing well
+  // 1. What you're doing well (recalling actual compliant session texts when available)
   let doingWell;
   if (comp && comp.checked > 0 && comp.kept > 0) {
-    doingWell = `You followed your trading rules in ${comp.kept} of your last ${comp.checked} sessions.${feedbackFoot(goal)}\nKeep protecting that habit.`;
+    let sessionRecallLine = '';
+    if (recall.compliantDetailed && getSessionLabel(recall.compliantDetailed)) {
+      const cLbl = getSessionLabel(recall.compliantDetailed);
+      const cSnip = getSessionSnippet(recall.compliantDetailed, 95);
+      sessionRecallLine = cSnip
+        ? `\nOn your ${cLbl} session, you wrote: "${cSnip}".`
+        : `\nYour ${cLbl} session held inside your declared checklist.`;
+    }
+    doingWell = `You followed your trading rules in ${comp.kept} of your last ${comp.checked} sessions.${feedbackFoot(goal)}${sessionRecallLine}\nKeep protecting that habit.`;
   } else if (entries.length > 0) {
     doingWell = `You are showing up with honest daily feedback (${entries.length} ${entries.length === 1 ? 'entry' : 'entries'} logged).${feedbackFoot(goal)}\nKeep protecting that habit.`;
   } else {
     doingWell = `You set a clear behavioural standard with "${title}".\nKeep protecting that habit from your very first logged session.`;
   }
 
-  // 2. Your biggest obstacle (blockers)
+  // 2. Your biggest obstacle (blockers — recalling actual rule-broken session texts when available)
   let obstacle;
   const hasRevengeSignal = (activeTheme && /revenge/i.test(activeTheme.name)) ||
     /\b(revenge|frustrat)/i.test(recentNotes);
+  let brokenRecallLine = '';
+  if (recall.brokenDetailed && getSessionLabel(recall.brokenDetailed)) {
+    const bLbl = getSessionLabel(recall.brokenDetailed);
+    const bChange = recall.brokenDetailed.reflection && cleanText(recall.brokenDetailed.reflection.wouldChange);
+    const bSnip = getSessionSnippet(recall.brokenDetailed, 95);
+    brokenRecallLine = bChange
+      ? ` On your ${bLbl} session you noted you would change: "${bChange}".`
+      : (bSnip ? ` On your ${bLbl} session you documented: "${bSnip}".` : '');
+  }
   if (hasRevengeSignal) {
-    obstacle = 'Your journal still shows revenge trading after frustrating outcomes.\nThat remains your biggest threat.';
+    obstacle = `Your journal still shows revenge trading after frustrating outcomes.${brokenRecallLine}\nThat remains your biggest threat.`;
   } else if (activeTheme) {
-    obstacle = `Your journal still shows ${cleanText(activeTheme.name).toLowerCase()} when pressure rises.\nThat remains your biggest threat.`;
+    obstacle = `Your journal still shows ${cleanText(activeTheme.name).toLowerCase()} when pressure rises.${brokenRecallLine}\nThat remains your biggest threat.`;
   } else if (latestFeedback && latestFeedback.note) {
-    obstacle = `Your latest daily feedback named what stood in the way: "${cleanText(latestFeedback.note)}".\nThat remains your biggest threat.`;
+    obstacle = `Your latest daily feedback named what stood in the way: "${cleanText(latestFeedback.note)}".${brokenRecallLine}\nThat remains your biggest threat.`;
   } else if (comp && comp.checked > comp.kept) {
-    obstacle = `Your rules gave way in ${comp.checked - comp.kept} of your last ${comp.checked} recorded sessions — entering before confirmation or moving your stop.\nThat remains your biggest threat.`;
+    obstacle = `Your rules gave way in ${comp.checked - comp.kept} of your last ${comp.checked} recorded sessions — entering before confirmation or moving your stop.${brokenRecallLine}\nThat remains your biggest threat.`;
   } else {
     obstacle = 'Unlogged or rushed sessions where rules go unchecked.\nComplacency remains your biggest threat.';
   }
@@ -220,6 +290,27 @@ function buildPreSessionBrief({ goal, sessions, mindState, current, comp }) {
     todaysFocus = 'Before you open the chart today,\nwrite your daily loss limit and step away for 15 minutes if frustration appears.\nProtect discipline.\nNot profits.';
   } else {
     todaysFocus = 'Before considering a trade today,\nread your written entry rule once and walk away for 15 minutes if frustration appears.\nProtect discipline.\nNot profits.';
+  }
+
+  // 4. KAIZEN Verdict recalled directly from the trader's logged sessions & memories
+  let sessionVerdict = '';
+  if (recall.latestDetailed) {
+    const s = recall.latestDetailed;
+    const lbl = getSessionLabel(s) || `${s.sessionType || 'LIVE'} session`;
+    const notesSnip = cleanText(s.notes || '').slice(0, 140);
+    const learnedSnip = s.reflection && cleanText(s.reflection.learned || s.reflection.wouldChange || '');
+    const statusWord = s.ruleCompliance === false ? 'stepped outside your rules' : 'stayed inside your written rules';
+    const pairSummary = [...new Set(lastSessions(sessions, 10).map(getSessionLabel).filter(Boolean))].slice(0, 3).join(', ');
+    sessionVerdict = `Verdict on "${title}" from your session log${pairSummary ? ` (${pairSummary})` : ''}: In your recent ${lbl} session, you ${statusWord}${notesSnip ? ` — you documented "${notesSnip}"` : ''}.${learnedSnip ? ` Your reflection takeaway was "${learnedSnip}".` : ''} ${comp && comp.checked ? `Overall, ${comp.kept} of your last ${comp.checked} logged sessions (${comp.value}%) held your standard.` : ''}`.trim();
+  } else if (recall.latestMem && recall.latestMem.sessionData) {
+    const memSnip = cleanText(recall.latestMem.sessionData).slice(0, 140);
+    sessionVerdict = `Verdict on "${title}" from your KAIZEN Memory: Your recorded memory notes "${memSnip}". Log your next session plan and reflection to keep your goal verdict anchored to fresh execution data.`;
+  } else if (sessions && sessions.length > 0) {
+    const latestS = sessions[sessions.length - 1];
+    const latestSnip = cleanText(latestS.notes || '').slice(0, 120);
+    sessionVerdict = `Verdict on "${title}": Across your last ${comp.checked || sessions.length} logged sessions (${comp.value != null ? comp.value + '% compliance' : 'building baseline'})${latestSnip ? `, most recently noting "${latestSnip}"` : ''}, your next step is holding your written checklist on the very next session.`;
+  } else {
+    sessionVerdict = `Verdict on "${title}": No completed sessions are linked to this goal yet. Once you record and reflect on a session on the Sessions page, KAIZEN recalls your exact notes and reflections here automatically.`;
   }
 
   // Accountability metadata (target, reason, current pattern, progress)
@@ -241,6 +332,7 @@ function buildPreSessionBrief({ goal, sessions, mindState, current, comp }) {
     blockers: obstacle,
     todaysFocus,
     nextAction: todaysFocus,
+    sessionVerdict,
     targetSummary,
     reasonSummary,
     currentPattern,
@@ -254,7 +346,7 @@ function buildPreSessionBrief({ goal, sessions, mindState, current, comp }) {
  * progressSummary) AND the classic assessment/nextStep fields so every
  * existing caller and test pin continues to pass.
  */
-function guide({ goal, user, system, sessions, movement, mindState, now = new Date() } = {}) {
+function guide({ goal, user, system, sessions, memories, movement, mindState, now = new Date() } = {}) {
   if (!goal) {
     return {
       assessment: 'No goal yet.',
@@ -262,7 +354,8 @@ function guide({ goal, user, system, sessions, movement, mindState, now = new Da
       yourGoal: 'No goal yet',
       doingWell: 'Start by setting one behavioural goal.',
       obstacle: 'No goal on record yet.',
-      todaysFocus: 'Set one clear process rule for today.\nProtect discipline.\nNot profits.'
+      todaysFocus: 'Set one clear process rule for today.\nProtect discipline.\nNot profits.',
+      sessionVerdict: 'Set a goal first to see KAIZEN recall your logged sessions against it.'
     };
   }
 
@@ -287,7 +380,7 @@ function guide({ goal, user, system, sessions, movement, mindState, now = new Da
         ? `You are meeting "${title}". Hold the standard: pre-set the daily loss limit before the next session and end the day when it hits — that habit is what funding desks actually evaluate. One rule at a time.`
         : `In the next session the job is not profit — it is finishing inside the daily loss limit and your entry rule, the two things this goal actually rides on. Write the plan first, log it either way. One rule at a time.`;
     }
-    const brief = buildPreSessionBrief({ goal, sessions, mindState, current: riskNow, comp: compNow });
+    const brief = buildPreSessionBrief({ goal, sessions, memories, mindState, current: riskNow, comp: compNow });
     return Object.assign({}, brief, { assessment: assessment + feedbackFoot(goal), nextStep });
   }
 
@@ -310,27 +403,31 @@ function guide({ goal, user, system, sessions, movement, mindState, now = new Da
     }
   }
 
-  const brief = buildPreSessionBrief({ goal, sessions, mindState, current, comp });
+  const brief = buildPreSessionBrief({ goal, sessions, memories, mindState, current, comp });
   return Object.assign({}, brief, { assessment: assessment + feedbackFoot(goal), nextStep });
 }
 
 /** System prompt for the LLM path of goal guidance (structure pins). */
-function buildGuidePrompt({ goal, user, system, sessions, movement, mindState }) {
+function buildGuidePrompt({ goal, user, system, sessions, memories, movement, mindState }) {
   return `You are KAIZEN, the accountability coach meeting the trader before today's session. English only.
 
 VOICE: second person, their numbers and their words, warm and honest. Goals are behaviour targets — never profit targets. No market predictions, no trading insights, no signals, no market opinions — for prop-firm goals KAIZEN coaches ONLY the discipline and accountability the evaluation measures (daily loss limit, max drawdown, consistency, the trader's own written rules). One rule at a time: the next step must be doable in the very next session. No asterisks, no markdown.
 
 GOAL: ${goal.title} (metric: ${goal.metric}, target: ${goal.target}${goal.unit || ''}, cadence: ${goal.cadence}, status: ${goal.status})
 THEIR WHY, AS THEY WROTE IT: ${goal.rationale || 'not written'}
-RECENT SESSIONS:
-${lastSessions(sessions, 10).map(s => `- [${s.sessionType || 'LIVE'}] rules:${s.ruleCompliance === false ? 'BROKEN' : 'kept'} :: ${(s.notes || '').slice(0, 100)}`).join('\n') || 'None yet.'}
+RECENT SESSIONS (recall their exact pair, setup, notes, and reflections):
+${lastSessions(sessions, 10).map(s => {
+  const lbl = getSessionLabel(s) || s.asset || 'Session';
+  const refl = s && s.reflection ? [s.reflection.learned, s.reflection.wouldChange].filter(Boolean).join(' | ') : '';
+  return `- [${s.sessionType || 'LIVE'} · ${lbl}] rules:${s.ruleCompliance === false ? 'BROKEN' : 'kept'} :: ${(s.notes || '').slice(0, 260)}${refl ? ` (Reflection: ${refl.slice(0, 180)})` : ''}`;
+}).join('\n') || 'None yet.'}
 DAILY FEEDBACK (their own words, newest first):
 ${feedbackLines(goal).join('\n') || 'None yet.'}
 
 Write this exact shape — answer THIS goal in the trader's own words, like a coach meeting them before today's session:
 
-DOING WELL: two short lines on what they are doing well from their record (e.g. "You followed your trading rules in X of your last Y sessions. Keep protecting that habit.").
-OBSTACLE: two short lines naming their biggest obstacle or blocker from their journal or feedback.
+DOING WELL: two short lines on what they are doing well from their record, quoting their specific compliant session pair/notes.
+OBSTACLE: two short lines naming their biggest obstacle or blocker from their journal or feedback, referencing their specific session notes/reflections.
 TODAY'S FOCUS: one concrete behavioural instruction for today's session, ending with "Protect discipline. Not profits."
 ASSESSMENT: one short paragraph tracking the goal against the record. Quote the goal's title and their why; cite one real number from their record; gauge the process from their daily feedback — if they named an obstacle, acknowledge it in their words.
 NEXT: one concrete next step for the very next session.`;

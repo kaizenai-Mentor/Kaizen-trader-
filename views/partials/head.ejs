@@ -10,32 +10,15 @@
 <link rel="icon" href="/images/kaizen-icon-512.png" sizes="512x512" type="image/png">
 <link rel="apple-touch-icon" href="/images/kaizen-icon-192.png">
 <script>
-  window._kaizenDeferredPrompt = null;
-  window._kaizenInstallRequested = false;
-  window.addEventListener('beforeinstallprompt', function (e) {
-    e.preventDefault();
-    window._kaizenDeferredPrompt = e;
-    var directBtn = document.getElementById('kDirectNativeInstallBtn');
-    if (directBtn) directBtn.style.display = 'block';
-    if (window._kaizenInstallRequested && typeof window.runNativePromptIfReady === 'function') {
-      window._kaizenInstallRequested = false;
-      window.runNativePromptIfReady();
-    }
-  });
-  window.addEventListener('appinstalled', function () {
-    window._kaizenDeferredPrompt = null;
-    var topBtn = document.getElementById('kTopInstallBtn');
-    if (topBtn) topBtn.style.display = 'none';
-    var m = document.getElementById('installAppModal');
-    if (m) { m.classList.remove('open'); m.classList.remove('active'); }
-  });
+  // Hide install prompts until the mobile app experience is ready.
+  window.addEventListener('beforeinstallprompt', function (e) { e.preventDefault(); });
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/sw.js', { scope: '/' }).catch(function () {});
   }
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="/css/style.css?v=6">
 <script src="/js/feather.min.js"></script>
 <script>
   // KAIZEN custom icon: "brain" for Psychology. Feather ships no brain glyph,

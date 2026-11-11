@@ -11,6 +11,7 @@ const { computeScore } = require('../services/scoreEngine');
 const { runV1Extraction } = require('../services/extraction');
 const aiCoach = require('../services/aiCoach');
 const checkBadges = require('../config/checkBadges');
+const { syncSessionFeedback } = require('../services/sessionGoalFeedback');
 
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -35,10 +36,67 @@ async function loadOwned(req, res) {
   return s;
 }
 
+// ── BROKER 1-TO-1 VERIFICATION HELPER ────────────────────────────
+// Enforces that one MT5/broker trade (tradeHash) can verify at most ONE session.
+// Also auto-heals any historical sessions that accidentally shared the same tradeHash.
+async function getClaimedTradeHashes(userId, excludeSessionId = null) {
+  const claimed = new Set();
+  try {
+    const verifiedDocs = await Journal.find({
+      userId,
+      'brokerVerification.status': 'VERIFIED',
+      'brokerVerification.tradeHash': { $exists: true, $ne: '' }
+    }).sort({ createdAt: 1 });
+
+    const seenHashes = new Set();
+    for (const doc of verifiedDocs) {
+      const h = String((doc.brokerVerification && doc.brokerVerification.tradeHash) || '').trim();
+      if (!h) continue;
+      if (seenHashes.has(h)) {
+        // Duplicate tradeHash on a later session: release it so 1-to-1 integrity holds
+        doc.brokerVerification = {
+          status: 'UNVERIFIED',
+          tradeHash: '',
+          matchedInstrument: '',
+          matchedDirection: '',
+          entryPrice: '',
+          exitPrice: '',
+          openTime: null,
+          closeTime: null,
+          verifiedAt: null
+        };
+        await doc.save().catch(() => {});
+        continue;
+      }
+      seenHashes.add(h);
+      if (!excludeSessionId || String(doc._id) !== String(excludeSessionId)) {
+        claimed.add(h);
+      }
+    }
+  } catch (_) { /* non-fatal */ }
+  return claimed;
+}
+
+function inferOutcomeFromNotesText(notes = '') {
+  const s = String(notes || '');
+  if (!s) return null;
+  if (/\b(stopped\s+out|hit\s+(my\s+)?(stop|sl)|sl\s+hit|took\s+a\s+loss|closed\s+(in\s+|at\s+a\s+)?loss|lost\s+on|full\s+loss)\b/i.test(s)) {
+    return 'Loss';
+  }
+  if (/\b(hit\s+(my\s+)?(tp|take\s+profit|target)|tp\s+hit|target\s+hit|closed\s+in\s+profit|won\s+the\s+trade|clean\s+win|banked\s+profit)\b/i.test(s)) {
+    return 'Win';
+  }
+  if (/\b(break\s*even|stopped\s+at\s+be|closed\s+at\s+be)\b/i.test(s)) {
+    return 'Breakeven';
+  }
+  return null;
+}
+
 // ── LIST ─────────────────────────────────────────────────────────
 async function getSessions(req, res) {
   const userDoc = await User.findById(req.session.user.id);
   const system = await TradingSystem.ensureForUser(userDoc);
+  await getClaimedTradeHashes(req.session.user.id);
   const sessions = await Journal.find({ userId: req.session.user.id })
     .sort({ createdAt: -1 }).limit(60).lean();
   const openPlan = sessions.find(s => s.state === 'PLANNED');
@@ -153,13 +211,32 @@ async function postRecord(req, res) {
   session.direction = `${session.sessionType} Session`;
   if (req.body.outcome && ['Win', 'Loss', 'Breakeven', 'No Trade'].includes(req.body.outcome)) {
     session.outcome = req.body.outcome;
+  } else if (session.sessionType !== 'STUDY') {
+    const inferredOut = inferOutcomeFromNotesText(session.notes);
+    if (inferredOut) session.outcome = inferredOut;
   }
   if (req.body.rrAchieved) session.rrAchieved = req.body.rrAchieved;
   if (req.body.pipsGained) session.pipsGained = req.body.pipsGained;
-  if (req.file) {
-    // Owner-only screenshot: bytes stored on the session document itself.
+
+  // Support single or multiple chart image uploads (up to 8 screenshots per session)
+  const uploadedFiles = [];
+  if (req.files) {
+    if (Array.isArray(req.files)) {
+      uploadedFiles.push(...req.files);
+    } else {
+      if (Array.isArray(req.files.chartImage)) uploadedFiles.push(...req.files.chartImage);
+      if (Array.isArray(req.files.chartImages)) uploadedFiles.push(...req.files.chartImages);
+    }
+  }
+  if (req.file && !uploadedFiles.includes(req.file)) {
+    uploadedFiles.push(req.file);
+  }
+  const validUploads = uploadedFiles.filter(f => f && f.buffer && f.mimetype).slice(0, 8);
+  if (validUploads.length > 0) {
+    // Owner-only screenshots: bytes stored on the session document itself.
     session.hasChartImage = true;
-    session.chartImage = { data: req.file.buffer, contentType: req.file.mimetype };
+    session.chartImage = { data: validUploads[0].buffer, contentType: validUploads[0].mimetype };
+    session.chartImages = validUploads.map(f => ({ data: f.buffer, contentType: f.mimetype }));
   }
 
   const q = session.quickChecks || {};
@@ -194,6 +271,8 @@ async function postRecord(req, res) {
       q.respectedRisk = brokeRiskNotes ? 'NO' : 'YES';
     }
   }
+  // Preserve only the trader's submitted answers separately from inferred checks.
+  session.reportedChecks = Object.fromEntries(CHECK_FIELDS.map(f => [f, values[f].includes(req.body[f]) ? req.body[f] : 'NOT_MENTIONED']));
   session.quickChecks = q;
   const anyRuleBroken = q.followedPlan === 'NO' || q.withinEntryCriteria === 'NO' || q.respectedRisk === 'NO';
   session.ruleCompliance = interpAtRecord.isPlanRevision
@@ -211,11 +290,39 @@ async function postRecord(req, res) {
   }
 
   await session.save();
+  await syncSessionFeedback(req.session.user.id, session).catch(err => console.error('session goal sync:', err.message));
 
   // Compute live KAIZEN Score, persist ScoreSnapshot, and update streak + disciplineScore + badges
   try {
     const userDoc = await User.findById(req.session.user.id);
     const system = await TradingSystem.ensureForUser(userDoc);
+
+    // 1-to-1 Broker Verification at record time
+    if (session.sessionType === 'LIVE' && userDoc) {
+      const brokerVerify = require('../services/brokerVerify');
+      const claimedHashes = await getClaimedTradeHashes(req.session.user.id, session._id);
+      const bCheck = brokerVerify.matchSessionWithBrokerHistory(
+        session,
+        Array.isArray(userDoc.brokerTrades) ? userDoc.brokerTrades : [],
+        userDoc.brokerConnection || null,
+        claimedHashes
+      );
+      if (bCheck.verified && bCheck.matchedTrade) {
+        session.brokerVerification = {
+          status: 'VERIFIED',
+          tradeHash: bCheck.matchedTrade.tradeHash || '',
+          matchedInstrument: bCheck.matchedTrade.instrument || '',
+          matchedDirection: bCheck.matchedTrade.direction || '',
+          entryPrice: bCheck.matchedTrade.entryPrice || '',
+          exitPrice: bCheck.matchedTrade.exitPrice || '',
+          openTime: bCheck.matchedTrade.openTime || null,
+          closeTime: bCheck.matchedTrade.closeTime || null,
+          verifiedAt: new Date()
+        };
+        await session.save().catch(() => {});
+      }
+    }
+
     const all = await Journal.find({ userId: req.session.user.id, state: { $ne: 'PLANNED' } })
       .sort({ createdAt: -1 });
     let extracted = userDoc.v1Evidence || null;
@@ -283,6 +390,7 @@ async function postRecord(req, res) {
 
     await userDoc.save();
     await checkBadges(userDoc._id);
+
     const refreshedUser = await User.findById(req.session.user.id);
     req.session.user = {
       ...req.session.user,
@@ -340,6 +448,7 @@ async function postReflect(req, res) {
     : !anyBroken;
   session.state = 'REFLECTED';
   await session.save();
+  await syncSessionFeedback(req.session.user.id, session).catch(err => console.error('session goal sync:', err.message));
 
   // ── ANALYZE: two machines, one response ──
   const userDoc = await User.findById(req.session.user.id);
@@ -417,13 +526,53 @@ async function postReflect(req, res) {
   const applyExtracted = (text) => {
     const ex = aiCoach.parseExtracted(text);
     if (ex) {
-      if (['Win', 'Loss', 'Breakeven', 'No Trade'].includes(ex.outcome) && session.outcome === 'Pending') {
+      if (['Win', 'Loss', 'Breakeven', 'No Trade'].includes(ex.outcome) &&
+          (session.outcome === 'Pending' || (session.outcome === 'No Trade' && ex.outcome !== 'No Trade' && session.sessionType !== 'STUDY'))) {
         session.outcome = ex.outcome;
       }
       if (ex.rr && ex.rr !== 'N/A' && !session.rrAchieved) session.rrAchieved = ex.rr;
       if (ex.pips && ex.pips !== 'N/A' && !session.pipsGained) session.pipsGained = ex.pips;
     }
+    if (session.sessionType !== 'STUDY' && (!session.outcome || session.outcome === 'Pending' || session.outcome === 'No Trade')) {
+      const detOut = inferOutcomeFromNotesText(session.notes);
+      if (detOut) session.outcome = detOut;
+    }
     return aiCoach.stripExtracted(text);
+  };
+
+  const recomputeScoreAfterAnalysis = async () => {
+    try {
+      const updatedSessions = await Journal.find({ userId: req.session.user.id, state: { $ne: 'PLANNED' } })
+        .sort({ createdAt: -1 }).limit(25).lean();
+      const postScore = computeScore(updatedSessions, system, extracted);
+      const latestSnap = await ScoreSnapshot.findOne({ userId: req.session.user.id }).sort({ computedAt: -1 });
+      if (latestSnap && latestSnap.sessionsConsidered === postScore.sessionsConsidered) {
+        latestSnap.overall = postScore.overall;
+        latestSnap.overallState = postScore.overallState;
+        latestSnap.dimensions = postScore.dimensions;
+        latestSnap.evidenceMix = postScore.evidenceMix;
+        latestSnap.computedAt = new Date();
+        await latestSnap.save().catch(() => {});
+      } else {
+        await ScoreSnapshot.create({
+          userId: req.session.user.id,
+          formulaVersion: postScore.formulaVersion,
+          overall: postScore.overall,
+          overallState: postScore.overallState,
+          dimensions: postScore.dimensions,
+          evidenceMix: postScore.evidenceMix,
+          sessionsConsidered: postScore.sessionsConsidered
+        }).catch(() => {});
+      }
+      if (postScore.overall !== null && postScore.overall !== undefined) {
+        userDoc.disciplineScore = postScore.overall;
+        session.sessionScore = postScore.overall;
+        await userDoc.save().catch(() => {});
+        if (req.session && req.session.user) {
+          req.session.user.disciplineScore = postScore.overall;
+        }
+      }
+    } catch (_) { /* non-fatal */ }
   };
 
   // Streaming path (SSE): the analysis arrives as it is written; the
@@ -460,6 +609,7 @@ async function postReflect(req, res) {
     session.aiAnalysis = visible;
     session.state = 'ANALYZED';
     await session.save();
+    await recomputeScoreAfterAnalysis();
     send({ type: 'done', sessionId: String(session._id) });
     return res.end();
   }
@@ -475,6 +625,7 @@ async function postReflect(req, res) {
   session.aiAnalysis = coaching;
   session.state = 'ANALYZED';
   await session.save();
+  await recomputeScoreAfterAnalysis();
 
   // Streaming path: the Reflect page fetches this and reveals the
   // analysis in place (Psychology-style); no-JS falls back to redirect.
@@ -520,15 +671,16 @@ async function getDetail(req, res) {
     await session.save().catch(() => {});
   }
 
-  const [latest, recentSessions, userDoc] = await Promise.all([
+  const [latest, recentSessions, userDoc, claimedHashes] = await Promise.all([
     ScoreSnapshot.findOne({ userId: req.session.user.id }).sort({ computedAt: -1 }).lean(),
     Journal.find({ userId: req.session.user.id, _id: { $ne: session._id } }).sort({ createdAt: -1 }).limit(10).lean(),
-    User.findById(req.session.user.id).lean()
+    User.findById(req.session.user.id).lean(),
+    getClaimedTradeHashes(req.session.user.id, session._id)
   ]);
   const brokerVerify = require('../services/brokerVerify');
   const brokerTrades = (userDoc && Array.isArray(userDoc.brokerTrades)) ? userDoc.brokerTrades : [];
   const brokerConn = (userDoc && userDoc.brokerConnection) ? userDoc.brokerConnection : null;
-  const brokerCheck = brokerVerify.matchSessionWithBrokerHistory(session, brokerTrades, brokerConn);
+  const brokerCheck = brokerVerify.matchSessionWithBrokerHistory(session, brokerTrades, brokerConn, claimedHashes);
   if (brokerCheck.verified && (!session.brokerVerification || session.brokerVerification.status !== 'VERIFIED')) {
     session.brokerVerification = {
       status: 'VERIFIED',
@@ -543,9 +695,12 @@ async function getDetail(req, res) {
     };
     await session.save().catch(() => {});
   }
+  const chartImageCount = (Array.isArray(session.chartImages) && session.chartImages.length > 0)
+    ? session.chartImages.filter(img => img && img.data).length
+    : (session.hasChartImage ? 1 : 0);
   const review = aiCoach.parseSessionReview(session.aiAnalysis, session, { recentSessions });
   res.render('session-detail', {
-    user: req.session.user, session, score: latest, review, brokerCheck,
+    user: req.session.user, session, score: latest, review, brokerCheck, chartImageCount,
     dimensionLabels: DIMENSION_LABELS, title: 'Session'
   });
 }
@@ -614,11 +769,16 @@ async function postImportBroker(req, res) {
   userDoc.brokerTrades = existing.slice(-500);
   await userDoc.save();
 
-  // Retroactively match and verify any existing LIVE sessions for this trader
+  // Retroactively match and verify any existing LIVE sessions for this trader (strictly 1-to-1 per tradeHash)
   let verifiedSessions = 0;
-  const liveSessions = await Journal.find({ userId: userDoc._id, sessionType: 'LIVE' });
+  const claimedHashes = await getClaimedTradeHashes(userDoc._id);
+  const liveSessions = await Journal.find({ userId: userDoc._id, sessionType: 'LIVE' }).sort({ createdAt: 1 });
   for (const s of liveSessions) {
-    const m = brokerVerify.matchSessionWithBrokerHistory(s, userDoc.brokerTrades, userDoc.brokerConnection);
+    if (s.brokerVerification && s.brokerVerification.status === 'VERIFIED' && s.brokerVerification.tradeHash) {
+      claimedHashes.add(s.brokerVerification.tradeHash);
+      continue;
+    }
+    const m = brokerVerify.matchSessionWithBrokerHistory(s, userDoc.brokerTrades, userDoc.brokerConnection, claimedHashes);
     if (m.verified && (!s.brokerVerification || s.brokerVerification.status !== 'VERIFIED')) {
       s.brokerVerification = {
         status: 'VERIFIED',
@@ -631,6 +791,7 @@ async function postImportBroker(req, res) {
         closeTime: m.matchedTrade.closeTime,
         verifiedAt: new Date()
       };
+      if (m.matchedTrade.tradeHash) claimedHashes.add(m.matchedTrade.tradeHash);
       verifiedSessions++;
       await s.save().catch(() => {});
     }
@@ -641,10 +802,22 @@ async function postImportBroker(req, res) {
 
 // ── CHART SCREENSHOT ("THE CHART — AS RECORDED") ─────────────────
 // Owner-only: loadOwned enforces session ownership; bytes never touch
-// the public static dir.
+// the public static dir. Supports single or indexed multi-image access.
 async function getChartImage(req, res) {
   const session = await loadOwned(req, res);
-  if (!session || !session.chartImage || !session.chartImage.data) {
+  if (!session) {
+    return res.status(404).send('No chart recorded');
+  }
+  const idx = req.params.index !== undefined ? parseInt(req.params.index, 10) : 0;
+  if (Array.isArray(session.chartImages) && session.chartImages.length > 0 && Number.isInteger(idx) && idx >= 0 && idx < session.chartImages.length) {
+    const imgItem = session.chartImages[idx];
+    if (imgItem && imgItem.data) {
+      res.set('Content-Type', imgItem.contentType || 'image/png');
+      res.set('Cache-Control', 'private, max-age=86400');
+      return res.send(imgItem.data);
+    }
+  }
+  if (!session.chartImage || !session.chartImage.data) {
     return res.status(404).send('No chart recorded');
   }
   res.set('Content-Type', session.chartImage.contentType || 'image/png');

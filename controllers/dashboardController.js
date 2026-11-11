@@ -38,10 +38,18 @@ const getDashboard = async (req, res) => {
     let score = await ScoreSnapshot.findOne({ userId: user._id })
       .sort({ computedAt: -1 }).lean();
 
+    const oldProcReason = score && score.dimensions && score.dimensions.process && Array.isArray(score.dimensions.process.reasons)
+      ? score.dimensions.process.reasons[0]
+      : '';
+    const newProcReason = computed && computed.dimensions && computed.dimensions.process && Array.isArray(computed.dimensions.process.reasons)
+      ? computed.dimensions.process.reasons[0]
+      : '';
+
     const needsSnapshotUpdate = !score ||
       score.overall !== computed.overall ||
       score.sessionsConsidered !== computed.sessionsConsidered ||
-      score.overallState !== computed.overallState;
+      score.overallState !== computed.overallState ||
+      oldProcReason !== newProcReason;
 
     if (needsSnapshotUpdate) {
       const createdSnap = await ScoreSnapshot.create({
@@ -136,16 +144,21 @@ const getDashboard = async (req, res) => {
     let predictiveWarning = null;
     if (recentSessions.length >= 5) {
       const recentFive = recentSessions.slice(0, 5);
-      const violations = recentFive.filter(j => !j.ruleCompliance).length;
+      const brokenFive = recentFive.filter(j => !j.ruleCompliance);
+      const violations = brokenFive.length;
+      const pairList = [...new Set(recentFive.map(j => j.asset).filter(a => a && a !== 'General' && a !== 'Market Study'))].slice(0, 3).join(', ');
 
       if (violations >= 3) {
+        const brokenPairs = [...new Set(brokenFive.map(j => j.asset).filter(a => a && a !== 'General'))].slice(0, 2).join(' and ');
+        const latestBreak = brokenFive[0];
+        const breakSetup = latestBreak && latestBreak.plan && latestBreak.plan.setup ? ` (${latestBreak.plan.setup})` : '';
         predictiveWarning = {
-          message: `You have broken your rules in ${violations} of your last 5 sessions. Review your entry criteria before opening any chart today.`,
+          message: `Rule discipline slipped on ${brokenPairs || 'your recent sessions'}${breakSetup} across ${violations} of your last 5 sessions. Re-anchor to your written entry checklist before opening your next chart today.`,
           level: 'high'
         };
       } else if (violations === 0) {
         predictiveWarning = {
-          message: 'Five consecutive sessions inside your rules. Your discipline is building — protect this streak today.',
+          message: `Five consecutive sessions inside your written system${pairList ? ` (${pairList})` : ''}. Your execution discipline is compounding — protect this standard today.`,
           level: 'positive'
         };
       }

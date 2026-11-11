@@ -112,7 +112,7 @@
 
       <% if (move || overallScoreVal !== null) { %>
         <div class="k-scorerow" style="margin-bottom:16px;">
-          <span class="k-scorenum"><%= move ? move.overall.now : overallScoreVal %></span>
+          <span class="k-scorenum"><%= move ? move.overall.now : overallScoreVal %>%</span>
           <div class="k-scoremeta">
             <% if (move) { %>
               <% if (move.overall.same) { %>
@@ -143,9 +143,18 @@
       <!-- TAB VIEW 1: OVERALL PROGRESS TRAJECTORY CHART -->
       <div class="k-chart-pane" id="chartPaneTrajectory">
         <div style="background:#0A0A0A;border:1px solid #232B33;border-radius:14px;padding:18px 20px 14px;color:#F4F8FB;">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;font-family:var(--font-mono);font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;color:#A3B1BF;">
-            <span>KAIZEN SCORE CURVE (0 TO 100 SCALE)</span>
-            <span style="color:#F5C518;">CURRENT KAIZEN SCORE: <strong><%= overallScoreVal != null ? overallScoreVal : 'BUILDING' %></strong></span>
+          <!-- Crypto / Forex Style Header + Timeframe Switcher (1D · 1W · 1M · 1Y) -->
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:10px;">
+            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+              <span style="font-family:var(--font-mono);font-size:0.62rem;letter-spacing:0.12em;text-transform:uppercase;color:#F5C518;font-weight:700;">KAIZEN / USDL-INDEX</span>
+              <span id="kChartTfBadge" style="font-family:var(--font-mono);font-size:0.56rem;letter-spacing:0.1em;text-transform:uppercase;color:#A3B1BF;background:#141C24;border:1px solid #232B33;padding:2px 8px;border-radius:4px;">DAILY (1D)</span>
+            </div>
+            <div class="k-tf-switcher" role="group" aria-label="Chart Timeframe" style="display:inline-flex;gap:4px;background:#141C24;padding:3px;border-radius:8px;border:1px solid #232B33;">
+              <button type="button" class="k-tf-btn is-active" data-tf="daily" data-tf-label="DAILY (1D)" style="border:0;background:#F5C518;color:#0A0A0A;font-family:var(--font-mono);font-size:0.62rem;font-weight:700;padding:4px 10px;border-radius:6px;cursor:pointer;transition:all 0.15s;">1D · Daily</button>
+              <button type="button" class="k-tf-btn" data-tf="weekly" data-tf-label="WEEKLY (1W)" style="border:0;background:transparent;color:#A3B1BF;font-family:var(--font-mono);font-size:0.62rem;font-weight:700;padding:4px 10px;border-radius:6px;cursor:pointer;transition:all 0.15s;">1W · Weekly</button>
+              <button type="button" class="k-tf-btn" data-tf="monthly" data-tf-label="MONTHLY (1M)" style="border:0;background:transparent;color:#A3B1BF;font-family:var(--font-mono);font-size:0.62rem;font-weight:700;padding:4px 10px;border-radius:6px;cursor:pointer;transition:all 0.15s;">1M · Monthly</button>
+              <button type="button" class="k-tf-btn" data-tf="yearly" data-tf-label="YEARLY (1Y)" style="border:0;background:transparent;color:#A3B1BF;font-family:var(--font-mono);font-size:0.62rem;font-weight:700;padding:4px 10px;border-radius:6px;cursor:pointer;transition:all 0.15s;">1Y · Yearly</button>
+            </div>
           </div>
 
           <%
@@ -172,6 +181,9 @@
             var vals = series.map(function(p){ return Number(p.v) || 50; });
             var rawMin = Math.min.apply(null, vals);
             var rawMax = Math.max.apply(null, vals);
+            var openVal = vals[0];
+            var closeVal = vals[vals.length - 1];
+            var netChg = closeVal - openVal;
             var yMin = Math.max(0, Math.floor(rawMin - 4));
             var yMax = Math.min(100, Math.ceil(rawMax + 4));
             if (yMax - yMin < 8) {
@@ -189,8 +201,22 @@
             var firstNode = polyCoords[0];
             var lastNode = polyCoords[polyCoords.length - 1];
             var areaStr = firstNode.x + ',' + (padTop + plotH) + ' ' + polyStr + ' ' + lastNode.x + ',' + (padTop + plotH);
+            var tfMap = (typeof timeframeSeries !== 'undefined' && timeframeSeries) ? timeframeSeries : { daily: series, weekly: series, monthly: series, yearly: series };
           %>
-          <svg class="k-spark" viewBox="0 0 600 190" preserveAspectRatio="none" style="height:190px;width:100%;display:block;" role="img" aria-label="<%= t('prog.timelineAria') %>">
+
+          <!-- Market-Style OHLC Telemetry Strip -->
+          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:10px;padding:6px 10px;background:#11161D;border:1px solid #1E2630;border-radius:8px;font-family:var(--font-mono);font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;color:#A3B1BF;">
+            <div style="display:flex;gap:12px;flex-wrap:wrap;">
+              <span>O: <strong id="kOhlcOpen" style="color:#F4F8FB;"><%= openVal %>%</strong></span>
+              <span>H: <strong id="kOhlcHigh" style="color:#4EC9B0;"><%= rawMax %>%</strong></span>
+              <span>L: <strong id="kOhlcLow" style="color:#E06C75;"><%= rawMin %>%</strong></span>
+              <span>C: <strong id="kOhlcClose" style="color:#F5C518;"><%= closeVal %>%</strong></span>
+              <span>CHG: <strong id="kOhlcChg" style="color:<%= netChg >= 0 ? '#4EC9B0' : '#E06C75' %>;"><%= (netChg >= 0 ? '+' : '') + netChg %>%</strong></span>
+            </div>
+            <span style="color:#F5C518;">CURRENT KAIZEN SCORE: <strong><%= overallScoreVal != null ? overallScoreVal + '%' : 'BUILDING' %></strong></span>
+          </div>
+
+          <svg id="kaizenMainSvgChart" class="k-spark" viewBox="0 0 600 190" preserveAspectRatio="none" style="height:190px;width:100%;display:block;" role="img" aria-label="<%= t('prog.timelineAria') %>">
             <defs>
               <linearGradient id="kaizenChartFill" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stop-color="#F5C518" stop-opacity="0.38" />
@@ -198,30 +224,33 @@
               </linearGradient>
             </defs>
             <!-- Auto-scaled Y-axis labels & gridlines -->
-            <text x="4" y="<%= padTop + 4 %>" fill="#A3B1BF" font-family="DM Mono, monospace" font-size="10"><%= yMax %>%</text>
+            <text id="kSvgYMax" x="4" y="<%= padTop + 4 %>" fill="#A3B1BF" font-family="DM Mono, monospace" font-size="10"><%= yMax %>%</text>
             <line x1="<%= padLeft %>" y1="<%= padTop %>" x2="<%= cW - padRight %>" y2="<%= padTop %>" stroke="rgba(244,248,251,0.10)" stroke-dasharray="3 3" />
 
-            <text x="4" y="<%= padTop + (plotH / 2) + 4 %>" fill="#A3B1BF" font-family="DM Mono, monospace" font-size="10"><%= yMid %>%</text>
+            <text id="kSvgYMid" x="4" y="<%= padTop + (plotH / 2) + 4 %>" fill="#A3B1BF" font-family="DM Mono, monospace" font-size="10"><%= yMid %>%</text>
             <line x1="<%= padLeft %>" y1="<%= padTop + (plotH / 2) %>" x2="<%= cW - padRight %>" y2="<%= padTop + (plotH / 2) %>" stroke="rgba(244,248,251,0.14)" stroke-dasharray="3 3" />
 
-            <text x="4" y="<%= padTop + plotH + 4 %>" fill="#A3B1BF" font-family="DM Mono, monospace" font-size="10"><%= yMin %>%</text>
+            <text id="kSvgYMin" x="4" y="<%= padTop + plotH + 4 %>" fill="#A3B1BF" font-family="DM Mono, monospace" font-size="10"><%= yMin %>%</text>
             <line x1="<%= padLeft %>" y1="<%= padTop + plotH %>" x2="<%= cW - padRight %>" y2="<%= padTop + plotH %>" stroke="rgba(244,248,251,0.22)" />
 
-            <polygon points="<%= areaStr %>" fill="url(#kaizenChartFill)" />
-            <polyline fill="none" stroke="#F5C518" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" points="<%= polyStr %>"></polyline>
-            <% polyCoords.forEach(function(pt, idx) { %>
-              <circle cx="<%= pt.x %>" cy="<%= pt.y %>" r="<%= idx === polyCoords.length - 1 ? 5.5 : 4 %>" fill="<%= idx === polyCoords.length - 1 ? '#F5C518' : '#0A0A0A' %>" stroke="#F5C518" stroke-width="2.2"></circle>
-              <% if (polyCoords.length <= 10 || idx === 0 || idx === polyCoords.length - 1 || idx % 2 === 0) { %>
-                <text x="<%= pt.x %>" y="<%= Math.max(12, pt.y - 8) %>" text-anchor="middle" fill="<%= idx === polyCoords.length - 1 ? '#F5C518' : '#F4F8FB' %>" font-family="DM Mono, monospace" font-size="9.5" font-weight="700"><%= pt.v %>%</text>
-              <% } %>
-            <% }); %>
+            <polygon id="kSvgArea" points="<%= areaStr %>" fill="url(#kaizenChartFill)" />
+            <polyline id="kSvgLine" fill="none" stroke="#F5C518" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" points="<%= polyStr %>"></polyline>
+            <g id="kSvgNodes">
+              <% polyCoords.forEach(function(pt, idx) { %>
+                <circle cx="<%= pt.x %>" cy="<%= pt.y %>" r="<%= idx === polyCoords.length - 1 ? 5.5 : 4 %>" fill="<%= idx === polyCoords.length - 1 ? '#F5C518' : '#0A0A0A' %>" stroke="#F5C518" stroke-width="2.2"></circle>
+                <% if (polyCoords.length <= 10 || idx === 0 || idx === polyCoords.length - 1 || idx % 2 === 0) { %>
+                  <text x="<%= pt.x %>" y="<%= Math.max(12, pt.y - 8) %>" text-anchor="middle" fill="<%= idx === polyCoords.length - 1 ? '#F5C518' : '#F4F8FB' %>" font-family="DM Mono, monospace" font-size="9.5" font-weight="700"><%= pt.v %>%</text>
+                <% } %>
+              <% }); %>
+            </g>
           </svg>
 
           <div class="k-spark-meta" style="margin-top:10px;color:#A3B1BF;">
-            <span><%= series[0] && series[0].t ? new Date(series[0].t).toLocaleDateString('en-US',{month:'short',day:'numeric'}) : 'Start' %></span>
-            <span>5 Dimension Weighted Composite → KAIZEN Score</span>
-            <span><%= lastNode && lastNode.t ? new Date(lastNode.t).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : 'Today' %></span>
+            <span id="kSvgXStart"><%= series[0] && series[0].label ? series[0].label : (series[0] && series[0].t ? new Date(series[0].t).toLocaleDateString('en-US',{month:'short',day:'numeric'}) : 'Start') %></span>
+            <span id="kSvgXMidCaption">5 Dimension Weighted Composite → KAIZEN Score</span>
+            <span id="kSvgXEnd"><%= lastNode && lastNode.t ? new Date(lastNode.t).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : 'Today' %></span>
           </div>
+          <script id="kaizenTimeframeData" type="application/json"><%- JSON.stringify(tfMap) %></script>
         </div>
         <% if (points.length < 2) { %>
           <div class="k-fieldhint" style="margin-top:8px;"><%= t('prog.oneReading') %></div>
@@ -241,7 +270,7 @@
               <% var d = dimData[k]; var pct = d.now != null ? d.now : 18; %>
               <div style="display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;">
                 <div style="font-family:var(--font-mono);font-size:0.72rem;font-weight:700;color:<%= d.now != null ? '#F5C518' : '#A3B1BF' %>;margin-bottom:6px;">
-                  <%= d.now != null ? d.now : 'Build' %>
+                  <%= d.now != null ? d.now + '%' : 'Build' %>
                 </div>
                 <div style="width:100%;max-width:48px;height:<%= Math.max(12, Math.round((pct / 100) * 105)) %>px;background:<%= d.now != null ? 'linear-gradient(180deg, #F5C518 0%, #1A2F4A 100%)' : 'rgba(244,248,251,0.12)' %>;border-radius:8px 8px 0 0;transition:height 0.4s ease;"></div>
               </div>
@@ -266,7 +295,7 @@
           <div style="background:#FFFFFF;border:1px solid #DCE6EE;border-radius:10px;padding:10px 12px;">
             <div style="font-family:var(--font-mono);font-size:0.54rem;letter-spacing:0.1em;text-transform:uppercase;color:#41566B;"><%= dimensionLabels[k] %> (<%= d.weight %>%)</div>
             <div style="display:flex;align-items:baseline;justify-content:space-between;margin-top:4px;">
-              <strong style="font-family:var(--font-heading);font-size:1rem;color:#0A0A0A;"><%= d.now != null ? d.now : 'Building' %></strong>
+              <strong style="font-family:var(--font-heading);font-size:1rem;color:#0A0A0A;"><%= d.now != null ? d.now + '%' : 'Building' %></strong>
               <span style="font-family:var(--font-mono);font-size:0.6rem;color:#1A2F4A;font-weight:600;"><%= d.contribution != null ? '+' + d.contribution + ' pts' : 'pending' %></span>
             </div>
           </div>
@@ -362,6 +391,120 @@
           paneDims.style.display = mode === 'dimensions' ? '' : 'none';
         });
       });
+
+      // Multi-Timeframe Switcher (1D Daily · 1W Weekly · 1M Monthly · 1Y Yearly)
+      var tfBtns = document.querySelectorAll('.k-tf-btn[data-tf]');
+      var tfDataEl = document.getElementById('kaizenTimeframeData');
+      if (tfBtns.length && tfDataEl) {
+        var tfMap = {};
+        try { tfMap = JSON.parse(tfDataEl.textContent || '{}'); } catch (e) {}
+        var cW = 600, cH = 190, padLeft = 38, padRight = 18, padTop = 24, padBot = 22;
+        var plotW = cW - padLeft - padRight, plotH = cH - padTop - padBot;
+
+        function renderTimeframe(tfKey, tfLabel) {
+          var arr = (tfMap && Array.isArray(tfMap[tfKey]) && tfMap[tfKey].length >= 2) ? tfMap[tfKey] : null;
+          if (!arr) return;
+          var vals = arr.map(function (p) { return Number(p.v) || 50; });
+          var rawMin = Math.min.apply(null, vals);
+          var rawMax = Math.max.apply(null, vals);
+          var openVal = vals[0];
+          var closeVal = vals[vals.length - 1];
+          var netChg = closeVal - openVal;
+          var yMin = Math.max(0, Math.floor(rawMin - 4));
+          var yMax = Math.min(100, Math.ceil(rawMax + 4));
+          if (yMax - yMin < 8) {
+            yMin = Math.max(0, yMin - 4);
+            yMax = Math.min(100, yMax + 4);
+          }
+          var yMid = Math.round((yMin + yMax) / 2);
+
+          var polyCoords = arr.map(function (p, idx) {
+            var x = padLeft + (idx / Math.max(1, arr.length - 1)) * plotW;
+            var ratio = (Math.max(yMin, Math.min(yMax, p.v)) - yMin) / Math.max(1, yMax - yMin);
+            var y = padTop + plotH - ratio * plotH;
+            return { x: Number(x.toFixed(1)), y: Number(y.toFixed(1)), v: p.v, label: p.label, t: p.t };
+          });
+          var polyStr = polyCoords.map(function (pt) { return pt.x + ',' + pt.y; }).join(' ');
+          var firstNode = polyCoords[0];
+          var lastNode = polyCoords[polyCoords.length - 1];
+          var areaStr = firstNode.x + ',' + (padTop + plotH) + ' ' + polyStr + ' ' + lastNode.x + ',' + (padTop + plotH);
+
+          var elYMax = document.getElementById('kSvgYMax');
+          var elYMid = document.getElementById('kSvgYMid');
+          var elYMin = document.getElementById('kSvgYMin');
+          var elArea = document.getElementById('kSvgArea');
+          var elLine = document.getElementById('kSvgLine');
+          var elNodes = document.getElementById('kSvgNodes');
+          var elBadge = document.getElementById('kChartTfBadge');
+          var elOpen = document.getElementById('kOhlcOpen');
+          var elHigh = document.getElementById('kOhlcHigh');
+          var elLow = document.getElementById('kOhlcLow');
+          var elClose = document.getElementById('kOhlcClose');
+          var elChg = document.getElementById('kOhlcChg');
+          var elStart = document.getElementById('kSvgXStart');
+          var elEnd = document.getElementById('kSvgXEnd');
+
+          if (elYMax) elYMax.textContent = yMax + '%';
+          if (elYMid) elYMid.textContent = yMid + '%';
+          if (elYMin) elYMin.textContent = yMin + '%';
+          if (elArea) elArea.setAttribute('points', areaStr);
+          if (elLine) elLine.setAttribute('points', polyStr);
+          if (elBadge && tfLabel) elBadge.textContent = tfLabel;
+          if (elOpen) elOpen.textContent = openVal + '%';
+          if (elHigh) elHigh.textContent = rawMax + '%';
+          if (elLow) elLow.textContent = rawMin + '%';
+          if (elClose) elClose.textContent = closeVal + '%';
+          if (elChg) {
+            elChg.textContent = (netChg >= 0 ? '+' : '') + netChg + '%';
+            elChg.style.color = netChg >= 0 ? '#4EC9B0' : '#E06C75';
+          }
+          if (elStart) elStart.textContent = firstNode.label || 'Start';
+          if (elEnd) elEnd.textContent = lastNode.label || 'Today';
+
+          if (elNodes) {
+            var svgNs = 'http://www.w3.org/2000/svg';
+            elNodes.innerHTML = '';
+            polyCoords.forEach(function (pt, idx) {
+              var isLast = idx === polyCoords.length - 1;
+              var c = document.createElementNS(svgNs, 'circle');
+              c.setAttribute('cx', String(pt.x));
+              c.setAttribute('cy', String(pt.y));
+              c.setAttribute('r', isLast ? '5.5' : '4');
+              c.setAttribute('fill', isLast ? '#F5C518' : '#0A0A0A');
+              c.setAttribute('stroke', '#F5C518');
+              c.setAttribute('stroke-width', '2.2');
+              elNodes.appendChild(c);
+
+              if (polyCoords.length <= 10 || idx === 0 || isLast || idx % 2 === 0) {
+                var tx = document.createElementNS(svgNs, 'text');
+                tx.setAttribute('x', String(pt.x));
+                tx.setAttribute('y', String(Math.max(12, pt.y - 8)));
+                tx.setAttribute('text-anchor', 'middle');
+                tx.setAttribute('fill', isLast ? '#F5C518' : '#F4F8FB');
+                tx.setAttribute('font-family', 'DM Mono, monospace');
+                tx.setAttribute('font-size', '9.5');
+                tx.setAttribute('font-weight', '700');
+                tx.textContent = pt.v + '%';
+                elNodes.appendChild(tx);
+              }
+            });
+          }
+        }
+
+        tfBtns.forEach(function (btn) {
+          btn.addEventListener('click', function () {
+            var tf = btn.getAttribute('data-tf');
+            var lbl = btn.getAttribute('data-tf-label');
+            tfBtns.forEach(function (b) {
+              var active = b === btn;
+              b.classList.toggle('is-active', active);
+              b.style.background = active ? '#F5C518' : 'transparent';
+              b.style.color = active ? '#0A0A0A' : '#A3B1BF';
+            });
+            renderTimeframe(tf, lbl);
+          });
+        });
+      }
     })();
   </script>
 </body>

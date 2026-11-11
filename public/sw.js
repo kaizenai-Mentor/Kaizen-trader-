@@ -2,11 +2,16 @@
  * KAIZEN Mobile App Service Worker (PWA + Capacitor Shell Cache)
  * Network-first for dynamic pages/API, cache-fallback for core static assets.
  */
-const CACHE_NAME = 'kaizen-mobile-v2';
+const CACHE_NAME = 'kaizen-mobile-v6';
 const STATIC_ASSETS = [
-  '/css/style.css',
+  '/',
+  '/dashboard',
+  '/css/style.css?v=6',
   '/js/feather.min.js',
   '/js/app.js',
+  '/js/voice-input.js?v=2',
+  '/js/session-image-picker.js?v=1',
+  '/js/chat-image-attachment.js?v=1',
   '/images/kaizen-icon.png',
   '/images/kaizen-icon-192.png',
   '/images/kaizen-icon-512.png',
@@ -15,7 +20,13 @@ const STATIC_ASSETS = [
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(STATIC_ASSETS)).catch(() => {})
+    caches.open(CACHE_NAME).then(async (cache) => {
+      for (const asset of STATIC_ASSETS) {
+        try {
+          await cache.add(asset);
+        } catch (_) {}
+      }
+    }).catch(() => {})
   );
   self.skipWaiting();
 });
@@ -52,8 +63,16 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Dynamic routes: network first, fallback to cache if offline
+  // Dynamic routes: network first, cache latest response for offline PWA checks
   event.respondWith(
-    fetch(req).catch(() => caches.match(req))
+    fetch(req)
+      .then((res) => {
+        if (res && res.status === 200 && req.mode === 'navigate') {
+          const copy = res.clone();
+          caches.open(CACHE_NAME).then((c) => c.put(req, copy)).catch(() => {});
+        }
+        return res;
+      })
+      .catch(() => caches.match(req).then((m) => m || caches.match('/dashboard') || caches.match('/')))
   );
 });

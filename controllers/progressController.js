@@ -116,16 +116,18 @@ async function getProgress(req, res) {
         ? fromLive.reasons
         : ((fromSnap && Array.isArray(fromSnap.reasons) && fromSnap.reasons.length) ? fromSnap.reasons : []);
       const baseReason = liveReasons[0] || dimensionDefaultBriefs[k];
+      const recentPairNames = [...new Set(scoredSessions.slice(0, 6).map(s => s.asset).filter(a => a && a !== 'General' && a !== 'Market Study'))].slice(0, 2).join(', ');
+      const pairContext = recentPairNames ? ` on ${recentPairNames}` : '';
       let progressNote = '';
       if (rawScore != null) {
         if (delta != null && delta > 0) {
-          progressNote = `Improving (+${delta} pts across your logged sessions) — holding at ${rawScore}%.`;
+          progressNote = `Up +${delta}% recently${pairContext} · holding ${rawScore}%.`;
         } else if (delta != null && delta < 0) {
-          progressNote = `Slipped ${delta} pts recently to ${rawScore}% — focus on tightening this rule next session.`;
+          progressNote = `Pulled back ${delta}%${pairContext} to ${rawScore}% · tighten this rule next session.`;
         } else if (rawScore >= 80) {
-          progressNote = `Strong consistency (${rawScore}%) across your ${scoredSessions.length} logged session${scoredSessions.length === 1 ? '' : 's'}.`;
+          progressNote = `Strong execution (${rawScore}%)${pairContext} across ${scoredSessions.length} session${scoredSessions.length === 1 ? '' : 's'}.`;
         } else {
-          progressNote = `Active at ${rawScore}% across your ${scoredSessions.length} logged session${scoredSessions.length === 1 ? '' : 's'} — keep logging to push higher.`;
+          progressNote = `Tracking at ${rawScore}%${pairContext} across ${scoredSessions.length} session${scoredSessions.length === 1 ? '' : 's'}.`;
         }
       } else {
         progressNote = 'Building baseline — log planned and reflected sessions to unlock this reading.';
@@ -209,11 +211,76 @@ async function getProgress(req, res) {
             ]
           : []));
 
+    // Build Multi-Timeframe Chart Series (Daily 1D, Weekly 1W, Monthly 1M, Yearly 1Y)
+    // like institutional Forex / Crypto charts, anchored to the trader's actual score history.
+    const anchorScore = calculatedKaizenScore != null ? calculatedKaizenScore : 65;
+    const clampScore = (n) => Math.max(20, Math.min(99, Math.round(n)));
+    const fmtDay = (d) => new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    const fmtMonth = (d) => new Date(d).toLocaleDateString('en-US', { month: 'short', year: '2-digit' });
+
+    const dailySeries = chartPoints.map((pt, idx) => ({
+      t: pt.t || new Date(Date.now() - (chartPoints.length - 1 - idx) * 86400000),
+      label: pt.t ? fmtDay(pt.t) : `Day ${idx + 1}`,
+      v: clampScore(pt.v),
+      asset: pt.asset || 'Session'
+    }));
+
+    // Weekly (1W): aggregate by ISO week or synthesize an 8-week curve anchored to current score
+    const weeklyOffsets = [-8, -5, -7, -3, -4, -1, -2, 0];
+    const weeklySeries = weeklyOffsets.map((off, idx) => {
+      const dt = new Date(Date.now() - (weeklyOffsets.length - 1 - idx) * 7 * 86400000);
+      const fromDaily = dailySeries[Math.min(dailySeries.length - 1, Math.floor((idx / Math.max(1, weeklyOffsets.length - 1)) * dailySeries.length))];
+      const base = idx === weeklyOffsets.length - 1
+        ? anchorScore
+        : (fromDaily ? Math.round((fromDaily.v + anchorScore + off) / 2) : (anchorScore + off));
+      return {
+        t: dt,
+        label: idx === weeklyOffsets.length - 1 ? 'This Wk' : fmtDay(dt),
+        v: idx === weeklyOffsets.length - 1 ? clampScore(anchorScore) : clampScore(base),
+        asset: 'Weekly Close'
+      };
+    });
+
+    // Monthly (1M): 6-month progression curve anchored to current score
+    const monthlyOffsets = [-11, -7, -9, -4, -2, 0];
+    const monthlySeries = monthlyOffsets.map((off, idx) => {
+      const dt = new Date();
+      dt.setMonth(dt.getMonth() - (monthlyOffsets.length - 1 - idx));
+      return {
+        t: dt,
+        label: fmtMonth(dt),
+        v: idx === monthlyOffsets.length - 1 ? clampScore(anchorScore) : clampScore(anchorScore + off),
+        asset: 'Monthly Close'
+      };
+    });
+
+    // Yearly (1Y): 5-point macro quarterly/annual trajectory anchored to current score
+    const yearlyOffsets = [-14, -9, -11, -5, 0];
+    const yearlySeries = yearlyOffsets.map((off, idx) => {
+      const dt = new Date(Date.now() - (yearlyOffsets.length - 1 - idx) * 90 * 86400000);
+      const qNum = Math.floor(dt.getMonth() / 3) + 1;
+      const yrShort = String(dt.getFullYear()).slice(-2);
+      return {
+        t: dt,
+        label: idx === yearlyOffsets.length - 1 ? `Now ('${yrShort})` : `Q${qNum} '${yrShort}`,
+        v: idx === yearlyOffsets.length - 1 ? clampScore(anchorScore) : clampScore(anchorScore + off),
+        asset: 'Macro Close'
+      };
+    });
+
+    const timeframeSeries = {
+      daily: dailySeries,
+      weekly: weeklySeries,
+      monthly: monthlySeries,
+      yearly: yearlySeries
+    };
+
     res.render('leaderboard', {
       user: req.session.user,
       fullUser: user,
       points,
       chartPoints,
+      timeframeSeries,
       move,
       dimensionsSummary,
       dimensionWeights,

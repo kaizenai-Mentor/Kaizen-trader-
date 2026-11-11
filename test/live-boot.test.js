@@ -216,6 +216,77 @@ test('Batch 11: dash-free site copy, public hero spacing, compelling KAIZEN AI c
   assert.ok(recordEjs.includes('name="rrAchieved"'), 'Record page must keep R Achieved input');
   assert.ok(!recordEjs.includes('name="pipsGained"'), 'Record page must remove redundant Pips input');
   assert.ok(recordEjs.includes('id="record-actual-risk-box"') && recordEjs.includes('name="actualRisk"'), 'Record page must reveal exact risk input box when respectedRisk is NO');
+  assert.ok(recordEjs.includes('name="chartImage"') && recordEjs.includes('multiple'), 'Record page must allow selecting multiple chart images');
+
+  // 7. Cockpit % sign on overall score and 5 dimensions
+  const dashEjs = fs.readFileSync(path.join(__dirname, '..', 'views', 'dashboard.ejs'), 'utf8');
+  assert.ok(dashEjs.includes('<%= score.overall %>%') && dashEjs.includes('<%= d.score %>%'), 'Cockpit must display % sign on overall score and dimension meters');
+
+  // 8. 1-to-1 Broker Trade Verification (one MT5 tradeHash cannot verify two sessions)
+  const { parseBrokerStatement, matchSessionWithBrokerHistory } = require('../services/brokerVerify');
+  const mt5Log = "2026.11.09 14:22:10.415 Trades '8091234': instant sell 0.50 XAUUSD at 2684.50 sl: 2692.00 tp: 2665.00";
+  const parsedTrades = parseBrokerStatement(mt5Log);
+  assert.strictEqual(parsedTrades.length, 1);
+  const usedHashes = new Set();
+  const sess1 = { sessionType: 'LIVE', asset: 'XAUUSD', notes: 'Took XAUUSD sell at London open.', createdAt: new Date('2026-11-09T15:00:00Z') };
+  const sess2 = { sessionType: 'LIVE', asset: 'XAUUSD', notes: 'Another XAUUSD sell session later.', createdAt: new Date('2026-11-09T18:00:00Z') };
+  const m1 = matchSessionWithBrokerHistory(sess1, parsedTrades, null, usedHashes);
+  const m2 = matchSessionWithBrokerHistory(sess2, parsedTrades, null, usedHashes);
+  assert.strictEqual(m1.verified, true, 'First session matching the MT5 trade must be verified');
+  assert.strictEqual(m2.verified, false, 'Second session must NOT reuse the already-claimed MT5 trade');
+
+  // 9. Personalized Scoring Engine reasons + STUDY session check isolation
+  const { computeScore } = require('../services/scoreEngine');
+  const personalSessions = [
+    {
+      _id: 's1',
+      sessionType: 'LIVE',
+      state: 'ANALYZED',
+      asset: 'XAUUSD',
+      plan: { setup: 'London Sweep', entryCondition: '15m MSS after Asian high sweep', skipped: false },
+      quickChecks: { followedPlan: 'YES', withinEntryCriteria: 'YES', respectedRisk: 'YES' },
+      ruleCompliance: true,
+      outcome: 'Win',
+      notes: 'Waited patiently for the London Sweep on XAUUSD and sized at 1% risk.',
+      reflection: { learned: 'Waiting for the 15m candle close kept my entry clean.' },
+      createdAt: new Date('2026-11-08T10:00:00Z')
+    },
+    {
+      _id: 's2',
+      sessionType: 'STUDY',
+      state: 'ANALYZED',
+      asset: 'EURUSD',
+      plan: { skipped: true },
+      quickChecks: { followedPlan: 'NOT_MENTIONED', withinEntryCriteria: 'NOT_MENTIONED', respectedRisk: 'NOT_MENTIONED' },
+      ruleCompliance: true,
+      outcome: 'No Trade',
+      notes: 'Pure chart study marking out higher-timeframe liquidity zones on EURUSD.',
+      reflection: { learned: 'Mapped weekly dealing ranges before Tuesday session.' },
+      createdAt: new Date('2026-11-09T10:00:00Z')
+    }
+  ];
+  const scored = computeScore(personalSessions, { riskRules: { riskPerTrade: '1%', maxDailyTrades: 3 } }, null);
+  assert.ok(scored.dimensions.process.reasons[0].includes('XAUUSD') && scored.dimensions.process.reasons[0].includes('London Sweep'), 'Process reason[0] must be personalized with trader pair and setup');
+  assert.strictEqual(scored.dimensions.process.score, 100, 'STUDY session with skipped trade plan must not penalize live Process score');
+
+  // 10. Multi-Timeframe Progress Chart (1D · 1W · 1M · 1Y)
+  assert.ok(
+    leaderboardEjs.includes('data-tf="daily"') &&
+    leaderboardEjs.includes('data-tf="weekly"') &&
+    leaderboardEjs.includes('data-tf="monthly"') &&
+    leaderboardEjs.includes('data-tf="yearly"'),
+    'My Progress chart must include Daily, Weekly, Monthly, and Yearly timeframe buttons'
+  );
+
+  // 11. Cross-Surface Session Recall on Goals Page
+  const goalCoach = require('../services/goalCoach');
+  const goalGuidance = goalCoach.guide({
+    goal: { title: 'Execute only confirmed London Sweep setups', metric: 'RULE_COMPLIANCE', target: 90, unit: '%', status: 'ACTIVE', rationale: 'Stop entering early' },
+    user: { username: 'Dennis' },
+    sessions: personalSessions
+  });
+  assert.ok(goalGuidance.sessionVerdict && goalGuidance.sessionVerdict.includes('XAUUSD'), 'Goal guidance sessionVerdict must recall the trader actual logged session pair and text');
+  assert.ok(goalGuidance.doingWell.includes('XAUUSD'), 'Goal doingWell must recall the trader compliant session');
 });
 
 

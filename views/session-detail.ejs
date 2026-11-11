@@ -82,10 +82,10 @@
               <p style="font-size:0.92rem;font-weight:500;color:var(--text-primary);line-height:1.78;margin:0;"><%= rev.nextImprovement %></p>
             </div>
 
-            <% if (typeof brokerCheck !== 'undefined' && brokerCheck && brokerCheck.status !== 'STUDY_EXEMPT') { %>
-              <div class="k-review-block" style="border-left:3px solid <%= brokerCheck.verified ? 'var(--green)' : 'var(--gold)' %>;">
-                <div style="font-family:var(--font-mono);font-size:0.58rem;letter-spacing:0.14em;text-transform:uppercase;color:<%= brokerCheck.verified ? 'var(--green)' : 'var(--gold)' %>;margin-bottom:6px;">
-                  <%= brokerCheck.verified ? 'BROKER-VERIFIED EXECUTION ✓' : 'ACCOUNT HISTORY VERIFICATION' %>
+            <% if (typeof brokerCheck !== 'undefined' && brokerCheck && brokerCheck.verified) { %>
+              <div class="k-review-block" style="border-left:3px solid var(--green);">
+                <div style="font-family:var(--font-mono);font-size:0.58rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--green);margin-bottom:6px;">
+                  BROKER-VERIFIED EXECUTION ✓
                 </div>
                 <p style="font-size:0.84rem;color:var(--text-secondary);line-height:1.72;margin:0;"><%= brokerCheck.verificationNote %></p>
               </div>
@@ -103,7 +103,7 @@
             <div class="k-metric-label" style="margin-bottom:14px;"><%= t('detail.engine') %></div>
             <% if (score.overall !== null && score.overall !== undefined) { %>
               <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:16px;">
-                <span style="font-family:var(--font-mono);font-size:2.4rem;color:var(--gold);font-weight:500;line-height:1;"><%= score.overall %></span>
+                <span style="font-family:var(--font-mono);font-size:2.4rem;color:var(--gold);font-weight:500;line-height:1;"><%= score.overall %>%</span>
                 <span style="font-family:var(--font-mono);font-size:0.58rem;letter-spacing:0.14em;color:var(--text-faint);">KAIZEN SCORE</span>
               </div>
               <% if (score.overallState === 'PARTIAL') { %>
@@ -115,7 +115,7 @@
                     <div class="k-meter" data-meter="<%= d.score %>">
                       <span class="k-meter-label"><%= dimensionLabels[k] %></span>
                       <span class="k-meter-track"><span class="k-meter-fill"></span></span>
-                      <span class="k-meter-value"><%= d.score %></span>
+                      <span class="k-meter-value"><%= d.score %>%</span>
                     </div>
                   <% } %>
                 <% }); %>
@@ -145,12 +145,36 @@
 
     </div>
 
-    <% if (session.hasChartImage) { %>
-      <!-- The chart as it was at record time — owner-only, not a live feed -->
+    <%
+      var totalCharts = (typeof chartImageCount !== 'undefined' && chartImageCount > 0)
+        ? chartImageCount
+        : (session.hasChartImage ? 1 : 0);
+    %>
+    <% if (totalCharts > 0) { %>
+      <!-- The chart(s) as recorded — owner-only, not a live feed -->
       <div class="k-card" style="margin-top:14px;">
-        <div class="k-metric-label" style="margin-bottom:10px;"><%= t('detail.theChart') %></div>
-        <img src="/dashboard/sessions/<%= session._id %>/chart-image" alt="<%= t('detail.theChart') %>"
-             style="width:100%;max-height:520px;object-fit:contain;border:1px solid var(--border);background:rgba(0,0,0,0.2);">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px;">
+          <div class="k-metric-label" style="margin-bottom:0;"><%= t('detail.theChart') %><%= totalCharts > 1 ? ' (' + totalCharts + ' IMAGES)' : '' %></div>
+          <% if (totalCharts > 1) { %>
+            <span style="font-family:var(--font-mono);font-size:0.56rem;color:var(--gold);letter-spacing:0.1em;text-transform:uppercase;">TAP ANY CHART TO EXPAND</span>
+          <% } %>
+        </div>
+        <% if (totalCharts === 1) { %>
+          <img src="/dashboard/sessions/<%= session._id %>/chart-image" alt="<%= t('detail.theChart') %>"
+               style="width:100%;max-height:520px;object-fit:contain;border:1px solid var(--border);background:rgba(0,0,0,0.2);border-radius:10px;">
+        <% } else { %>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;">
+            <% for (var cIdx = 0; cIdx < totalCharts; cIdx++) { %>
+              <a href="/dashboard/sessions/<%= session._id %>/chart-image/<%= cIdx %>" target="_blank" rel="noopener" style="display:block;text-decoration:none;border:1px solid var(--border);border-radius:10px;overflow:hidden;background:rgba(0,0,0,0.2);">
+                <img src="/dashboard/sessions/<%= session._id %>/chart-image/<%= cIdx %>" alt="Chart #<%= cIdx + 1 %>"
+                     style="width:100%;max-height:360px;object-fit:contain;display:block;background:rgba(0,0,0,0.2);">
+                <div style="font-family:var(--font-mono);font-size:0.58rem;color:var(--text-secondary);padding:6px 10px;border-top:1px solid var(--border);">
+                  CHART SCREENSHOT #<%= cIdx + 1 %> OF <%= totalCharts %>
+                </div>
+              </a>
+            <% } %>
+          </div>
+        <% } %>
         <p style="font-size:0.72rem;color:var(--ash);margin:10px 0 0;"><%= t('detail.chartCaption') %></p>
       </div>
     <% } %>
