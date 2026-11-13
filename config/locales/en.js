@@ -326,7 +326,7 @@ module.exports = {
   "form.maxTrades": "Max trades / day",
   "form.riskPerTrade": "Risk per trade",
   "form.setupsHelp": "These become the setups you pick from when planning a session.",
-  "kaizen.responds": "KAIZEN RESPONDS",
+  "kaizen.responds": "KAIZEN RESPONSE",
   "plan.addSetups": "Add setups to your Trading System",
   "plan.adhoc": "Other / ad hoc",
   "plan.declare": "Declare it before you do it.",

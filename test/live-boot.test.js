@@ -290,3 +290,11 @@ test('Batch 11: dash-free site copy, public hero spacing, compelling KAIZEN AI c
 });
 
 
+
+test('Google sign-in without configuration reports the problem on registration', async () => {
+  if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) return;
+  const start = await get('/auth/google?from=register');
+  assert.strictEqual(start.res.headers.get('location'), '/auth/register?google=unavailable');
+  const result = await get('/auth/register?google=unavailable');
+  assert.ok(result.body.includes('Google sign-in is not configured here'));
+});
