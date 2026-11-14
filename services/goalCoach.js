@@ -455,7 +455,7 @@ async function guideAsync(ctx) {
     const text = await llm.callLLM(
       buildGuidePrompt(ctx),
       [{ type: 'text', text: 'Guide me on this goal now.' }],
-      { maxTokens: 550 }
+      { maxTokens: 550, user: ctx.user }
     );
     const parsed = parseGuide(text, det);
     if (parsed.assessment && parsed.nextStep) return parsed;

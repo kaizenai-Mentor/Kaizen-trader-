@@ -118,7 +118,11 @@
         <h3><span class="legal-n">04</span> How Your Data Is Processed by Third Parties</h3>
         <p>To provide KAIZEN's core functionality, certain data is shared with third-party service providers:</p>
 
-        <p><strong>Anthropic:</strong> Your journal entries and psychology session messages are sent to Anthropic's Claude API to generate AI feedback. Anthropic processes this text according to their own data handling practices. We do not control how Anthropic's underlying infrastructure processes this data beyond generating the response returned to KAIZEN.</p>
+        <p><strong>AI providers:</strong> KAIZEN uses configured AI services to generate feedback. Depending on availability and configuration, relevant journal entries, reflections, trading rules, conversation history, goals and other context may be sent to Anthropic (Claude), Google (Gemini), or OpenRouter and its selected model provider. If an attempt fails, the same request may also be sent to another configured provider. Provider data use and retention depend on the service, model, billing tier and settings.</p>
+
+        <p>KAIZEN attempts to hide some identifying details from text before sending it to an AI provider. This automatic filtering can miss sensitive information, so do not enter passwords, recovery phrases, account numbers or other confidential details. If the provider repeats an unchanged placeholder, KAIZEN may restore the corresponding detail in the response shown to you and stored in KAIZEN. Detected credentials and payment card numbers are not deliberately restored. The original journal remains stored in KAIZEN. Selected images in KAIZEN AI chat and the legacy journal flow may be sent to an AI provider without this text filtering. Crop or redact sensitive image details before attaching them. Images stored with the current session review are not currently sent for that review.</p>
+
+        <p>For example, Google's unpaid Gemini terms allow submitted content and responses to be used to improve its services and may involve human review. See the <a href="https://ai.google.dev/gemini-api/terms">Gemini API terms</a> and the applicable terms and privacy settings for the other providers.</p>
 
         <p><strong>MongoDB Atlas:</strong> All account data, journal entries, and psychology session content are stored in MongoDB Atlas, a cloud database service. Data is stored in a database we control and is not accessible to MongoDB Atlas employees for any purpose other than infrastructure operation.</p>
 

@@ -83,6 +83,7 @@
       </div>
       <p class="k-voice-status" id="ai-voice-status" role="status" aria-live="polite"></p>
       <p class="k-voice-privacy">Your browser may send audio to its speech service. Review the text before sending.</p>
+      <p class="k-voice-privacy">AI providers receive your message and attached image. Text filtering can miss sensitive details, and images are not filtered. <a href="/privacy#p4">Privacy</a></p>
       <div class="k-attachmeta" id="attach-meta" hidden></div>
     </section>
 
@@ -164,13 +165,14 @@
     </div>
     <p class="k-voice-status" id="ai-voice-status" role="status" aria-live="polite"></p>
     <p class="k-voice-privacy">Your browser may send audio to its speech service. Review the text before sending.</p>
+      <p class="k-voice-privacy">AI providers receive your message and attached image. Text filtering can miss sensitive details, and images are not filtered. <a href="/privacy#p4">Privacy</a></p>
     <div class="k-attachmeta" id="attach-meta" hidden></div>
   </main>
 
   <% } %>
 
   <%- include('partials/footer') %>
-  <script src="/js/voice-input.js?v=2"></script>
+  <script src="/js/voice-input.js?v=3"></script>
   <script src="/js/chat-image-attachment.js?v=1"></script>
   <script>
     (function () {

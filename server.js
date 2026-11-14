@@ -12,6 +12,7 @@ const connectDB = require('./config/db');
 const { getActiveEvents } = require('./config/Events');
 const User = require('./models/User');
 const { sendWelcomeEmail } = require('./config/email');
+const { googleConfig, findOrCreateGoogleUser } = require('./services/googleAuth');
 const multer = require('multer');
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -91,39 +92,15 @@ app.use((req, res, next) => {
 app.use(passport.initialize());
 app.use(passport.session());
 
-passport.use(new GoogleStrategy({
-  clientID: process.env.GOOGLE_CLIENT_ID || 'placeholder',
-  clientSecret: process.env.GOOGLE_CLIENT_SECRET || 'placeholder',
-  callbackURL: 'https://kaizen-trader.onrender.com/auth/google/callback'
-}, async (accessToken, refreshToken, profile, done) => {
-  try {
-    let user = await User.findOne({ googleId: profile.id });
-
-    if (!user) {
-      user = await User.findOne({ email: profile.emails[0].value });
-      if (user) {
-        user.googleId = profile.id;
-        user.authMethod = 'google';
-        await user.save();
-      } else {
-        const username = profile.displayName.replace(/\s+/g, '').toLowerCase() +
-          Math.floor(Math.random() * 999);
-        user = await User.create({
-          username,
-          email: profile.emails[0].value,
-          googleId: profile.id,
-          authMethod: 'google',
-          isVerified: true,
-          termsAcceptedAt: new Date()
-        });
-        await sendWelcomeEmail(user.email, user.username);
-      }
-    }
-    return done(null, user);
-  } catch (err) {
-    return done(err, null);
-  }
-}));
+const googleOAuth = googleConfig();
+if (googleOAuth) {
+  passport.use(new GoogleStrategy({ ...googleOAuth, state: true }, async (accessToken, refreshToken, profile, done) => {
+    try {
+      const user = await findOrCreateGoogleUser(profile, User, sendWelcomeEmail);
+      done(null, user);
+    } catch (err) { done(err); }
+  }));
+}
 
 passport.serializeUser((user, done) => done(null, user.id));
 passport.deserializeUser(async (id, done) => {
@@ -156,45 +133,44 @@ app.use(async (req, res, next) => {
   next();
 });
 
-// Google Auth Routes
-app.get('/auth/google',
-  passport.authenticate('google', { scope: ['profile', 'email'] })
-);
+// Google Auth Routes. Only configured callback URLs are used, never request Host headers.
+app.get('/auth/google', (req, res, next) => {
+  const from = req.query.from === 'register' ? 'register' : 'login';
+  if (!googleOAuth) return res.redirect('/auth/' + from + '?google=unavailable');
+  req.session.googleAuthOrigin = from;
+  passport.authenticate('google', { scope: ['profile', 'email'] })(req, res, next);
+});
 
-app.get('/auth/google/callback',
-  passport.authenticate('google', { failureRedirect: '/auth/login' }),
-  async (req, res) => {
-    req.session.user = {
-      id: req.user._id,
-      username: req.user.username,
-      email: req.user.email,
-      disciplineScore: req.user.disciplineScore || 0,
-      streak: req.user.streak || 0
-    };
-
-    const ts = req.user.tradingStyle;
-    const onboardingComplete = ts &&
-      ts.riskPerTrade &&
-      ts.riskPerTrade !== '' &&
-      ts.tradingEdge &&
-      ts.tradingEdge !== '';
-
-    req.session.save((err) => {
-      if (err) {
-        console.error('Session save error:', err);
-        return res.redirect('/auth/login');
-      }
-      if (!onboardingComplete) {
-        return res.render('register', {
-          error: null,
-          step: 'questions',
-          questionNum: 1
+app.get('/auth/google/callback', (req, res, next) => {
+  const from = req.session.googleAuthOrigin === 'register' ? 'register' : 'login';
+  if (!googleOAuth) return res.redirect('/auth/' + from + '?google=unavailable');
+  passport.authenticate('google', (err, user) => {
+    if (err || !user) {
+      if (err) console.error('Google sign-in failed:', err.message);
+      return res.redirect('/auth/' + from + '?google=failed');
+    }
+    req.logIn(user, async (loginErr) => {
+      if (loginErr) return res.redirect('/auth/' + from + '?google=failed');
+      try {
+        const TradingSystem = require('./models/TradingSystem');
+        const system = await TradingSystem.findOne({ userId: user._id });
+        const legacy = user.tradingStyle || {};
+        const onboarded = !!system || !!(legacy.riskPerTrade && legacy.tradingEdge);
+        req.session.user = {
+          id: user._id, username: user.username, email: user.email,
+          disciplineScore: user.disciplineScore || 0, streak: user.streak || 0, lang: 'en'
+        };
+        req.session.save((saveErr) => {
+          if (saveErr) return res.redirect('/auth/login?google=failed');
+          return res.redirect(onboarded ? '/dashboard' : '/auth/onboarding/rules');
         });
+      } catch (error) {
+        console.error('Google sign-in session error:', error.message);
+        return res.redirect('/auth/login?google=failed');
       }
-      res.redirect('/dashboard');
     });
-  }
-);
+  })(req, res, next);
+});
 
 // Trading system (V2) — versioned rules editor
 const systemController = require('./controllers/systemController');
@@ -415,6 +391,7 @@ app.get('/cron/weekly-email', async (req, res) => {
     const User = require('./models/User');
     const Journal = require('./models/Journal');
     const { sendWelcomeEmail } = require('./config/email');
+const { googleConfig, findOrCreateGoogleUser } = require('./services/googleAuth');
 
     const sevenDaysAgo = new Date();
     sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
@@ -710,6 +687,7 @@ app.get('/test-email', async (req, res) => {
   }
   try {
     const { sendWelcomeEmail } = require('./config/email');
+const { googleConfig, findOrCreateGoogleUser } = require('./services/googleAuth');
     const testEmail = req.query.email || (req.session.user && req.session.user.email);
     if (!testEmail) {
       return res.send('Add ?email=youremail@gmail.com to the URL');

@@ -587,23 +587,26 @@ async function postReflect(req, res) {
     if (res.flushHeaders) res.flushHeaders();
     const send = (o) => res.write('data: ' + JSON.stringify(o) + '\n\n');
     send({ type: 'meta', sessionId: String(session._id) });
-    const holdback = llm.createTailHoldback('EXTRACTED:');
+    let holdback = llm.createTailHoldback('EXTRACTED:');
     let full = '';
-    let emitted = false;
     try {
-      for await (const chunk of aiCoach.streamAnalysis(coachArgs)) {
+      const onReset = ({ retrying }) => {
+        // Discard the failed provider's entire response and extraction tail.
+        full = '';
+        holdback = llm.createTailHoldback('EXTRACTED:');
+        send({ type: 'reset', retrying });
+      };
+      for await (const chunk of aiCoach.streamAnalysis({ ...coachArgs, onReset })) {
         full += chunk;
         const safe = holdback.push(chunk);
-        if (safe) { emitted = true; send({ type: 'delta', text: safe }); }
+        if (safe) send({ type: 'delta', text: safe });
       }
       const flushed = holdback.flush();
       if (flushed.rest) send({ type: 'delta', text: flushed.rest });
     } catch (e) {
-      console.error('AI coach stream error:', e.message);
-      if (!emitted) {
-        full = aiCoach.buildFallback(session);
-        send({ type: 'delta', text: full });
-      }
+      console.error('AI coach stream unavailable.');
+      full = 'AI review is temporarily unavailable. This is a limited automated response.\n\n' + aiCoach.buildFallback(session);
+      send({ type: 'delta', text: full });
     }
     const visible = applyExtracted(full);
     session.aiAnalysis = visible;
@@ -618,8 +621,8 @@ async function postReflect(req, res) {
   try {
     coaching = applyExtracted(await aiCoach.analyzeSession(coachArgs));
   } catch (e) {
-    console.error('AI coach error:', e.message);
-    coaching = aiCoach.buildFallback(session);
+    console.error('AI coach unavailable.');
+    coaching = 'AI review is temporarily unavailable. This is a limited automated response.\n\n' + aiCoach.buildFallback(session);
   }
 
   session.aiAnalysis = coaching;

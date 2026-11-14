@@ -186,3 +186,39 @@ test('cockpit shows scores without explanations; progress retains reasons and in
     ejs.compile(fs.readFileSync(view, 'utf8'), { filename: view });
   }
 });
+
+test('interim speech is shown live and preserved when Android ends without a final result', () => {
+  const env = setup();
+  env.a.button.click();
+  const recognition = env.recognition;
+  assert.equal(recognition.interimResults, true);
+  assert.equal(recognition.lang, 'en-US');
+  const provisional = [{ transcript: 'waiting for the candle close' }]; provisional.isFinal = false;
+  recognition.onresult({ resultIndex: 0, results: [provisional] });
+  assert.match(env.a.status.textContent, /Hearing: waiting for the candle close/);
+  assert.equal(env.a.target.value, 'Existing text');
+  env.a.button.click();
+  recognition.onend();
+  assert.equal(env.a.target.value, 'Existing text waiting for the candle close');
+});
+
+test('final speech replaces provisional preview without duplicating words', () => {
+  const env = setup();
+  env.a.button.click();
+  const recognition = env.recognition;
+  const provisional = [{ transcript: 'I wait' }]; provisional.isFinal = false;
+  const final = [{ transcript: 'I waited' }]; final.isFinal = true;
+  recognition.onresult({ resultIndex: 0, results: [provisional] });
+  recognition.onresult({ resultIndex: 0, results: [final] });
+  env.a.button.click(); recognition.onend();
+  assert.equal(env.a.target.value, 'Existing text I waited');
+});
+
+test('recognition with no returned words tells the user to check microphone and network', () => {
+  const env = setup();
+  env.a.button.click();
+  env.recognition.onstart();
+  env.flushTimer();
+  assert.match(env.a.status.textContent, /No words received yet/);
+  env.a.button.click(); env.recognition.onend();
+});

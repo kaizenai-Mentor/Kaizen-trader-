@@ -29,6 +29,8 @@
  */
 
 const https = require('https');
+const providerAlerts = require('./providerAlerts');
+const aiPrivacy = require('./aiPrivacy');
 
 // ── Provider configuration ─────────────────────────────────────────
 
@@ -108,6 +110,20 @@ function normalizeContent(content) {
   return { text: text.join('\n\n'), images };
 }
 
+// Clean the complete combined text before any provider, including retries.
+// Image bytes are not inspected or redacted.
+function sanitizeRequest(system, content, user) {
+  const privacy = aiPrivacy.createContext(user);
+  const norm = normalizeContent(content);
+  const cleanSystem = privacy.text(system);
+  const clean = privacy.text(norm.text);
+  const safeContent = typeof content === 'string' ? clean : [
+    ...norm.images.map(image => ({ type: 'image', dataUrl: image.dataUrl })),
+    { type: 'text', text: clean }
+  ];
+  return { system: cleanSystem + privacy.instruction(), content: safeContent, privacy };
+}
+
 // ── Payload builders (one per provider) ────────────────────────────
 
 function anthropicPayload(system, norm, maxTokens, stream) {
@@ -169,6 +185,7 @@ function postJSON(url, headers, payload, { onData, timeoutMs } = {}) {
       })
     };
     const req = lib.request(opts, (res) => {
+      res.setEncoding('utf8');
       let data = '';
       res.on('data', (chunk) => {
         const s = chunk.toString();
@@ -252,8 +269,9 @@ function makeQueue() {
   };
 }
 
-function streamAnthropic(p, system, content, maxTokens) {
+function streamAnthropic(p, system, content, maxTokens, requireComplete) {
   const q = makeQueue();
+  let complete = false;
   const norm = normalizeContent(content);
   const payload = JSON.parse(anthropicPayload(system, norm, maxTokens, true));
   payload.model = modelFor(p);
@@ -261,6 +279,7 @@ function streamAnthropic(p, system, content, maxTokens) {
     if (data === '[DONE]') return;
     try {
       const evt = JSON.parse(data);
+      if (evt.type === 'message_stop') complete = true;
       if (evt.type === 'content_block_delta' && evt.delta && typeof evt.delta.text === 'string') {
         q.push(evt.delta.text);
       } else if (evt.type === 'error') {
@@ -276,6 +295,8 @@ function streamAnthropic(p, system, content, maxTokens) {
   ).then((res) => {
     if (res.status !== 200) {
       q.fail(new Error('Anthropic HTTP ' + res.status + ': ' + res.body.slice(0, 300)));
+    } else if (requireComplete && !complete) {
+      q.fail(new Error('Anthropic stream ended without completion'));
     } else {
       q.finish();
     }
@@ -283,8 +304,9 @@ function streamAnthropic(p, system, content, maxTokens) {
   return q.drain();
 }
 
-function streamGemini(p, system, content, maxTokens) {
+function streamGemini(p, system, content, maxTokens, requireComplete) {
   const q = makeQueue();
+  let complete = false;
   const norm = normalizeContent(content);
   const payload = geminiPayload(system, norm, maxTokens);
   const model = modelFor(p);
@@ -292,8 +314,12 @@ function streamGemini(p, system, content, maxTokens) {
     if (data === '[DONE]') return;
     try {
       const evt = JSON.parse(data);
-      const parts = evt.candidates && evt.candidates[0] && evt.candidates[0].content &&
-        evt.candidates[0].content.parts;
+      const candidate = evt.candidates && evt.candidates[0];
+      if (candidate && candidate.finishReason) {
+        if (candidate.finishReason === 'STOP' || candidate.finishReason === 'MAX_TOKENS') complete = true;
+        else q.fail(new Error('Gemini stream did not complete normally'));
+      }
+      const parts = candidate && candidate.content && candidate.content.parts;
       if (parts) {
         const text = parts.map(x => x.text || '').join('');
         if (text) q.push(text);
@@ -311,6 +337,8 @@ function streamGemini(p, system, content, maxTokens) {
   ).then((res) => {
     if (res.status !== 200) {
       q.fail(new Error('Gemini HTTP ' + res.status + ': ' + res.body.slice(0, 300)));
+    } else if (requireComplete && !complete) {
+      q.fail(new Error('Gemini stream ended without completion'));
     } else {
       q.finish();
     }
@@ -318,15 +346,17 @@ function streamGemini(p, system, content, maxTokens) {
   return q.drain();
 }
 
-function streamOpenRouter(p, system, content, maxTokens) {
+function streamOpenRouter(p, system, content, maxTokens, requireComplete) {
   const q = makeQueue();
+  let complete = false;
   const norm = normalizeContent(content);
   const payload = JSON.parse(openrouterPayload(system, norm, maxTokens, true));
   payload.model = modelFor(p);
   const parser = makeSSEParser((data) => {
-    if (data === '[DONE]') return;
+    if (data === '[DONE]') { complete = true; return; }
     try {
       const evt = JSON.parse(data);
+      if (evt.error) q.fail(new Error('OpenRouter stream error'));
       const delta = evt.choices && evt.choices[0] && evt.choices[0].delta;
       if (delta && typeof delta.content === 'string' && delta.content) q.push(delta.content);
     } catch (e) { /* ignore partials */ }
@@ -343,6 +373,8 @@ function streamOpenRouter(p, system, content, maxTokens) {
   ).then((res) => {
     if (res.status !== 200) {
       q.fail(new Error('OpenRouter HTTP ' + res.status + ': ' + res.body.slice(0, 300)));
+    } else if (requireComplete && !complete) {
+      q.fail(new Error('OpenRouter stream ended without completion'));
     } else {
       q.finish();
     }
@@ -353,16 +385,20 @@ function streamOpenRouter(p, system, content, maxTokens) {
 // ── Public API: call & stream with provider failover ───────────────
 
 async function callLLM(system, content, opts = {}) {
+  const request = sanitizeRequest(system, content, opts.user);
+  ({ system, content } = request);
   const list = configured();
   if (!list.length) throw new Error('No AI provider key configured');
   let lastErr = null;
   for (const p of list) {
     try {
-      if (p.name === 'anthropic') return await adapters.anthropic.call(p, system, content, opts.maxTokens);
-      if (p.name === 'gemini') return await callGemini(p, system, content, opts.maxTokens);
-      if (p.name === 'openrouter') return await callOpenRouter(p, system, content, opts.maxTokens);
+      let response;
+      if (p.name === 'anthropic') response = await adapters.anthropic.call(p, system, content, opts.maxTokens);
+      else if (p.name === 'gemini') response = await callGemini(p, system, content, opts.maxTokens);
+      else response = await callOpenRouter(p, system, content, opts.maxTokens);
+      return request.privacy.restore(response);
     } catch (err) {
-      console.error('llm [' + p.name + '] call failed:', err.message);
+      providerAlerts.providerFailed(p.name, err);
       lastErr = err;
     }
   }
@@ -407,28 +443,39 @@ async function callOpenRouter(p, system, content, maxTokens) {
 }
 
 /**
- * Async generator of text chunks. Failover only happens if a provider
- * fails BEFORE emitting anything (mid-stream failures rethrow — the
- * caller decides how to handle a partial reply).
+ * Async generator of text chunks. Callers that provide onReset can discard
+ * partial text and retry another provider. Other callers retain the existing
+ * behaviour and rethrow after a partial stream.
  */
 async function* streamLLM(system, content, opts = {}) {
+  const request = sanitizeRequest(system, content, opts.user);
+  ({ system, content } = request);
   const list = configured();
   if (!list.length) throw new Error('No AI provider key configured');
   let lastErr = null;
-  for (const p of list) {
+  for (const [index, p] of list.entries()) {
     let emitted = false;
+    let received = false;
+    const restorer = request.privacy.createRestorer();
     try {
-      const gen = p.name === 'anthropic' ? streamAnthropic(p, system, content, opts.maxTokens)
-        : p.name === 'gemini' ? streamGemini(p, system, content, opts.maxTokens)
-        : streamOpenRouter(p, system, content, opts.maxTokens);
+      const gen = p.name === 'anthropic' ? streamAnthropic(p, system, content, opts.maxTokens, opts.requireComplete)
+        : p.name === 'gemini' ? streamGemini(p, system, content, opts.maxTokens, opts.requireComplete)
+        : streamOpenRouter(p, system, content, opts.maxTokens, opts.requireComplete);
       for await (const chunk of gen) {
-        emitted = true;
-        yield chunk;
+        received = true;
+        const restored = restorer.push(chunk);
+        if (restored) { emitted = true; yield restored; }
       }
+      if (!received) throw new Error('Empty provider stream');
+      const tail = restorer.flush();
+      if (tail) { emitted = true; yield tail; }
       return; // this provider completed the stream
     } catch (err) {
-      console.error('llm [' + p.name + '] stream failed' + (emitted ? ' mid-stream' : '') + ':', err.message);
-      if (emitted) throw err;
+      providerAlerts.providerFailed(p.name, err);
+      if (emitted) {
+        if (typeof opts.onReset !== 'function') throw err;
+        opts.onReset({ retrying: index + 1 < list.length });
+      }
       lastErr = err;
     }
   }

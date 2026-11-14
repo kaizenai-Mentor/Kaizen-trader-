@@ -1,10 +1,16 @@
 const User = require('../models/User');
 
+function googleAuthError(code) {
+  if (code === 'unavailable') return 'Google sign-in is not configured here. Please use email and password or try again later.';
+  if (code === 'failed') return 'Google sign-in could not be completed. Please try again or use email and password.';
+  return null;
+}
+
 // GET /auth/register
 const getRegister = (req, res) => {
   if (req.session.user) return res.redirect('/dashboard');
   res.render('register', {
-    error: null,
+    error: googleAuthError(req.query && req.query.google),
     step: 'join',
     query: req.query,
     username: req.query.username || '',
@@ -146,7 +152,11 @@ const postOnboardingRules = async (req, res) => {
       ? String(b.customMarkets).trim()
       : String(b.markets || '').trim();
     if (chosenMarket) system.marketConditions = chosenMarket;
-    if (b.tradingHours) system.tradingHours = b.tradingHours.trim();
+    const selectedHours = String(b.tradingHours || '').trim();
+    const customHours = String(b.customTradingHours || '').trim();
+    const tradingHours = (selectedHours === 'CUSTOM' || selectedHours === 'Multiple sessions') && customHours
+      ? customHours : (selectedHours === 'CUSTOM' ? '' : selectedHours);
+    if (tradingHours) system.tradingHours = tradingHours.slice(0, 200);
     system.setups = lines(b.setups).map(name => ({ name }));
     if (b.entryRules) system.entryRules = b.entryRules.trim();
     system.riskRules = {
@@ -180,7 +190,7 @@ const skipOnboardingRules = async (req, res) => {
 // GET /auth/login
 const getLogin = (req, res) => {
   if (req.session.user) return res.redirect('/dashboard');
-  res.render('login', { error: null });
+  res.render('login', { error: googleAuthError(req.query && req.query.google) });
 };
 
 // POST /auth/login

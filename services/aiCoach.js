@@ -303,7 +303,7 @@ Step 5 — Compare: Compare actions against the written plan, their trading syst
 Step 6 — Only then respond: Never respond with a shallow "You deviated." Respond like a coach in a conversation — show you understood what happened, where their process remained disciplined, where it weakened, and the single improvement to make next.
 
 TRADER PROFILE:
-Name: ${(user && user.username) || 'Trader'}
+Name: Trader
 Session type: ${session.sessionType}
 Strategy: ${ts.entryRules || 'Not set'}
 Risk rules: ${risk.riskPerTrade || 'not set'}% per trade, ${risk.dailyDrawdown || 'not set'}% daily drawdown, ${risk.maxDailyTrades || 'not set'} max trades/day
@@ -634,10 +634,11 @@ function stripExtracted(text) {
  */
 async function analyzeSession({ session, user, system, recentSessions, mindState, goals }) {
   if (!llm.available()) {
-    return buildFallback(session, i18n.normalize(user && user.preferredLang), { system, recentSessions, mindState, goals });
+    return 'AI review is temporarily unavailable. This is a limited automated response.\n\n' +
+      buildFallback(session, i18n.normalize(user && user.preferredLang), { system, recentSessions, mindState, goals });
   }
   const prep = prepareAnalysis({ session, user, system, recentSessions, mindState, goals });
-  return llm.callLLM(prep.systemPrompt, prep.messageContent, { maxTokens: 900 });
+  return llm.callLLM(prep.systemPrompt, prep.messageContent, { maxTokens: 900, user });
 }
 
 /** Shared prompt construction for analyzeSession / streamAnalysis. */
@@ -656,13 +657,16 @@ function prepareAnalysis({ session, user, system, recentSessions, mindState, goa
  * Streaming variant of analyzeSession - yields coaching text chunks.
  * Same contract; without a provider key it yields the fallback in one chunk.
  */
-async function* streamAnalysis({ session, user, system, recentSessions, mindState, goals }) {
+async function* streamAnalysis({ session, user, system, recentSessions, mindState, goals, onReset }) {
   if (!llm.available()) {
-    yield buildFallback(session, i18n.normalize(user && user.preferredLang), { system, recentSessions, mindState, goals });
+    yield 'AI review is temporarily unavailable. This is a limited automated response.\n\n' +
+      buildFallback(session, i18n.normalize(user && user.preferredLang), { system, recentSessions, mindState, goals });
     return;
   }
   const prep = prepareAnalysis({ session, user, system, recentSessions, mindState, goals });
-  yield* llm.streamLLM(prep.systemPrompt, prep.content || prep.messageContent, { maxTokens: 900 });
+  yield* llm.streamLLM(prep.systemPrompt, prep.messageContent, {
+    maxTokens: 900, requireComplete: true, onReset, user
+  });
 }
 
 /**
@@ -693,7 +697,7 @@ function buildWeeklyLetterPrompt({ user, system, weekSessions, movement, mindSta
     return `- Pair: ${pairLabel}${stratLabel} (${s.sessionType || 'LIVE'}, outcome: ${s.outcome || '?'}, ${s.state}, ${s.ruleCompliance === true ? 'inside rules' : s.ruleCompliance === false ? 'broke rules' : 'rules not recorded'})`;
   }).join('\n');
 
-  return `You are KAIZEN (改), writing the weekly letter for ${user.username}. This is a private letter about their week of trading practice. It is read on one page, on a phone, with a cup of coffee.
+  return `You are KAIZEN (改), writing the weekly letter for the trader. This is a private letter about their week of trading practice. It is read on one page, on a phone, with a cup of coffee.
 
 HARD RULES:
 - NEVER include a score line, percentage-as-judgment, or rank. Movement facts may be referenced plainly ("risk held steady"), but this letter is words, not numbers.
@@ -729,7 +733,7 @@ async function writeWeeklyLetter({ user, system, weekSessions, movement, mindSta
       const raw = await llm.callLLM(
         buildWeeklyLetterPrompt({ user, system, weekSessions, movement, mindState }),
         'Write this week\'s letter.',
-        { maxTokens: 900 }
+        { maxTokens: 900, user }
       );
       return raw.trim();
     } catch (err) {

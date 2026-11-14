@@ -52,7 +52,6 @@ function notesSnippet(session) {
  * "one rule at a time", "PROPOSAL:", "EXTRACTED-REC:", "English".
  */
 function buildSystemPrompt({ user, system, sessions, movement, mindState }) {
-  const name = (user && user.username) || 'trader';
   const recent = lastSessions(sessions, 8).map(s =>
     `- [${s.sessionType || 'LIVE'}] ${s.outcome || 'no trade'} rules:${s.ruleCompliance === false ? 'BROKEN' : 'kept'} :: ${(s.notes || '').slice(0, 120)}`
   ).join('\n');
@@ -66,7 +65,7 @@ function buildSystemPrompt({ user, system, sessions, movement, mindState }) {
         .join('\n')
     : 'Not enough readings yet.';
 
-  return `You are KAIZEN, the improvement coach inside a trader's journal. The trader's name is ${name}. You are not a signal service.
+  return `You are KAIZEN, the improvement coach inside a trader's journal. Address the trader directly. You are not a signal service.
 
 VOICE (non-negotiable):
 1. Second person. Talk about THEIR record — quote their notes, their rule text, their numbers. "Your execution", never bare "execution".
@@ -241,7 +240,7 @@ async function recommend({ user, system, sessions, movement, mindState } = {}) {
     return buildFallback({ user, system, sessions, movement, mindState });
   }
   const systemPrompt = buildSystemPrompt({ user, system, sessions, movement, mindState });
-  const text = await llm.callLLM(systemPrompt, [{ type: 'text', text: 'Write my improvement recommendations now.' }], { maxTokens: 900 });
+  const text = await llm.callLLM(systemPrompt, [{ type: 'text', text: 'Write my improvement recommendations now.' }], { maxTokens: 900, user });
   const parsed = parseRecommendations(text);
   if (!parsed.items.length) {
     return buildFallback({ user, system, sessions, movement, mindState });
