@@ -599,9 +599,9 @@ async function postReflect(req, res) {
       const flushed = holdback.flush();
       if (flushed.rest) send({ type: 'delta', text: flushed.rest });
     } catch (e) {
-      console.error('AI coach stream error:', e.message);
+      console.error('AI coach stream unavailable.');
       if (!emitted) {
-        full = aiCoach.buildFallback(session);
+        full = 'AI review is temporarily unavailable. This is a limited automated response.\n\n' + aiCoach.buildFallback(session);
         send({ type: 'delta', text: full });
       }
     }
@@ -618,8 +618,8 @@ async function postReflect(req, res) {
   try {
     coaching = applyExtracted(await aiCoach.analyzeSession(coachArgs));
   } catch (e) {
-    console.error('AI coach error:', e.message);
-    coaching = aiCoach.buildFallback(session);
+    console.error('AI coach unavailable.');
+    coaching = 'AI review is temporarily unavailable. This is a limited automated response.\n\n' + aiCoach.buildFallback(session);
   }
 
   session.aiAnalysis = coaching;

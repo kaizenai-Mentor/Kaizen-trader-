@@ -634,7 +634,8 @@ function stripExtracted(text) {
  */
 async function analyzeSession({ session, user, system, recentSessions, mindState, goals }) {
   if (!llm.available()) {
-    return buildFallback(session, i18n.normalize(user && user.preferredLang), { system, recentSessions, mindState, goals });
+    return 'AI review is temporarily unavailable. This is a limited automated response.\n\n' +
+      buildFallback(session, i18n.normalize(user && user.preferredLang), { system, recentSessions, mindState, goals });
   }
   const prep = prepareAnalysis({ session, user, system, recentSessions, mindState, goals });
   return llm.callLLM(prep.systemPrompt, prep.messageContent, { maxTokens: 900 });
@@ -658,11 +659,14 @@ function prepareAnalysis({ session, user, system, recentSessions, mindState, goa
  */
 async function* streamAnalysis({ session, user, system, recentSessions, mindState, goals }) {
   if (!llm.available()) {
-    yield buildFallback(session, i18n.normalize(user && user.preferredLang), { system, recentSessions, mindState, goals });
+    yield 'AI review is temporarily unavailable. This is a limited automated response.\n\n' +
+      buildFallback(session, i18n.normalize(user && user.preferredLang), { system, recentSessions, mindState, goals });
     return;
   }
   const prep = prepareAnalysis({ session, user, system, recentSessions, mindState, goals });
-  yield* llm.streamLLM(prep.systemPrompt, prep.content || prep.messageContent, { maxTokens: 900 });
+  // Do not show a partial review before knowing it completed: a failed request
+  // can then be retried with the next provider without mixing two responses.
+  yield await llm.callLLM(prep.systemPrompt, prep.messageContent, { maxTokens: 900 });
 }
 
 /**

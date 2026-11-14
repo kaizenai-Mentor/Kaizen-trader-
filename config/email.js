@@ -39,6 +39,7 @@ const sendWithResend = async (to, subject, html) => {
       console.error('Resend request error:', err.message);
       reject(err);
     });
+    req.setTimeout(15000, () => req.destroy(new Error('Resend request timeout')));
 
     req.write(data);
     req.end();
@@ -148,4 +149,4 @@ const sendOTPEmail = async (toEmail, otp) => {
   }
 };
 
-module.exports = { sendWelcomeEmail, sendOTPEmail };
+module.exports = { sendWelcomeEmail, sendOTPEmail, sendWithResend };

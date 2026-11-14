@@ -109,9 +109,9 @@
           })();
         }
 
-        // True streaming: KAIZEN's analysis arrives as it is written.
-        // Falls back to the JSON + typewriter path when streaming is not
-        // available, and to a plain form POST on network failure.
+        // The server waits for a complete AI review before sending it, so
+        // another provider can be tried if the first response is interrupted.
+        // Falls back to JSON when streaming is unavailable.
         if (window.kaizenStream) {
           var payload = {};
           data.forEach(function (v, k) { payload[k] = v; });

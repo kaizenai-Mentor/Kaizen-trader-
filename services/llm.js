@@ -29,6 +29,7 @@
  */
 
 const https = require('https');
+const providerAlerts = require('./providerAlerts');
 
 // ── Provider configuration ─────────────────────────────────────────
 
@@ -362,7 +363,7 @@ async function callLLM(system, content, opts = {}) {
       if (p.name === 'gemini') return await callGemini(p, system, content, opts.maxTokens);
       if (p.name === 'openrouter') return await callOpenRouter(p, system, content, opts.maxTokens);
     } catch (err) {
-      console.error('llm [' + p.name + '] call failed:', err.message);
+      providerAlerts.providerFailed(p.name, err);
       lastErr = err;
     }
   }
@@ -425,9 +426,10 @@ async function* streamLLM(system, content, opts = {}) {
         emitted = true;
         yield chunk;
       }
+      if (!emitted) throw new Error('Empty provider stream');
       return; // this provider completed the stream
     } catch (err) {
-      console.error('llm [' + p.name + '] stream failed' + (emitted ? ' mid-stream' : '') + ':', err.message);
+      providerAlerts.providerFailed(p.name, err);
       if (emitted) throw err;
       lastErr = err;
     }
