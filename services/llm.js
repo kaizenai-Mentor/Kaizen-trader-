@@ -113,14 +113,15 @@ function normalizeContent(content) {
 // Clean the complete combined text before any provider, including retries.
 // Image bytes are not inspected or redacted.
 function sanitizeRequest(system, content, user) {
-  const identities = aiPrivacy.identitiesForUser(user);
+  const privacy = aiPrivacy.createContext(user);
   const norm = normalizeContent(content);
-  const clean = aiPrivacy.sanitizeText(norm.text, identities);
+  const cleanSystem = privacy.text(system);
+  const clean = privacy.text(norm.text);
   const safeContent = typeof content === 'string' ? clean : [
     ...norm.images.map(image => ({ type: 'image', dataUrl: image.dataUrl })),
     { type: 'text', text: clean }
   ];
-  return { system: aiPrivacy.sanitizeText(system, identities), content: safeContent };
+  return { system: cleanSystem + privacy.instruction(), content: safeContent, privacy };
 }
 
 // ── Payload builders (one per provider) ────────────────────────────
@@ -384,15 +385,18 @@ function streamOpenRouter(p, system, content, maxTokens, requireComplete) {
 // ── Public API: call & stream with provider failover ───────────────
 
 async function callLLM(system, content, opts = {}) {
-  ({ system, content } = sanitizeRequest(system, content, opts.user));
+  const request = sanitizeRequest(system, content, opts.user);
+  ({ system, content } = request);
   const list = configured();
   if (!list.length) throw new Error('No AI provider key configured');
   let lastErr = null;
   for (const p of list) {
     try {
-      if (p.name === 'anthropic') return await adapters.anthropic.call(p, system, content, opts.maxTokens);
-      if (p.name === 'gemini') return await callGemini(p, system, content, opts.maxTokens);
-      if (p.name === 'openrouter') return await callOpenRouter(p, system, content, opts.maxTokens);
+      let response;
+      if (p.name === 'anthropic') response = await adapters.anthropic.call(p, system, content, opts.maxTokens);
+      else if (p.name === 'gemini') response = await callGemini(p, system, content, opts.maxTokens);
+      else response = await callOpenRouter(p, system, content, opts.maxTokens);
+      return request.privacy.restore(response);
     } catch (err) {
       providerAlerts.providerFailed(p.name, err);
       lastErr = err;
@@ -444,21 +448,27 @@ async function callOpenRouter(p, system, content, maxTokens) {
  * behaviour and rethrow after a partial stream.
  */
 async function* streamLLM(system, content, opts = {}) {
-  ({ system, content } = sanitizeRequest(system, content, opts.user));
+  const request = sanitizeRequest(system, content, opts.user);
+  ({ system, content } = request);
   const list = configured();
   if (!list.length) throw new Error('No AI provider key configured');
   let lastErr = null;
   for (const [index, p] of list.entries()) {
     let emitted = false;
+    let received = false;
+    const restorer = request.privacy.createRestorer();
     try {
       const gen = p.name === 'anthropic' ? streamAnthropic(p, system, content, opts.maxTokens, opts.requireComplete)
         : p.name === 'gemini' ? streamGemini(p, system, content, opts.maxTokens, opts.requireComplete)
         : streamOpenRouter(p, system, content, opts.maxTokens, opts.requireComplete);
       for await (const chunk of gen) {
-        emitted = true;
-        yield chunk;
+        received = true;
+        const restored = restorer.push(chunk);
+        if (restored) { emitted = true; yield restored; }
       }
-      if (!emitted) throw new Error('Empty provider stream');
+      if (!received) throw new Error('Empty provider stream');
+      const tail = restorer.flush();
+      if (tail) { emitted = true; yield tail; }
       return; // this provider completed the stream
     } catch (err) {
       providerAlerts.providerFailed(p.name, err);

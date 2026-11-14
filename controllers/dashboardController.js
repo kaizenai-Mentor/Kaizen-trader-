@@ -467,12 +467,14 @@ ${notes}`
 });
 
 const aiPrivacy = require('../services/aiPrivacy');
-const identities = aiPrivacy.identitiesForUser(user);
+const privacy = aiPrivacy.createContext(user);
+const safeSystem = privacy.text(systemPrompt);
+const safeContent = privacy.content(messageContent);
 const payload = JSON.stringify({
   model: 'claude-haiku-4-5',
   max_tokens: 500,
-  system: aiPrivacy.sanitizeText(systemPrompt, identities),
-  messages: [{ role: 'user', content: aiPrivacy.sanitizeContent(messageContent, identities) }]
+  system: safeSystem + privacy.instruction(),
+  messages: [{ role: 'user', content: safeContent }]
 });
 
         console.log('Calling Anthropic API...');
@@ -511,7 +513,7 @@ const payload = JSON.stringify({
 
         const parsed = JSON.parse(response);
         if (parsed.content && parsed.content[0] && parsed.content[0].text) {
-          aiResponse = parsed.content[0].text;
+          aiResponse = privacy.restore(parsed.content[0].text);
           console.log('Claude response received, length:', aiResponse.length);
         } else if (parsed.error) {
           console.error('Claude API error:', JSON.stringify(parsed.error));
