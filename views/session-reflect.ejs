@@ -29,6 +29,7 @@
 
     <form action="/dashboard/sessions/<%= session._id %>/reflect" method="POST">
       <p class="k-voice-privacy">Your browser may send audio to its speech service. Review the text before saving.</p>
+      <p class="k-voice-privacy">AI providers receive session context. Automatic filtering can miss sensitive details. <a href="/privacy#p4">Privacy</a></p>
 
       <div class="k-card k-formcard k-prompt">
         <label class="k-fieldlabel"><%= t('reflect.learned') %></label>

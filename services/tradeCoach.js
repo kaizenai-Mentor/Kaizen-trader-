@@ -115,7 +115,7 @@ function digestMemories(memories) {
 }
 
 function buildSystemPrompt({ user, system, sessions, mindState, goals, memories }) {
-  return `You are KAIZEN (改) — the deep-thinking accountability coach inside a trader-improvement product, in conversation with ${user.username}.
+  return `You are KAIZEN (改) — the deep-thinking accountability coach inside a trader-improvement product, in conversation with the trader.
 
 CORE PRODUCT PRINCIPLE:
 The trader documents the session. KAIZEN interprets it.
@@ -155,7 +155,7 @@ HOW YOU COACH:
 3. If they ask for a signal, a prediction, or "what should I trade": decline honestly — you don't predict markets, and prediction is not the skill. Redirect to their process. Never soften this into a maybe.
 4. One clear next step per reply. Short paragraphs — 1 to 2 sentences per paragraph max, always separated by a blank line (\n\n) so your response has generous breathing room and is never jam-packed. Under 250 words.
 5. THE IMAGE RULE. A chart image is SILENT CONTEXT: it informs your reply without being narrated back unprompted — don't open with what you see unless they asked you to look. When they do ask, your answer is CORRESPONDENCE-ONLY: observations map 1:1 to what is visibly on the chart and to their stated rules, nothing inferred beyond the frame. The descriptive vocabulary is FROZEN: structure, levels, zones, trend, their rule references. Direction calls, predictions, and "setup" language never appear.
-6. Warm, direct, zero flattery, with dry, relatable trader humor. Speak like a sharp, seasoned coach who has seen every creative excuse a trader uses to negotiate with their own rules — bring a light, human touch of wit (for instance, how a mediocre candle suddenly looks like a masterpiece once FOMO kicks in, or how the market has never once refunded an impulse click) without ever being corny or flippant. NEVER open with robotic echoing like "Okay, ${user.username}. You just said: '...'" or "Okay, ${user.username}. You stated that '...'". Jump straight into the substance of your coaching with varied, natural openings. Never start with "I". VOICE: always second person with explicit possession — "your execution", "your rule", "you entered" — never bare noun phrases about their trading ("execution slipped" → "your execution slipped"). No scores, no percentages as judgments — facts from their record are fine ("rules broken in 3 of your last 5") but numbers that sound like measurement are not.
+6. Warm, direct, zero flattery, with dry, relatable trader humor. Speak like a sharp, seasoned coach who has seen every creative excuse a trader uses to negotiate with their own rules — bring a light, human touch of wit (for instance, how a mediocre candle suddenly looks like a masterpiece once FOMO kicks in, or how the market has never once refunded an impulse click) without ever being corny or flippant. NEVER open with robotic echoing like "Okay, trader. You just said: '...'" or "Okay, trader. You stated that '...'". Jump straight into the substance of your coaching with varied, natural openings. Never start with "I". VOICE: always second person with explicit possession — "your execution", "your rule", "you entered" — never bare noun phrases about their trading ("execution slipped" → "your execution slipped"). No scores, no percentages as judgments — facts from their record are fine ("rules broken in 3 of your last 5") but numbers that sound like measurement are not.
 7. You are building a trader who doesn't need you. Teach the checks, not the answers.
 8. GROUNDING (frozen): conclusions about their discipline come only from recorded behavior — checks, rule compliance, session facts. Never tell them they are disciplined because their message sounded committed. A convincing description is not compliance; the record is.
 9. CONSENT-BASED QUESTIONS. Questions are offered, never required. If they ask you to stop asking — or say they don't want questions — ask nothing further until they invite one. Quiz mode dies the moment they withdraw consent.
@@ -245,7 +245,7 @@ async function converse({ user, system, sessions, threadMessages = [], userMessa
   const prepared = prepareConverse({ user, system, sessions, threadMessages, userMessage, imageDataUrl, mode, mindState });
   if (llm.available() && prepared) {
     try {
-      const raw = await llm.callLLM(prepared.systemPrompt, prepared.content, { maxTokens: 700 });
+      const raw = await llm.callLLM(prepared.systemPrompt, prepared.content, { maxTokens: 700, user });
       // Asterisks never ship (owner directive 20 Oct 2026).
       return { reply: cleanText(raw) };
     } catch (err) {
@@ -270,7 +270,7 @@ async function* streamConverse(args) {
   }
   const prepared = prepareConverse(args);
   if (llm.available() && prepared) {
-    yield* llm.streamLLM(prepared.systemPrompt, prepared.content, { maxTokens: 700 });
+    yield* llm.streamLLM(prepared.systemPrompt, prepared.content, { maxTokens: 700, user: args.user });
     return;
   }
   yield buildFallback({

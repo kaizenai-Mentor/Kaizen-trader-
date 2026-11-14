@@ -383,7 +383,7 @@ const addJournal = async (req, res) => {
         const systemPrompt = `You are Kaizen — an elite AI trading discipline mentor. You are direct, specific, deeply observant, and psychologically sophisticated. You are not a chatbot. You are a senior trader who has seen thousands of journals.
 
 TRADER PROFILE:
-Name: ${user.username}
+Name: Trader
 Sessions logged: ${totalSessions}
 Overall discipline: ${overallScore}%
 Recent trend (last 10): ${recentTrend}
@@ -452,7 +452,7 @@ if (req.file) {
       data: req.file.buffer.toString('base64')
     }
   });
-  console.log('Chart image attached to AI request:', req.file.originalname);
+  console.log('Chart image attached to AI request.');
 }
 
 // Add text
@@ -466,11 +466,13 @@ Full journal entry:
 ${notes}`
 });
 
+const aiPrivacy = require('../services/aiPrivacy');
+const identities = aiPrivacy.identitiesForUser(user);
 const payload = JSON.stringify({
   model: 'claude-haiku-4-5',
   max_tokens: 500,
-  system: systemPrompt,
-  messages: [{ role: 'user', content: messageContent }]
+  system: aiPrivacy.sanitizeText(systemPrompt, identities),
+  messages: [{ role: 'user', content: aiPrivacy.sanitizeContent(messageContent, identities) }]
 });
 
         console.log('Calling Anthropic API...');
@@ -506,8 +508,6 @@ const payload = JSON.stringify({
           req2.write(payload);
           req2.end();
         });
-
-        console.log('Anthropic raw response:', response.substring(0, 200));
 
         const parsed = JSON.parse(response);
         if (parsed.content && parsed.content[0] && parsed.content[0].text) {

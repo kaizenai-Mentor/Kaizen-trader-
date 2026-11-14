@@ -10,6 +10,10 @@ In Render service environment settings, set `AI_ALERT_EMAIL` to the owner's aler
 
 On an AI provider request failure, the application logs the provider and a coarse error category and attempts to email the owner without including prompts, responses, API keys, or account details. The email is best effort: delivery is not guaranteed. Sending is throttled to once per provider per hour **per server process**; restarts or multiple instances can result in additional alerts. A failed email can be retried on a later provider failure. Alerts are reactive and do not detect low credit before a request fails. Use the providers' own billing dashboards and alerts to monitor balances and spending.
 
+## Text filtering before AI requests
+
+KAIZEN automatically applies best-effort text filtering locally before shared LLM requests and the older direct Anthropic journal request. It omits the profile username from prompts and masks examples such as email addresses, some names and phone numbers, labelled account numbers and credentials, certain card numbers and wallet addresses. Known usernames are also filtered in the text when sufficiently distinctive. Some data can still pass through, and ordinary content may occasionally be masked; this is not anonymisation or a guarantee against disclosure. Trading context remains in the request, which can itself be sensitive or identifying. Image bytes are not inspected or filtered. The source journal and conversation are not changed by filtering. The filter cannot make use of a provider compliant by itself.
+
 ## Privacy and deployment checks
 
 Confirm the live Gemini billing tier and the OpenRouter model, billing and privacy settings before using them for real trader information. OpenRouter routes to another model provider; its data policies depend on the selected model, endpoint and account settings. Google's unpaid Gemini terms warn against submitting personal, sensitive or confidential information. Verify applicable terms and update the privacy notice, including any fallbacks, before relying on these services. Do not assume a fallback has the same quality, privacy settings, availability or charges as Claude.

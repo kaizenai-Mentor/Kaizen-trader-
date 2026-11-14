@@ -30,6 +30,7 @@
 
 const https = require('https');
 const providerAlerts = require('./providerAlerts');
+const aiPrivacy = require('./aiPrivacy');
 
 // ── Provider configuration ─────────────────────────────────────────
 
@@ -107,6 +108,19 @@ function normalizeContent(content) {
     }
   }
   return { text: text.join('\n\n'), images };
+}
+
+// Clean the complete combined text before any provider, including retries.
+// Image bytes are not inspected or redacted.
+function sanitizeRequest(system, content, user) {
+  const identities = aiPrivacy.identitiesForUser(user);
+  const norm = normalizeContent(content);
+  const clean = aiPrivacy.sanitizeText(norm.text, identities);
+  const safeContent = typeof content === 'string' ? clean : [
+    ...norm.images.map(image => ({ type: 'image', dataUrl: image.dataUrl })),
+    { type: 'text', text: clean }
+  ];
+  return { system: aiPrivacy.sanitizeText(system, identities), content: safeContent };
 }
 
 // ── Payload builders (one per provider) ────────────────────────────
@@ -370,6 +384,7 @@ function streamOpenRouter(p, system, content, maxTokens, requireComplete) {
 // ── Public API: call & stream with provider failover ───────────────
 
 async function callLLM(system, content, opts = {}) {
+  ({ system, content } = sanitizeRequest(system, content, opts.user));
   const list = configured();
   if (!list.length) throw new Error('No AI provider key configured');
   let lastErr = null;
@@ -429,6 +444,7 @@ async function callOpenRouter(p, system, content, maxTokens) {
  * behaviour and rethrow after a partial stream.
  */
 async function* streamLLM(system, content, opts = {}) {
+  ({ system, content } = sanitizeRequest(system, content, opts.user));
   const list = configured();
   if (!list.length) throw new Error('No AI provider key configured');
   let lastErr = null;

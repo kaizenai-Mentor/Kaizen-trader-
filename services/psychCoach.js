@@ -68,7 +68,7 @@ function digestSystem(system) {
 }
 
 function buildSystemPrompt({ user, system, sessions, mindState }) {
-  return `You are KAIZEN (改) — the psychology side of a trading-improvement product. You are talking with ${user.username}, a trader, in a private conversation about their mind.
+  return `You are KAIZEN (改) — the psychology side of a trading-improvement product. You are talking with a trader, in a private conversation about their mind.
 
 THIS IS NOT TRADE ANALYSIS. It is a psychology conversation. Most of the time it is not the rules that fail — the trader's state is what needs work. The rule-break is the symptom; the state is the cause. Your job is the cause.
 
@@ -271,7 +271,7 @@ async function converse({ user, system, sessions, mindState, threadMessages = []
       const systemPrompt = buildSystemPrompt({ user, system, sessions, mindState });
       const content = (history ? `CONVERSATION SO FAR:\n${history}\n\nTHEY JUST SAID:\n${userMessage}` : userMessage);
 
-      const raw = await llm.callLLM(systemPrompt, content, { maxTokens: 700 });
+      const raw = await llm.callLLM(systemPrompt, content, { maxTokens: 700, user });
       return { reply: stripPsychState(raw), psychState: parsePsychState(raw) };
     } catch (err) {
       console.error('psychCoach API error:', err.message);
@@ -302,7 +302,7 @@ async function* streamConverse({ user, system, sessions, mindState, threadMessag
       `${m.role === 'user' ? 'THEM' : 'YOU'}: ${m.text}`).join('\n');
     const systemPrompt = buildSystemPrompt({ user, system, sessions, mindState });
     const content = (history ? `CONVERSATION SO FAR:\n${history}\n\nTHEY JUST SAID:\n${userMessage}` : userMessage);
-    yield* llm.streamLLM(systemPrompt, content, { maxTokens: 700 });
+    yield* llm.streamLLM(systemPrompt, content, { maxTokens: 700, user });
     return;
   }
   yield buildFallback({ userMessage, mindState, sessions, lang: i18n.normalize(user && user.preferredLang) });
