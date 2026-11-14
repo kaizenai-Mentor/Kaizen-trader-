@@ -587,23 +587,26 @@ async function postReflect(req, res) {
     if (res.flushHeaders) res.flushHeaders();
     const send = (o) => res.write('data: ' + JSON.stringify(o) + '\n\n');
     send({ type: 'meta', sessionId: String(session._id) });
-    const holdback = llm.createTailHoldback('EXTRACTED:');
+    let holdback = llm.createTailHoldback('EXTRACTED:');
     let full = '';
-    let emitted = false;
     try {
-      for await (const chunk of aiCoach.streamAnalysis(coachArgs)) {
+      const onReset = ({ retrying }) => {
+        // Discard the failed provider's entire response and extraction tail.
+        full = '';
+        holdback = llm.createTailHoldback('EXTRACTED:');
+        send({ type: 'reset', retrying });
+      };
+      for await (const chunk of aiCoach.streamAnalysis({ ...coachArgs, onReset })) {
         full += chunk;
         const safe = holdback.push(chunk);
-        if (safe) { emitted = true; send({ type: 'delta', text: safe }); }
+        if (safe) send({ type: 'delta', text: safe });
       }
       const flushed = holdback.flush();
       if (flushed.rest) send({ type: 'delta', text: flushed.rest });
     } catch (e) {
       console.error('AI coach stream unavailable.');
-      if (!emitted) {
-        full = 'AI review is temporarily unavailable. This is a limited automated response.\n\n' + aiCoach.buildFallback(session);
-        send({ type: 'delta', text: full });
-      }
+      full = 'AI review is temporarily unavailable. This is a limited automated response.\n\n' + aiCoach.buildFallback(session);
+      send({ type: 'delta', text: full });
     }
     const visible = applyExtracted(full);
     session.aiAnalysis = visible;

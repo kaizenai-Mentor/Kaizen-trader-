@@ -657,16 +657,16 @@ function prepareAnalysis({ session, user, system, recentSessions, mindState, goa
  * Streaming variant of analyzeSession - yields coaching text chunks.
  * Same contract; without a provider key it yields the fallback in one chunk.
  */
-async function* streamAnalysis({ session, user, system, recentSessions, mindState, goals }) {
+async function* streamAnalysis({ session, user, system, recentSessions, mindState, goals, onReset }) {
   if (!llm.available()) {
     yield 'AI review is temporarily unavailable. This is a limited automated response.\n\n' +
       buildFallback(session, i18n.normalize(user && user.preferredLang), { system, recentSessions, mindState, goals });
     return;
   }
   const prep = prepareAnalysis({ session, user, system, recentSessions, mindState, goals });
-  // Do not show a partial review before knowing it completed: a failed request
-  // can then be retried with the next provider without mixing two responses.
-  yield await llm.callLLM(prep.systemPrompt, prep.messageContent, { maxTokens: 900 });
+  yield* llm.streamLLM(prep.systemPrompt, prep.messageContent, {
+    maxTokens: 900, requireComplete: true, onReset
+  });
 }
 
 /**

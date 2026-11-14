@@ -2,7 +2,7 @@
 
 KAIZEN tries configured providers in order: Anthropic Claude, Google Gemini, then OpenRouter. Every new request starts at the top of the list. Failover is triggered by a failed request, not by monitoring credit balances. Failures can also be caused by rate limits, network problems, invalid keys, model availability, or provider outages. Each attempt can incur charges according to provider terms.
 
-Session reviews wait for a complete non-streaming response before displaying it. If a provider fails partway through that request, the next configured provider is tried without displaying a partial or mixing responses. This means the review may take longer to appear. When no provider succeeds, the saved session review is explicitly labeled as a limited automated response; it is not a full AI review. Other chat surfaces still stream and cannot automatically switch after text has already been displayed.
+Session reviews stream as the provider writes. If a stream fails or ends without a completion signal, the failed response and its extraction tail are discarded, the next configured provider starts immediately, and the browser erases the visible partial response before displaying the replacement. Reduced-motion settings skip the animation. Only the successful provider's response is saved. If no provider succeeds, the saved session review is explicitly labeled as a limited automated response; it is not a full AI review. Other chat surfaces still stream and cannot automatically switch after text has already been displayed.
 
 ## Owner warning setup
 

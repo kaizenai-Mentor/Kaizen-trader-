@@ -60,6 +60,7 @@
         <span class="k-kanji k-kanji--sm">改</span>
         <div class="k-msg-text k-typingdots"><span></span><span></span><span></span></div>
       </div>
+      <p id="k-review-status" role="status" aria-live="polite" style="font-size:0.82rem;color:var(--ash);"></p>
       <div id="k-analysis" class="k-review-stack" style="font-size:0.9rem;color:var(--text-primary);line-height:1.85;white-space:pre-wrap;width:100%;"></div>
       <div id="k-after" hidden style="margin-top:20px;">
         <a class="btn-primary k-btn-lg" href="/dashboard/sessions/<%= session._id %>"><%= t('reflect.openAnalyzed') %></a>
@@ -70,7 +71,8 @@
 
   <%- include('partials/footer') %>
   <script src="/js/voice-input.js?v=3"></script>
-  <script src="/js/app.js"></script>
+  <script src="/js/app.js?v=8"></script>
+  <script src="/js/session-review-reveal.js?v=1"></script>
   <script>
     if (window.feather) feather.replace();
     (function () {
@@ -109,27 +111,34 @@
           })();
         }
 
-        // The server waits for a complete AI review before sending it, so
-        // another provider can be tried if the first response is interrupted.
-        // Falls back to JSON when streaming is unavailable.
-        if (window.kaizenStream) {
+        // The next provider starts as soon as a reset arrives. Its text is
+        // queued locally while the failed response is erased.
+        if (window.kaizenStream && window.createSessionReviewReveal) {
           var payload = {};
           data.forEach(function (v, k) { payload[k] = v; });
           payload.stream = '1';
-          window.kaizenStream(form.action, payload, {
-            onDelta: function (t) { typingEl.hidden = true; out.textContent += t; },
+          var reveal = window.createSessionReviewReveal({
+            output: out,
+            status: document.getElementById('k-review-status'),
+            typing: typingEl,
+            reducedMotion: window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches,
             onDone: function () {
-              typingEl.hidden = true;
               after.hidden = false;
               btn.textContent = <%- JSON.stringify(t('reflect.done')) %>;
-            },
-            onError: function (msg) {
-              typingEl.hidden = true;
-              out.textContent = msg || 'Something went wrong — try again.';
-              after.hidden = false; btn.disabled = false; btn.textContent = <%- JSON.stringify(t('reflect.finish')) %>;
-            },
+            }
+          });
+          function interrupted() {
+            reveal.reset(false);
+            reveal.delta('Connection interrupted. Open the session to check whether your review was saved.');
+            reveal.done();
+          }
+          window.kaizenStream(form.action, payload, {
+            onDelta: reveal.delta,
+            onReset: function (event) { reveal.reset(event.retrying); },
+            onDone: reveal.done,
+            onError: interrupted,
             onJson: handleJson
-          }).catch(function () { form.submit(); }); // network issue: plain POST
+          }).catch(interrupted);
           return;
         }
 

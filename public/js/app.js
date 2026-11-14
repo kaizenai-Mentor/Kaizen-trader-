@@ -158,17 +158,23 @@ window.kaizenStream = function (url, body, h) {
     var reader = res.body.getReader();
     var dec = new TextDecoder();
     var buf = '';
+    var terminal = false;
     function handleEvent(raw) {
       var payload;
       try { payload = JSON.parse(raw); } catch (e) { return; }
+      if (terminal) return;
       if (payload.type === 'meta' && h.onMeta) h.onMeta(payload);
       else if (payload.type === 'delta' && h.onDelta) h.onDelta(payload.text || '');
-      else if (payload.type === 'done' && h.onDone) h.onDone(payload);
-      else if (payload.type === 'error' && h.onError) h.onError(payload.error);
+      else if (payload.type === 'reset' && h.onReset) h.onReset(payload);
+      else if (payload.type === 'done') { terminal = true; if (h.onDone) h.onDone(payload); }
+      else if (payload.type === 'error') { terminal = true; if (h.onError) h.onError(payload.error); }
     }
     function pump() {
       return reader.read().then(function (r) {
-        if (r.done) { if (h.onDone) h.onDone(); return; }
+        if (r.done) {
+          if (!terminal && h.onError) h.onError('Connection ended before the response was complete.');
+          return;
+        }
         buf += dec.decode(r.value, { stream: true });
         var parts = buf.split('\n\n');
         buf = parts.pop();

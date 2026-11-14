@@ -44,23 +44,51 @@ test('failed and interrupted Claude requests retry Gemini and new requests prefe
   assert.equal(anthropicHits, 2); assert.equal(geminiHits, 1);
 });
 
-test('session review waits for a complete provider response', async () => {
-  const original = llm.callLLM;
-  const originalAvailable = llm.available;
-  let resolve;
-  llm.available = () => true;
-  llm.callLLM = () => new Promise(r => { resolve = r; });
-  try {
-    const stream = coach.streamAnalysis({ session: { createdAt: new Date() }, user: {}, system: {}, recentSessions: [] });
-    const pending = stream.next();
-    let finished = false;
-    pending.then(() => { finished = true; });
-    await new Promise(r => setImmediate(r));
-    assert.equal(finished, false);
-    resolve('Complete review');
-    assert.equal((await pending).value, 'Complete review');
-    assert.equal((await stream.next()).done, true);
-  } finally { llm.callLLM = original; llm.available = originalAvailable; }
+test('session review streams partial text, resets on failure, and uses only Gemini extraction', async t => {
+  const hits = [];
+  const a = await server((req, res) => {
+    hits.push('claude'); req.resume(); req.on('end', () => {
+      res.writeHead(200, { 'Content-Type': 'text/event-stream' });
+      res.write('data: {"type":"content_block_delta","delta":{"text":"Old partial EXTRACTED: outcome=Loss"}}\n\n');
+      setTimeout(() => res.end(), 10); // clean EOF but missing message_stop is incomplete
+    });
+  });
+  const g = await server((req, res) => {
+    hits.push('gemini'); req.resume(); req.on('end', () => {
+      res.writeHead(200, { 'Content-Type': 'text/event-stream' });
+      res.end('data: {"candidates":[{"content":{"parts":[{"text":"New complete review EXTRACTED: outcome=Win"}]},"finishReason":"STOP"}]}\n\n');
+    });
+  });
+  t.after(() => { a.s.close(); g.s.close(); });
+  process.env.ANTHROPIC_API_KEY = 'test'; process.env.ANTHROPIC_BASE_URL = a.url;
+  process.env.GEMINI_API_KEY = 'test'; process.env.GEMINI_BASE_URL = g.url;
+  delete process.env.OPENROUTER_API_KEY;
+  const events = [];
+  let full = '';
+  const onReset = info => { events.push('reset:' + info.retrying); full = ''; };
+  for await (const chunk of coach.streamAnalysis({ session: { createdAt: new Date() }, user: {}, system: {}, recentSessions: [], onReset })) {
+    events.push(chunk); full += chunk;
+  }
+  assert.deepEqual(hits, ['claude', 'gemini']);
+  assert.deepEqual(events, ['Old partial EXTRACTED: outcome=Loss', 'reset:true', 'New complete review EXTRACTED: outcome=Win']);
+  assert.equal(full, 'New complete review EXTRACTED: outcome=Win');
+});
+
+test('last incomplete provider resets before throwing rather than saving a partial reply', async t => {
+  const a = await server((req, res) => {
+    req.resume(); req.on('end', () => {
+      res.writeHead(200, { 'Content-Type': 'text/event-stream' });
+      res.end('data: {"type":"content_block_delta","delta":{"text":"partial"}}\n\n');
+    });
+  });
+  t.after(() => a.s.close());
+  process.env.ANTHROPIC_API_KEY = 'test'; process.env.ANTHROPIC_BASE_URL = a.url;
+  delete process.env.GEMINI_API_KEY; delete process.env.OPENROUTER_API_KEY;
+  const events = [];
+  await assert.rejects(async () => {
+    for await (const c of llm.streamLLM('s', 'x', { requireComplete: true, onReset: e => events.push('reset:' + e.retrying) })) events.push(c);
+  });
+  assert.deepEqual(events, ['partial', 'reset:false']);
 });
 
 test('owner alerts are sanitized and throttled, with retries after email failure', async () => {
@@ -107,4 +135,30 @@ test('all providers are tried in order, and empty streams fail over', async t =>
   let response = '';
   for await (const chunk of llm.streamLLM('system', 'input')) response += chunk;
   assert.equal(response, 'Fallback stream');
+});
+
+test('completion markers allow successful Claude and OpenRouter streams', async t => {
+  const a = await server((req, res) => {
+    req.resume(); req.on('end', () => {
+      res.writeHead(200, { 'Content-Type': 'text/event-stream' });
+      res.end('data: {"type":"content_block_delta","delta":{"text":"Claude review"}}\n\ndata: {"type":"message_stop"}\n\n');
+    });
+  });
+  const o = await server((req, res) => {
+    req.resume(); req.on('end', () => {
+      res.writeHead(200, { 'Content-Type': 'text/event-stream' });
+      res.end('data: {"choices":[{"delta":{"content":"OpenRouter review"}}]}\n\ndata: [DONE]\n\n');
+    });
+  });
+  t.after(() => { a.s.close(); o.s.close(); });
+  delete process.env.GEMINI_API_KEY; delete process.env.OPENROUTER_API_KEY;
+  process.env.ANTHROPIC_API_KEY = 'test'; process.env.ANTHROPIC_BASE_URL = a.url;
+  let text = '';
+  for await (const chunk of llm.streamLLM('s', 'x', { requireComplete: true, onReset: () => assert.fail('unexpected reset') })) text += chunk;
+  assert.equal(text, 'Claude review');
+  delete process.env.ANTHROPIC_API_KEY;
+  process.env.OPENROUTER_API_KEY = 'test'; process.env.OPENROUTER_BASE_URL = o.url;
+  text = '';
+  for await (const chunk of llm.streamLLM('s', 'x', { requireComplete: true, onReset: () => assert.fail('unexpected reset') })) text += chunk;
+  assert.equal(text, 'OpenRouter review');
 });
